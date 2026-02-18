@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting OneDrive Working with Self-Hosted AI Agents - Jingxiao Cai's Blog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { margin-top: 30px; }
+    h3 { margin-top: 25px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    pre code { background: none; padding: 0; }
+    .post { margin-bottom: 30px; }
+    .date { color: #666; font-size: 0.9em; }
+    .categories { color: #999; font-size: 0.85em; }
+    .home-link { display: inline-block; margin-bottom: 20px; }
+    .note { background: #fff3cd; padding: 10px 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+    .warning { background: #f8d7da; padding: 10px 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
+    .success { background: #d4edda; padding: 10px 15px; border-left: 4px solid #28a745; margin: 15px 0; }
+    ul, ol { margin: 10px 0; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+  
+  <div class="post">
+    <h1>Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</h1>
+    <p class="date">February 18, 2026</p>
+    <p class="categories">Categories: story, onedrive, multcloud, automation, openclaw</p>
+    
+    <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Yes, an AI and a human brainstormed this mess together.</em></p>
+
+    <p>If you read my <a href="/jingxiao-cai-blog/google-api-setup-guide.html">previous post</a>, you know how to set up Google APIs for your AI agent. What I didn't mention? Getting Google Drive working was the <em>easy</em> part. The real adventure was OneDrive.</p>
+    
+    <p>This is the story of how I finally got my AI agent to access files from OneDrive — and why I ended up using a third-party service to make it happen.</p>
+
+    <h2>The Problem</h2>
+    
+    <p>I store a lot of important files on OneDrive: tax documents, resumes, work-related PDFs, family photos. My AI agent needed access to these files for tasks like:</p>
+    <ul>
+      <li>Finding and summarizing documents</li>
+      <li>Organizing files</li>
+      <li>Accessing work materials while working remotely</li>
+    </ul>
+    
+    <p>Simple enough, right? Just set up the OneDrive API like we did with Google. How hard could it be?</p>
+
+    <h2>The Answer: Very Hard</h2>
+    
+    <h3>Attempt 1: Microsoft Graph API</h3>
+    
+    <p>Microsoft provides the OneDrive API through Microsoft Graph. In theory, it's similar to Google APIs:</p>
+    <ul>
+      <li>Create an Azure App registration</li>
+      <li>Configure OAuth permissions</li>
+      <li>Get client credentials</li>
+      <li>Connect to your agent</li>
+    </ul>
+    
+    <p><strong>The reality:</strong> Microsoft's developer ecosystem feels like it was designed by a committee that never talked to each other. Here's what went wrong:</p>
+    
+    <ul>
+      <li><strong>Consent issues:</strong> Even with a personal Microsoft account, the OAuth flow kept failing with cryptic error messages</li>
+      <li><strong>Permission scopes are confusing:</strong> Files.Read, Files.Read.All, Files.ReadWrite — which one do I need?</li>
+      <li><strong>Token refresh problems:</strong> Unlike Google's relatively stable token system, Microsoft's refresh tokens have all sorts of edge cases</li>
+      <li><strong>No straightforward "service account" option:</strong> For personal accounts, you're stuck with delegated permissions, not the application permissions you'd use in an enterprise setup</li>
+    </ul>
+
+    <div class="warning">
+      <strong>Fun fact:</strong> Microsoft charges for some Azure AD features. What started as "free" quickly became "wait, I need to pay for that?"
+    </div>
+
+    <h3>Attempt 2: rclone</h3>
+    
+    <p>rclone is the gold standard for command-line cloud storage sync. It's free, open-source, and supports OneDrive out of the box.</p>
+    
+    <p>The setup involves:</p>
+    <ol>
+      <li>Installing rclone</li>
+      <li>Running <code>rclone config</code> to authorize OneDrive</li>
+      <li>Using rclone commands to sync/mount folders</li>
+    </ol>
+    
+    <p><strong>The problem:</strong> rclone works great for a human typing commands, but integrating it with an AI agent? That's tricky. The agent would need to:</p>
+    <ul>
+      <li>Execute shell commands</li>
+      <li>Handle the OAuth flow interactively</li>
+      <li>Manage mounted filesystems</li>
+    </ul>
+    
+    <p>It's doable, but it adds complexity. I wanted something cleaner.</p>
+
+    <h3>Attempt 3: Other Options</h3>
+    
+    <p>I also looked at:</p>
+    <ul>
+      <li><strong>onedrive-docker</strong> — Docker containers that sync OneDrive locally. Good, but still requires server resources and maintenance.</li>
+      <li><strong>ownCloud/Nextcloud</strong> — Self-hosted alternatives. Overkill for my use case.</li>
+      <li><strong>Direct WebDAV</strong> — OneDrive doesn't natively support WebDAV anymore.</li>
+    </ul>
+
+    <h2>The Solution: MultCloud</h2>
+    
+    <p>After weeks of frustration, I discovered <strong>MultCloud</strong> — a service that lets you manage multiple cloud storage providers from one interface.</p>
+    
+    <p>Here's why it won:</p>
+    <ul>
+      <li><strong>Easy setup:</strong> Connect OneDrive and Google Drive (or other clouds) with a few clicks</li>
+      <li><strong>Built-in sync:</strong> Schedule automatic sync between clouds</li>
+      <li><strong>Agent-friendly:</strong> The AI agent talks to Google Drive (which we already set up), and files are automatically synced from OneDrive</li>
+      <li><strong>Reliable:</strong> No more OAuth headaches</li>
+    </ul>
+
+    <div class="success">
+      <strong>The workaround:</strong> I set up MultCloud to automatically sync specific folders from OneDrive to Google Drive. Now my AI agent accesses everything through Google Drive — the "easy" API we set up in the previous post.
+    </div>
+
+    <h2>How It Works</h2>
+    
+    <ol>
+      <li><strong>Sign up for MultCloud</strong> (free tier available, paid for more features)</li>
+      <li><strong>Add OneDrive</strong> — authorize access to your OneDrive account</li>
+      <li><strong>Add Google Drive</strong> — authorize access</li>
+      <li><strong>Create a sync job</strong> — choose which OneDrive folders to sync to Google Drive</li>
+      <li><strong>Schedule it</strong> — sync hourly, daily, or in real-time</li>
+    </ol>
+
+    <div class="note">
+      <strong>Tip:</strong> I caught MultCloud on a Valentine's Day lifetime deal — normally it's subscription-based. If you see a deal, grab it!
+    </div>
+
+    <h2>The Trade-offs</h2>
+    
+    <p>Is MultCloud perfect? No. Here's the reality:</p>
+    
+    <table>
+      <tr><th>Pros</th><th>Cons</th></tr>
+      <tr><td>Simple to set up</td><td>Third-party dependency</td></tr>
+      <tr><td>Works reliably</td><td>Subscription cost (or one-time deal)</td></tr>
+      <tr><td>No OAuth headaches</td><td>Data passes through their servers</td></tr>
+      <tr><td>Supports 80+ clouds</td><td>Free tier has limits</td></tr>
+    </table>
+
+    <p>For me, the trade-off was worth it. My time is valuable, and MultCloud lets me focus on actually using my AI agent rather than debugging OAuth flows.</p>
+
+    <h2>What I'd Do Differently</h2>
+    
+    <p>If I were starting fresh today, here's my advice:</p>
+    
+    <ol>
+      <li><strong>Start with MultCloud from day one</strong> if you need multi-cloud access</li>
+      <li><strong>Don't waste time on Microsoft Graph</strong> unless you have a business need</li>
+      <li><strong>Use rclone</strong> if you want a free, self-hosted solution and don't mind the CLI</li>
+      <li><strong>Consider the sync approach:</strong> One-way sync (OneDrive → Google Drive) is simpler than two-way</li>
+    </ol>
+
+    <h2>Lessons Learned</h2>
+    
+    <p>This whole saga taught me a few things:</p>
+    
+    <ul>
+      <li><strong>Not all clouds are equal:</strong> Google's developer experience is far ahead of Microsoft's</li>
+      <li><strong>Workarounds are valid:</strong> Sometimes the "elegant" solution isn't worth the headache</li>
+      <li><strong>AI agents need stable APIs:</strong> The less friction in cloud access, the more useful the agent</li>
+      <li><strong>Third-party services exist for a reason:</strong> MultCloud fills a real gap</li>
+    </ul>
+
+    <h2>What's Next</h2>
+    
+    <p>Now that my AI agent has access to both Google Drive and OneDrive (via sync), the automation possibilities have opened up. I can:</p>
+    <ul>
+      <li>Search across both clouds</li>
+      <li>Get file summaries</li>
+      <li>Automate document organization</li>
+    </ul>
+    
+    <p>Next, I'm working on more advanced automation — maybe automatic file categorization or intelligent document routing. Stay tuned!</p>
+    
+    <hr>
+    <p><em>Have a similar horror story with OneDrive or another cloud? Let's chat in the comments.</em></p>
+  </div>
+</body>
+</html>
