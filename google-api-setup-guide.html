@@ -3,11 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Jingxiao Cai">
   <meta name="description" content="Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.">
   <meta name="keywords" content="Google API, OAuth 2.0, OpenClaw, AI agent, Gmail API, Google Drive API, self-hosted AI, automation">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph -->
   <meta property="og:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
   <meta property="og:description" content="Give your AI agent access to Gmail, Calendar, and Drive with this complete OAuth 2.0 setup guide.">
   <meta property="og:type" content="article">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
+  <meta name="twitter:description" content="Give your AI agent access to Gmail, Calendar, and Drive with this complete OAuth 2.0 setup guide.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
+  
+  <!-- Sitemap -->
+  <link rel="alternate" type="application/xml" title="Sitemap" href="/jingxiao-cai-blog/sitemap.xml">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Setting Up Google APIs for Self-Hosted AI Agents",
+    "description": "Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw.",
+    "author": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    },
+    "datePublished": "2026-02-18",
+    "dateModified": "2026-02-18",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html",
+    "publisher": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    },
+    "articleSection": "Tutorial",
+    "keywords": ["Google API", "OAuth 2.0", "OpenClaw", "AI agent", "Gmail API", "Google Drive API"]
+  }
+  </script>
+  
   <title>Setting Up Google APIs for Self-Hosted AI Agents - Jingxiao Cai's Blog</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
@@ -25,6 +67,12 @@
     .home-link { display: inline-block; margin-bottom: 20px; }
     .note { background: #fff3cd; padding: 10px 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
     .warning { background: #f8d7da; padding: 10px 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
+    .faq { background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    .faq h3 { margin-top: 0; }
+    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
+    table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #f4f4f4; }
   </style>
 </head>
 <body>
@@ -32,7 +80,7 @@
   
   <div class="post">
     <h1>Setting Up Google APIs for Self-Hosted AI Agents</h1>
-    <p class="date">February 18, 2026</p>
+    <p class="date">February 18, 2026 | Last updated: February 18, 2026</p>
     <p class="categories">Categories: tutorial, google-cloud, openclaw, automation</p>
     
     <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Yes, an AI wrote part of this blog post with a little help from me.</em></p>
@@ -176,16 +224,38 @@
     <h3>Permission denied</h3>
     <p>Double-check that your email is added as a test user in the OAuth consent screen settings.</p>
 
+    <!-- FAQ Section for SEO -->
+    <div class="faq">
+      <h3>❓ Frequently Asked Questions</h3>
+      
+      <h4>What is Google OAuth 2.0?</h4>
+      <p>OAuth 2.0 is Google's standard for authorization. It allows your AI agent to access your Google account without you sharing your password. You grant specific permissions (scopes) that can be revoked anytime.</p>
+      
+      <h4>Is this secure?</h4>
+      <p>Yes, when properly configured. Use the principle of least privilege — only request the scopes you need. Never share your client secret publicly, and store credentials securely.</p>
+      
+      <h4>Do I need a Google Workspace account?</h4>
+      <p>No! A personal Google account works fine. The setup is the same, though you'll need to add yourself as a test user since the app won't be verified by Google.</p>
+      
+      <h4>How do I revoke access?</h4>
+      <p>Go to your Google Account → Security → Third-party app access. There you can see and revoke all connected apps.</p>
+      
+      <h4>Can I use this with other AI agents?</h4>
+      <p>Yes! The OAuth 2.0 flow is standard. Any agent framework that supports OAuth can use these credentials.</p>
+    </div>
+
     <h2>What's Next?</h2>
     
     <p>In a follow-up post, I'll share the story of how I got OneDrive working with my AI agent — a much more painful journey that led me to use MultCloud as a workaround. Stay tuned!</p>
     
     <hr>
-    <p><strong>Related Posts:</strong></p>
-    <ul>
-      <li><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</a> — The messy journey that led to MultCloud</li>
-      <li><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a> — Why I chose GitHub Pages for hosting</li>
-    </ul>
+    <div class="related-posts">
+      <h3>📚 Related Posts</h3>
+      <ul>
+        <li><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</a> — The messy journey that led to MultCloud</li>
+        <li><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a> — Why I chose GitHub Pages for hosting</li>
+      </ul>
+    </div>
     
     <hr>
     <p><em>Have questions or run into issues? Leave a comment below or reach out.</em></p>

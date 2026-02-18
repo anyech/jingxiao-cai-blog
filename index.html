@@ -3,8 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Jingxiao Cai">
   <meta name="description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
   <meta name="keywords" content="blog, ML infrastructure, distributed systems, tech, OpenClaw, AI">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Jingxiao Cai's Blog">
+  <meta property="og:description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jingxiao Cai's Blog">
+  <meta name="twitter:description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/">
+  
+  <!-- Sitemap -->
+  <link rel="alternate" type="application/xml" title="Sitemap" href="/jingxiao-cai-blog/sitemap.xml">
+  
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/jingxiao-cai-blog/feed.xml">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Jingxiao Cai's Blog",
+    "description": "Personal blog about ML Infrastructure, distributed systems, and tech.",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/",
+    "author": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    }
+  }
+  </script>
+  
   <title>Jingxiao Cai's Blog</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
@@ -16,44 +56,106 @@
     .date { color: #666; font-size: 0.9em; }
     .categories { color: #999; font-size: 0.85em; }
     .home-link { display: inline-block; margin-bottom: 20px; }
+    .tags { margin: 10px 0; }
+    .tag { display: inline-block; background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; cursor: pointer; }
+    .tag:hover { background: #dee2e6; }
+    .filter-bar { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .filter-bar label { margin-right: 10px; font-weight: bold; }
+    .filter-bar select { padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd; }
   </style>
 </head>
 <body>
   <h1>Jingxiao Cai's Blog</h1>
   <p>Personal blog about ML Infrastructure, distributed systems, and tech.</p>
-  <p><a href="/jingxiao-cai-blog/feed.xml">RSS Feed</a></p>
+  <p>📡 <a href="/jingxiao-cai-blog/feed.xml">RSS Feed</a></p>
+  
+  <!-- Simple Tag Filter -->
+  <div class="filter-bar">
+    <label>Filter by tag:</label>
+    <select id="tagFilter" onchange="filterPosts()">
+      <option value="all">All Posts</option>
+      <option value="tutorial">Tutorials</option>
+      <option value="story">Stories</option>
+      <option value="automation">Automation</option>
+      <option value="tech">Tech</option>
+      <option value="personal">Personal</option>
+    </select>
+  </div>
   
   <h2>Blog Posts</h2>
   
-  <div class="post">
+  <div class="post" data-tags="story,onedrive,multcloud,automation">
     <h3><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</a></h3>
     <p class="date">February 18, 2026</p>
     <p class="categories">Categories: story, onedrive, multcloud, automation</p>
+    <div class="tags">
+      <span class="tag" onclick="selectTag('story')">story</span>
+      <span class="tag" onclick="selectTag('onedrive')">onedrive</span>
+      <span class="tag" onclick="selectTag('multcloud')">multcloud</span>
+      <span class="tag" onclick="selectTag('automation')">automation</span>
+    </div>
     <p>The messy journey of getting OneDrive to work with my AI agent — and why I ended up using MultCloud as a workaround.</p>
   </div>
   
-  <div class="post">
+  <div class="post" data-tags="tutorial,google-cloud,openclaw,automation">
     <h3><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Setting Up Google APIs for Self-Hosted AI Agents</a></h3>
     <p class="date">February 18, 2026</p>
     <p class="categories">Categories: tutorial, google-cloud, openclaw, automation</p>
+    <div class="tags">
+      <span class="tag" onclick="selectTag('tutorial')">tutorial</span>
+      <span class="tag" onclick="selectTag('google-cloud')">google-cloud</span>
+      <span class="tag" onclick="selectTag('openclaw')">openclaw</span>
+      <span class="tag" onclick="selectTag('automation')">automation</span>
+    </div>
     <p>How to give your AI agent access to Gmail, Calendar, and Drive — the complete OAuth 2.0 setup guide.</p>
   </div>
   
-  <div class="post">
+  <div class="post" data-tags="blog,tech">
     <h3><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a></h3>
     <p class="date">February 17, 2026</p>
     <p class="categories">Categories: blog, tech</p>
+    <div class="tags">
+      <span class="tag" onclick="selectTag('blog')">blog</span>
+      <span class="tag" onclick="selectTag('tech')">tech</span>
+    </div>
     <p>I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...</p>
   </div>
   
-  <div class="post">
+  <div class="post" data-tags="intro,personal">
     <h3><a href="/jingxiao-cai-blog/welcome.html">Welcome to My Blog</a></h3>
     <p class="date">February 17, 2026</p>
     <p class="categories">Categories: intro, personal</p>
+    <div class="tags">
+      <span class="tag" onclick="selectTag('intro')">intro</span>
+      <span class="tag" onclick="selectTag('personal')">personal</span>
+    </div>
     <p>After several years in industry, I'm starting to share my learnings, thoughts, and experiences...</p>
   </div>
   
   <hr>
   <p><a href="https://anyech.github.io/">← Back to Personal Site</a></p>
+  
+  <script>
+    function filterPosts() {
+      const select = document.getElementById('tagFilter');
+      const tag = select.value;
+      const posts = document.querySelectorAll('.post');
+      
+      posts.forEach(post => {
+        if (tag === 'all') {
+          post.style.display = 'block';
+        } else if (post.dataset.tags.includes(tag)) {
+          post.style.display = 'block';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+    }
+    
+    function selectTag(tag) {
+      document.getElementById('tagFilter').value = tag;
+      filterPosts();
+    }
+  </script>
 </body>
 </html>
