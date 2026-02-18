@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 18 Feb 2026 12:00:00 +0000</lastBuildDate>
+    
+    <item>
+      <title>Troubleshooting AI Agent Skills: A Debugging Story</title>
+      <description>A debugging story of fixing AI agent issues — from a simple binary search bug (= vs ==) to updating outdated skill documentation.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</guid>
+      <pubDate>Tue, 18 Feb 2026 12:00:00 +0000</pubDate>
+    </item>
     
     <item>
       <title>Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</title>
