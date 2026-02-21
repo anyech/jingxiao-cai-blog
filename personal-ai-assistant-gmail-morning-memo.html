@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Jingxiao Cai">
+  <meta name="description" content="Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos using OpenClaw.">
+  <meta name="keywords" content="AI assistant, Gmail automation, OpenClaw, morning memo, personal AI, automation">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Building a Personal AI Assistant: From Gmail to Morning Memos">
+  <meta property="og:description" content="Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Building a Personal AI Assistant: From Gmail to Morning Memos">
+  <meta name="twitter:description" content="Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building a Personal AI Assistant: From Gmail to Morning Memos",
+    "description": "Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos using OpenClaw.",
+    "author": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    },
+    "datePublished": "2026-02-21",
+    "dateModified": "2026-02-21",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html",
+    "publisher": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    }
+  }
+  </script>
+  
+  <title>Building a Personal AI Assistant: From Gmail to Morning Memos | Jingxiao Cai</title>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    article {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #0066cc;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #555;
+      margin-top: 30px;
+    }
+    h3 {
+      color: #666;
+    }
+    code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+    .date {
+      color: #888;
+      font-size: 0.9em;
+    }
+    .tags {
+      margin-top: 10px;
+    }
+    .tag {
+      display: inline-block;
+      background: #e0e0e0;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 0.8em;
+      margin-right: 5px;
+      color: #555;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    ul, ol {
+      padding-left: 25px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .note {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .warning {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+      padding: 15px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← Back to Blog</a>
+  
+  <article>
+    <h1>Building a Personal AI Assistant: From Gmail to Morning Memos</h1>
+    <p class="date">Published: February 21, 2026 | By Jingxiao Cai</p>
+    <div class="tags">
+      <span class="tag">AI Assistant</span>
+      <span class="tag">Gmail Automation</span>
+      <span class="tag">OpenClaw</span>
+      <span class="tag">Productivity</span>
+    </div>
+    
+    <h2 id="introduction">Introduction</h2>
+    <p>What if you woke up every morning to a curated summary of what matters? No more scrolling through 100+ emails. No more missing important calendar events. Just a clean, actionable memo that tells you exactly what you need to know.</p>
+    <p>That's what I built: a personal AI assistant running on a small cloud VM that reads my Gmail, monitors my Google Drive, checks my calendar, and delivers a daily morning memo to my phone.</p>
+    <p>In this post, I'll walk you through how to build this for yourself using <strong>OpenClaw</strong> — an open-source AI assistant framework — and Google's APIs.</p>
+    
+    <h2 id="what-is-openclaw">What is OpenClaw?</h2>
+    <p>OpenClaw is an open-source AI assistant that runs on your own infrastructure. Unlike cloud-based assistants (ChatGPT, Claude, etc.), OpenClaw runs locally, gives you full control, and integrates with your personal data sources.</p>
+    <p>Key features:</p>
+    <ul>
+      <li>Self-hosted — your data stays with you</li>
+      <li>Connects to Gmail, Calendar, Drive, and more</li>
+      <li>Scheduled tasks (cron-like) for automation</li>
+      <li>Multiple communication channels (Telegram, WhatsApp, etc.)</li>
+      <li>Custom skills and plugins</li>
+    </ul>
+    
+    <h2 id="architecture">Architecture Overview</h2>
+    <p>Here's what the system looks like:</p>
+    <pre><code>┌─────────────────────────────────────────────────────────┐
+│                    Your Cloud VM                            │
+│  ┌─────────────────────────────────────────────────────┐ │
+│  │                   OpenClaw                            │ │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │ │
+│  │  │ Gmail API   │  │ Drive API   │  │Calendar API │  │ │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  │ │
+│  │         │                │                │           │ │
+│  │         └────────────────┼────────────────┘           │ │
+│  │                          ▼                            │ │
+│  │              ┌─────────────────────┐                  │ │
+│  │              │   AI Processing     │                  │ │
+│  │              │   (Priority + Summ) │                  │ │
+│  │              └─────────────────────┘                  │ │
+│  │                          │                            │ │
+│  │                          ▼                            │ │
+│  │              ┌─────────────────────┐                  │ │
+│  │              │  Morning Memo Gen  │                  │ │
+│  │              └─────────────────────┘                  │ │
+│  └─────────────────────────────────────────────────────┘ │
+│                          │                                │
+│                          ▼                                │
+│              ┌─────────────────────┐                     │
+│              │  Telegram/WhatsApp │                     │
+│              │     Delivery        │                     │
+│              └─────────────────────┘                     │
+└─────────────────────────────────────────────────────────┘</code></pre>
+    
+    <h2 id="prerequisites">Prerequisites</h2>
+    <ul>
+      <li>A cloud VM (AWS, GCP, Oracle Cloud, etc.) — I use Oracle Cloud free tier</li>
+      <li>A Google account with Gmail</li>
+      <li>Basic command line knowledge</li>
+      <li>Telegram or WhatsApp for delivery</li>
+    </ul>
+    
+    <h2 id="step1-google-api">Step 1: Set Up Google APIs</h2>
+    <p>You'll need to create a Google Cloud project and enable the APIs:</p>
+    
+    <ol>
+      <li>Go to <a href="https://console.cloud.google.com/">Google Cloud Console</a></li>
+      <li>Create a new project</li>
+      <li>Enable these APIs:
+        <ul>
+          <li>Gmail API</li>
+          <li>Google Calendar API</li>
+          <li>Google Drive API</li>
+        </ul>
+      </li>
+      <li>Create OAuth 2.0 credentials:
+        <ul>
+          <li>Application type: Desktop app</li>
+          <li>Download the credentials.json file</li>
+        </ul>
+      </li>
+    </ol>
+    
+    <div class="note">
+      <strong>Note:</strong> For read-only access (which is safer), use the "gmail.readonly" scope. If you want the assistant to also send emails, add "gmail.send".
+    </div>
+    
+    <h2 id="step2-openclaw">Step 2: Install OpenClaw</h2>
+    <p>Install OpenClaw on your VM:</p>
+    <pre><code>npm install -g openclaw
+openclaw init
+openclaw start</code></pre>
+    
+    <h2 id="step3-gmail">Step 3: Connect Gmail</h2>
+    <p>Create a Gmail reader script. Here's a simplified version:</p>
+    <pre><code>const { google } = require('googleapis');
+const gmail = google.gmail('v1');
+
+async function getEmails(auth, maxResults = 50) {
+  const res = await gmail.users.messages.list({
+    userId: 'me',
+    maxResults: maxResults,
+  });
+  
+  const messages = await Promise.all(
+    res.data.messages.slice(0, 20).map(async (msg) => {
+      const detail = await gmail.users.messages.get({
+        userId: 'me',
+        id: msg.id,
+      });
+      return {
+        subject: detail.data.payload.headers.find(h => h.name === 'Subject')?.value,
+        from: detail.data.payload.headers.find(h => h.name === 'From')?.value,
+        date: detail.data.payload.headers.find(h => h.name === 'Date')?.value,
+        snippet: detail.data.snippet,
+      };
+    })
+  );
+  
+  return messages;
+}
+
+module.exports = { getEmails };</code></pre>
+    
+    <h2 id="step4-prioritization">Step 4: Smart Priority Detection</h2>
+    <p>Not all emails are equal. I built a priority system:</p>
+    <ul>
+      <li><strong>HIGH:</strong> School, medical, insurance, billing, urgent keywords</li>
+      <li><strong>MEDIUM:</strong> Work emails, shipping, appointments</li>
+      <li><strong>LOW:</strong> Promos, newsletters, social</li>
+    </ul>
+    <p>This transforms 100+ emails into an actionable 5-10 item list.</p>
+    
+    <h2 id="step5-cron">Step 5: Schedule the Morning Memo</h2>
+    <p>Use OpenClaw's cron to run daily:</p>
+    <pre><code>openclaw cron add --schedule "0 18 * * *" --task "morning-memo"</code></pre>
+    <p>This runs at 10 AM PST (6 PM UTC) every day.</p>
+    
+    <h2 id="step6-delivery">Step 6: Deliver to Your Phone</h2>
+    <p>Configure Telegram or WhatsApp delivery in OpenClaw:</p>
+    <pre><code>{
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "chat_id": "YOUR_CHAT_ID"
+    }
+  }
+}</code></pre>
+    
+    <h2 id="sample-output">Sample Output</h2>
+    <p>Here's what the morning memo looks like:</p>
+    <pre><code>📬 Gmail (24h): 66 emails
+
+HIGH PRIORITY:
+• School: PPAG Meeting (Feb 19), Board Briefs
+• Billing: ACWD payment confirmed ($169.70)
+• Insurance: Policy expiring 02/23 - ACTION NEEDED
+
+JOB SEARCH:
+• LinkedIn: HPC Software Engineer (Braeden Pryor reached out)
+• TikTok: Research Engineer opportunity
+
+QUICK ACTIONS:
+1. Follow up insurance policy expiring 02/23
+2. Check calendar for upcoming events</code></pre>
+    
+    <h2 id="privacy">Privacy Considerations</h2>
+    <div class="warning">
+      <strong>Important:</strong> This setup gives an AI assistant access to your emails. Consider:
+      <ul>
+        <li>Use read-only scopes where possible</li>
+        <li>Run on a VM you control (not shared hosting)</li>
+        <li>Review what the assistant has access to regularly</li>
+      </ul>
+    </div>
+    
+    <h2 id="future-enhancements">Future Enhancements</h2>
+    <p>What I'm planning to add:</p>
+    <ul>
+      <li><strong>Calendar integration:</strong> Pull today's meetings</li>
+      <li><strong>Drive monitoring:</strong> Alert on new files in specific folders</li>
+      <li><strong>Weather check:</strong> Include weather for commute planning</li>
+      <li><strong>Job board monitoring:</strong> Scrape LinkedIn for relevant roles</li>
+    </ul>
+    
+    <h2 id="conclusion">Conclusion</h2>
+    <p>Building a personal AI assistant is surprisingly straightforward with tools like OpenClaw. The key insight isn't the technology — it's knowing what information matters to you and automating its delivery.</p>
+    <p>Start small. Maybe just email summaries first. Then expand to calendar, Drive, and beyond.</p>
+    <p>The future of personal productivity isn't a better to-do app. It's having your own AI that knows what matters and tells you.</p>
+    
+    <hr>
+    <p><em>Questions? Feel free to reach out. I'm also active on <a href="https://www.linkedin.com/in/jingxiao-cai/">LinkedIn</a>.</em></p>
+    
+  </article>
+  
+  <p style="text-align: center; margin-top: 40px; color: #888;">
+    <a href="index.html">Back to Blog</a> | 
+    <a href="https://github.com/anyech">GitHub</a> | 
+    <a href="https://www.linkedin.com/in/jingxiao-cai/">LinkedIn</a>
+  </p>
+</body>
+</html>
