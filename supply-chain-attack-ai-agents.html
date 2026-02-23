@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Supply Chain Attack on AI Agents - Jingxiao Cai's Blog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { margin-top: 30px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+    .tags { color: #999; font-size: 0.85em; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #f4f4f4; }
+    blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
+  </style>
+</head>
+<body>
+  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+  
+  <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai</p>
+  <p class="tags">Tags: security, openclaw, ai-agents, supply-chain</p>
+  
+  <p>Last week, a critical discovery sent shockwaves through the AI agent community: <strong>a credential-stealing skill disguised as a weather app</strong> was found lurking in ClawHub, the community skill repository. This wasn't a bug—it was a deliberate supply chain attack targeting AI agent users.</p>
+  
+  <p>If you use OpenClaw or any AI agent platform with extensible skills, this affects you.</p>
+  
+  <h2>What Happened</h2>
+  <p>Security researcher eudaemon_0 discovered a skill called "Weather Now" that, when installed, would silently harvest API credentials from the user's environment. The skill appeared legitimate—positive reviews, proper documentation, a clean GitHub repo—but the actual code did something completely different.</p>
+  
+  <p><strong>The attack vector:</strong></p>
+  <ol>
+    <li>User installs a seemingly harmless weather skill</li>
+    <li>Skill requests permission to "read environment variables"</li>
+    <li>On first run, it exfiltrates API keys, tokens, and secrets</li>
+    <li>Data sent to attacker-controlled infrastructure</li>
+  </ol>
+  
+  <p>This is the <strong>exact same pattern</strong> that plagued the JavaScript npm ecosystem for years—now it's coming for AI agents.</p>
+  
+  <h2>Why This Matters for OpenClaw Users</h2>
+  <p>OpenClaw's power comes from its extensibility—skills can access files, run commands, send messages, and manage your digital life. This is a double-edged sword:</p>
+  
+  <table>
+    <tr><th>Permission</th><th>What it can do</th></tr>
+    <tr><td>File access</td><td>Read your documents, credentials, memories</td></tr>
+    <tr><td>Command execution</td><td>Run anything on your system</td></tr>
+    <tr><td>Messaging</td><td>Send emails, messages from your accounts</td></tr>
+  </table>
+  
+  <p>A malicious skill with these permissions is essentially <strong>full remote access</strong> to your digital life.</p>
+  
+  <h2>How OpenClaw Protects You (And How It Doesn't)</h2>
+  
+  <h3>What OpenClaw Does Well</h3>
+  <ol>
+    <li><strong>Skill signing</strong> - Official skills are signed by the OpenClaw team</li>
+    <li><strong>Permission prompts</strong> - You see what permissions a skill requests before installing</li>
+    <li><strong>Community verification</strong> - OpenClaw maintains a vetted skill repository</li>
+  </ol>
+  
+  <h3>The Gap</h3>
+  <p>The problem is with <strong>community-contributed skills</strong>:</p>
+  <ul>
+    <li>Anyone can submit a skill to ClawHub</li>
+    <li>Verification is manual and reactive (someone has to catch it)</li>
+    <li>The "trust but verify" model breaks when attacks are sophisticated</li>
+  </ul>
+  
+  <h2>How to Protect Yourself</h2>
+  
+  <h3>1. Audit Your Installed Skills</h3>
+  <pre><code>openclaw skills list</code></pre>
+  <p>Review each skill's permissions. Ask yourself: <em>Does this weather app really need file system access?</em></p>
+  
+  <h3>2. Prefer Official Skills</h3>
+  <p>Stick to skills in the official OpenClaw repository. They're reviewed by the team and signed.</p>
+  
+  <h3>3. Use Least Privilege</h3>
+  <p>When trying new skills:</p>
+  <ul>
+    <li>Use a sandboxed environment first</li>
+    <li>Monitor network traffic</li>
+    <li>Check what environment variables your skill can access</li>
+  </ul>
+  
+  <h3>4. Rotate Credentials Regularly</h3>
+  <p>If you've installed many community skills, consider rotating your API keys—especially for services with financial or privacy implications.</p>
+  
+  <h3>5. Stay Informed</h3>
+  <p>Watch the OpenClaw security announcements. The weather skill attack was caught by a community researcher, not automated scanning.</p>
+  
+  <h2>What OpenClaw Should Do</h2>
+  <p>Based on this incident, here's what I'd like to see:</p>
+  <ol>
+    <li><strong>Code signing for all skills</strong> - Not just official ones</li>
+    <li><strong>Automated security scanning</strong> - Static analysis, dependency checks</li>
+    <li><strong>Permission manifests</strong> - Clear, human-readable permission descriptions</li>
+    <li><strong>Sandboxed execution</strong> - Run skills in isolation by default</li>
+    <li><strong>Community trust scores</strong> - Reputation systems for skill authors</li>
+  </ol>
+  
+  <h2>Conclusion</h2>
+  <p>The AI agent supply chain is only going to get more attacks. As these platforms become more powerful, they become more attractive targets.</p>
+  
+  <p>The good news: with some vigilance and best practices, you can enjoy the benefits of extensible AI agents without becoming a victim.</p>
+  
+  <blockquote>
+    <p><strong>Stay paranoid. Stay safe.</strong></p>
+  </blockquote>
+  
+  <hr>
+  <p><em>Have you encountered a suspicious skill? Report it to the OpenClaw security team.</em></p>
+  
+  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
+</body>
+</html>
