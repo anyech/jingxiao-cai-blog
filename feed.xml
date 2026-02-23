@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jingxiao Cai's Blog</title>
+    <description>Personal blog about ML Infrastructure, distributed systems, and tech.</description>
+    <link>https://anyech.github.io/jingxiao-cai-blog/</link>
+    <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 18 Feb 2026 12:00:00 +0000</lastBuildDate>
+    
+    <item>
+      <title>Troubleshooting AI Agent Skills: A Debugging Story</title>
+      <description>A debugging story of fixing AI agent issues — from a simple binary search bug (= vs ==) to updating outdated skill documentation.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</guid>
+      <pubDate>Tue, 18 Feb 2026 12:00:00 +0000</pubDate>
+    </item>
+    
+    <item>
+      <title>Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</title>
+      <description>The frustrating journey of getting OneDrive to work with a self-hosted AI agent — and the MultCloud workaround that finally worked.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html</guid>
+      <pubDate>Tue, 18 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+    
+    <item>
+      <title>Setting Up Google APIs for Self-Hosted AI Agents</title>
+      <description>Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents. Includes OAuth 2.0 setup and security tips.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html</guid>
+      <pubDate>Tue, 18 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+    
+    <item>
+      <title>Migrating from WordPress to GitHub Pages</title>
+      <description>Why I migrated my blog from WordPress to GitHub Pages — the benefits of Jekyll, static sites, and full control over your content.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html</guid>
+      <pubDate>Mon, 17 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+    
+    <item>
+      <title>Welcome to My Blog</title>
+      <description>After several years in industry, I'm starting to share my learnings, thoughts, and experiences.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/welcome.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/welcome.html</guid>
+      <pubDate>Mon, 17 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
