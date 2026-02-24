@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hidden Input Limit: When '202K Context' Doesn't Mean 202K - Jingxiao Cai's Blog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { margin-top: 30px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+    .tags { color: #999; font-size: 0.85em; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #f4f4f4; }
+    blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
+    .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+  
+  <h1>The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</h1>
+  <p class="post-meta">February 24, 2026 | By Jingxiao Cai</p>
+  <p class="tags">Tags: llm, debugging, bailian, openclaw</p>
+  
+  <p>Last week, my blog scout cron job started crashing with a cryptic error:</p>
+  
+  <pre><code>InternalError.Algo.InvalidParameter: Range of input length should be [1, 73728]</code></pre>
+  
+  <p>At first, I was confused. I'm using GLM-5 through Alibaba Cloud Bailian, which advertises a <strong>202,752 token context window</strong>. My agent was only loading about 60K tokens of context—well under the limit. What was going on?</p>
+  
+  <h2>The Investigation</h2>
+  
+  <p>The blog scout job reads a lot of context:</p>
+  <ul>
+    <li>7-14 days of memory files</li>
+    <li>Gmail summaries from the morning memo</li>
+    <li>ML news and Moltbook trends</li>
+    <li>Multiple web searches for blog topics</li>
+  </ul>
+  
+  <p>All of this adds up. But with a 202K context window, I should have plenty of room, right?</p>
+  
+  <h2>The Discovery</h2>
+  
+  <p>After digging through documentation (in Chinese, which added to the challenge), I found the real limits. Alibaba Cloud Bailian imposes a <strong>platform-level input limit</strong> that's separate from the model's native context window:</p>
+  
+  <table>
+    <tr>
+      <th>Model</th>
+      <th>Native Context</th>
+      <th>Bailian Max Input</th>
+      <th>Gap</th>
+    </tr>
+    <tr>
+      <td>GLM-5</td>
+      <td>202,752</td>
+      <td><strong>73,728</strong></td>
+      <td style="color: #dc2626; font-weight: bold;">-64%</td>
+    </tr>
+    <tr>
+      <td>GLM-4.5</td>
+      <td>131,072</td>
+      <td><strong>98,304</strong></td>
+      <td style="color: #dc2626;">-25%</td>
+    </tr>
+  </table>
+  
+  <p>That's right—<strong>the API only accepts 73K tokens</strong>, even though the model can theoretically handle 202K. This is documented in the <a href="https://help.aliyun.com/zh/model-studio/glm">official docs</a>, but it's easy to miss if you're skimming (or relying on translated docs).</p>
+  
+  <h2>Why This Matters</h2>
+  
+  <p>If you're building AI agents that:</p>
+  <ul>
+    <li>Read multiple memory or context files</li>
+    <li>Fetch web content dynamically</li>
+    <li>Accumulate conversation history</li>
+    <li>Run complex multi-step reasoning</li>
+  </ul>
+  
+  <p>...you might silently exceed the platform limit even though the model <em>claims</em> to support a much larger context.</p>
+  
+  <p>And the error message doesn't help—it just says "input length should be [1, 73728]" without explaining why.</p>
+  
+  <h2>The Fix</h2>
+  
+  <p>Configure your agent framework to respect the <strong>platform limit</strong>, not the model's advertised context window. In OpenClaw, that looks like this:</p>
+  
+  <pre><code>{
+  "agents": {
+    "defaults": {
+      "models": {
+        "bailian/glm-5": {
+          "contextWindow": 65000
+        }
+      }
+    }
+  }
+}</code></pre>
+  
+  <p>Notice I set it to 65K, not 73K. That leaves a buffer for:</p>
+  <ul>
+    <li>Tool outputs (web fetches, file reads)</li>
+    <li>Response generation</li>
+    <li>Unexpected context bloat</li>
+  </ul>
+  
+  <h2>Lessons Learned</h2>
+  
+  <h3>1. Platform ≠ Model</h3>
+  <p>API providers often impose their own limits. The model might support 202K, but the platform you're accessing it through might only accept 73K.</p>
+  
+  <h3>2. Read the Fine Print</h3>
+  <p>Especially when dealing with translated documentation. The limits were clearly documented—I just didn't look closely enough.</p>
+  
+  <h3>3. Defensive Configuration</h3>
+  <p>Set your context windows conservatively. Better to trigger compaction early than to hit a hard platform limit mid-request.</p>
+  
+  <h3>4. Check Compaction Logs</h3>
+  <p>My logs showed "compaction wait aborted" multiple times—the framework was trying to compact context but timing out before the API call. This was a hint that something was wrong with the context sizing.</p>
+  
+  <h2>A Wider Pattern</h2>
+  
+  <p>I suspect this isn't unique to Bailian. Many API providers likely impose platform limits that differ from model capabilities:</p>
+  <ul>
+    <li>Rate limiting at the platform level</li>
+    <li>Input size caps for infrastructure reasons</li>
+    <li>Token counting differences (platform vs. model)</li>
+  </ul>
+  
+  <p>When debugging context issues, check both the model specs <em>and</em> the API documentation.</p>
+  
+  <h2>Conclusion</h2>
+  
+  <p>The "202K context" marketing number doesn't tell the whole story. When using models through intermediary platforms, there's often a hidden input limit that can bite you.</p>
+  
+  <blockquote>
+    <p><strong>Platform limits exist. Check them before you ship.</strong></p>
+  </blockquote>
+  
+  <p>After adjusting my configuration, the blog scout job runs smoothly again. But this was a frustrating few days of debugging that could have been avoided with clearer documentation—or just reading it more carefully in the first place.</p>
+  
+  <hr>
+  <p><em>Have you hit similar hidden limits with LLM APIs? I'd love to hear about it.</em></p>
+  
+  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
+</body>
+</html>
