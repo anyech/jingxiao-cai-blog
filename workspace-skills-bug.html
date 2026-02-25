@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Custom Skills Don't Load in OpenClaw - A Known Bug - Jingxiao Cai's Blog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { margin-top: 30px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+    .tags { color: #999; font-size: 0.85em; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
+  </style>
+</head>
+<body>
+  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+  
+  <h1>Why Custom Skills Don't Load in OpenClaw - A Known Bug</h1>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai</p>
+  <p class="tags">Tags: openclaw, bugs, ai-agents, customization</p>
+  
+  <blockquote>
+    <p><strong>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</strong></p>
+  </blockquote>
+
+  <p>I've been building my AI assistant setup with OpenClaw, and recently tried to create a custom "blog-publishing" skill to automate my workflow. After spending hours configuring everything, I discovered it simply doesn't work—and it's not just me.</p>
+  
+  <h2>The Problem</h2>
+  <p>OpenClaw's skill system allows you to extend your agent with custom skills. According to the docs, you can place custom skills in:</p>
+  <ul>
+    <li><code>~/.openclaw/workspace/skills/</code> (highest priority)</li>
+    <li><code>~/.openclaw/skills/</code> (shared across agents)</li>
+    <li>Extra directories via <code>skills.load.extraDirs</code> in config</li>
+  </ul>
+  
+  <p>But when I placed my custom skill there and restarted the gateway, it never appeared in the skills list. Only the bundled skills (5 out of 51) loaded.</p>
+  
+  <h2>It's a Known Bug</h2>
+  <p>After some research, I found <a href="https://github.com/openclaw/openclaw/issues/10386">GitHub Issue #10386</a>:</p>
+  <blockquote>
+    <p>"The agent is unable to discover or register custom skills located in the workspace or defined via extraDirs. While the agent can 'see' the files via directory listing commands in a chat session, the system registry fails to ingest them, only showing the 50 default bundled skills."</p>
+  </blockquote>
+  
+  <p>This bug affects multiple users running different setups (Docker, bare metal, various Linux distributions). The issue has been open since version 2026.2.3-1, and persists in the latest version (2026.2.22-2 as of this writing).</p>
+  
+  <h2>Current Workarounds</h2>
+  <p>While waiting for a fix, here's what works:</p>
+  
+  <ol>
+    <li><strong>Manual execution:</strong> Keep your skill as documentation and manually follow the steps when needed</li>
+    <li><strong>Use bundled skills only:</strong> Stick to the 5 ready-to-use skills (healthcheck, skill-creator, tmux, video-frames, weather)</li>
+    <li><strong>Subscribe to the issue:</strong> Track #10386 for updates</li>
+  </ol>
+  
+  <h2>Why This Matters</h2>
+  <p>Custom skills are essential for power users who want to:</p>
+  <ul>
+    <li>Automate personal workflows</li>
+    <li>Create domain-specific knowledge</li>
+    <li>Build reusable agent behaviors</li>
+    <li>Share configurations across agents</li>
+  </ul>
+  
+  <p>Without custom skills, OpenClaw becomes much less customizable. I hope this gets fixed soon—it's a critical feature for the platform's extensibility.</p>
+  
+  <h2>What I Did</h2>
+  <p>Despite the bug, I created my blog-publishing skill anyway:</p>
+  <ul>
+    <li>Documented all steps in <code>SKILL.md</code></li>
+    <li>Added the skill to <code>~/.openclaw/workspace/skills/blog-publishing/</code></li>
+    <li>Manually follow the steps when publishing blog posts</li>
+  </ul>
+  
+  <p>It works—you're reading this blog post! But it's not as elegant as it should be.</p>
+  
+  <h2>Conclusion</h2>
+  <p>If you're trying to create custom skills in OpenClaw and they're not loading, you're not crazy. It's a known bug (#10386). Star the issue to show support for a fix.</p>
+  
+  <p>Has anyone found a workaround? Let me know in the comments.</p>
+  
+  <hr>
+  <p><em>Have you encountered this bug? Star <a href="https://github.com/openclaw/openclaw/issues/10386">#10386</a> to help prioritize the fix.</em></p>
+  
+  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
+  <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

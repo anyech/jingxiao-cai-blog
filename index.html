@@ -3,48 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
-  <meta name="keywords" content="blog, ML infrastructure, distributed systems, tech, OpenClaw, AI">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="Jingxiao Cai's Blog">
-  <meta property="og:description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/">
-  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jingxiao Cai's Blog">
-  <meta name="twitter:description" content="Personal blog about ML Infrastructure, distributed systems, and tech.">
-  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/">
-  
-  <!-- Sitemap -->
-  <link rel="alternate" type="application/xml" title="Sitemap" href="/jingxiao-cai-blog/sitemap.xml">
-  
-  <!-- RSS -->
-  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/jingxiao-cai-blog/feed.xml">
-  
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    "name": "Jingxiao Cai's Blog",
-    "description": "Personal blog about ML Infrastructure, distributed systems, and tech.",
-    "url": "https://anyech.github.io/jingxiao-cai-blog/",
-    "author": {
-      "@type": "Person",
-      "name": "Jingxiao Cai"
-    }
-  }
-  </script>
-  
   <title>Jingxiao Cai's Blog</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
@@ -56,162 +14,80 @@
     .date { color: #666; font-size: 0.9em; }
     .categories { color: #999; font-size: 0.85em; }
     .home-link { display: inline-block; margin-bottom: 20px; }
-    .tags { margin: 10px 0; }
-    .tag { display: inline-block; background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; cursor: pointer; }
-    .tag:hover { background: #dee2e6; }
-    .filter-bar { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-    .filter-bar label { margin-right: 10px; font-weight: bold; }
-    .filter-bar select { padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd; }
   </style>
 </head>
 <body>
   <h1>Jingxiao Cai's Blog</h1>
   <p>Personal blog about ML Infrastructure, distributed systems, and tech.</p>
-  <p>📡 <a href="/jingxiao-cai-blog/feed.xml">RSS Feed</a></p>
   
-  <!-- Simple Tag Filter -->
-  <div class="filter-bar">
-    <label>Filter by tag:</label>
-    <select id="tagFilter" onchange="filterPosts()">
-      <option value="all">All Posts</option>
-      <option value="tutorial">Tutorials</option>
-      <option value="story">Stories</option>
-      <option value="automation">Automation</option>
-      <option value="tech">Tech</option>
-      <option value="personal">Personal</option>
-    </select>
-  </div>
+  <p><a href="/jingxiao-cai-blog/feed.xml">RSS Feed</a></p>
   
   <h2>Blog Posts</h2>
   
-  <div class="post" data-tags="tutorial,oauth,vps,devops,automation,google-cloud">
-    <h3><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></h3>
-    <p class="date">February 25, 2026</p>
-    <p class="categories">Categories: tutorial, oauth, vps, devops, automation, google-cloud</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('tutorial')">tutorial</span>
-      <span class="tag" onclick="selectTag('oauth')">oauth</span>
-      <span class="tag" onclick="selectTag('vps')">vps</span>
-      <span class="tag" onclick="selectTag('devops')">devops</span>
-      <span class="tag" onclick="selectTag('automation')">automation</span>
-      <span class="tag" onclick="selectTag('google-cloud')">google-cloud</span>
-    </div>
-    <p>Complete tutorial on OAuth 2.0 for headless servers. Learn how to set up Google APIs on VPS without a browser using OAuth Playground workaround. Includes working Python scripts.</p>
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></h3>
+    <p class="date">February 24, 2026</p>
+    <p class="categories">Categories: llm, debugging, bailian</p>
+    <p>A debugging story about discovering that API providers impose platform-level limits separate from model context windows—and why your "202K context" might only be 73K.</p>
   </div>
   
-  <div class="post" data-tags="tutorial,automation,openclaw,gmail,productivity">
-    <h3><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant: From Gmail to Morning Memos</a></h3>
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/workspace-skills-bug.html">Why Custom Skills Don't Load in OpenClaw - A Known Bug</a></h3>
+    <p class="date">February 23, 2026</p>
+    <p class="categories">Categories: openclaw, bugs, ai-agents</p>
+    <p>I tried creating a custom blog-publishing skill for OpenClaw and discovered it's a known bug (#10386). Here's what I learned.</p>
+  </div>
+  
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></h3>
+    <p class="date">February 23, 2026</p>
+    <p class="categories">Categories: security, openclaw, ai-agents</p>
+    <p>A deep dive into the emerging threat of malicious skills in AI agent platforms and how to protect yourself.</p>
+  </div>
+  
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant with Gmail - Morning Memo Automation</a></h3>
     <p class="date">February 21, 2026</p>
-    <p class="categories">Categories: tutorial, automation, openclaw, gmail, productivity</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('tutorial')">tutorial</span>
-      <span class="tag" onclick="selectTag('automation')">automation</span>
-      <span class="tag" onclick="selectTag('openclaw')">openclaw</span>
-      <span class="tag" onclick="selectTag('gmail')">gmail</span>
-      <span class="tag" onclick="selectTag('productivity')">productivity</span>
-    </div>
-    <p>Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos using OpenClaw.</p>
+    <p class="categories">Categories: ai, automation, gmail</p>
+    <p>How I built an AI assistant to automate my morning email routine.</p>
   </div>
   
-  <div class="post" data-tags="ml,infrastructure,career,radar,signal-processing">
-    <h3><a href="/jingxiao-cai-blog/processing-background-shapes.html">Processing Background Shapes: From Radar Signals to ML Infrastructure</a></h3>
-    <p class="date">February 19, 2026</p>
-    <p class="categories">Categories: ml, infrastructure, career, radar, signal-processing</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('ml')">ml</span>
-      <span class="tag" onclick="selectTag('infrastructure')">infrastructure</span>
-      <span class="tag" onclick="selectTag('career')">career</span>
-      <span class="tag" onclick="selectTag('radar')">radar</span>
-      <span class="tag" onclick="selectTag('signal-processing')">signal-processing</span>
-    </div>
-    <p>How my PhD in radar signal processing taught me to extract meaningful signals from noisy backgrounds—a skill that directly translated to building scalable ML infrastructure at Oracle.</p>
-  </div>
-  
-  <div class="post" data-tags="tutorial,debugging,openclaw,tooling">
-    <h3><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Troubleshooting AI Agent Skills: A Debugging Story</a></h3>
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Troubleshooting AI Agent Skills</a></h3>
     <p class="date">February 18, 2026</p>
-    <p class="categories">Categories: tutorial, debugging, openclaw, tooling</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('tutorial')">tutorial</span>
-      <span class="tag" onclick="selectTag('debugging')">debugging</span>
-      <span class="tag" onclick="selectTag('openclaw')">openclaw</span>
-      <span class="tag" onclick="selectTag('tooling')">tooling</span>
-    </div>
-    <p>From binary search bugs (= vs ==) to outdated skill documentation — how I debug AI agent issues and what I learned.</p>
+    <p class="categories">Categories: ai-agents, troubleshooting</p>
+    <p>Common issues and solutions when working with AI agent skills.</p>
   </div>
   
-  <div class="post" data-tags="story,onedrive,multcloud,automation">
-    <h3><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</a></h3>
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></h3>
     <p class="date">February 18, 2026</p>
-    <p class="categories">Categories: story, onedrive, multcloud, automation</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('story')">story</span>
-      <span class="tag" onclick="selectTag('onedrive')">onedrive</span>
-      <span class="tag" onclick="selectTag('multcloud')">multcloud</span>
-      <span class="tag" onclick="selectTag('automation')">automation</span>
-    </div>
-    <p>The messy journey of getting OneDrive to work with my AI agent — and why I ended up using MultCloud as a workaround.</p>
+    <p class="categories">Categories: api, google, tutorial</p>
+    <p>A comprehensive guide to setting up Google APIs for your projects.</p>
   </div>
   
-  <div class="post" data-tags="tutorial,google-cloud,openclaw,automation">
-    <h3><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Setting Up Google APIs for Self-Hosted AI Agents</a></h3>
+  <div class="post">
+    <h3><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">The OneDrive and MultCloud Story</a></h3>
     <p class="date">February 18, 2026</p>
-    <p class="categories">Categories: tutorial, google-cloud, openclaw, automation</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('tutorial')">tutorial</span>
-      <span class="tag" onclick="selectTag('google-cloud')">google-cloud</span>
-      <span class="tag" onclick="selectTag('openclaw')">openclaw</span>
-      <span class="tag" onclick="selectTag('automation')">automation</span>
-    </div>
-    <p>How to give your AI agent access to Gmail, Calendar, and Drive — the complete OAuth 2.0 setup guide.</p>
+    <p class="categories">Categories: cloud, onedrive, multcloud</p>
+    <p>How I migrated my cloud storage using MultCloud.</p>
   </div>
   
-  <div class="post" data-tags="blog,tech">
+  <div class="post">
     <h3><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a></h3>
     <p class="date">February 17, 2026</p>
     <p class="categories">Categories: blog, tech</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('blog')">blog</span>
-      <span class="tag" onclick="selectTag('tech')">tech</span>
-    </div>
     <p>I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...</p>
   </div>
   
-  <div class="post" data-tags="intro,personal">
+  <div class="post">
     <h3><a href="/jingxiao-cai-blog/welcome.html">Welcome to My Blog</a></h3>
     <p class="date">February 17, 2026</p>
     <p class="categories">Categories: intro, personal</p>
-    <div class="tags">
-      <span class="tag" onclick="selectTag('intro')">intro</span>
-      <span class="tag" onclick="selectTag('personal')">personal</span>
-    </div>
     <p>After several years in industry, I'm starting to share my learnings, thoughts, and experiences...</p>
   </div>
   
   <hr>
   <p><a href="https://anyech.github.io/jingxiao-cai/">← Back to Personal Site</a></p>
-  
-  <script>
-    function filterPosts() {
-      const select = document.getElementById('tagFilter');
-      const tag = select.value;
-      const posts = document.querySelectorAll('.post');
-      
-      posts.forEach(post => {
-        if (tag === 'all') {
-          post.style.display = 'block';
-        } else if (post.dataset.tags.includes(tag)) {
-          post.style.display = 'block';
-        } else {
-          post.style.display = 'none';
-        }
-      });
-    }
-    
-    function selectTag(tag) {
-      document.getElementById('tagFilter').value = tag;
-      filterPosts();
-    }
-  </script>
 </body>
 </html>
