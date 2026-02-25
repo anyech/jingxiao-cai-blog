@@ -42,6 +42,9 @@
         .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
         .related-posts a { color: #0366d6; text-decoration: none; }
         .related-posts a:hover { text-decoration: underline; }
+        .comments-section { margin-top: 50px; padding-top: 30px; border-top: 2px solid #eee; }
+        .comments-section h2 { margin-bottom: 15px; }
+        .comments-section p { color: #666; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -306,6 +309,28 @@ python3 generate_oauth_url.py</code></pre>
             <h3>About the Author</h3>
             <p>Jingxiao Cai is a Principal Architect specializing in ML infrastructure. PhD in Radar Signal Processing from University of Oklahoma. Previously at Oracle building HeatWave ML infrastructure.</p>
             <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This guide was born from pain. After spending 6 hours fighting OAuth on my VPS, I created these scripts so you don't have to. May your tokens never expire unexpectedly.</p>
+        </div>
+
+        <!-- Comments Section (Giscus) -->
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <p>Have questions or feedback? Leave a comment below using your GitHub account.</p>
+            
+            <script src="https://giscus.app/client.js"
+                    data-repo="anyech/jingxiao-cai-blog"
+                    data-repo-id="R_kgDONvqQeg"
+                    data-category="General"
+                    data-category-id="DIC_kwDONvqQes4Cj8h_"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="bottom"
+                    data-theme="light"
+                    data-lang="en"
+                    crossorigin="anonymous"
+                    async>
+            </script>
         </div>
     </main>
 
