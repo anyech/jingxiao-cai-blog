@@ -80,7 +80,7 @@
   
   <div class="post">
     <h1>Setting Up Google APIs for Self-Hosted AI Agents</h1>
-    <p class="date">February 18, 2026 | Last updated: February 18, 2026</p>
+    <p class="date">February 18, 2026 | Last updated: February 25, 2026</p>
     <p class="categories">Categories: tutorial, google-cloud, openclaw, automation</p>
     
     <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Yes, an AI wrote part of this blog post with a little help from me.</em></p>
@@ -171,6 +171,7 @@
           <li><code>http://localhost</code></li>
           <li><code>http://localhost:8080</code></li>
           <li><code>http://127.0.0.1</code></li>
+          <li><code>https://developers.google.com/oauthplayground</code> <em>(for VPS/headless servers)</em></li>
         </ul>
         <p><em>(Add whatever redirect URIs your agent framework requires)</em></p>
       </li>
@@ -223,6 +224,17 @@
     
     <h3>Permission denied</h3>
     <p>Double-check that your email is added as a test user in the OAuth consent screen settings.</p>
+    
+    <h3>VPS or headless server?</h3>
+    <p>If your agent runs on a server without a browser (like a VPS), you can't use the standard <code>flow.run_local_server()</code> OAuth flow. Instead:</p>
+    <ol>
+      <li>Add <code>https://developers.google.com/oauthplayground</code> as a redirect URI</li>
+      <li>Generate an authorization URL with this redirect URI</li>
+      <li>Visit the URL in your local browser, authorize</li>
+      <li>You'll be redirected to OAuth Playground with a <code>?code=...</code> parameter</li>
+      <li>Exchange that code for a token via POST request</li>
+    </ol>
+    <p>See the <a href="https://github.com/anyech/openclaw-gmail-reader">openclaw-gmail-reader</a> repo for helper scripts that automate this.</p>
 
     <!-- FAQ Section for SEO -->
     <div class="faq">

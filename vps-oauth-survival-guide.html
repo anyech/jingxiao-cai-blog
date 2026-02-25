@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers. Learn how to set up Google APIs on VPS without a browser using OAuth Playground workaround. Includes working Python scripts.">
+    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth 2.0 Python">
+    <meta name="author" content="Jingxiao Cai">
+    
+    <title>VPS OAuth Survival Guide: Google APIs Without a Browser | Jingxiao Cai's Blog</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>VPS OAuth Survival Guide: Google APIs Without a Browser</h1>
+        <div class="meta">
+            <strong>February 25, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: tutorial, oauth, vps, devops, automation, google-cloud</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with Clawsistant, my OpenClaw AI agent. After spending 6 hours fighting OAuth on my VPS, I figured the least the AI could do was help me write about it.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Problem: OAuth on a Headless Server</h2>
+        <p>You've set up your Google Cloud project, enabled the APIs, and created OAuth credentials. But now you're stuck:</p>
+        <pre><code>Error: Unable to open browser automatically. Please visit this URL manually:
+https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
+        <p>Your AI agent runs on a VPS (Virtual Private Server) without a browser. The standard OAuth 2.0 flow requires clicking through Google's consent screen in a browser—but there's no browser on your server.</p>
+        <p><strong>This is the headless OAuth problem.</strong> And it's surprisingly common.</p>
+        <p>In this guide, I'll show you:</p>
+        <ul>
+            <li>✅ <strong>The OAuth Playground workaround</strong> (works today, no waiting)</li>
+            <li>✅ <strong>Two Python scripts</strong> to automate the flow (ready to use)</li>
+            <li>✅ <strong>Token lifecycle management</strong> (detect expiring tokens, auto-refresh)</li>
+            <li>✅ <strong>Security best practices</strong> (where to store credentials, rotation strategies)</li>
+            <li>✅ <strong>Troubleshooting flowchart</strong> (for when things go wrong)</li>
+        </ul>
+
+        <h2>Why Standard OAuth Fails on VPS</h2>
+        <p>The typical OAuth 2.0 flow for installed applications looks like this:</p>
+        <pre><code>1. App generates authorization URL
+2. App opens browser to that URL
+3. User clicks "Allow" on Google's consent screen
+4. Google redirects to localhost with authorization code
+5. App exchanges code for access token</code></pre>
+        <p><strong>Step 2 is the problem.</strong> On a headless VPS, there's no browser to open. The <code>run_local_server()</code> function from Google's OAuth library fails immediately.</p>
+        <p>You might think: "Can't I just SSH with X11 forwarding and run a browser?" Technically yes, but:</p>
+        <ul>
+            <li>❌ Requires X11 setup (complex, security concerns)</li>
+            <li>❌ Slow and laggy over SSH</li>
+            <li>❌ Doesn't work for automated deployments</li>
+            <li>❌ Breaks the "infrastructure as code" philosophy</li>
+        </ul>
+
+        <h2>Solution Overview: The OAuth Playground Workaround</h2>
+        <p>Google provides an official tool called the <strong>OAuth 2.0 Playground</strong> that can act as a redirect target for headless servers. Here's how it works:</p>
+        <pre><code>1. Generate auth URL with OAuth Playground as redirect URI
+2. Copy URL from VPS terminal to your LOCAL browser
+3. Click "Allow" on Google's consent screen (on your laptop)
+4. Google redirects to OAuth Playground with authorization code
+5. Copy the code from OAuth Playground back to VPS
+6. Exchange code for token via Python script</code></pre>
+        <p><strong>No browser needed on the VPS.</strong> All browser interaction happens on your local machine.</p>
+
+        <div class="note">
+            <strong>Prerequisites:</strong> Before you start, make sure you have:
+            <ul>
+                <li>✅ Google Cloud project with APIs enabled (Gmail, Calendar, Drive, etc.)</li>
+                <li>✅ OAuth 2.0 Client ID (Web application type)</li>
+                <li>✅ OAuth Playground added as an authorized redirect URI</li>
+                <li>✅ Python 3.8+ installed on your VPS</li>
+                <li>✅ SSH access to your VPS (for copying URLs/codes)</li>
+            </ul>
+            <p>If you haven't completed the Google Cloud setup, see <a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a> first.</p>
+        </div>
+
+        <h2>Step 1: Add OAuth Playground as Redirect URI</h2>
+        <p>Go to your Google Cloud Console:</p>
+        <ol>
+            <li>Navigate to <strong>APIs &amp; Services → Credentials</strong></li>
+            <li>Click on your OAuth 2.0 Client ID</li>
+            <li>Under <strong>Authorized redirect URIs</strong>, add:
+                <pre><code>https://developers.google.com/oauthplayground</code></pre>
+            </li>
+            <li>Click <strong>Save</strong></li>
+        </ol>
+        <p><strong>Important:</strong> This is the official Google OAuth Playground URL. Do NOT use any other redirect URI for this workflow.</p>
+
+        <h2>Step 2: Install Python Dependencies</h2>
+        <pre><code class="language-bash"># Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install Google Auth libraries + requests (for token exchange)
+pip install google-auth google-auth-oauthlib google-auth-httplib2 requests
+
+# Freeze dependencies (for reproducibility)
+pip freeze > requirements.txt</code></pre>
+
+        <h2>Step 3: Create the OAuth URL Generator Script</h2>
+        <p>Create a file called <code>generate_oauth_url.py</code> on your VPS:</p>
+        <pre><code>#!/usr/bin/env python3
+"""
+Generate OAuth 2.0 Authorization URL for headless servers.
+
+Usage:
+    python3 generate_oauth_url.py
+
+Output:
+    Prints a URL to copy/paste into your local browser.
+"""
+
+import json
+import sys
+from urllib.parse import urlencode
+
+# Load credentials (downloaded from Google Cloud Console)
+CLIENT_SECRETS_FILE = 'client_secrets.json'
+
+# OAuth Playground redirect URI (MUST match what's in Google Cloud Console)
+REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+
+# Scopes you want to request
+SCOPES = [
+    'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/gmail.send',
+    'https://www.googleapis.com/auth/calendar.readonly',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/spreadsheets.readonly',
+]
+
+def generate_auth_url():
+    """Generate the OAuth authorization URL."""
+    
+    # Load client credentials
+    with open(CLIENT_SECRETS_FILE, 'r') as f:
+        creds = json.load(f)
+    
+    client_id = creds['web']['client_id']
+    
+    # Build authorization URL parameters
+    params = {
+        'client_id': client_id,
+        'redirect_uri': REDIRECT_URI,
+        'response_type': 'code',
+        'access_type': 'offline',  # critical: get refresh token
+        'prompt': 'consent',  # critical: always get refresh token
+        'scope': ' '.join(SCOPES),
+    }
+    
+    # Generate URL
+    base_url = 'https://accounts.google.com/o/oauth2/auth'
+    auth_url = f"{base_url}?{urlencode(params)}"
+    
+    return auth_url
+
+def main():
+    print("=" * 70)
+    print("OAuth 2.0 Authorization URL Generator (Headless Server)")
+    print("=" * 70)
+    print()
+    
+    try:
+        auth_url = generate_auth_url()
+        
+        print("✅ Authorization URL generated successfully!")
+        print()
+        print("📋 INSTRUCTIONS:")
+        print("1. Copy the URL below")
+        print("2. Paste it into your LOCAL browser (on your laptop)")
+        print("3. Click 'Allow' on Google's consent screen")
+        print("4. You'll be redirected to OAuth Playground")
+        print("5. Copy the authorization code from OAuth Playground")
+        print("6. Run: python3 exchange_code.py &lt;YOUR_CODE&gt;")
+        print()
+        print("🔗 AUTHORIZATION URL:")
+        print("-" * 70)
+        print(auth_url)
+        print("-" * 70)
+        print()
+        
+    except FileNotFoundError:
+        print(f"❌ Error: {CLIENT_SECRETS_FILE} not found!")
+        print()
+        print("Download this file from Google Cloud Console:")
+        print("1. Go to APIs &amp; Services → Credentials")
+        print("2. Click download icon next to your OAuth 2.0 Client ID")
+        print(f"3. Save as {CLIENT_SECRETS_FILE} in this directory")
+        sys.exit(1)
+    
+    except KeyError as e:
+        print(f"❌ Error: Invalid credentials file format - missing {e}")
+        print()
+        print("Make sure you downloaded a 'Web application' credentials file.")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()</code></pre>
+        <p><strong>Make it executable:</strong></p>
+        <pre><code class="language-bash">chmod +x generate_oauth_url.py</code></pre>
+
+        <h2>Step 4: Create the Code Exchange Script</h2>
+        <p>Create a file called <code>exchange_code.py</code> on your VPS:</p>
+        <pre><code>#!/usr/bin/env python3
+"""
+Exchange OAuth 2.0 authorization code for access/refresh tokens.
+
+Usage:
+    python3 exchange_code.py &lt;AUTHORIZATION_CODE&gt;
+
+Example:
+    python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG
+"""
+
+import json
+import sys
+import os
+import requests
+from datetime import datetime
+
+# Configuration
+CLIENT_SECRETS_FILE = 'client_secrets.json'
+TOKEN_FILE = 'token.json'
+REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+
+def exchange_code_for_token(auth_code):
+    """Exchange authorization code for access and refresh tokens."""
+    
+    # Load client credentials
+    with open(CLIENT_SECRETS_FILE, 'r') as f:
+        creds = json.load(f)
+    
+    client_id = creds['web']['client_id']
+    client_secret = creds['web']['client_secret']
+    
+    # Token exchange endpoint
+    token_uri = 'https://oauth2.googleapis.com/token'
+    
+    # Prepare request
+    data = {
+        'code': auth_code,
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'redirect_uri': REDIRECT_URI,
+        'grant_type': 'authorization_code',
+    }
+    
+    # Make POST request
+    response = requests.post(token_uri, data=data)
+    response.raise_for_status()
+    
+    token_data = response.json()
+    
+    # Add metadata
+    token_data['token_uri'] = token_uri
+    token_data['client_id'] = client_id
+    token_data['client_secret'] = client_secret
+    token_data['scopes'] = token_data.get('scope', '').split(' ')
+    token_data['expiry'] = datetime.utcnow().timestamp() + token_data.get('expires_in', 3600)
+    token_data['generated_at'] = datetime.utcnow().isoformat() + 'Z'
+    
+    return token_data
+
+def save_token(token_data, filename=TOKEN_FILE):
+    """Save token to JSON file."""
+    with open(filename, 'w') as f:
+        json.dump(token_data, f, indent=2)
+    
+    # Set secure permissions (owner read/write only)
+    os.chmod(filename, 0o600)
+
+def main():
+    print("=" * 70)
+    print("OAuth 2.0 Code Exchange (Headless Server)")
+    print("=" * 70)
+    print()
+    
+    if len(sys.argv) != 2:
+        print("❌ Usage: python3 exchange_code.py &lt;AUTHORIZATION_CODE&gt;")
+        print()
+        print("Example:")
+        print("  python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG")
+        print()
+        print("Get the authorization code from OAuth Playground after authorizing.")
+        sys.exit(1)
+    
+    auth_code = sys.argv[1]
+    
+    try:
+        print("🔄 Exchanging authorization code for tokens...")
+        token_data = exchange_code_for_token(auth_code)
+        
+        print("✅ Token exchange successful!")
+        print()
+        print("📦 Token details:")
+        print(f"   Access token: {token_data['access_token'][:20]}...")
+        print(f"   Refresh token: {token_data['refresh_token'][:20]}...")
+        print(f"   Expires in: {token_data['expires_in']} seconds")
+        print(f"   Scopes: {len(token_data['scopes'])} permissions granted")
+        print()
+        
+        # Save token
+        save_token(token_data)
+        print(f"💾 Tokens saved to: {TOKEN_FILE}")
+        print(f"   (permissions: 600 - owner read/write only)")
+        print()
+        
+        print("🎉 SUCCESS! Your AI agent can now use Google APIs.")
+        print()
+        print("📋 NEXT STEPS:")
+        print("1. Move token.json to your agent's credentials directory")
+        print("2. Configure your agent to use this token file")
+        print("3. Test API access (e.g., read emails, check calendar)")
+        print()
+        print("⚠️  IMPORTANT:")
+        print("- Never commit token.json to git (add to .gitignore)")
+        print("- Refresh tokens last 6 months for published apps")
+        print("- Access tokens expire in 1 hour (auto-refresh with refresh token)")
+        print()
+        
+    except requests.exceptions.HTTPError as e:
+        print(f"❌ HTTP Error: {e}")
+        print()
+        print("Common causes:")
+        print("- Authorization code expired (codes valid for 10 minutes)")
+        print("- Code already used (codes are single-use)")
+        print("- Client ID/secret mismatch")
+        print()
+        print("Solution: Generate a new authorization code and try again.")
+        sys.exit(1)
+    
+    except FileNotFoundError:
+        print(f"❌ Error: {CLIENT_SECRETS_FILE} not found!")
+        print()
+        print("Run python3 generate_oauth_url.py first to verify credentials.")
+        sys.exit(1)
+    
+    except json.JSONDecodeError:
+        print(f"❌ Error: Invalid credentials file format")
+        print()
+        print("Make sure client_secrets.json is valid JSON.")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+        <h2>Step 5: Run the OAuth Flow</h2>
+        <p>Now let's put it all together:</p>
+        
+        <h3>5.1 Generate Authorization URL</h3>
+        <pre><code class="language-bash">cd /path/to/oauth-scripts
+source venv/bin/activate
+python3 generate_oauth_url.py</code></pre>
+
+        <h3>5.2 Authorize in Your Local Browser</h3>
+        <ol>
+            <li><strong>Copy the URL</strong> from the VPS terminal</li>
+            <li><strong>Paste into your local browser</strong> (Chrome, Firefox, Safari on your laptop)</li>
+            <li><strong>Click "Allow"</strong> on Google's consent screen</li>
+            <li><strong>You'll be redirected</strong> to OAuth Playground</li>
+        </ol>
+
+        <h3>5.3 Copy Authorization Code</h3>
+        <p>On the OAuth Playground page, you'll see:</p>
+        <pre><code>Authorization code: 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
+        <p><strong>Copy this code</strong> (the long string after <code>code=</code>).</p>
+
+        <h3>5.4 Exchange Code for Tokens</h3>
+        <pre><code class="language-bash">python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
+
+        <h2>Security Best Practices</h2>
+        
+        <h3>1. Where to Store Credentials</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Contains</th>
+                    <th>Permissions</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>client_secrets.json</code></td>
+                    <td>Client ID + Secret</td>
+                    <td>600 (owner rw)</td>
+                    <td><code>/etc/myapp/</code> or <code>~/.config/myapp/</code></td>
+                </tr>
+                <tr>
+                    <td><code>token.json</code></td>
+                    <td>Access + Refresh tokens</td>
+                    <td>600 (owner rw)</td>
+                    <td>Same as above</td>
+                </tr>
+                <tr>
+                    <td><code>.env</code></td>
+                    <td>API keys, paths</td>
+                    <td>600 (owner rw)</td>
+                    <td>App root directory</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="warning">
+            <strong>Never:</strong>
+            <ul>
+                <li>❌ Commit to git (add to <code>.gitignore</code>)</li>
+                <li>❌ Store in world-readable directories</li>
+                <li>❌ Log token values (redact in logs)</li>
+            </ul>
+        </div>
+
+        <h2>Troubleshooting</h2>
+        <div class="note">
+            <strong>Note:</strong> If the flowchart below doesn't render well, view the <a href="https://github.com/anyech/jingxiao-cai-blog/blob/main/vps-oauth-survival-guide.md">source on GitHub</a>.
+        </div>
+        <pre><code>OAuth Flow Fails
+    │
+    ├─▶ "client_secrets.json not found"
+    │   └─▶ Download from Google Cloud Console
+    │       (APIs &amp; Services → Credentials → Download)
+    │
+    ├─▶ "redirect_uri_mismatch"
+    │   └─▶ Add https://developers.google.com/oauthplayground
+    │       to Authorized redirect URIs in Google Cloud Console
+    │
+    ├─▶ "Authorization code expired"
+    │   └─▶ Codes valid for 10 minutes
+    │       Generate new URL and re-authorize
+    │
+    ├─▶ "Code already used"
+    │   └─▶ Authorization codes are single-use
+    │       Generate new URL and re-authorize
+    │
+    ├─▶ "App not verified" warning
+    │   └─▶ Click Advanced → Go to (unsafe)
+    │       This is normal for personal projects
+    │
+    └─▶ "Token expired"
+        └─▶ Access tokens expire in 1 hour (normal)
+            Use refresh token to get new access token
+            If refresh token expired (6 months), re-authorize</code></pre>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></li>
+                <li><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></li>
+                <li><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant with Gmail</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect specializing in ML infrastructure. PhD in Radar Signal Processing from University of Oklahoma. Previously at Oracle building HeatWave ML infrastructure.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This guide was born from pain. After spending 6 hours fighting OAuth on my VPS, I created these scripts so you don't have to. May your tokens never expire unexpectedly.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this helpful? Share it with someone else fighting headless OAuth.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
