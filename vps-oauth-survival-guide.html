@@ -133,259 +133,69 @@ pip install google-auth google-auth-oauthlib google-auth-httplib2 requests
 
 # Freeze dependencies (for reproducibility)
 pip freeze > requirements.txt</code></pre>
+        
+        <div class="note">
+            <strong>📦 Complete Scripts Available on GitHub</strong><br>
+            Instead of copying code from this page, clone the complete repository with both scripts, README, and requirements.txt:<br>
+            <a href="https://github.com/anyech/openclaw-gmail-reader/tree/main/oauth" target="_blank">github.com/anyech/openclaw-gmail-reader/oauth</a>
+        </div>
 
         <h2>Step 3: Create the OAuth URL Generator Script</h2>
-        <p>Create a file called <code>generate_oauth_url.py</code> on your VPS:</p>
-        <pre><code>#!/usr/bin/env python3
-"""
-Generate OAuth 2.0 Authorization URL for headless servers.
-
-Usage:
-    python3 generate_oauth_url.py
-
-Output:
-    Prints a URL to copy/paste into your local browser.
-"""
-
-import json
-import sys
-from urllib.parse import urlencode
-
-# Load credentials (downloaded from Google Cloud Console)
-CLIENT_SECRETS_FILE = 'client_secrets.json'
-
-# OAuth Playground redirect URI (MUST match what's in Google Cloud Console)
-REDIRECT_URI = 'https://developers.google.com/oauthplayground'
-
-# Scopes you want to request
-SCOPES = [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.send',
-    'https://www.googleapis.com/auth/calendar.readonly',
-    'https://www.googleapis.com/auth/drive.readonly',
-    'https://www.googleapis.com/auth/spreadsheets.readonly',
-]
-
-def generate_auth_url():
-    """Generate the OAuth authorization URL."""
-    
-    # Load client credentials
-    with open(CLIENT_SECRETS_FILE, 'r') as f:
-        creds = json.load(f)
-    
-    client_id = creds['web']['client_id']
-    
-    # Build authorization URL parameters
-    params = {
-        'client_id': client_id,
-        'redirect_uri': REDIRECT_URI,
-        'response_type': 'code',
-        'access_type': 'offline',  # critical: get refresh token
-        'prompt': 'consent',  # critical: always get refresh token
-        'scope': ' '.join(SCOPES),
-    }
-    
-    # Generate URL
-    base_url = 'https://accounts.google.com/o/oauth2/auth'
-    auth_url = f"{base_url}?{urlencode(params)}"
-    
-    return auth_url
-
-def main():
-    print("=" * 70)
-    print("OAuth 2.0 Authorization URL Generator (Headless Server)")
-    print("=" * 70)
-    print()
-    
-    try:
-        auth_url = generate_auth_url()
+        <p>The full script is available on <a href="https://github.com/anyech/openclaw-gmail-reader/tree/main/oauth" target="_blank">GitHub</a>. Here are the key parts:</p>
         
-        print("✅ Authorization URL generated successfully!")
-        print()
-        print("📋 INSTRUCTIONS:")
-        print("1. Copy the URL below")
-        print("2. Paste it into your LOCAL browser (on your laptop)")
-        print("3. Click 'Allow' on Google's consent screen")
-        print("4. You'll be redirected to OAuth Playground")
-        print("5. Copy the authorization code from OAuth Playground")
-        print("6. Run: python3 exchange_code.py &lt;YOUR_CODE&gt;")
-        print()
-        print("🔗 AUTHORIZATION URL:")
-        print("-" * 70)
-        print(auth_url)
-        print("-" * 70)
-        print()
-        
-    except FileNotFoundError:
-        print(f"❌ Error: {CLIENT_SECRETS_FILE} not found!")
-        print()
-        print("Download this file from Google Cloud Console:")
-        print("1. Go to APIs &amp; Services → Credentials")
-        print("2. Click download icon next to your OAuth 2.0 Client ID")
-        print(f"3. Save as {CLIENT_SECRETS_FILE} in this directory")
-        sys.exit(1)
-    
-    except KeyError as e:
-        print(f"❌ Error: Invalid credentials file format - missing {e}")
-        print()
-        print("Make sure you downloaded a 'Web application' credentials file.")
-        sys.exit(1)
+        <pre><code># Key parameters for headless OAuth
+params = {
+    'client_id': client_id,
+    'redirect_uri': 'https://developers.google.com/oauthplayground',
+    'response_type': 'code',
+    'access_type': 'offline',  # critical: get refresh token
+    'prompt': 'consent',  # critical: always get refresh token
+    'scope': ' '.join(SCOPES),
+}
 
-if __name__ == '__main__':
-    main()</code></pre>
-        <p><strong>Make it executable:</strong></p>
-        <pre><code class="language-bash">chmod +x generate_oauth_url.py</code></pre>
+# Generate URL
+base_url = 'https://accounts.google.com/o/oauth2/auth'
+auth_url = f"{base_url}?{urlencode(params)}"</code></pre>
+        
+        <p><strong>Full script:</strong> <a href="https://github.com/anyech/openclaw-gmail-reader/blob/main/oauth/generate_oauth_url.py" target="_blank">generate_oauth_url.py</a> on GitHub</p>
 
         <h2>Step 4: Create the Code Exchange Script</h2>
-        <p>Create a file called <code>exchange_code.py</code> on your VPS:</p>
-        <pre><code>#!/usr/bin/env python3
-"""
-Exchange OAuth 2.0 authorization code for access/refresh tokens.
-
-Usage:
-    python3 exchange_code.py &lt;AUTHORIZATION_CODE&gt;
-
-Example:
-    python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG
-"""
-
-import json
-import sys
-import os
-import requests
-from datetime import datetime
-
-# Configuration
-CLIENT_SECRETS_FILE = 'client_secrets.json'
-TOKEN_FILE = 'token.json'
-REDIRECT_URI = 'https://developers.google.com/oauthplayground'
-
-def exchange_code_for_token(auth_code):
-    """Exchange authorization code for access and refresh tokens."""
-    
-    # Load client credentials
-    with open(CLIENT_SECRETS_FILE, 'r') as f:
-        creds = json.load(f)
-    
-    client_id = creds['web']['client_id']
-    client_secret = creds['web']['client_secret']
-    
-    # Token exchange endpoint
-    token_uri = 'https://oauth2.googleapis.com/token'
-    
-    # Prepare request
-    data = {
-        'code': auth_code,
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'redirect_uri': REDIRECT_URI,
-        'grant_type': 'authorization_code',
-    }
-    
-    # Make POST request
-    response = requests.post(token_uri, data=data)
-    response.raise_for_status()
-    
-    token_data = response.json()
-    
-    # Add metadata
-    token_data['token_uri'] = token_uri
-    token_data['client_id'] = client_id
-    token_data['client_secret'] = client_secret
-    token_data['scopes'] = token_data.get('scope', '').split(' ')
-    token_data['expiry'] = datetime.utcnow().timestamp() + token_data.get('expires_in', 3600)
-    token_data['generated_at'] = datetime.utcnow().isoformat() + 'Z'
-    
-    return token_data
-
-def save_token(token_data, filename=TOKEN_FILE):
-    """Save token to JSON file."""
-    with open(filename, 'w') as f:
-        json.dump(token_data, f, indent=2)
-    
-    # Set secure permissions (owner read/write only)
-    os.chmod(filename, 0o600)
-
-def main():
-    print("=" * 70)
-    print("OAuth 2.0 Code Exchange (Headless Server)")
-    print("=" * 70)
-    print()
-    
-    if len(sys.argv) != 2:
-        print("❌ Usage: python3 exchange_code.py &lt;AUTHORIZATION_CODE&gt;")
-        print()
-        print("Example:")
-        print("  python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG")
-        print()
-        print("Get the authorization code from OAuth Playground after authorizing.")
-        sys.exit(1)
-    
-    auth_code = sys.argv[1]
-    
-    try:
-        print("🔄 Exchanging authorization code for tokens...")
-        token_data = exchange_code_for_token(auth_code)
+        <p>The full script is available on <a href="https://github.com/anyech/openclaw-gmail-reader/tree/main/oauth" target="_blank">GitHub</a>. Here are the key parts:</p>
         
-        print("✅ Token exchange successful!")
-        print()
-        print("📦 Token details:")
-        print(f"   Access token: {token_data['access_token'][:20]}...")
-        print(f"   Refresh token: {token_data['refresh_token'][:20]}...")
-        print(f"   Expires in: {token_data['expires_in']} seconds")
-        print(f"   Scopes: {len(token_data['scopes'])} permissions granted")
-        print()
-        
-        # Save token
-        save_token(token_data)
-        print(f"💾 Tokens saved to: {TOKEN_FILE}")
-        print(f"   (permissions: 600 - owner read/write only)")
-        print()
-        
-        print("🎉 SUCCESS! Your AI agent can now use Google APIs.")
-        print()
-        print("📋 NEXT STEPS:")
-        print("1. Move token.json to your agent's credentials directory")
-        print("2. Configure your agent to use this token file")
-        print("3. Test API access (e.g., read emails, check calendar)")
-        print()
-        print("⚠️  IMPORTANT:")
-        print("- Never commit token.json to git (add to .gitignore)")
-        print("- Refresh tokens last 6 months for published apps")
-        print("- Access tokens expire in 1 hour (auto-refresh with refresh token)")
-        print()
-        
-    except requests.exceptions.HTTPError as e:
-        print(f"❌ HTTP Error: {e}")
-        print()
-        print("Common causes:")
-        print("- Authorization code expired (codes valid for 10 minutes)")
-        print("- Code already used (codes are single-use)")
-        print("- Client ID/secret mismatch")
-        print()
-        print("Solution: Generate a new authorization code and try again.")
-        sys.exit(1)
-    
-    except FileNotFoundError:
-        print(f"❌ Error: {CLIENT_SECRETS_FILE} not found!")
-        print()
-        print("Run python3 generate_oauth_url.py first to verify credentials.")
-        sys.exit(1)
-    
-    except json.JSONDecodeError:
-        print(f"❌ Error: Invalid credentials file format")
-        print()
-        print("Make sure client_secrets.json is valid JSON.")
-        sys.exit(1)
+        <pre><code># Token exchange endpoint
+token_uri = 'https://oauth2.googleapis.com/token'
 
-if __name__ == '__main__':
-    main()</code></pre>
+# Prepare request
+data = {
+    'code': auth_code,
+    'client_id': client_id,
+    'client_secret': client_secret,
+    'redirect_uri': REDIRECT_URI,
+    'grant_type': 'authorization_code',
+}
+
+# Make POST request
+response = requests.post(token_uri, data=data)
+response.raise_for_status()
+
+token_data = response.json()
+
+# Add metadata and save with secure permissions
+token_data['expiry'] = datetime.utcnow().timestamp() + token_data.get('expires_in', 3600)
+os.chmod(filename, 0o600)  # Owner read/write only</code></pre>
+        
+        <p><strong>Full script:</strong> <a href="https://github.com/anyech/openclaw-gmail-reader/blob/main/oauth/exchange_code.py" target="_blank">exchange_code.py</a> on GitHub</p>
+        
+        <div class="success">
+            <strong>💡 Pro Tip:</strong> Clone the entire repository to get both scripts, README with full instructions, and requirements.txt:<br>
+            <code>git clone https://github.com/anyech/openclaw-gmail-reader.git</code>
+        </div>
 
         <h2>Step 5: Run the OAuth Flow</h2>
-        <p>Now let's put it all together:</p>
+        <p>Now let's put it all together. If you cloned the repository:</p>
         
         <h3>5.1 Generate Authorization URL</h3>
-        <pre><code class="language-bash">cd /path/to/oauth-scripts
+        <pre><code class="language-bash">cd openclaw-gmail-reader/oauth
 source venv/bin/activate
 python3 generate_oauth_url.py</code></pre>
 
@@ -404,6 +214,10 @@ python3 generate_oauth_url.py</code></pre>
 
         <h3>5.4 Exchange Code for Tokens</h3>
         <pre><code class="language-bash">python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
+        
+        <div class="success">
+            <strong>✅ Success!</strong> Your <code>token.json</code> file is now ready to use with your AI agent or any Google API application.
+        </div>
 
         <h2>Security Best Practices</h2>
         
