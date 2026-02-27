@@ -226,6 +226,38 @@
     <p>Double-check that your email is added as a test user in the OAuth consent screen settings.</p>
     
     <h3>VPS or headless server?</h3>
+    <h4>Complete Headless OAuth Flow (Step-by-Step)</h4>
+    <p>For VPS deployments without any browser access, use the <code>manual_oauth.py</code> script from the gmail-reader repo:</p>
+    <pre><code># On your VPS:
+cd ~/openclaw-gmail-reader/
+python3 manual_oauth.py
+
+# This will output an authorization URL
+# Copy it to your local browser, authorize, and paste the code back</code></pre>
+    <p>The script handles token exchange and storage automatically. Token refresh is handled by the Google client library (tokens last ~6 months for published apps).</p>
+
+    <h3>❌ Error: invalid_scope</h3>
+    <p><strong>Symptom:</strong> OAuth fails with <code>invalid_scope</code> or <code>Access blocked: This app's request is invalid</code></p>
+    <p><strong>Cause:</strong> The scopes in your authorization URL don't match what's configured in Google Cloud Console.</p>
+    <p><strong>Fix:</strong></p>
+    <ol>
+      <li>Go to Google Cloud Console → APIs & Services → OAuth consent screen</li>
+      <li>Click "Add or remove scopes"</li>
+      <li>Ensure ALL these scopes are added:
+        <ul>
+          <li><code>https://www.googleapis.com/auth/gmail.readonly</code></li>
+          <li><code>https://www.googleapis.com/auth/gmail.send</code></li>
+          <li><code>https://www.googleapis.com/auth/calendar.readonly</code></li>
+          <li><code>https://www.googleapis.com/auth/drive.readonly</code></li>
+          <li><code>https://www.googleapis.com/auth/spreadsheets.readonly</code></li>
+        </ul>
+      </li>
+      <li>Save and wait 5-10 minutes for changes to propagate</li>
+      <li>Re-run the OAuth flow</li>
+    </ol>
+    <p><strong>Pro tip:</strong> If you're using the OAuth Playground method, make sure the scopes in your authorization URL exactly match what's in the console (including <code>https://</code> prefix).</p>
+
+
     <p>If your agent runs on a server without a browser (like a VPS), you can't use the standard <code>flow.run_local_server()</code> OAuth flow. Instead:</p>
     <ol>
       <li>Add <code>https://developers.google.com/oauthplayground</code> as a redirect URI</li>
