@@ -36,7 +36,7 @@
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-21",
-    "dateModified": "2026-02-21",
+    "dateModified": "2026-03-02",
     "url": "https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html",
     "publisher": {
       "@type": "Person",
@@ -135,6 +135,18 @@
       padding: 15px;
       margin: 20px 0;
     }
+    .success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .update-banner {
+      background: #d1ecf1;
+      border-left: 4px solid #0c5460;
+      padding: 15px;
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
@@ -142,8 +154,13 @@
   
   <article>
     <h1>Building a Personal AI Assistant: From Gmail to Morning Memos</h1>
-    <p class="date">Published: February 21, 2026 | By Jingxiao Cai</p>
+    <p class="date">Published: February 21, 2026 | Last Updated: March 2, 2026 | By Jingxiao Cai</p>
     <p><em>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</em></p>
+    
+    <div class="update-banner">
+      <strong>📝 Update (March 2026):</strong> Added API status monitoring section with MiniMax quota tracking and Google Drive live scan integration. See new section below.
+    </div>
+    
     <div class="tags">
       <span class="tag">AI Assistant</span>
       <span class="tag">Gmail Automation</span>
@@ -171,32 +188,32 @@
     <p>Here's what the system looks like:</p>
     <pre><code>┌─────────────────────────────────────────────────────────┐
 │                    Your Cloud VM                            │
-│  ┌─────────────────────────────────────────────────────┐ │
-│  │                   OpenClaw                            │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │ │
-│  │  │ Gmail API   │  │ Drive API   │  │Calendar API │  │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘  │ │
-│  │         │                │                │           │ │
-│  │         └────────────────┼────────────────┘           │ │
-│  │                          ▼                            │ │
-│  │              ┌─────────────────────┐                  │ │
-│  │              │   AI Processing     │                  │ │
-│  │              │   (Priority + Summ) │                  │ │
-│  │              └─────────────────────┘                  │ │
-│  │                          │                            │ │
-│  │                          ▼                            │ │
-│  │              ┌─────────────────────┐                  │ │
-│  │              │  Morning Memo Gen  │                  │ │
-│  │              └─────────────────────┘                  │ │
-│  └─────────────────────────────────────────────────────┘ │
-│                          │                                │
-│                          ▼                                │
-│              ┌─────────────────────┐                     │
-│              │  Telegram/WhatsApp │                     │
-│              │     Delivery        │                     │
-│              └─────────────────────┘                     │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                   OpenClaw                            │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │   │
+│  │  │ Gmail API   │  │ Drive API   │  │Calendar API │  │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  │   │
+│  │         │                │                │           │   │
+│  │         └────────────────┼────────────────┘           │   │
+│  │                          ▼                            │   │
+│  │              ┌─────────────────────┐                  │   │
+│  │              │   AI Processing     │                  │   │
+│  │              │   (Priority + Summ)│                  │   │
+│  │              └─────────────────────┘                  │   │
+│  │                          │                            │   │
+│  │                          ▼                            │   │
+│  │              ┌─────────────────────┐                  │   │
+│  │              │  Morning Memo Gen  │                  │   │
+│  │              └─────────────────────┘                  │   │
+│  └───────────────────────────────────────────────────────┘   │
+│                          │                                  │
+│                          ▼                                  │
+│              ┌─────────────────────┐                       │
+│              │  Telegram/WhatsApp │                       │
+│              │     Delivery        │                       │
+│              └─────────────────────┘                       │
 └─────────────────────────────────────────────────────────┘</code></pre>
-    
+
     <h2 id="prerequisites">Prerequisites</h2>
     <ul>
       <li>A cloud VM (AWS, GCP, Oracle Cloud, etc.) — I use Oracle Cloud free tier</li>
@@ -309,6 +326,90 @@ QUICK ACTIONS:
 1. Confirm parent-teacher conference attendance
 2. Review Q1 project timeline</code></pre>
     
+    <h2 id="api-status">API Status Monitoring (Updated March 2026)</h2>
+    <p>The morning memo now includes real-time API status for all connected services. This helps diagnose issues before they become problems.</p>
+    
+    <h3>Current Status Display</h3>
+    <pre><code>🔌 API Status
+├── Gmail: ✅ Working (last check: 6:02 AM PST)
+├── Calendar: ✅ Working (5 events today)
+├── Drive: ✅ Working (460 files, 2 new since yesterday)
+└── MiniMax: ✅ Working (78% quota used - 3,510/4,500 calls)</code></pre>
+
+    <h3>MiniMax Quota Monitoring</h3>
+    <div class="note">
+      <strong>📊 Why Monitor MiniMax?</strong> MiniMax is my primary fallback model. If quota runs out, the morning memo falls back to slower models, potentially causing delays.
+    </div>
+    
+    <p><strong>My Setup:</strong></p>
+    <ul>
+      <li><strong>Provider:</strong> MiniMax Direct (separate $20/mo subscription)</li>
+      <li><strong>Quota:</strong> 4,500 model calls per 5-hour window</li>
+      <li><strong>Alerts:</strong> ⚠️ Warning at 80% (>3,600 calls), 🚨 Critical at 95% (>4,275 calls)</li>
+    </ul>
+    
+    <p><strong>Automated Cron Monitoring:</strong></p>
+    <pre><code># Daily quota check at 9 AM PST
+0 17 * * * cd ~/.openclaw && python3 scripts/check_minimax_quota.py</code></pre>
+    
+    <p>The check script:</p>
+    <ul>
+      <li>Fetches current quota from MiniMax API</li>
+      <li>Logs usage to memory file</li>
+      <li>Alerts if approaching limit</li>
+      <li>Reports in morning memo for transparency</li>
+    </ul>
+
+    <h3>Google Drive Live Scan</h3>
+    <div class="success">
+      <strong>✅ Real-Time Drive Monitoring:</strong> Morning memo queries Google Drive live on each run — no stale cache. Can detect new files within the last 24 hours.
+    </div>
+    
+    <p><strong>Current Capabilities:</strong></p>
+    <ul>
+      <li><strong>File count:</strong> Total files in Drive (currently ~460)</li>
+      <li><strong>New files:</strong> Detected since last scan</li>
+      <li><strong>Change detection:</strong> Monitors specific folders for updates</li>
+    </ul>
+    
+    <p><strong>Sample Drive Section:</strong></p>
+    <pre><code>📁 Google Drive Updates
+├── Total files: 460
+├── New since yesterday: 2
+│   ├── Resume_Draft_2026.pdf (Documents/)
+│   └── Project_Notes.docx (Work/)
+└── ⚠️ Action needed: Review new resume draft</code></pre>
+
+    <h3>Troubleshooting: Calendar/Drive 403 Errors</h3>
+    <div class="warning">
+      <strong>⚠️ Common Issue:</strong> Calendar and Drive APIs may return 403 "insufficient scopes" even after re-authorization.
+    </div>
+    
+    <p><strong>Root Cause:</strong> The OAuth refresh token may have all scopes, but <code>token.json</code> has stale scope metadata.</p>
+    
+    <p><strong>The Fix (Don't Re-authorize!):</strong></p>
+    <pre><code class="language-bash"># Step 1: Check current token scopes
+cat credentials/token.json | python3 -m json.tool | grep scopes
+
+# Step 2: Update token.json with all 5 scopes
+python3 -c "
+import json
+with open('credentials/token.json', 'r') as f:
+    t = json.load(f)
+t['scopes'] = [
+    'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/gmail.send', 
+    'https://www.googleapis.com/auth/calendar.readonly',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/spreadsheets.readonly'
+]
+with open('credentials/token.json', 'w') as f:
+    json.dump(t, f, indent=2)
+print('✅ Scopes updated')
+"</code></pre>
+    
+    <p><strong>Key Lesson:</strong> Refresh token retains all scopes permanently; <code>token.json</code> scope list can become stale.</p>
+
     <h2 id="privacy">Privacy Considerations</h2>
     <div class="warning">
       <strong>Important:</strong> This setup gives an AI assistant access to your emails. Consider:

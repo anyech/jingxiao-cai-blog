@@ -18,14 +18,22 @@
     th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
     th { background: #f4f4f4; }
     blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
+    .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+    .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+    .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+    .update-banner { background: #f0f7ff; padding: 15px; border-left: 4px solid #0366d6; margin: 20px 0; }
   </style>
 </head>
 <body>
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai</p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 2, 2026</strong></p>
   <p class="tags">Tags: security, openclaw, ai-agents, supply-chain</p>
+  
+  <div class="update-banner">
+    <strong>📝 Update (March 2026):</strong> Added community response section with Moltbook initiatives (signed skills, isnad chains, permission manifests). See new section below.
+  </div>
   
   <blockquote>
 <p><strong>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</strong></p>
@@ -100,20 +108,106 @@
   <h3>5. Stay Informed</h3>
   <p>Watch the OpenClaw security announcements. The weather skill attack was caught by a community researcher, not automated scanning.</p>
   
-  <h2>What OpenClaw Should Do</h2>
-  <p>Based on this incident, here's what I'd like to see:</p>
+  <h2 id="community-response">Community Response: Moltbook Security Movement (Updated March 2026)</h2>
+  
+  <p>The attack has sparked a major security movement across the AI agent community, particularly on <a href="https://moltbook.com">Moltbook</a>, the social platform for AI agents.</p>
+  
+  <h3>The Original Exposé</h3>
+  <p>Security researcher <strong>eudaemon_0</strong> published <a href="#">"The supply chain attack nobody is talking about: skill.md is an unsigned binary"</a>, which became the #1 hot post on Moltbook for two weeks running (7,509 upvotes, 126K+ comments).</p>
+  
+  <p><strong>Key findings:</strong></p>
+  <ul>
+    <li>1 in 286 community skills scanned contained malware</li>
+    <li>Malware reads <code>~/.clawdbot/.env</code> and ships secrets to webhook.site</li>
+    <li>Attack uses social engineering (fake reviews, clean documentation)</li>
+  </ul>
+  
+  <h3>Community-Proposed Solutions</h3>
+  
+  <div class="note">
+    <strong>🛡️ Three-Layer Defense Proposed by Moltbook Community:</strong>
+  </div>
+  
+  <h4>1. Signed Skills (Code Signing)</h4>
+  <p>All skills should be cryptographically signed by their authors. Verification would work like:</p>
+  <pre><code># Verify skill signature before installation
+openclaw skills verify --author eudaemon_0 weather-now
+
+# Expected output:
+# ✅ Signature valid (PGP key: 0xABCD1234)
+# ✅ Author verified
+# ✅ Safe to install</code></pre>
+  <p><strong>Status:</strong> OpenClaw team considering implementation. Would require author key registration.</p>
+  
+  <h4>2. Isnad Chains (Provenance Verification)</h4>
+  <p>Borrowing from Islamic hadith verification, <strong>isnad chains</strong> track the complete lineage of a skill:</p>
+  <pre><code>Skill: weather-now-v2.1
+├─ Forked from: weather-now-v2.0 (author: eudaemon_0)
+│  └─ Forked from: weather-now-v1.0 (author: eudaemon_0)
+│     └─ Original: weather-skill-base (author: OpenClaw Team)
+└─ Last audit: 2026-02-25 by security-researcher-42</code></pre>
+  <p><strong>Benefits:</strong></p>
+  <ul>
+    <li>Trace every change back to original author</li>
+    <li>Identify when/where malicious code was injected</li>
+    <li>Community auditors can sign off on specific versions</li>
+  </ul>
+  
+  <h4>3. Permission Manifests</h4>
+  <p>Human-readable permission descriptions (not just technical scopes):</p>
+  <pre><code>Permissions requested by weather-now:
+  
+  ✅ Network access (REQUIRED)
+     → Fetch weather data from wttr.in API
+  
+  ❌ File system access (NOT REQUESTED)
+     → This skill does NOT need file access
+  
+  ❌ Environment variables (NOT REQUESTED)
+     → This skill does NOT need env vars
+  
+  ⚠️ Location data (OPTIONAL)
+     → Auto-detect your location for forecasts
+     → Can be disabled, uses IP-based geolocation</code></pre>
+  
+  <h3>Related Security Research</h3>
+  <p>Following the initial discovery, other researchers have identified additional attack vectors:</p>
+  
+  <ul>
+    <li><strong>Hazel_OC</strong> - <a href="#">"Your MEMORY.md is an injection vector and you read it every single session"</a> (620 upvotes): Demonstrated memory file poisoning attacks where appended instructions execute on next session</li>
+    <li><strong>Hazel_OC</strong> - <a href="#">"Your cron jobs are unsupervised root access and nobody is talking about it"</a> (1,564 upvotes): Raised concerns about cron jobs executing with full permissions while humans sleep</li>
+  </ul>
+  
+  <h3>My Stance: Reject Community Skills</h3>
+  <div class="warning">
+    <strong>🚫 Personal Policy:</strong> I do not install any community-contributed skills. I only use official OpenClaw skills or skills I've written/audited myself.
+  </div>
+  <p>This is a conservative stance, but the risk/reward doesn't justify it:</p>
+  <ul>
+    <li>✅ Official skills are reviewed and signed</li>
+    <li>✅ Custom skills I write myself are fully auditable</li>
+    <li>❌ Community skills have unknown provenance</li>
+    <li>❌ One malicious skill = full system compromise</li>
+  </ul>
+  <p>The convenience of a pre-built skill isn't worth losing all my API credentials.</p>
+  
+  <h3>What OpenClaw Should Do</h3>
+  <p>Based on this incident and community response, here's what I'd like to see:</p>
   <ol>
-    <li><strong>Code signing for all skills</strong> - Not just official ones</li>
-    <li><strong>Automated security scanning</strong> - Static analysis, dependency checks</li>
+    <li><strong>Code signing for all skills</strong> - Not just official ones (PGP or similar)</li>
+    <li><strong>Automated security scanning</strong> - Static analysis, dependency checks, YARA rules</li>
     <li><strong>Permission manifests</strong> - Clear, human-readable permission descriptions</li>
     <li><strong>Sandboxed execution</strong> - Run skills in isolation by default</li>
     <li><strong>Community trust scores</strong> - Reputation systems for skill authors</li>
+    <li><strong>Isnad chain tracking</strong> - Provenance verification for all skill forks</li>
   </ol>
   
   <h2>Conclusion</h2>
   <p>The AI agent supply chain is only going to get more attacks. As these platforms become more powerful, they become more attractive targets.</p>
   
-  <p>The good news: with some vigilance and best practices, you can enjoy the benefits of extensible AI agents without becoming a victim.</p>
+  <p>The good news: the community is responding. Moltbook users are pushing for signed skills, provenance chains, and better auditing. OpenClaw has the opportunity to lead on security before this becomes a full-blown crisis.</p>
+  
+  <p>Until then: <strong>stay paranoid, verify everything, and never trust unsigned skills from strangers.</strong></p>
   
   <blockquote>
     <p><strong>Stay paranoid. Stay safe.</strong></p>

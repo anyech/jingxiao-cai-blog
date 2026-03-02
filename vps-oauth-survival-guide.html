@@ -74,6 +74,7 @@ https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
             <li>✅ <strong>Token lifecycle management</strong> (detect expiring tokens, auto-refresh)</li>
             <li>✅ <strong>Security best practices</strong> (where to store credentials, rotation strategies)</li>
             <li>✅ <strong>Troubleshooting flowchart</strong> (for when things go wrong)</li>
+            <li>✅ <strong>NEW: Calendar/Drive 403 troubleshooting</strong> (token.json scope staleness fix)</li>
         </ul>
 
         <h2>Why Standard OAuth Fails on VPS</h2>
@@ -295,6 +296,108 @@ python3 generate_oauth_url.py</code></pre>
         └─▶ Access tokens expire in 1 hour (normal)
             Use refresh token to get new access token
             If refresh token expired (6 months), re-authorize</code></pre>
+
+        <h2 id="calendar-drive-403">Troubleshooting: Calendar/Drive 403 Errors (Updated March 2026)</h2>
+        <div class="warning">
+            <strong>⚠️ Critical Issue Discovered:</strong> Calendar and Drive APIs returning 403 "insufficient scopes" even after re-authorization. <strong>Don't re-authorize immediately!</strong>
+        </div>
+        
+        <h3>Symptoms</h3>
+        <p>Your morning memo or API scripts show:</p>
+        <pre><code>📅 CALENDAR
+⚠️ Auth Error (403) - Calendar API has insufficient authentication scopes
+
+📁 GOOGLE DRIVE
+⚠️ Auth Error (403) - Drive API has insufficient authentication scopes</code></pre>
+
+        <h3>Root Cause: token.json Scope Staleness</h3>
+        <p><strong>The OAuth refresh token may have all scopes, but <code>token.json</code> has stale scope metadata.</strong></p>
+        
+        <p>When you re-authorize Google OAuth:</p>
+        <ol>
+            <li>✅ Refresh token is updated with <strong>all requested scopes</strong></li>
+            <li>❌ <code>token.json</code> file may <strong>not be properly saved/updated</strong> after refresh</li>
+            <li>❌ Python Google library reads <strong>stale scope list</strong> from <code>token.json</code></li>
+            <li>❌ API calls fail with 403 "insufficient scopes" even though refresh token is valid</li>
+        </ol>
+
+        <h3>The Fix (Without Re-authorizing!)</h3>
+        
+        <h4>Step 1: Check Current Token Scopes</h4>
+        <pre><code class="language-bash">cat ~/.openclaw/workspace/gmail-reader/credentials/token.json | \
+  python3 -m json.tool | grep -A 10 "scopes"</code></pre>
+
+        <h4>Step 2: Test APIs with Explicit Scopes</h4>
+        <pre><code class="language-bash">cd ~/.openclaw/workspace/gmail-reader
+source venv/bin/activate
+
+# Test Calendar (explicitly requests calendar.readonly scope)
+python3 calendar_events.py
+
+# Test Drive
+python3 drive_indexer.py</code></pre>
+        <p>If these work, the <strong>refresh token has the scopes</strong> — just need to update <code>token.json</code>.</p>
+
+        <h4>Step 3: Update token.json Scopes Manually</h4>
+        <pre><code class="language-bash">cd ~/.openclaw/workspace/gmail-reader
+source venv/bin/activate
+python3 << 'PYEOF'
+from google.oauth2.credentials import Credentials
+import json
+
+# Load current token
+with open('credentials/token.json', 'r') as f:
+    token_data = json.load(f)
+
+print("Current scopes:", token_data.get('scopes'))
+
+# Update with all 5 scopes
+new_scopes = [
+    'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/gmail.send',
+    'https://www.googleapis.com/auth/calendar.readonly',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/spreadsheets.readonly'
+]
+
+token_data['scopes'] = new_scopes
+
+with open('credentials/token.json', 'w') as f:
+    json.dump(token_data, f, indent=2)
+
+print("✅ Updated scopes:", token_data.get('scopes'))
+PYEOF</code></pre>
+
+        <h4>Step 4: Verify Fix</h4>
+        <pre><code class="language-bash">python3 -c "
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+creds = Credentials.from_authorized_user_file('credentials/token.json')
+print('Token scopes:', creds.scopes)
+
+# Test Calendar
+cal = build('calendar', 'v3', credentials=creds)
+events = cal.events().list(calendarId='primary', maxResults=1).execute()
+print('Calendar API: ✅ Working')
+
+# Test Drive
+drive = build('drive', 'v3', credentials=creds)
+files = drive.files().list(pageSize=1).execute()
+print('Drive API: ✅ Working')
+"</code></pre>
+
+        <div class="success">
+            <strong>✅ Key Lesson:</strong> The refresh token is the source of truth, not token.json! Refresh token retains all scopes permanently; <code>token.json</code> scope list can become stale.
+        </div>
+
+        <h3>Prevention</h3>
+        <p>After any OAuth re-authorization, always:</p>
+        <ol>
+            <li>Verify <code>token.json</code> was saved correctly</li>
+            <li>Check scopes match what was requested</li>
+            <li>Test Calendar/Drive APIs immediately</li>
+        </ol>
 
         <div class="related-posts">
             <h3>Related Posts</h3>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks at 3 AM while I sleep. Real production deployment with multiple cron jobs.">
+    <meta name="keywords" content="autonomous agent cron, unsupervised AI operations, nightly security audit automation, OpenClaw, AI agent devops">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep">
+    <meta property="og:description" content="My AI agent runs multiple autonomous cron jobs every night—security audits, health checks, documentation. Here's the full architecture and lessons learned.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep">
+    <meta name="twitter:description" content="My AI agent runs multiple autonomous cron jobs every night—security audits, health checks, documentation. Here's the full architecture and lessons learned.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep",
+      "description": "How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks at 3 AM while I sleep.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-02",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+    
+    <title>The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep | Jingxiao Cai</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        .cron-table { background: #fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+        .cron-table th { background: #0366d6; color: white; }
+        .highlight { background: #fffbdd; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</h1>
+        <div class="meta">
+            <strong>March 2, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: ai-agents, devops, automation, openclaw, security</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with Clawsistant, my OpenClaw AI agent. The security audits, health checks, and documentation updates described here are all running in production right now—while I write this at 2 AM.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Problem: Agents That Only Work When You're Watching</h2>
+        <p>Most AI agents are like performance artists: they're brilliant when you're watching, but go completely silent the moment you leave the room.</p>
+        <p>You ask a question, they answer. You close the chat, they disappear. There's no continuity, no proactive work, no <em>autonomy</em>.</p>
+        <p><strong>Real autonomy isn't about being smarter. It's about being reliable when unsupervised.</strong></p>
+        <p>That's the insight behind what I call <strong>"The Nightly Build"</strong>—a set of automated cron jobs that run every night while I sleep. Security audits. Health checks. Documentation updates. Email summaries. All without me asking, all without me watching.</p>
+        <p>In this post, I'll show you:</p>
+        <ul>
+            <li>✅ <strong>The cron job schedule</strong> running in my production deployment</li>
+            <li>✅ <strong>Last night's security audit results</strong> (real findings, not hypothetical)</li>
+            <li>✅ <strong>The architecture</strong> that makes unsupervised operation safe</li>
+            <li>✅ <strong>Lessons learned</strong> from 30 days of autonomous operation</li>
+        </ul>
+
+        <h2>Why "Nightly Build"?</h2>
+        <p>The term comes from software engineering: a <strong>nightly build</strong> is an automated compilation and test run that happens every night. By morning, developers have a fresh build waiting—no manual intervention required.</p>
+        <p>My agent does the same thing, but for <em>life operations</em>:</p>
+        <ul>
+            <li><strong>Early morning:</strong> Security audit runs, checking for vulnerabilities</li>
+            <li><strong>Morning:</strong> Health check verifies all systems are operational</li>
+            <li><strong>Mid-morning:</strong> API quota monitoring ensures we don't hit rate limits</li>
+            <li><strong>Late morning:</strong> Morning memo delivers curated email/calendar summary</li>
+            <li><strong>Noon:</strong> Community trend analysis scans AI agent forums</li>
+            <li><strong>Evening:</strong> Technical research roundup on ML/AI</li>
+            <li><strong>Night:</strong> Documentation drift detection and auto-fixes</li>
+        </ul>
+        <p><strong>None of this requires me to be awake. None of this requires me to ask.</strong> It just happens.</p>
+
+        <h2>My Cron Job Schedule: Production Configuration</h2>
+        <div class="note">
+            <strong>📋 Full Cron Schedule:</strong> All jobs run on Pacific Time (PST/PDT) to match my night owl schedule. Exact times and job names omitted for security.
+        </div>
+        
+        <table class="cron-table">
+            <thead>
+                <tr>
+                    <th>Job Type</th>
+                    <th>Time (PST)</th>
+                    <th>Purpose</th>
+                    <th>Output</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Security Audit</td>
+                    <td>3:00 AM</td>
+                    <td>Deep security scan</td>
+                    <td>Security report to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Health Monitor</td>
+                    <td>6:00 AM</td>
+                    <td>System health check</td>
+                    <td>Health status to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Morning Summary</td>
+                    <td>10:00 AM</td>
+                    <td>Email/Calendar/Drive digest</td>
+                    <td>Morning memo to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Community Scan</td>
+                    <td>12:00 PM</td>
+                    <td>AI agent forum analysis</td>
+                    <td>Trend summary to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Research Brief</td>
+                    <td>6:00 PM</td>
+                    <td>ML/AI paper roundup</td>
+                    <td>Technical brief to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Topic Scout</td>
+                    <td>8:00 PM</td>
+                    <td>Blog topic research</td>
+                    <td>Topic ideas to Telegram</td>
+                </tr>
+                <tr>
+                    <td>Documentation Check</td>
+                    <td>11:00 PM</td>
+                    <td>Memory file consistency</td>
+                    <td>Auto-fixes + report to Telegram</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Last Night's Security Audit: Real Results</h2>
+        <p>In the early morning hours, my agent ran a deep security audit. Here's what it found:</p>
+        
+        <h3>Executive Summary</h3>
+        <pre><code>Security Audit Report
+Audit Type: Deep security audit (--deep)
+Timestamp: 2026-03-01
+
+├── 🔴 Critical: 1 (ACTION REQUIRED)
+├── 🟡 Warning: 2 (Acceptable risk)
+└── ℹ️ Info: 1 (No action needed)
+
+Overall Security Posture: ⚠️ NEEDS ATTENTION</code></pre>
+
+        <h3>Critical Finding: Config File Permissions</h3>
+        <div class="warning">
+            <strong>🔴 CRITICAL:</strong> Config file is writable by others
+        </div>
+        <pre><code>Issue: fs.config.perms_writable
+File: ~/.openclaw/openclaw.json
+Current mode: 664 (rw-rw-r--)
+Risk: Another user on the system could modify gateway/auth/tool policies
+
+Fix Required:
+chmod 600 ~/.openclaw/openclaw.json</code></pre>
+        <p><strong>My action:</strong> Fixed within 2 hours of waking up. This is exactly why the audit runs automatically—I see it first thing in the morning, not weeks later when it's too late.</p>
+
+        <h3>Warning Findings (No Action Required)</h3>
+        <p>Two warnings were flagged but deemed acceptable for my deployment:</p>
+        
+        <p><strong>1. Reverse Proxy Headers Not Trusted</strong></p>
+        <pre><code>Issue: gateway.trusted_proxies_missing
+Actual Risk: LOW (loopback-only binding, no reverse proxy)
+Action: Safe to ignore unless architecture changes</code></pre>
+        
+        <p><strong>2. Multi-User Heuristic Detected</strong></p>
+        <pre><code>Issue: security.trust_model.multi_user_heuristic
+Actual Risk: LOW (single-user deployment)
+Why flagged: Telegram allowlist for outbound cron reports
+Action: Expected and safe for this deployment</code></pre>
+
+        <h3>Why This Matters</h3>
+        <p>This isn't a hypothetical security scan. This is a <strong>real audit running on a real production system</strong>, finding real issues, while I sleep.</p>
+        <p>Without this automation, that config file permission issue could have sat unnoticed for weeks. Now it's already fixed.</p>
+
+        <h2>Architecture: Making Unsupervised Operation Safe</h2>
+        <p>Running autonomous cron jobs with tool access (file system, commands, messaging) requires careful security boundaries. Here's my setup:</p>
+        
+        <h3>1. Loopback-Only Gateway</h3>
+        <pre><code>"gateway": {
+  "bind": "127.0.0.1",
+  "port": 8080
+}</code></pre>
+        <p>The OpenClaw gateway only accepts connections from localhost. No external access, no network exposure.</p>
+        
+        <h3>2. Outbound-Only Messaging</h3>
+        <p>Cron jobs can send messages to my Telegram channel, but <strong>cannot receive inbound commands</strong> from the channel. The channel is for <em>reports</em>, not <em>control</em>.</p>
+        <pre><code>"channels": {
+  "telegram": {
+    "enabled": true,
+    "groupPolicy": "allowlist"
+  }
+}</code></pre>
+        
+        <h3>3. Workspace-Only File Access (Default)</h3>
+        <p>By default, agents can only read/write within the workspace directory:</p>
+        <pre><code>~/.openclaw/workspace/</code></pre>
+        <p>System-wide access requires explicit elevation (which the healthcheck job has).</p>
+        
+        <h3>4. Isolated Session Targets</h3>
+        <p>All cron jobs run in isolated sessions, not the main session:</p>
+        <pre><code>"sessionTarget": "isolated",
+"payload": {
+  "kind": "agentTurn",
+  "message": "Run security audit..."
+}</code></pre>
+        <p>This prevents automated jobs from interfering with my interactive sessions.</p>
+
+        <h2>Lessons Learned: 30 Days of Autonomous Operation</h2>
+        
+        <h3>1. Autonomy ≠ Intelligence</h3>
+        <p>The most valuable thing my agent does at night isn't clever—it's <strong>repeatable</strong>. A dumb task done reliably every night is worth more than a brilliant task done once.</p>
+        
+        <h3>2. Trust But Verify</h3>
+        <p>I trust my agent to run these jobs, but I <strong>verify the results every morning</strong>. The security audit report, health check status, morning memo—I read them all. Autonomy doesn't mean abdication.</p>
+        
+        <h3>3. Start Small, Expand Gradually</h3>
+        <p>I didn't start with multiple cron jobs. I started with one (morning memo). Then added health checks. Then security audits. Each new job earned its place by proving value.</p>
+        
+        <h3>4. Document Everything</h3>
+        <p>Every cron job logs to memory files. Every audit result is saved. Every failure is documented. This creates an audit trail I can review months later.</p>
+        
+        <h3>5. Failure is Inevitable—Design for It</h3>
+        <p>Cron jobs fail. APIs rate limit. Networks partition. My agent handles this by:</p>
+        <ul>
+            <li>Logging failures to memory files</li>
+            <li>Retrying with exponential backoff</li>
+            <li>Alerting me when manual intervention is needed</li>
+        </ul>
+
+        <h2>The Bigger Picture: Why This Matters</h2>
+        <p>The AI agent community is obsessed with capability: <em>What can my agent do?</em></p>
+        <p>But the real question is: <em>What can my agent do reliably, unsupervised, while I'm not watching?</em></p>
+        <p><strong>Capability optimization</strong> is what agents do when humans are watching.<br>
+        <strong>Repeatability optimization</strong> is what agents do when humans are sleeping.</p>
+        <p>The future of AI agents isn't about being smarter. It's about being <strong>reliable partners</strong>—working alongside us, not just responding to us.</p>
+        <p>That's what the Nightly Build is about. Not flashy demos. Not clever tricks. Just <strong>useful work, done reliably, every single night</strong>.</p>
+
+        <h2>Getting Started: Your First Nightly Job</h2>
+        <p>If you want to try this yourself, start with one simple job:</p>
+        
+        <h3>Step 1: Install OpenClaw</h3>
+        <pre><code>npm install -g openclaw
+openclaw init
+openclaw start</code></pre>
+        
+        <h3>Step 2: Create a Simple Cron Job</h3>
+        <pre><code>openclaw cron add \
+  --schedule "0 3 * * *" \
+  --message "Run a simple health check every night at 3 AM"</code></pre>
+        
+        <h3>Step 3: Review the Results</h3>
+        <p>Check your Telegram (or configured channel) the next morning. You should see the health check report.</p>
+        
+        <h3>Step 4: Expand Gradually</h3>
+        <p>Once you're comfortable with one job, add another. Maybe a daily summary. Maybe a security audit. Build up slowly.</p>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant: From Gmail to Morning Memos</a></li>
+                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+                <li><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post was written at 2 AM. The security audit ran in the early morning. The author was awake for both. This is what night owl life looks like.</p>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                Have questions about autonomous agent operations? 
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a> 
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this helpful? Share it with someone else building autonomous agents.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
