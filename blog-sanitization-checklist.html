@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A comprehensive checklist for sanitizing blog posts before publishing. Learn what to redact, what to keep, and how to validate your posts for operational security.">
+    <meta name="keywords" content="blog sanitization, technical writing security, redaction checklist, operational security, content publishing, PII protection">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Blog Post Sanitization Checklist: What to Redact Before Publishing">
+    <meta property="og:description" content="I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog Post Sanitization Checklist: What to Redact Before Publishing">
+    <meta name="twitter:description" content="I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Blog Post Sanitization Checklist: What to Redact Before Publishing",
+      "description": "A comprehensive checklist for sanitizing blog posts before publishing.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-03",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+    
+    <title>Blog Post Sanitization Checklist: What to Redact Before Publishing | Jingxiao Cai</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        .checklist { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .checklist-item { margin: 10px 0; padding-left: 25px; position: relative; }
+        .checklist-item:before { content: "☐"; position: absolute; left: 0; color: #0366d6; }
+        .example-box { background: #f6f8fa; border-left: 4px solid #0366d6; padding: 15px; margin: 20px 0; }
+        .example-box.bad { border-left-color: #d73a49; background: #ffeef0; }
+        .example-box.good { border-left-color: #28a745; background: #e6ffed; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Blog Post Sanitization Checklist: What to Redact Before Publishing</h1>
+        <div class="meta">
+            <strong>March 3, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: writing, security, blogging, opsec, technical-writing</span>
+        </div>
+        <div class="disclaimer">
+            This post was born from a near-miss. Yesterday, I almost published a blog post with sensitive deployment details. Here's the checklist I created to prevent that from happening again.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Incident That Started This</h2>
+        <p>Yesterday, I wrote a blog post called "The Nightly Build" about my autonomous AI agent that runs security audits at 3 AM. Great content, timely topic, aligned with community discussions.</p>
+        <p>Then my AI assistant (Clawsistant) flagged something:</p>
+        <blockquote>
+            <strong>"Wait. You're about to publish specific cron job names, channel IDs, and exact deployment counts. This is operational security information."</strong>
+        </blockquote>
+        <p>Ouch.</p>
+        <p>I had written things like:</p>
+        <pre><code>My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54) 
+runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code></pre>
+        <p>That's <strong>three unique identifiers</strong> that could be used to:</p>
+        <ul>
+            <li>Identify my specific deployment</li>
+            <li>Correlate logs or activity patterns</li>
+            <li>Target attacks against known infrastructure</li>
+        </ul>
+        <p><strong>None of this was malicious.</strong> I just didn't think about it. I was focused on writing good technical content, not protecting operational details.</p>
+
+        <h2>Why This Matters</h2>
+        <p>Blog posts are <strong>permanent and public</strong>. Once published:</p>
+        <ul>
+            <li>They're indexed by search engines</li>
+            <li>They're cached by archives (Wayback Machine, etc.)</li>
+            <li>They can be quoted, shared, and screenshot</li>
+            <li><strong>You can't fully delete them</strong> (even if you remove the post, copies exist)</li>
+        </ul>
+        <p>Unlike GitHub issues (where you can edit comments) or social media (where you can delete posts), blog posts should be treated as <strong>immutable</strong>.</p>
+        <p>So what do you redact?</p>
+
+        <h2>The Redaction Rules</h2>
+        
+        <h3>🔴 ALWAYS REDACT</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Examples</th>
+                    <th>Replacement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cron Job Names</strong></td>
+                    <td><code>moltbook-lunch-scan</code>, <code>healthcheck-nightly-audit</code></td>
+                    <td>"daily scan job", "security audit job"</td>
+                </tr>
+                <tr>
+                    <td><strong>Cron Job IDs</strong></td>
+                    <td><code>89dcec9f-5e45-4ef3-824b-1a4761779e54</code></td>
+                    <td>Remove entirely or "job ID"</td>
+                </tr>
+                <tr>
+                    <td><strong>Channel IDs</strong></td>
+                    <td>Telegram <code>-1003892593540</code>, Discord guild IDs</td>
+                    <td>"my Telegram channel", "configured channel"</td>
+                </tr>
+                <tr>
+                    <td><strong>API Keys/Tokens</strong></td>
+                    <td><code>moltbook_sk_*</code>, <code>gmail tokens</code></td>
+                    <td>"API key", "stored credentials"</td>
+                </tr>
+                <tr>
+                    <td><strong>File Paths with Usernames</strong></td>
+                    <td><code>/home/ubuntu/.openclaw/</code></td>
+                    <td><code>~/.openclaw/</code> or <code>[workspace]/</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Exact Deployment Counts</strong></td>
+                    <td>"7 cron jobs"</td>
+                    <td>"multiple cron jobs", "several automated jobs"</td>
+                </tr>
+                <tr>
+                    <td><strong>Specific Schedule Times</strong></td>
+                    <td>"3:00 AM PST" (exact)</td>
+                    <td>"early morning", "nightly" (keep timezone, generalize time)</td>
+                </tr>
+                <tr>
+                    <td><strong>Infrastructure Details</strong></td>
+                    <td>VM specs, IP addresses, hostnames</td>
+                    <td>"cloud VM", "VPS"</td>
+                </tr>
+                <tr>
+                    <td><strong>Personal Schedule Patterns</strong></td>
+                    <td>"I wake up at 10 AM daily"</td>
+                    <td>"I review results each morning"</td>
+                </tr>
+                <tr>
+                    <td><strong>Family/Personal Details</strong></td>
+                    <td>Children's names, specific school info</td>
+                    <td>Generic: "family", "school updates"</td>
+                </tr>
+                <tr>
+                    <td><strong>Financial Details</strong></td>
+                    <td>Exact account balances, trade amounts</td>
+                    <td>Ranges or omit</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>✅ SAFE TO KEEP</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Examples</th>
+                    <th>Why Safe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Software Versions</strong></td>
+                    <td>"OpenClaw 2026.2.26"</td>
+                    <td>Public information</td>
+                </tr>
+                <tr>
+                    <td><strong>OS and Platform</strong></td>
+                    <td>"Ubuntu 22.04 LTS", "arm64"</td>
+                    <td>Generic deployment info</td>
+                </tr>
+                <tr>
+                    <td><strong>Error Messages</strong></td>
+                    <td>"403 insufficient scopes"</td>
+                    <td>Technical details, no secrets</td>
+                </tr>
+                <tr>
+                    <td><strong>Configuration Structure</strong></td>
+                    <td>JSON schema, field names</td>
+                    <td>Not actual values</td>
+                </tr>
+                <tr>
+                    <td><strong>Technical Analysis</strong></td>
+                    <td>Root cause, troubleshooting steps</td>
+                    <td>Educational value</td>
+                </tr>
+                <tr>
+                    <td><strong>Your Name/Employer</strong></td>
+                    <td>"Jingxiao Cai", "Oracle"</td>
+                    <td>It's your blog—be transparent about authorship</td>
+                </tr>
+                <tr>
+                    <td><strong>Timezones</strong></td>
+                    <td>"PST/PDT"</td>
+                    <td>General location info</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Before/After Examples</h2>
+        
+        <div class="example-box bad">
+            <strong>❌ Before (Unsanitized)</strong>
+            <pre><code>My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54) 
+runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code></pre>
+        </div>
+        
+        <div class="example-box good">
+            <strong>✅ After (Sanitized)</strong>
+            <pre><code>My daily Moltbook scan job runs at noon PST and sends reports to my Telegram channel.</code></pre>
+        </div>
+        
+        <p><strong>What changed:</strong></p>
+        <ul>
+            <li>❌ Removed specific job name (<code>moltbook-lunch-scan</code>)</li>
+            <li>❌ Removed job ID (UUID)</li>
+            <li>❌ Removed exact time (12:00 PM → noon)</li>
+            <li>❌ Removed channel ID</li>
+            <li>✅ Kept timezone (PST)</li>
+            <li>✅ Kept functional description (what it does)</li>
+        </ul>
+
+        <h2>Validation: Automated Checks</h2>
+        <p>Before publishing, I run these grep commands:</p>
+        
+        <h3>1. Check for UUIDs</h3>
+        <pre><code>grep -E "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" draft.html</code></pre>
+        <p><strong>Expected:</strong> No results ✅</p>
+        
+        <h3>2. Check for Telegram Channel IDs</h3>
+        <pre><code>grep -E "\-100[0-9]+" draft.html</code></pre>
+        <p><strong>Expected:</strong> No results ✅</p>
+        
+        <h3>3. Check for Specific Job Names</h3>
+        <pre><code>grep -E "moltbook-|healthcheck-|morning-" draft.html</code></pre>
+        <p><strong>Expected:</strong> Only in generic context (e.g., "Moltbook scan" not <code>moltbook-lunch-scan</code>)</p>
+        
+        <h3>4. Check for Full Paths with Usernames</h3>
+        <pre><code>grep -E "/home/[a-z]+" draft.html</code></pre>
+        <p><strong>Expected:</strong> No results ✅ (use <code>~</code> instead)</p>
+        
+        <h3>5. Manual Review</h3>
+        <p>Read the entire post asking:</p>
+        <blockquote>
+            <strong>"Could someone identify my specific deployment from this?"</strong>
+        </blockquote>
+        <p>Check for <strong>combination leaks</strong>—multiple harmless details that together identify you.</p>
+
+        <h2>Blog Posts ≠ GitHub Issues</h2>
+        <p>I adapted this from my GitHub Issue Sanitization Checklist, but blog posts are different:</p>
+        
+        <h3>More Lenient (It's Your Content)</h3>
+        <ul>
+            <li>✅ Use your name (it's your blog)</li>
+            <li>✅ Mention your employer (public info)</li>
+            <li>✅ Share your architecture patterns</li>
+            <li>✅ Link to your GitHub and social profiles</li>
+        </ul>
+        
+        <h3>But Still Protect</h3>
+        <ul>
+            <li>❌ Operational security (cron schedules, job names)</li>
+            <li>❌ Access patterns (specific channel IDs, monitored endpoints)</li>
+            <li>❌ Family privacy (children's details, school info)</li>
+            <li>❌ Financial privacy (exact compensation, account balances)</li>
+        </ul>
+        
+        <p><strong>Key principle:</strong> Protect <em>how your deployment works</em>, not <em>who you are</em>.</p>
+
+        <h2>The Checklist I Use Now</h2>
+        
+        <div class="checklist">
+            <h3>Pre-Flight Check (Before Publishing)</h3>
+            <div class="checklist-item">Drafted full post with all technical details</div>
+            <div class="checklist-item">Applied redaction rules (see tables above)</div>
+            <div class="checklist-item">Checked for indirect leaks (combination of details)</div>
+            <div class="checklist-item">Ran automated validation (grep commands)</div>
+            <div class="checklist-item">Manual review: "Could someone identify my deployment?"</div>
+            <div class="checklist-item">Saved sanitized version to git repo</div>
+            
+            <h3>After Publishing</h3>
+            <div class="checklist-item">Save post URL to memory</div>
+            <div class="checklist-item">Document what was redacted</div>
+            <div class="checklist-item">Note any feedback received</div>
+        </div>
+        
+        <p><strong>Location:</strong> I keep this checklist at <code>memory/categories/blog-sanitization-checklist.md</code> and review it before every post.</p>
+
+        <h2>Lessons Learned</h2>
+        
+        <h3>1. Operational Security > Anonymity</h3>
+        <p>The goal isn't to hide who you are—it's to protect <strong>how your systems work</strong>.</p>
+        <ul>
+            <li>✅ "I run security audits" (general capability)</li>
+            <li>❌ "My <code>healthcheck-nightly-audit</code> job runs at exactly 3:00 AM" (specific pattern)</li>
+        </ul>
+        
+        <h3>2. Consistency Matters</h3>
+        <p>Use the same sanitization rules across:</p>
+        <ul>
+            <li>Blog posts</li>
+            <li>GitHub issues</li>
+            <li>Social media (Moltbook, Twitter, etc.)</li>
+            <li>Public discussions</li>
+        </ul>
+        <p>Inconsistency creates leaks.</p>
+        
+        <h3>3. Automate What You Can</h3>
+        <p>Don't rely on memory. Use grep commands, checklists, and validation scripts. Make it hard to forget.</p>
+        
+        <h3>4. Think in Combinations</h3>
+        <p>Individual details might be harmless, but together they can identify you:</p>
+        <pre><code>❌ "Oracle PMTS" + "HeatWave ML" + "Fremont CA" + "36M" = Specific person
+✅ "Principal Architect" + "ML Infrastructure" + "Bay Area" = Many people</code></pre>
+
+        <h2>Why I'm Publishing This</h2>
+        <p>Because I made this mistake. And if I made it, others will too.</p>
+        <p>The AI agent community is growing fast. People are building autonomous systems, running cron jobs, connecting to their personal data. We're sharing our experiences, our architectures, our lessons learned.</p>
+        <p><strong>That's great. But let's do it safely.</strong></p>
+        <p>Use this checklist. Adapt it. Improve it. But <em>use something</em>.</p>
+        <blockquote>
+            <p><strong>Your blog is permanent. Your operational security matters. Redact before you publish.</strong></p>
+        </blockquote>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></li>
+                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+                <li><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post was sanitized using the checklist it describes. No deployment-specific identifiers were harmed in the making of this blog post.</p>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                Have questions or your own sanitization tips? 
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a> 
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this helpful? Share it with someone else writing about their infrastructure.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
