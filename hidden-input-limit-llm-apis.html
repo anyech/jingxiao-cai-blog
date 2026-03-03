@@ -19,14 +19,21 @@
     th { background: #f4f4f4; }
     blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
     .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; }
+    .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
+    .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; }
+    .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
   </style>
 </head>
 <body>
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</h1>
-  <p class="post-meta">February 24, 2026 | By Jingxiao Cai</p>
+  <p class="post-meta">February 24, 2026 | By Jingxiao Cai | <strong>Updated March 3, 2026</strong></p>
   <p class="tags">Tags: llm, debugging, bailian, openclaw</p>
+  
+  <div class="update-banner">
+    <strong>📝 Update (March 2026):</strong> Added troubleshooting section with step-by-step debugging guide and GLM-4.7 data.
+  </div>
   
   <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</em></p>
   
@@ -64,6 +71,12 @@
       <td>202,752</td>
       <td><strong>73,728</strong></td>
       <td style="color: #dc2626; font-weight: bold;">-64%</td>
+    </tr>
+    <tr>
+      <td>GLM-4.7</td>
+      <td>169,984</td>
+      <td><strong>73,728</strong></td>
+      <td style="color: #dc2626; font-weight: bold;">-57%</td>
     </tr>
     <tr>
       <td>GLM-4.5</td>
@@ -111,6 +124,51 @@
     <li>Response generation</li>
     <li>Unexpected context bloat</li>
   </ul>
+  
+  <h2>Troubleshooting: Step-by-Step Debugging Guide</h2>
+  
+  <div class="warning">
+    <strong>⚠️ Symptoms:</strong> Getting "input length should be [1, XXXXX]" errors even though your context is well under the model's advertised limit.
+  </div>
+  
+  <h3>Step 1: Check Error Message</h3>
+  <pre><code>InternalError.Algo.InvalidParameter: Range of input length should be [1, 73728]</code></pre>
+  <p>The number at the end (73728) is your <strong>actual platform limit</strong>, not the model's native context.</p>
+  
+  <h3>Step 2: Verify Model Documentation</h3>
+  <p>Check both the model's native specs AND the API provider's limits:</p>
+  <pre><code># Check model's native context
+curl -s https://www.alibabacloud.com/help/en/model-studio/glm | grep -i "context"
+
+# Check for platform-specific limits in API docs
+curl -s https://www.alibabacloud.com/help/en/model-studio/api-reference | grep -i "input\|limit"</code></pre>
+  
+  <h3>Step 3: Measure Your Actual Input</h3>
+  <p>Add logging to see what you're actually sending:</p>
+  <pre><code>import tiktoken
+
+encoder = tiktoken.get_encoding("cl100k_base")
+tokens = encoder.encode(your_input_text)
+print(f"Input tokens: {len(tokens)}")</code></pre>
+  
+  <h3>Step 4: Check Provider Dashboard</h3>
+  <p>Some providers show input/output stats in their dashboard:</p>
+  <ul>
+    <li>Bailian Console → Model Studio → Usage Statistics</li>
+    <li>Look for "Input Tokens" vs "Context Window"</li>
+  </ul>
+  
+  <h3>Step 5: Apply Conservative Buffer</h3>
+  <p>Set your configured context window to 80-90% of the platform limit:</p>
+  <pre><code># Platform limit: 73,728 tokens
+# Conservative config: 65,000 tokens (88% of limit)
+"bailian/glm-5": {
+  "contextWindow": 65000
+}</code></pre>
+  
+  <div class="note">
+    <strong>💡 Pro Tip:</strong> If you're hitting this limit frequently, consider switching to a model with better platform support (Qwen 3.5 Plus has 1M native context with no artificial caps on Bailian).
+  </div>
   
   <h2>Lessons Learned</h2>
   

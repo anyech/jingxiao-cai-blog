@@ -1,3 +1,4 @@
+<!-- Backup created 2026-03-03 before unified library update -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,7 +37,7 @@
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-21",
-    "dateModified": "2026-03-03",
+    "dateModified": "2026-03-02",
     "url": "https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html",
     "publisher": {
       "@type": "Person",
@@ -154,11 +155,11 @@
   
   <article>
     <h1>Building a Personal AI Assistant: From Gmail to Morning Memos</h1>
-    <p class="date">Published: February 21, 2026 | Last Updated: March 3, 2026 | By Jingxiao Cai</p>
+    <p class="date">Published: February 21, 2026 | Last Updated: March 2, 2026 | By Jingxiao Cai</p>
     <p><em>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</em></p>
     
     <div class="update-banner">
-      <strong>📝 Update (March 2026):</strong> Added unified Gmail reader library reference and enhanced Calendar/Drive integration details.
+      <strong>📝 Update (March 2026):</strong> Added API status monitoring section with MiniMax quota tracking and Google Drive live scan integration. See new section below.
     </div>
     
     <div class="tags">
@@ -253,42 +254,37 @@
 openclaw init
 openclaw start</code></pre>
     
-    <h2 id="step3-gmail">Step 3: Connect Gmail - Unified Library Approach</h2>
-    <div class="success">
-      <strong>✅ Recommended:</strong> Use the unified <code>openclaw-gmail-reader</code> library instead of custom scripts.
-    </div>
+    <h2 id="step3-gmail">Step 3: Connect Gmail</h2>
+    <p>Create a Gmail reader script. Here's a simplified version:</p>
+    <pre><code>const { google } = require('googleapis');
+const gmail = google.gmail('v1');
+
+async function getEmails(auth, maxResults = 50) {
+  const res = await gmail.users.messages.list({
+    userId: 'me',
+    maxResults: maxResults,
+  });
+  
+  const messages = await Promise.all(
+    res.data.messages.slice(0, 20).map(async (msg) => {
+      const detail = await gmail.users.messages.get({
+        userId: 'me',
+        id: msg.id,
+      });
+      return {
+        subject: detail.data.payload.headers.find(h => h.name === 'Subject')?.value,
+        from: detail.data.payload.headers.find(h => h.name === 'From')?.value,
+        date: detail.data.payload.headers.find(h => h.name === 'Date')?.value,
+        snippet: detail.data.snippet,
+      };
+    })
+  );
+  
+  return messages;
+}
+
+module.exports = { getEmails };</code></pre>
     
-    <p><strong>GitHub Repository:</strong> <a href="https://github.com/anyech/openclaw-gmail-reader" target="_blank">github.com/anyech/openclaw-gmail-reader</a></p>
-    
-    <p>This unified library provides:</p>
-    <ul>
-      <li><strong>GmailReader class</strong> with <code>fetch_emails()</code>, <code>send_email()</code>, <code>categorize_priority()</code></li>
-      <li><strong>Calendar integration</strong> via <code>calendar_events.py</code></li>
-      <li><strong>Drive integration</strong> via <code>drive_indexer.py</code> (change detection)</li>
-      <li><strong>Headless OAuth</strong> via <code>manual_oauth.py</code> (VPS-friendly)</li>
-      <li><strong>Virtual environment</strong> setup with all dependencies</li>
-    </ul>
-    
-    <h3>Quick Start:</h3>
-    <pre><code class="language-bash"># Clone the unified library
-git clone https://github.com/anyech/openclaw-gmail-reader.git
-cd openclaw-gmail-reader
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run OAuth setup (headless-friendly)
-python3 manual_oauth.py
-
-# Test Gmail fetch
-python3 gmail_reader.py --summary</code></pre>
-    
-    <p><strong>For detailed OAuth setup on headless servers,</strong> see <a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide</a>.</p>
-
     <h2 id="step4-prioritization">Step 4: Smart Priority Detection</h2>
     <p>Not all emails are equal. I built a priority system:</p>
     <ul>

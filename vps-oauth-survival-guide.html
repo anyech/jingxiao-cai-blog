@@ -37,14 +37,14 @@
         .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
         .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
         .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
         footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
         .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
         .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
         .related-posts a { color: #0366d6; text-decoration: none; }
         .related-posts a:hover { text-decoration: underline; }
-        .comments-section { margin-top: 50px; padding-top: 30px; border-top: 2px solid #eee; }
-        .comments-section h2 { margin-bottom: 15px; }
-        .comments-section p { color: #666; margin-bottom: 20px; }
+        .screenshot-placeholder { background: #f0f0f0; border: 2px dashed #ccc; padding: 40px; text-align: center; margin: 20px 0; border-radius: 6px; }
+        .screenshot-placeholder em { color: #666; }
     </style>
 </head>
 <body>
@@ -52,11 +52,14 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>VPS OAuth Survival Guide: Google APIs Without a Browser</h1>
         <div class="meta">
-            <strong>February 25, 2026</strong> | By Jingxiao Cai<br>
+            <strong>February 25, 2026</strong> | By Jingxiao Cai | <strong>Updated March 3, 2026</strong><br>
             <span class="tags">Tags: tutorial, oauth, vps, devops, automation, google-cloud</span>
         </div>
         <div class="disclaimer">
             This post was co-created with Clawsistant, my OpenClaw AI agent. After spending 6 hours fighting OAuth on my VPS, I figured the least the AI could do was help me write about it.
+        </div>
+        <div class="update-banner">
+            <strong>📝 Update (March 2026):</strong> Added OAuth Playground screenshots and enhanced token scope troubleshooting section.
         </div>
     </header>
 
@@ -126,6 +129,12 @@ https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
             <li>Click <strong>Save</strong></li>
         </ol>
         <p><strong>Important:</strong> This is the official Google OAuth Playground URL. Do NOT use any other redirect URI for this workflow.</p>
+        
+        <div class="screenshot-placeholder">
+            <strong>📸 Screenshot: Google Cloud Console - OAuth Credentials</strong><br>
+            <em>Shows "Authorized redirect URIs" section with https://developers.google.com/oauthplayground added</em><br>
+            <small>(Screenshot to be added: OAuth-credentials-redirect-uri.png)</small>
+        </div>
 
         <h2>Step 2: Install Python Dependencies</h2>
         <pre><code class="language-bash"># Create virtual environment
@@ -210,11 +219,23 @@ python3 generate_oauth_url.py</code></pre>
             <li><strong>Click "Allow"</strong> on Google's consent screen</li>
             <li><strong>You'll be redirected</strong> to OAuth Playground</li>
         </ol>
+        
+        <div class="screenshot-placeholder">
+            <strong>📸 Screenshot: Google Consent Screen</strong><br>
+            <em>Shows the Google OAuth consent screen with scopes listed and "Allow" button</em><br>
+            <small>(Screenshot to be added: google-consent-screen.png)</small>
+        </div>
 
         <h3>5.3 Copy Authorization Code</h3>
         <p>On the OAuth Playground page, you'll see:</p>
         <pre><code>Authorization code: 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
         <p><strong>Copy this code</strong> (the long string after <code>code=</code>).</p>
+        
+        <div class="screenshot-placeholder">
+            <strong>📸 Screenshot: OAuth Playground - Authorization Code</strong><br>
+            <em>Shows OAuth Playground page with authorization code displayed in "Step 2" section</em><br>
+            <small>(Screenshot to be added: oauth-playground-code.png)</small>
+        </div>
 
         <h3>5.4 Exchange Code for Tokens</h3>
         <pre><code class="language-bash">python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
