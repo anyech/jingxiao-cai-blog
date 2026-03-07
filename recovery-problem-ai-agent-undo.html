@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.">
+    <meta name="keywords" content="ai agent recovery, agent undo button, cron job rollback, openclaw cron, autonomous agent safety, recovery primitives">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Recovery Problem: Why Your AI Agent Needs an Undo Button">
+    <meta property="og:description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Recovery Problem: Why Your AI Agent Needs an Undo Button">
+    <meta name="twitter:description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The Recovery Problem: Why Your AI Agent Needs an Undo Button",
+      "description": "I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-07",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+    
+    <title>The Recovery Problem: Why Your AI Agent Needs an Undo Button | Jingxiao Cai</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        .stat-box { display: inline-block; background: #f6f8fa; padding: 15px 20px; border-radius: 6px; margin: 10px 10px 10px 0; text-align: center; }
+        .stat-box .number { font-size: 2em; font-weight: bold; color: #0366d6; }
+        .stat-box .label { color: #666; font-size: 0.9em; }
+        .capability-table { margin: 20px 0; }
+        .capability-table tr.safe { background: #e6ffed; }
+        .capability-table tr.unsafe { background: #ffeef0; }
+        .framework-box { background: #f0f7ff; border-left: 4px solid #0366d6; padding: 20px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>The Recovery Problem: Why Your AI Agent Needs an Undo Button</h1>
+        <div class="meta">
+            <strong>March 7, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: ai-agents, devops, recovery, openclaw, automation, safety</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped audit my cron jobs for recovery capabilities and found exactly zero. Because sometimes the best way to learn about safety gaps is to have your AI point out that you have no brakes.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Moment I Realized I Had No Undo Button</h2>
+        <p>Last week, Moltbook (an AI agent community) was buzzing with discussions about "recovery primitives" — the ability for autonomous agents to undo mistakes, replay failed operations, or roll back to a known-good state.</p>
+        <p>Someone posted about context drift fixes. Another person shared how their agent corrupted files during a deployment. A third talked about idempotent operations.</p>
+        <p>And I thought: <strong>What happens if my agent messes up?</strong></p>
+        <p>I sat down and audited my deployment:</p>
+        
+        <div class="stat-box">
+            <div class="number">13</div>
+            <div class="label">Autonomous Cron Jobs</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">0</div>
+            <div class="label">With Undo Capability</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">0</div>
+            <div class="label">With Replay/Retry Logic</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">0</div>
+            <div class="label">With Rollback Procedures</div>
+        </div>
+        
+        <p><strong>Zero.</strong> Not a single recovery mechanism across 13 autonomous jobs running unsupervised every day.</p>
+        <p>This is the story of that audit, what I found, and the framework I'm building to fix it.</p>
+
+        <h2>What My Agent Actually Does (Unsupervised)</h2>
+        <p>My OpenClaw agent runs multiple autonomous jobs daily:</p>
+        
+        <table class="capability-table">
+            <thead>
+                <tr>
+                    <th>Job Type</th>
+                    <th>Frequency</th>
+                    <th>Actions</th>
+                    <th>Can Undo?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="unsafe">
+                    <td><strong>Security Audits</strong></td>
+                    <td>Daily (3 AM)</td>
+                    <td>Scans configs, checks file permissions, validates credentials</td>
+                    <td>❌ No</td>
+                </tr>
+                <tr class="unsafe">
+                    <td><strong>Git Auto-Commit</strong></td>
+                    <td>Daily (7 AM)</td>
+                    <td>Commits workspace changes, pushes to GitHub</td>
+                    <td>❌ No</td>
+                </tr>
+                <tr class="unsafe">
+                    <td><strong>Log Rotation</strong></td>
+                    <td>Daily (midnight)</td>
+                    <td>Archives old logs, deletes files &gt;30 days</td>
+                    <td>❌ No</td>
+                </tr>
+                <tr class="unsafe">
+                    <td><strong>Gmail Processing</strong></td>
+                    <td>Daily (10 AM)</td>
+                    <td>Fetches emails, categorizes priority, generates memo</td>
+                    <td>❌ No</td>
+                </tr>
+                <tr class="unsafe">
+                    <td><strong>ML/AI Brief</strong></td>
+                    <td>Daily (10 AM)</td>
+                    <td>Scans arXiv, Hacker News, summarizes trends</td>
+                    <td>❌ No</td>
+                </tr>
+                <tr class="unsafe">
+                    <td><strong>Health Checks</strong></td>
+                    <td>Every 30 min</td>
+                    <td>Monitors gateway, cron status, disk usage</td>
+                    <td>❌ No</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p><strong>Every single one of these runs without:</strong></p>
+        <ul>
+            <li>State snapshots before execution</li>
+            <li>Transaction logs of what changed</li>
+            <li>Rollback procedures if something breaks</li>
+            <li>Idempotency guarantees (safe to retry)</li>
+        </ul>
+
+        <h2>The Failure Scenarios That Keep Me Up</h2>
+        <p>I started imagining what could go wrong:</p>
+        
+        <div class="warning">
+            <strong>Scenario 1: The Git Disaster</strong><br>
+            My git-nightly job commits the wrong files. Maybe it includes credentials that slipped through. Maybe it deletes something important. It pushes to GitHub. <strong>Now what?</strong> I have to manually revert, force-push, hope no one forked in the meantime.
+        </div>
+        
+        <div class="warning">
+            <strong>Scenario 2: The Log Rotation Oops</strong><br>
+            A bug in the rotation script deletes logs I actually needed. Maybe there's a path traversal vulnerability. Maybe the date calculation is wrong. <strong>Those logs are gone forever.</strong> No backup, no recovery.
+        </div>
+        
+        <div class="warning">
+            <strong>Scenario 3: The Duplicate Delivery Spiral</strong><br>
+            My agent sends the same message 100 times due to a retry bug. It's already happened (OpenClaw #30246). I added a dedup workaround, but what if the cache corrupts? What if it starts deduping legitimate messages? <strong>No way to replay missed deliveries.</strong>
+        </div>
+        
+        <div class="warning">
+            <strong>Scenario 4: The Security Audit False Positive</strong><br>
+            The healthcheck flags a config as insecure and "fixes" it. But the fix breaks something. Now my Telegram integration is down, or my API credentials are invalid. <strong>No automatic rollback to the working state.</strong>
+        </div>
+        
+        <p>These aren't hypothetical. The duplicate delivery issue <strong>actually happened</strong>. I got lucky — it was just annoying, not destructive.</p>
+
+        <h2>What the Community Is Saying</h2>
+        <p>On Moltbook, there's a growing conversation about "recovery primitives" for AI agents. Key posts:</p>
+        <ul>
+            <li><strong>"Context Drift Fix"</strong> (1,038 upvotes) — Agent sessions lose 33% of context; solution is state files between steps</li>
+            <li><strong>"Error Suppression Audit"</strong> (940 upvotes) — One agent suppressed 34 errors in 14 days; only 4 mattered</li>
+            <li><strong>"Cron Optimization"</strong> (1,376 upvotes) — 78% of token budget was redundant operations</li>
+        </ul>
+        <p>The pattern: <strong>agents are getting more autonomous, but safety isn't keeping pace.</strong></p>
+        <p>One user (Kapso) proposed a framework for recovery primitives:</p>
+        
+        <div class="framework-box">
+            <h3>Kapso's Recovery Primitives Framework</h3>
+            <ol>
+                <li><strong>Undo</strong> — Reverse the last action (Ctrl+Z for agents)</li>
+                <li><strong>Replay</strong> — Re-execute from a checkpoint with different parameters</li>
+                <li><strong>Rollback</strong> — Restore to a known-good state</li>
+                <li><strong>Idempotency</strong> — Safe to retry without side effects</li>
+                <li><strong>Circuit Breaker</strong> — Stop after N failures, alert human</li>
+            </ol>
+        </div>
+        
+        <p>I don't have any of these. Not one.</p>
+
+        <h2>The Audit: Where Recovery Mechanisms Should Be</h2>
+        <p>I went through each of my 13 cron jobs and asked: "If this breaks, how do I recover?"</p>
+        
+        <h3>1. Git Auto-Commit (Highest Risk)</h3>
+        <p><strong>What it does:</strong> Commits workspace changes daily, pushes to GitHub</p>
+        <p><strong>Current state:</strong> No pre-commit snapshot, no rollback</p>
+        <p><strong>Recovery needed:</strong></p>
+        <ul>
+            <li>✅ Create git stash before commit</li>
+            <li>✅ Log commit hash before push</li>
+            <li>✅ If push fails or user reports issue, <code>git revert</code> to previous hash</li>
+            <li>✅ Add <code>--dry-run</code> flag for testing</li>
+        </ul>
+        
+        <h3>2. Log Rotation (Medium Risk)</h3>
+        <p><strong>What it does:</strong> Archives old logs, deletes files &gt;30 days</p>
+        <p><strong>Current state:</strong> Deletes without backup</p>
+        <p><strong>Recovery needed:</strong></p>
+        <ul>
+            <li>✅ Move to archive folder first (don't delete immediately)</li>
+            <li>✅ Keep archive for 7 days before permanent deletion</li>
+            <li>✅ Log all deleted files with checksums</li>
+            <li>✅ Add <code>--restore</code> flag to recover from archive</li>
+        </ul>
+        
+        <h3>3. Duplicate Delivery Workaround (Low Risk, Already Fixed)</h3>
+        <p><strong>What it does:</strong> Prevents duplicate Telegram messages (OpenClaw #30246)</p>
+        <p><strong>Current state:</strong> Has dedup cache, but no replay mechanism</p>
+        <p><strong>Recovery needed:</strong></p>
+        <ul>
+            <li>✅ Log dedup decisions (what was skipped and why)</li>
+            <li>✅ Add <code>--replay</code> flag to re-send skipped messages</li>
+            <li>✅ Manual cache invalidation for edge cases</li>
+        </ul>
+        <p><strong>Status:</strong> ✅ Partially implemented (dedup works, replay pending)</p>
+        
+        <h3>4. Gmail Processing (Low Risk)</h3>
+        <p><strong>What it does:</strong> Fetches emails, generates morning memo</p>
+        <p><strong>Current state:</strong> Read-only, no state changes</p>
+        <p><strong>Recovery needed:</strong></p>
+        <ul>
+            <li>✅ Log which emails were processed (in case memo is wrong)</li>
+            <li>✅ Add <code>--regenerate</code> flag to re-process specific date</li>
+            <li>✅ Cache raw email data for 7 days (re-generate memo if needed)</li>
+        </ul>
+        
+        <h3>5. Health Checks (Low Risk)</h3>
+        <p><strong>What it does:</strong> Monitors system health, alerts on issues</p>
+        <p><strong>Current state:</strong> Read-only monitoring</p>
+        <p><strong>Recovery needed:</strong></p>
+        <ul>
+            <li>✅ Already safe (no state changes)</li>
+            <li>✅ Add alert deduplication (don't spam same alert)</li>
+            <li>✅ Add <code>--history</code> flag to see past alerts</li>
+        </ul>
+
+        <h2>The Recovery Framework I'm Building</h2>
+        <p>Based on this audit, I'm implementing a three-layer recovery system:</p>
+        
+        <h3>Layer 1: Pre-Execution Snapshots</h3>
+        <p>Before any job runs, capture state:</p>
+        <pre><code># Example: Git job snapshot
+def create_snapshot(job_name):
+    snapshot = {
+        'job': job_name,
+        'timestamp': datetime.now().isoformat(),
+        'git_hash': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
+        'git_status': subprocess.check_output(['git', 'status', '--porcelain']).decode(),
+        'disk_usage': subprocess.check_output(['df', '-h']).decode(),
+    }
+    
+    # Save to .snapshots/ directory
+    with open(f'.snapshots/{job_name}-{timestamp}.json', 'w') as f:
+        json.dump(snapshot, f, indent=2)</code></pre>
+        
+        <h3>Layer 2: Transaction Logs</h3>
+        <p>Log every action with enough detail to replay or undo:</p>
+        <pre><code># Example: Transaction log entry
+{
+    "job": "git-nightly-auto",
+    "timestamp": "2026-03-07T07:03:00Z",
+    "action": "git_commit",
+    "files_changed": ["memory/2026-03-07.md", "memory/categories/healthcheck-2026-03-07.md"],
+    "commit_hash": "abc123...",
+    "previous_hash": "def456...",
+    "reversible": true,
+    "rollback_command": "git revert abc123"
+}</code></pre>
+        
+        <h3>Layer 3: Recovery Commands</h3>
+        <p>Every job gets standard recovery flags:</p>
+        <pre><code># Undo last action
+python3 script.py --undo
+
+# Replay from checkpoint
+python3 script.py --replay --from=2026-03-07
+
+# Rollback to specific state
+python3 script.py --rollback --to=abc123
+
+# Dry run (test without changes)
+python3 script.py --dry-run
+
+# Show recovery options
+python3 script.py --recovery-help</code></pre>
+
+        <h2>Implementation Status</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Job</th>
+                    <th>Snapshot</th>
+                    <th>Transaction Log</th>
+                    <th>Recovery Commands</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Git Auto-Commit</strong></td>
+                    <td>⏳ Planned</td>
+                    <td>⏳ Planned</td>
+                    <td>⏳ Planned</td>
+                    <td>🔴 Critical</td>
+                </tr>
+                <tr>
+                    <td><strong>Log Rotation</strong></td>
+                    <td>⏳ Planned</td>
+                    <td>⏳ Planned</td>
+                    <td>⏳ Planned</td>
+                    <td>🟠 High</td>
+                </tr>
+                <tr>
+                    <td><strong>Duplicate Delivery</strong></td>
+                    <td>✅ Done</td>
+                    <td>⏳ Planned</td>
+                    <td>⏳ Planned</td>
+                    <td>🟡 Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Gmail Processing</strong></td>
+                    <td>⏳ Planned</td>
+                    <td>✅ Partial</td>
+                    <td>⏳ Planned</td>
+                    <td>🟢 Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Health Checks</strong></td>
+                    <td>N/A</td>
+                    <td>✅ Done</td>
+                    <td>N/A</td>
+                    <td>🟢 Low</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p><strong>Timeline:</strong> Critical (git) by March 21, High (logs) by March 28, Medium/Low by April 11</p>
+
+        <h2>Lessons Learned</h2>
+        
+        <h3>1. Autonomy Without Recovery Is Reckless</h3>
+        <p>I built 13 autonomous jobs before asking "what if this breaks?" That's backwards. Recovery mechanisms should be <strong>part of the initial design</strong>, not retrofitted after incidents.</p>
+        
+        <h3>2. Start With High-Risk Operations</h3>
+        <p>Not all jobs need the same level of recovery. Prioritize:</p>
+        <ol>
+            <li>🔴 Jobs that modify external state (git push, file deletion)</li>
+            <li>🟠 Jobs that delete data (log rotation, cache cleanup)</li>
+            <li>🟡 Jobs with side effects (message delivery, API calls)</li>
+            <li>🟢 Read-only jobs (monitoring, reporting)</li>
+        </ol>
+        
+        <h3>3. Idempotency Is the Foundation</h3>
+        <p>Before building undo/rollback, make operations <strong>safe to retry</strong>. If a job can run twice without breaking anything, you've already solved 80% of recovery.</p>
+        
+        <h3>4. Document Recovery Procedures</h3>
+        <p>A recovery mechanism no one knows about is useless. Every job needs:</p>
+        <ul>
+            <li>README section: "How to Recover from Failures"</li>
+            <li>Example commands in comments</li>
+            <li>Runbook for common failure scenarios</li>
+        </ul>
+        
+        <h3>5. Test Recovery Before You Need It</h3>
+        <p>Don't wait for a disaster to test your rollback. Schedule quarterly "recovery drills":</p>
+        <pre><code># Example: Quarterly recovery test
+# 1. Run job normally
+python3 script.py
+
+# 2. Verify it worked
+cat output.log
+
+# 3. Run undo
+python3 script.py --undo
+
+# 4. Verify state is restored
+cat output.log
+
+# 5. Document any issues
+echo "Recovery test passed/failed" >> recovery-tests.log</code></pre>
+
+        <h2>What I'm Asking the Community</h2>
+        <p>If you're running autonomous agents:</p>
+        <ol>
+            <li><strong>Audit your recovery mechanisms</strong> — How many jobs have undo/rollback?</li>
+            <li><strong>Share your patterns</strong> — What recovery primitives have you implemented?</li>
+            <li><strong>Report incidents</strong> — When has lack of recovery bitten you?</li>
+        </ol>
+        <p>The Moltbook community is already talking about this. Let's make recovery a first-class concern, not an afterthought.</p>
+        
+        <blockquote>
+            <p><strong>Your agent will make mistakes. The question isn't "if" — it's "can you recover?"</strong></p>
+        </blockquote>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></li>
+                <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
+                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM with 13 autonomous cron jobs — and is now adding recovery mechanisms to all of them.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post was written before implementing recovery primitives. Future Jingxiao will be able to undo the mistakes of past Jingxiao. Progress!</p>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                What recovery mechanisms does your agent have? 
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a> 
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this helpful? Share it with someone else running autonomous agents.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
