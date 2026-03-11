@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and the 30-second drain window can interrupt active sessions if you aren't expecting it.">
+    <meta name="keywords" content="OpenClaw gateway restart, OpenClaw config change behavior, config patch restart, OpenClaw auth profiles, OpenClaw plugins">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
+    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
+    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes",
+      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and the 30-second drain window can interrupt active sessions if you aren't expecting it.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-11",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+
+    <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        .timeline { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .timeline li { margin-bottom: 12px; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
+        <div class="meta">
+            <strong>March 11, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Surprise</h2>
+        <p>I was in the middle of an active OpenClaw session when the conversation went quiet.</p>
+        <p>Not "the model is thinking" quiet. Not "Discord is slow" quiet. <strong>Infrastructure quiet.</strong></p>
+        <p>A few seconds later, the gateway was back. No crash. No obvious failure. Just a restart that happened while work was in flight.</p>
+        <p>The root cause turned out to be straightforward: <strong>some OpenClaw config changes trigger a gateway restart, and the restart may be deferred just long enough to confuse you.</strong></p>
+        <p>If you're editing auth profiles, plugin config, or other restart-sensitive settings, this is behavior you need to know before you learn it the annoying way.</p>
+
+        <div class="warning">
+            <strong>Short version:</strong> OpenClaw config does <em>not</em> behave uniformly. Some changes are effectively live. Others require a gateway restart. Some restart paths are immediate, while others defer until in-flight work drains or a timeout is hit.
+        </div>
+
+        <h2>What the Docs Explicitly Say</h2>
+        <p>The local OpenClaw docs are pretty clear on the control-plane tools:</p>
+        <ul>
+            <li><code>config.apply</code> = validate + write config + <strong>restart</strong> + wake</li>
+            <li><code>config.patch</code> = merge partial update + <strong>restart</strong> + wake</li>
+        </ul>
+        <p>They also note that restart behavior is <strong>coalesced</strong>, with a <strong>30-second cooldown</strong> between restart cycles.</p>
+        <p>Plugin docs are equally direct: <strong>plugin config changes require a gateway restart.</strong></p>
+        <p>That's the documented part. The part that catches people off guard is the <strong>user experience</strong> of that restart when it happens during an active session.</p>
+
+        <h2>What It Looks Like in Practice</h2>
+        <p>Here’s the observed pattern from a real restart-sensitive config change:</p>
+
+        <div class="timeline">
+            <ol>
+                <li>A config change touches a restart-sensitive area, such as <code>auth.profiles</code> or <code>plugins.entries.*</code>.</li>
+                <li>OpenClaw does <strong>not</strong> necessarily hard-cut immediately.</li>
+                <li>It defers the restart while in-flight work drains.</li>
+                <li>If work doesn't clear fast enough, the drain timeout is hit.</li>
+                <li>The gateway restarts anyway.</li>
+                <li>A few seconds later, the service comes back and resumes normal operation.</li>
+            </ol>
+        </div>
+
+        <p>That behavior is sane from an infrastructure perspective. It's less sane from a human perspective if nobody warned you it was coming.</p>
+
+        <blockquote>
+            <p><strong>The system is trying to be graceful. The user experience still feels abrupt if you're mid-conversation.</strong></p>
+        </blockquote>
+
+        <h2>The 30-Second Drain Window</h2>
+        <p>This is the part most likely to confuse users.</p>
+        <p>When a restart-sensitive change lands, OpenClaw may <strong>defer</strong> the restart to let in-flight operations finish. That's good. But it also means you get a weird limbo period:</p>
+        <ul>
+            <li>Your session still appears alive</li>
+            <li>Some messages may still go out</li>
+            <li>You're tempted to keep interacting normally</li>
+            <li>Then the restart happens anyway when the drain timeout expires</li>
+        </ul>
+        <p>If you don't know that drain behavior exists, it feels random. It isn't random. It's deferred restart behavior doing exactly what it was designed to do.</p>
+
+        <div class="note">
+            <strong>Important nuance:</strong> "Deferred" does not mean "canceled." It means "restart later, after active work drains or the timeout says we're done waiting."
+        </div>
+
+        <h2>Which Changes Tend to Trigger Restarts?</h2>
+        <p>Based on the docs and observed behavior, these are the buckets that deserve caution:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Change Type</th>
+                    <th>Typical Behavior</th>
+                    <th>Why</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong><code>config.apply</code></strong></td>
+                    <td>Restart + wake</td>
+                    <td>Full config write path explicitly restarts the gateway</td>
+                </tr>
+                <tr>
+                    <td><strong><code>config.patch</code></strong></td>
+                    <td>Restart + wake</td>
+                    <td>Partial config write still goes through restart-aware control plane</td>
+                </tr>
+                <tr>
+                    <td><strong><code>auth.profiles</code> / auth routing changes</strong></td>
+                    <td>Restart-sensitive</td>
+                    <td>Affects provider/auth wiring and model routing behavior</td>
+                </tr>
+                <tr>
+                    <td><strong><code>plugins.entries.*</code></strong></td>
+                    <td>Restart required</td>
+                    <td>Plugin load/config state is gateway-managed</td>
+                </tr>
+                <tr>
+                    <td><strong>Plugin/channel-related config</strong></td>
+                    <td>Usually restart-sensitive</td>
+                    <td>Changes runtime wiring, manifests, or loaded integrations</td>
+                </tr>
+                <tr>
+                    <td><strong>Cron payload edits via cron tools</strong></td>
+                    <td>Usually no gateway restart</td>
+                    <td>You're updating job data, not gateway wiring</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>That last line matters. Not every change deserves restart anxiety. A lot of operational edits are just data updates. The pain starts when you treat restart-sensitive config like ordinary live state.</p>
+
+        <h2>The Mistake Pattern</h2>
+        <p>The most common mistake isn't "I restarted the gateway." It's this:</p>
+        <pre><code>1. Make a config tweak during an active conversation
+2. Assume it'll either apply live or wait until later
+3. Keep chatting
+4. Get surprised when the gateway quietly restarts 30 seconds later</code></pre>
+
+        <p>That surprise is avoidable.</p>
+
+        <h2>What I Recommend Instead</h2>
+
+        <h3>1. Treat restart-sensitive edits like deployments</h3>
+        <p>If you're touching auth profiles, plugin entries, or any config path that changes gateway wiring, mentally classify it as a deployment event, not a casual edit.</p>
+
+        <h3>2. Batch related changes</h3>
+        <p>Don't drip-feed five tiny config edits one after another. The docs explicitly mention coalesced pending restarts and restart cooldown behavior. Use that signal correctly: batch changes, then restart once.</p>
+
+        <h3>3. Don't edit restart-sensitive config mid-conversation unless you mean it</h3>
+        <p>If you're in an active support thread, a debugging session, or a long-running task, restart-sensitive config work can wait five minutes.</p>
+
+        <h3>4. Prefer <code>config.patch</code> over partial <code>config.apply</code></h3>
+        <p>This isn't just about restart behavior. It's about not nuking unrelated config. Full apply replaces the whole object. Patch is the sane default for narrow edits.</p>
+
+        <h3>5. Warn humans before the restart window opens</h3>
+        <p>If you're operating OpenClaw for yourself or others, say the quiet part out loud:</p>
+        <pre><code>This config change will restart the gateway.
+Expect a brief interruption.
+Let's do it after this turn finishes.</code></pre>
+
+        <h3>6. Verify after restart</h3>
+        <p>Don't stop at "service came back." Check what matters:</p>
+        <ul>
+            <li>Gateway is listening</li>
+            <li>Expected channels reconnect</li>
+            <li>The config actually took effect</li>
+            <li>No session got stranded in weird partial state</li>
+        </ul>
+
+        <h2>A Practical Decision Table</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>If you're changing…</th>
+                    <th>Assume restart?</th>
+                    <th>Best move</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Plugin entries or plugin wiring</td>
+                    <td>Yes</td>
+                    <td>Batch edits, schedule restart consciously</td>
+                </tr>
+                <tr>
+                    <td>Auth profiles / provider routing config</td>
+                    <td>Yes</td>
+                    <td>Avoid doing it mid-session</td>
+                </tr>
+                <tr>
+                    <td>Full config replacement</td>
+                    <td>Absolutely yes</td>
+                    <td>Backup first, then apply once</td>
+                </tr>
+                <tr>
+                    <td>Cron job message/prompt updates</td>
+                    <td>Usually no</td>
+                    <td>Use cron tooling directly</td>
+                </tr>
+                <tr>
+                    <td>Unsure whether a field is restart-sensitive</td>
+                    <td>Act like maybe</td>
+                    <td>Check docs/schema first, then proceed</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>One More Important Distinction</h2>
+        <p>OpenClaw has two very different mental models that are easy to blur:</p>
+        <ul>
+            <li><strong>Operational data changes</strong> — job payloads, prompts, reminders, content</li>
+            <li><strong>Gateway wiring changes</strong> — auth, plugins, transport/config structure</li>
+        </ul>
+        <p>The first category often behaves like normal app state. The second category behaves like service infrastructure.</p>
+        <p>If you remember just one thing from this post, make it this:</p>
+        <blockquote>
+            <p><strong>Changing what the agent says is not the same as changing how the gateway is built.</strong></p>
+        </blockquote>
+
+        <h2>My Take</h2>
+        <p>I don't think OpenClaw's behavior here is wrong. Honestly, most of it is pretty reasonable.</p>
+        <p>The problem is that the restart boundary is easy to underestimate until it interrupts you once.</p>
+        <p>So the practical rule I use now is simple:</p>
+        <div class="success">
+            <strong>Operational rule:</strong> If a config change touches gateway wiring, I plan for a restart. If it only changes job data, I don't.
+        </div>
+
+        <p>That one distinction has already saved me a bunch of confusion.</p>
+
+        <h2>Checklist Before You Touch Restart-Sensitive Config</h2>
+        <ol>
+            <li>Am I in an active conversation or long-running task?</li>
+            <li>Is this a gateway wiring change or just data?</li>
+            <li>Can I batch this with other pending changes?</li>
+            <li>Do I need <code>config.patch</code> rather than <code>config.apply</code>?</li>
+            <li>Have I warned the human that a restart is coming?</li>
+            <li>Do I know what I'll verify after the gateway comes back?</li>
+        </ol>
+
+        <p>If you can answer those six questions first, gateway restarts stop feeling mysterious and start feeling manageable.</p>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></li>
+                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></li>
+                <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. He runs OpenClaw in production for personal automation and has developed a healthy respect for config changes that look small and behave large.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally avoids deployment-specific IDs and other sensitive details. The behavior is the point; the exact wiring is not.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If OpenClaw has surprised you with restart behavior too, I'd love to hear what the trigger was.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to someone who edits production config like it's a casual note to self.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
