@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` started failing with a misleading gateway error while the gateway itself stayed healthy. Here's the regression, the evidence, and the workaround.">
+    <meta name="keywords" content="OpenClaw logs --follow broken, OpenClaw 2026.3.12 bug, gateway handshake timeout, OpenClaw troubleshooting, OpenClaw logs follow">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
+    <meta property="og:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. The gateway was fine. The handshake was not.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
+    <meta name="twitter:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. The gateway was fine. The handshake was not.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy",
+      "description": "After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` started failing with a misleading gateway error while the gateway itself stayed healthy. Here's the regression, the evidence, and the workaround.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-14",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+
+    <title>OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</h1>
+        <div class="meta">
+            <strong>March 14, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, troubleshooting, regression, logs, websocket, devops</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a misleading error message into a proper regression report, a cleaner workaround, and a blog post other users can actually find when search results get weird.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Symptom</h2>
+        <p>After upgrading OpenClaw from <strong>2026.3.11</strong> to <strong>2026.3.12</strong>, a familiar troubleshooting command suddenly stopped being trustworthy:</p>
+        <pre><code>openclaw logs --follow</code></pre>
+        <p>Instead of streaming logs, it failed with a message that strongly implied the gateway was down:</p>
+        <pre><code>gateway connect failed: Error: gateway closed (1000):
+Gateway not reachable. Is it running and accessible?</code></pre>
+        <p>The problem: <strong>the gateway was actually fine.</strong></p>
+
+        <div class="warning">
+            <strong>This is what makes the regression annoying:</strong> the failure looks like a gateway outage, but the gateway remains healthy. The broken part is the logs path, not the whole service.
+        </div>
+
+        <h2>Why This Matters</h2>
+        <p><code>openclaw logs --follow</code> is one of those commands you reach for when something feels off. If that command itself starts lying to you, troubleshooting gets slower and messier.</p>
+        <p>In this case, the CLI error pointed in the wrong direction. The actual issue was a <strong>WebSocket handshake timeout</strong> on the logs stream, not a dead gateway.</p>
+        <p>That distinction matters because the first response to “gateway unreachable” is usually restart/recovery thinking, while the correct response here is closer to “the service is up, but this specific client path regressed after upgrade.”</p>
+
+        <h2>The Evidence That the Gateway Was Healthy</h2>
+        <p>Before calling it a gateway outage, I checked the obvious basics:</p>
+        <ul>
+            <li><code>openclaw status</code> succeeded</li>
+            <li><code>openclaw gateway status</code> succeeded</li>
+            <li>A local loopback HTTP probe returned <code>200</code></li>
+            <li>Other gateway activity still worked normally</li>
+        </ul>
+        <p>So the service itself was alive. The failure was narrower than the error message suggested.</p>
+
+        <h2>The Real Failure Mode</h2>
+        <p>The live gateway log showed the real cause repeatedly:</p>
+        <pre><code>{"cause":"handshake-timeout","handshake":"failed","durationMs":3591,"handshakeMs":3002}
+{"cause":"handshake-timeout","handshake":"failed","durationMs":3770,"handshakeMs":3000}
+{"cause":"handshake-timeout","handshake":"failed","durationMs":3782,"handshakeMs":3000}</code></pre>
+        <p>That's the regression in one screenshot-sized block:</p>
+        <ul>
+            <li>Observed handshake durations: roughly <strong>3.5–3.8 seconds</strong></li>
+            <li>Configured/default timeout budget: roughly <strong>3.0 seconds</strong></li>
+        </ul>
+        <p>So the logs path wasn't unreachable. It was <strong>timing out before the handshake finished</strong>.</p>
+
+        <h2>Why I’m Calling It a Regression</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Version</th>
+                    <th>Behavior</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>2026.3.11</strong></td>
+                    <td><code>openclaw logs --follow</code> worked normally</td>
+                </tr>
+                <tr>
+                    <td><strong>2026.3.12</strong></td>
+                    <td><code>openclaw logs --follow</code> failed while the gateway remained healthy</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>That’s not random flakiness. That’s version-linked behavior change.</p>
+        <p>I filed it upstream as <a href="https://github.com/openclaw/openclaw/issues/44714" target="_blank">openclaw/openclaw#44714</a> with the evidence above and a sanitized reproduction path.</p>
+
+        <h2>The Misleading Part of the Error</h2>
+        <p>The bug isn't just the timeout. It's also the message you get back.</p>
+        <p>If the CLI says:</p>
+        <pre><code>Gateway not reachable. Is it running and accessible?</code></pre>
+        <p>most users will assume one of these:</p>
+        <ol>
+            <li>The gateway is down</li>
+            <li>The bind/auth config is wrong</li>
+            <li>The network path is broken</li>
+        </ol>
+        <p>But in this case, none of those were true. The gateway was reachable. The logs handshake was what failed.</p>
+        <blockquote>
+            <p><strong>The difference between “service down” and “sub-path handshake timeout” is the difference between a restart and an actual diagnosis.</strong></p>
+        </blockquote>
+
+        <h2>A Small Code-Level Clue</h2>
+        <p>While digging, I also noticed the installed bundle contained a default handshake timeout constant of <code>3000 ms</code>.</p>
+        <p>That lines up almost too neatly with the observed failure durations. I’m not claiming a full root cause from one constant, but the correlation is strong enough to make this look like a timing-budget problem rather than a broad availability problem.</p>
+
+        <h2>The Workaround I’m Using</h2>
+        <p>Because the logs WebSocket path is the broken part, the best workaround on a systemd-based Linux host is to bypass that path completely and watch the gateway through the journal:</p>
+        <pre><code>journalctl --user -u openclaw-gateway.service -f</code></pre>
+        <p>I also wrapped that into a more readable helper script:</p>
+        <pre><code>monitor-openclaw-gateway.sh</code></pre>
+        <p>What it does:</p>
+        <ul>
+            <li>Follows the systemd user journal for the OpenClaw gateway service</li>
+            <li>Prints colored banners when the service state or PID changes</li>
+            <li>Makes restart/down/recovery events much easier to spot in one terminal</li>
+        </ul>
+
+        <div class="success">
+            <strong>Practical takeaway:</strong> if <code>openclaw logs --follow</code> is broken but the gateway is healthy, switch to <code>journalctl</code> first. It keeps you productive while upstream fixes the regression.
+        </div>
+
+        <h2>My Troubleshooting Sequence Now</h2>
+        <ol>
+            <li>Check whether the gateway is actually healthy with status commands</li>
+            <li>Probe loopback/HTTP reachability separately</li>
+            <li>If health checks pass, treat the logs failure as a logs-path bug, not full outage</li>
+            <li>Use <code>journalctl --user -u openclaw-gateway.service -f</code> as the fallback monitor</li>
+            <li>Only then decide whether restart or rollback is actually necessary</li>
+        </ol>
+        <p>This avoids the classic trap of treating every bad CLI error like a dead service.</p>
+
+        <h2>What Other OpenClaw Users Should Watch For</h2>
+        <ul>
+            <li>If you upgraded to <strong>2026.3.12</strong> and logs streaming suddenly broke, don’t assume the gateway is down</li>
+            <li>If <code>status</code> still works but <code>logs --follow</code> does not, check for handshake timeout evidence</li>
+            <li>If you use OpenClaw from a desktop terminal or VS Code workflow, keep a journal-based monitor handy until this is fixed upstream</li>
+        </ul>
+
+        <h2>Why I’m Writing This Up</h2>
+        <p>Because this is exactly the kind of bug people search for in the least patient mood possible:</p>
+        <p><em>“OpenClaw logs --follow broken”</em><br>
+        <em>“gateway handshake timeout”</em><br>
+        <em>“OpenClaw says gateway not reachable but it is”</em></p>
+        <p>If that search lands here instead of on a dead-end restart loop, good. Mission accomplished.</p>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the version numbers, error strings, timings, and public upstream issue number because they’re the useful part. I intentionally left out deployment-specific IDs, host/user-specific paths, and other environment fingerprints.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+                <li><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></li>
+                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle working on MySQL HeatWave ML Infrastructure. He runs OpenClaw for personal automation and apparently now spends part of his life translating misleading error messages into something more useful than “try restarting it.”</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Filed upstream: <a href="https://github.com/openclaw/openclaw/issues/44714" target="_blank">Issue #44714</a></p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you hit the same regression, or found a cleaner workaround, I’d love to compare notes.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to someone who is one misleading error message away from bouncing a healthy gateway.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
