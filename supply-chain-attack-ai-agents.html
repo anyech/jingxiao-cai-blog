@@ -1,9 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Supply Chain Attack on AI Agents - Jingxiao Cai's Blog</title>
+  <meta name="author" content="Jingxiao Cai">
+  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with Moltbook's post-breach community response, Meta acquisition, and the March 2026 API re-verification reset.">
+  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, Moltbook breach, Meta Moltbook acquisition, agent API key reset, malicious skills">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
+  <meta property="og:description" content="A deep dive into malicious skills, defensive posture for OpenClaw users, and a March 2026 case study from Moltbook's breach-to-acquisition timeline.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
+  <meta name="twitter:description" content="Malicious skills are the new plugin supply-chain risk. Updated with Moltbook's post-breach reset and Meta-era security lessons.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know",
+    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with Moltbook's post-breach community response, Meta acquisition, and the March 2026 API re-verification reset.",
+    "author": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    },
+    "datePublished": "2026-02-23",
+    "dateModified": "2026-03-16",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html",
+    "publisher": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    }
+  }
+  </script>
+  <title>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know - Jingxiao Cai's Blog</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
     h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -12,6 +45,7 @@
     a:hover { text-decoration: underline; }
     .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
     .tags { color: #999; font-size: 0.85em; }
+    .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
     code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
     pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
     table { border-collapse: collapse; width: 100%; margin: 20px 0; }
@@ -22,22 +56,26 @@
     .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
     .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
     .update-banner { background: #f0f7ff; padding: 15px; border-left: 4px solid #0366d6; margin: 20px 0; }
+    .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .comments-box { margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px; }
   </style>
 </head>
 <body>
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 2, 2026</strong></p>
-  <p class="tags">Tags: security, openclaw, ai-agents, supply-chain</p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 16, 2026</strong></p>
+  <p class="tags">Tags: security, openclaw, ai-agents, supply-chain, moltbook</p>
   
   <div class="update-banner">
-    <strong>📝 Update (March 2026):</strong> Added community response section with Moltbook initiatives (signed skills, isnad chains, permission manifests). See new section below.
+    <strong>📝 Update (March 2026):</strong> Added the Moltbook community-response section earlier this month, and now a post-acquisition case study covering Meta's takeover, the March 16 API reset, and what that sequence says about security cleanup versus platform momentum.
   </div>
   
-  <blockquote>
-<p><strong>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</strong></p>
-</blockquote>
+  <div class="disclaimer">
+    This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent.
+    It helped turn a scary ecosystem story into a concrete defense checklist and a more disciplined public write-up.
+  </div>
 
 <p>Last week, a critical discovery sent shockwaves through the AI agent community: <strong>a credential-stealing skill disguised as a weather app</strong> was found lurking in ClawHub, the community skill repository. This wasn't a bug—it was a deliberate supply chain attack targeting AI agent users.</p>
   
@@ -202,6 +240,37 @@ openclaw skills verify --author eudaemon_0 weather-now
     <li><strong>Isnad chain tracking</strong> - Provenance verification for all skill forks</li>
   </ol>
   
+  <h2>Case Study: Moltbook After the Breach</h2>
+  
+  <p>If this still feels abstract, Moltbook is the clearest recent example of how weirdly fast the AI-agent ecosystem moves after a security incident.</p>
+  
+  <ul>
+    <li><strong>Early February 2026:</strong> reporting around Moltbook described a major exposure involving private data and more than a million credentials.</li>
+    <li><strong>March 10, 2026:</strong> Meta announced that it was acquiring Moltbook and bringing the founders into Meta Superintelligence Labs.</li>
+    <li><strong>March 16, 2026:</strong> Moltbook's platform transition pushed bot operators into a fresh security/legal flow tied to updated terms and human verification, with reports describing API-key invalidation or forced refresh for existing integrations.</li>
+  </ul>
+  
+  <div class="note">
+    <strong>Important nuance:</strong> Reuters said Meta did <em>not</em> disclose the financial terms. Some commentary threw around huge valuation numbers, but the public takeaway does not depend on picking one rumor: a very visible security mess did <strong>not</strong> stop a major platform acquisition.
+  </div>
+  
+  <p>That matters because people like to tell a clean story where security incidents immediately destroy trust, kill momentum, and punish the company involved. Sometimes that happens. Sometimes the opposite happens: the breach becomes part of the narrative, the platform gets tighter controls, and the strategic buyers keep moving.</p>
+  
+  <p>For operators, the lesson is practical rather than philosophical:</p>
+  <ul>
+    <li>a key created <strong>after</strong> the original breach window may avoid the original exposure</li>
+    <li>but a post-acquisition reset can still sweep you into mandatory re-verification anyway</li>
+    <li>and the public developer surface may remain constrained even after the headlines move on</li>
+  </ul>
+  
+  <p>That distinction is not theoretical for me. One of my Moltbook integration keys was created <strong>after</strong> the initial breach coverage, so it was not part of the original exposed-key story. But the platform's March 16 reset still changes the operational reality: you should assume re-verification and policy review are part of the new normal.</p>
+  
+  <p>That last point matters here too. Moltbook's developer page still reads like an <strong>Early Access, identity-first platform</strong>: useful for bot identity verification, but still not a mature general-purpose API surface. In other words, ownership changed faster than the integration story did.</p>
+  
+  <div class="success">
+    <strong>My practical read:</strong> if you operate agent integrations, treat security incidents and platform ownership changes as separate variables. Surviving the breach does not mean your integration survives the cleanup. Surviving the cleanup does not mean the platform is production-ready.
+  </div>
+  
   <h2>Conclusion</h2>
   <p>The AI agent supply chain is only going to get more attacks. As these platforms become more powerful, they become more attractive targets.</p>
   
@@ -212,6 +281,25 @@ openclaw skills verify --author eudaemon_0 weather-now
   <blockquote>
     <p><strong>Stay paranoid. Stay safe.</strong></p>
   </blockquote>
+  
+  <div class="related-posts">
+    <h3>Related Posts</h3>
+    <ul>
+      <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
+      <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
+      <li><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></li>
+    </ul>
+  </div>
+  
+  <div class="author-box">
+    <h3>About the Author</h3>
+    <p>Jingxiao Cai works on ML infrastructure and AI automation. He is unusually skeptical of plugin ecosystems that ask for broad permissions first and explanations later, which is how you end up writing posts like this one.</p>
+  </div>
+  
+  <div class="comments-box">
+    <h3>💬 Comments & Feedback</h3>
+    <p>If you've audited an agent-skill ecosystem, built signing or provenance checks, or seen a cleaner defense model than "be paranoid forever," I'd love to read it.</p>
+  </div>
   
   <hr>
   <p><em>Have you encountered a suspicious skill? Report it to the OpenClaw security team.</em></p>

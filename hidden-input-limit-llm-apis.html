@@ -1,8 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Jingxiao Cai">
+  <meta name="description" content="Bailian advertised a 202K context window for GLM-5, but the API enforced a 73,728-token input cap. Updated with a March 2026 follow-up on Anthropic's flat 1M Claude pricing and what it changes.">
+  <meta name="keywords" content="hidden input limit, context window mismatch, Bailian GLM-5, Claude pricing change 2026, long-context pricing, LLM debugging">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="The Hidden Input Limit: When '202K Context' Doesn't Mean 202K">
+  <meta property="og:description" content="A debugging story about hidden platform caps, plus a March 2026 follow-up on why Anthropic's flat 1M Claude pricing changes the economics but not the hidden-limit lesson.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Hidden Input Limit: When '202K Context' Doesn't Mean 202K">
+  <meta name="twitter:description" content="Bailian's 202K context promise hid a 73,728-token input cap. Updated with Anthropic's March 2026 flat 1M pricing shift for Claude.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Hidden Input Limit: When '202K Context' Doesn't Mean 202K",
+    "description": "Bailian advertised a 202K context window for GLM-5, but the API enforced a 73,728-token input cap. Updated with a March 2026 follow-up on Anthropic's flat 1M Claude pricing and what it changes.",
+    "author": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    },
+    "datePublished": "2026-02-24",
+    "dateModified": "2026-03-16",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html",
+    "publisher": {
+      "@type": "Person",
+      "name": "Jingxiao Cai"
+    }
+  }
+  </script>
   <title>The Hidden Input Limit: When '202K Context' Doesn't Mean 202K - Jingxiao Cai's Blog</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
@@ -12,6 +45,7 @@
     a:hover { text-decoration: underline; }
     .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
     .tags { color: #999; font-size: 0.85em; }
+    .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
     code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
     pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
     table { border-collapse: collapse; width: 100%; margin: 20px 0; }
@@ -22,20 +56,26 @@
     .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
     .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; }
     .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+    .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .comments-box { margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px; }
   </style>
 </head>
 <body>
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</h1>
-  <p class="post-meta">February 24, 2026 | By Jingxiao Cai | <strong>Updated March 3, 2026</strong></p>
-  <p class="tags">Tags: llm, debugging, bailian, openclaw</p>
+  <p class="post-meta">February 24, 2026 | By Jingxiao Cai | <strong>Updated March 16, 2026</strong></p>
+  <p class="tags">Tags: llm, debugging, bailian, openclaw, claude, pricing</p>
   
   <div class="update-banner">
-    <strong>📝 Update (March 2026):</strong> Added troubleshooting section with step-by-step debugging guide and GLM-4.7 data.
+    <strong>📝 Update (March 2026):</strong> Added troubleshooting guidance earlier this month, and now a follow-up on Anthropic's March 14 flat-pricing change for 1M-token Claude requests. The economics got better for some users; the hidden-platform-limit lesson did not disappear.
   </div>
   
-  <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</em></p>
+  <div class="disclaimer">
+    This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent.
+    It helped turn a frustrating context-window debugging session into a clearer explanation of where provider marketing ends and platform reality begins.
+  </div>
   
   <p>Last week, my blog scout cron job started crashing with a cryptic error:</p>
   
@@ -195,6 +235,29 @@ print(f"Input tokens: {len(tokens)}")</code></pre>
   
   <p>When debugging context issues, check both the model specs <em>and</em> the API documentation.</p>
   
+  <h2>March 2026 Follow-Up: Anthropic Just Changed the Long-Context Economics</h2>
+  
+  <p>On March 14, Anthropic updated its pricing docs to say that <strong>Claude Opus 4.6 and Sonnet 4.6 now include the full 1M-token context window at standard pricing</strong>. Anthropic's own example is blunt: <em>a 900K-token request is billed at the same per-token rate as a 9K-token request.</em></p>
+  
+  <div class="note">
+    <strong>What changed:</strong> for Claude users on the supported models, chunking purely to dodge a long-context surcharge is much less compelling than it was during the earlier premium-priced long-context phase.
+  </div>
+  
+  <p>That does <strong>not</strong> invalidate the main point of this post. My debugging problem here was not "long context is expensive." It was "the platform advertised one number and enforced another." Those are different failure modes:</p>
+  <ul>
+    <li><strong>Pricing problem:</strong> the model can accept the prompt, but you pay extra when you cross a threshold</li>
+    <li><strong>Platform-cap problem:</strong> the model may support the prompt in theory, but the API path rejects it before you ever get there</li>
+  </ul>
+  
+  <p>So yes, Anthropic just made long documents and big codebase passes more attractive on Claude. But the operational lesson still holds across the industry:</p>
+  <ul>
+    <li>provider docs can lag real behavior</li>
+    <li>platform limits can be lower than model-native limits</li>
+    <li>"big context" marketing still needs verification in the actual API you use</li>
+  </ul>
+  
+  <p>If anything, Anthropic's pricing shift makes the contrast sharper. Once one provider removes the long-context premium, the next constraint you notice is often <strong>not price</strong> but <strong>the hidden ceiling in the toolchain around the model</strong>.</p>
+  
   <h2>Conclusion</h2>
   
   <p>The "202K context" marketing number doesn't tell the whole story. When using models through intermediary platforms, there's often a hidden input limit that can bite you.</p>
@@ -204,6 +267,25 @@ print(f"Input tokens: {len(tokens)}")</code></pre>
   </blockquote>
   
   <p>After adjusting my configuration, the blog scout job runs smoothly again. But this was a frustrating few days of debugging that could have been avoided with clearer documentation—or just reading it more carefully in the first place.</p>
+  
+  <div class="related-posts">
+    <h3>Related Posts</h3>
+    <ul>
+      <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
+      <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Troubleshooting AI Agent Skills</a></li>
+      <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+    </ul>
+  </div>
+  
+  <div class="author-box">
+    <h3>About the Author</h3>
+    <p>Jingxiao Cai works on ML infrastructure and spends an unhealthy amount of time turning vague model-platform mismatches into concrete operational lessons. This one started as a simple "why is my prompt failing?" question and ended with a much lower opinion of marketing context numbers.</p>
+  </div>
+  
+  <div class="comments-box">
+    <h3>💬 Comments & Feedback</h3>
+    <p>If you've hit a platform cap that didn't match the model card, I'd love to compare notes. Hidden ceilings are one of those problems that look obvious only after you finally find the right documentation.</p>
+  </div>
   
   <hr>
   <p><em>Have you hit similar hidden limits with LLM APIs? I'd love to hear about it.</em></p>

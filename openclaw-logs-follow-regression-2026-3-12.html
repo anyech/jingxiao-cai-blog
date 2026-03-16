@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` started failing with a misleading gateway error while the gateway itself stayed healthy. Here's the regression, the evidence, and the workaround.">
-    <meta name="keywords" content="OpenClaw logs --follow broken, OpenClaw 2026.3.12 bug, gateway handshake timeout, OpenClaw troubleshooting, OpenClaw logs follow">
+    <meta name="description" content="After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` failed with a misleading gateway error while the gateway stayed healthy. Updated with the 2026.3.13 resolution and local retest.">
+    <meta name="keywords" content="OpenClaw logs --follow broken, OpenClaw 2026.3.12 bug, OpenClaw 2026.3.13 fix, gateway handshake timeout, OpenClaw troubleshooting, OpenClaw logs follow">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
-    <meta property="og:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. The gateway was fine. The handshake was not.">
+    <meta property="og:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest showing the regression is resolved locally.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
-    <meta name="twitter:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. The gateway was fine. The handshake was not.">
+    <meta name="twitter:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest showing it works again locally.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
@@ -32,6 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-14",
+      "dateModified": "2026-03-16",
       "url": "https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html",
       "publisher": {
         "@type": "Person",
@@ -81,7 +82,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</h1>
         <div class="meta">
-            <strong>March 14, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 14, 2026</strong> | By Jingxiao Cai | <strong>Updated March 16, 2026</strong><br>
             <span class="tags">Tags: openclaw, troubleshooting, regression, logs, websocket, devops</span>
         </div>
         <div class="disclaimer">
@@ -90,6 +91,10 @@
     </header>
 
     <main>
+        <div class="success">
+            <strong>Resolution update (March 16, 2026):</strong> I upgraded this deployment to <strong>OpenClaw 2026.3.13</strong> on March 14 and re-tested <code>openclaw logs --follow</code>. It now behaves like a normal long-running follow command again instead of failing during gateway connect. I also posted the retest result back to <a href="https://github.com/openclaw/openclaw/issues/44714#issuecomment-4055652568" target="_blank">issue #44714</a>.
+        </div>
+
         <h2>The Symptom</h2>
         <p>After upgrading OpenClaw from <strong>2026.3.11</strong> to <strong>2026.3.12</strong>, a familiar troubleshooting command suddenly stopped being trustworthy:</p>
         <pre><code>openclaw logs --follow</code></pre>
@@ -146,6 +151,10 @@ Gateway not reachable. Is it running and accessible?</code></pre>
                     <td><strong>2026.3.12</strong></td>
                     <td><code>openclaw logs --follow</code> failed while the gateway remained healthy</td>
                 </tr>
+                <tr>
+                    <td><strong>2026.3.13</strong></td>
+                    <td><code>openclaw logs --follow</code> works again locally after upgrade and retest</td>
+                </tr>
             </tbody>
         </table>
         <p>That’s not random flakiness. That’s version-linked behavior change.</p>
@@ -183,7 +192,7 @@ Gateway not reachable. Is it running and accessible?</code></pre>
         </ul>
 
         <div class="success">
-            <strong>Practical takeaway:</strong> if <code>openclaw logs --follow</code> is broken but the gateway is healthy, switch to <code>journalctl</code> first. It keeps you productive while upstream fixes the regression.
+            <strong>Practical takeaway:</strong> if you're still on <code>2026.3.12</code> and <code>openclaw logs --follow</code> is broken while the gateway is healthy, switch to <code>journalctl</code> first. If you've already moved to <code>2026.3.13+</code>, retest before assuming the problem is still active.
         </div>
 
         <h2>My Troubleshooting Sequence Now</h2>
