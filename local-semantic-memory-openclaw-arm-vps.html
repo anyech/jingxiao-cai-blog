@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.">
+    <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, local embeddings, OpenClaw memory search">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma. The result: 239 files indexed, 1,778 chunks, hybrid search, and zero external embedding API cost.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, 239 files indexed, 1,778 chunks, hybrid search, no external API.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-19",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+
+    <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
+        <div class="meta">
+            <strong>March 19, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Goal</h2>
+        <p>I wanted <strong>semantic memory search in OpenClaw without paying an external embedding provider</strong> and without shipping my memory corpus out to somebody else's API.</p>
+        <p>The target environment was not glamorous: a <strong>4-core ARM VPS</strong> running my personal OpenClaw deployment. In other words, exactly the kind of box where people assume local embeddings are going to be too slow, too fragile, or too annoying to be worth it.</p>
+        <p>That assumption turned out to be wrong.</p>
+
+        <div class="success">
+            <strong>Result:</strong> local semantic memory search came up successfully with <code>node-llama-cpp</code> + <code>embeddinggemma</code>, indexing <strong>239 files</strong> into <strong>1,778 chunks</strong> with <strong>hybrid search</strong> active and <strong>no external embedding API required</strong>.
+        </div>
+
+        <h2>Why I Wanted Local Memory in the First Place</h2>
+        <p>OpenClaw memory search is one of those features that gets much more valuable the moment you have real history:</p>
+        <ul>
+            <li>durable notes in <code>MEMORY.md</code></li>
+            <li>daily troubleshooting logs</li>
+            <li>operational runbooks</li>
+            <li>small but important facts that are annoying to rediscover</li>
+        </ul>
+        <p>Remote embeddings work, but local mode has three obvious advantages:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reason</th>
+                    <th>Why it matters</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cost</strong></td>
+                    <td>No per-query or per-reindex embedding bill for your memory corpus</td>
+                </tr>
+                <tr>
+                    <td><strong>Privacy</strong></td>
+                    <td>Your memory notes stay on your own host instead of becoming another API payload</td>
+                </tr>
+                <tr>
+                    <td><strong>Independence</strong></td>
+                    <td>No key management, remote quota surprises, or embedding-provider drift just to search your own notes</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>What Failed First</h2>
+        <p>The first version of this story looked like a disappointing cliché: local memory search seemed flaky, the index did not complete cleanly in the interactive workflow I was using, and it would have been very easy to blame the VPS.</p>
+        <p>But that diagnosis would have been lazy.</p>
+
+        <blockquote>
+            <p><strong>The problem was not that ARM was too weak. The problem was that the local runtime was incomplete and the indexing workflow was wrong for the machine.</strong></p>
+        </blockquote>
+
+        <p>The actual root cause was a missing optional dependency in the OpenClaw install:</p>
+        <pre><code>node-llama-cpp</code></pre>
+        <p>Once that was fixed, the rest of the story changed completely.</p>
+
+        <h2>The Useful OpenClaw Details</h2>
+        <p>The local docs were clear on two points that mattered:</p>
+        <ul>
+            <li>memory search is configured under <code>agents.defaults.memorySearch</code>, not a top-level <code>memorySearch</code> block</li>
+            <li>local mode uses <code>node-llama-cpp</code> and supports a GGUF or <code>hf:</code> model path</li>
+        </ul>
+        <p>The documented default local embedding model is:</p>
+        <pre><code>hf:ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf</code></pre>
+        <p>That is a very reasonable fit for this use case: small enough to be practical on a modest VPS, but good enough for personal-assistant memory retrieval.</p>
+
+        <h2>The Config Shape That Matters</h2>
+        <p>This is the important part of the config shape, simplified to the pieces that mattered operationally:</p>
+        <pre><code>{
+  "agents": {
+    "defaults": {
+      "memorySearch": {
+        "enabled": true,
+        "provider": "local",
+        "fallback": "none",
+        "local": {
+          "modelPath": "hf:ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf"
+        }
+      }
+    }
+  }
+}</code></pre>
+        <p>I like the explicit <code>fallback: "none"</code> here for one reason: if the point of the exercise is <strong>"stay local"</strong>, silently falling back to a remote embedding provider defeats the whole point.</p>
+
+        <div class="note">
+            <strong>Important nuance:</strong> the local docs also note that some installs may need native-build approval for <code>node-llama-cpp</code>. In my case the immediate failure was simpler: the dependency was missing, not just unapproved.
+        </div>
+
+        <h2>The Operational Fix That Actually Made It Work</h2>
+        <p>Even after local mode was correctly wired, I hit another trap: trying to do a full index build in a foreground, short-lived interactive flow on a small box is a dumb way to judge whether local semantic memory works.</p>
+        <p>Initial indexing is the expensive part. Search after the index is built is the easy part.</p>
+        <p>So the fix was operational, not architectural:</p>
+        <ol>
+            <li>fix the missing local runtime dependency</li>
+            <li>use the default <code>embeddinggemma</code> GGUF path</li>
+            <li>run the full index as a <strong>detached, low-priority background job overnight</strong></li>
+            <li>verify status the next session instead of babysitting it in a fragile foreground turn</li>
+        </ol>
+
+        <p>That last step mattered more than it sounds. On a small VPS, background indexing is not a workaround for failure. It's just the sane execution model.</p>
+
+        <h2>The Verification</h2>
+        <p>Once the overnight run completed, the status check was exactly what I wanted to see:</p>
+        <pre><code>openclaw memory status --agent main --deep --json</code></pre>
+        <pre><code>{
+  "files": 239,
+  "chunks": 1778,
+  "embedding_cache": 1761,
+  "provider": "local",
+  "searchMode": "hybrid",
+  "dirty": false
+}</code></pre>
+
+        <p>More importantly, semantic search started returning useful results rather than placebo noise.</p>
+        <ul>
+            <li>career-context queries surfaced the right durable notes</li>
+            <li>Moltbook-related searches found the correct incident writeups</li>
+            <li>personal-reference lookups returned the expected memory files</li>
+        </ul>
+
+        <div class="success">
+            <strong>In plain English:</strong> this was not just "the index command finished." It was real semantic recall on a self-hosted memory corpus.
+        </div>
+
+        <h2>What This Taught Me About Small VPSes</h2>
+        <p>People often compress two different questions into one:</p>
+        <ol>
+            <li><em>Can this machine run local embeddings at all?</em></li>
+            <li><em>Is foreground full reindexing a pleasant interactive experience on this machine?</em></li>
+        </ol>
+        <p>The answer I got was:</p>
+        <ul>
+            <li><strong>Yes</strong>, the machine can run local embeddings just fine for this use case</li>
+            <li><strong>No</strong>, you should not confuse "overnight background indexing is smarter" with "the machine cannot do it"</li>
+        </ul>
+        <p>Those are different statements, and too many self-hosting discussions blur them.</p>
+
+        <h2>What I’d Recommend to Other OpenClaw Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>If your goal is…</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>cheapest durable memory search</td>
+                    <td>Try <strong>local</strong> first</td>
+                </tr>
+                <tr>
+                    <td>best privacy for personal notes</td>
+                    <td>Prefer <strong>local</strong> and keep fallback explicit</td>
+                </tr>
+                <tr>
+                    <td>fastest large-corpus reindexing with minimal host CPU pressure</td>
+                    <td>Remote embeddings may still be easier operationally</td>
+                </tr>
+                <tr>
+                    <td>testing whether your host is "good enough"</td>
+                    <td>Do <strong>not</strong> judge from one foreground timeout</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>The Real Pattern</h2>
+        <p>The interesting lesson here is broader than memory search:</p>
+        <blockquote>
+            <p><strong>When self-hosted AI features fail, the first suspect should be wiring and execution model—not automatically the hardware.</strong></p>
+        </blockquote>
+        <p>In this case:</p>
+        <ul>
+            <li>the hardware was adequate</li>
+            <li>the local embedding model was adequate</li>
+            <li>the broken part was a missing dependency plus an impatient indexing workflow</li>
+        </ul>
+
+        <h2>One Honest Caveat</h2>
+        <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for other operational reasons. That does <em>not</em> change the conclusion here.</p>
+        <p>The important debugging result was already established:</p>
+        <div class="success">
+            <strong>OpenClaw local semantic memory absolutely worked on this 4-core ARM VPS once the dependency and indexing strategy were corrected.</strong>
+        </div>
+
+        <h2>Why I Think This Matters</h2>
+        <p>A lot of OpenClaw users are exactly in this bucket:</p>
+        <ul>
+            <li>self-hosted</li>
+            <li>cost-sensitive</li>
+            <li>privacy-conscious</li>
+            <li>running on modest hardware rather than a giant GPU box</li>
+        </ul>
+        <p>For that audience, local semantic memory is not some philosophical purity test. It's a practical pattern:</p>
+        <ul>
+            <li>keep memory search on your own host</li>
+            <li>accept that first indexing is the heavy step</li>
+            <li>run that heavy step in the background</li>
+            <li>enjoy cheap, private recall afterward</li>
+        </ul>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the config shape, provider names, model path, and performance/result numbers because those are the useful parts. I intentionally left out deployment-specific IDs, host-specific paths, and any secrets or internal tokens.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
+                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+                <li><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and spends an unreasonable amount of time turning vague "it should work" self-hosting advice into concrete operational evidence. He likes cheap, boring systems that keep working after the benchmark crowd gets bored and leaves.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If a feature can run privately on a small box with one careful fix and one good operational decision, that is usually more interesting than a flashy demo on oversized hardware.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you've been running local embeddings for agent memory on similarly modest hardware, I'd love to compare notes.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to someone who assumes every memory problem needs another API key.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>

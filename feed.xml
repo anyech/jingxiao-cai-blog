@@ -2,50 +2,90 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jingxiao Cai's Blog</title>
-    <description>Personal blog about ML Infrastructure, distributed systems, and tech.</description>
+    <description>Personal blog about ML infrastructure, self-hosted AI, distributed systems, and technical debugging.</description>
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Feb 2026 12:00:00 +0000</lastBuildDate>
-    
+    <lastBuildDate>Thu, 19 Mar 2026 01:00:00 +0000</lastBuildDate>
+
     <item>
-      <title>Troubleshooting AI Agent Skills: A Debugging Story</title>
-      <description>A debugging story of fixing AI agent issues — from a simple binary search bug (= vs ==) to updating outdated skill documentation.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html</guid>
-      <pubDate>Tue, 18 Feb 2026 12:00:00 +0000</pubDate>
+      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma: 239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
-    
+
     <item>
-      <title>Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story</title>
-      <description>The frustrating journey of getting OneDrive to work with a self-hosted AI agent — and the MultCloud workaround that finally worked.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html</guid>
-      <pubDate>Tue, 18 Feb 2026 00:00:00 +0000</pubDate>
+      <title>OpenClaw 2026.3.12 Regression: When logs --follow Breaks But the Gateway Stays Healthy</title>
+      <description>After upgrading to 2026.3.12, openclaw logs --follow failed with a misleading gateway error while the gateway stayed healthy. Updated with the 2026.3.13 retest and a related local-memory troubleshooting win on the same VPS.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html</guid>
+      <pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate>
     </item>
-    
+
     <item>
-      <title>Setting Up Google APIs for Self-Hosted AI Agents</title>
-      <description>Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents. Includes OAuth 2.0 setup and security tips.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html</guid>
-      <pubDate>Tue, 18 Feb 2026 00:00:00 +0000</pubDate>
+      <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
+      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
+      <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
     </item>
-    
+
     <item>
-      <title>Migrating from WordPress to GitHub Pages</title>
-      <description>Why I migrated my blog from WordPress to GitHub Pages — the benefits of Jekyll, static sites, and full control over your content.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html</guid>
-      <pubDate>Mon, 17 Feb 2026 00:00:00 +0000</pubDate>
+      <title>The Recovery Problem: Why Your AI Agent Needs an Undo Button</title>
+      <description>I run autonomous cron jobs with zero undo capability. That turned a routine automation pattern into a bigger safety question about AI agents and recovery primitives.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</guid>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate>
     </item>
-    
+
     <item>
-      <title>Welcome to My Blog</title>
-      <description>After several years in industry, I'm starting to share my learnings, thoughts, and experiences.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/welcome.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/welcome.html</guid>
-      <pubDate>Mon, 17 Feb 2026 00:00:00 +0000</pubDate>
+      <title>Blog Post Sanitization Checklist: What to Redact Before Publishing</title>
+      <description>I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and how to validate a technical blog post before it goes live.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html</guid>
+      <pubDate>Tue, 03 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</title>
+      <description>My AI agent runs multiple autonomous jobs every night—security audits, health checks, and documentation—while I sleep. Here's the architecture and what it taught me.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</guid>
+      <pubDate>Mon, 02 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>VPS OAuth Survival Guide: Google APIs Without a Browser</title>
+      <description>Complete tutorial on OAuth 2.0 for headless servers: how to set up Google APIs on a VPS without a browser using the OAuth Playground workaround.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</guid>
+      <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</title>
+      <description>A debugging story about hidden platform caps, updated with Anthropic's March 2026 flat 1M Claude pricing change and why cheaper long context still doesn't eliminate API-level ceilings.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html</guid>
+      <pubDate>Tue, 24 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Why Custom Skills Don't Load in OpenClaw - A Known Bug</title>
+      <description>I tried creating a custom blog-publishing skill for OpenClaw and discovered it's a known bug. Here's what I learned and how I worked around it.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html</guid>
+      <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</title>
+      <description>A deep dive into malicious skills in AI agent platforms, updated with Moltbook's breach-to-acquisition timeline and the March 2026 reset that forced bot operators back through re-verification.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</guid>
+      <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>

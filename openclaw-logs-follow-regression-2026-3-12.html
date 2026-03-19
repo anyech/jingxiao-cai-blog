@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` failed with a misleading gateway error while the gateway stayed healthy. Updated with the 2026.3.13 resolution and local retest.">
-    <meta name="keywords" content="OpenClaw logs --follow broken, OpenClaw 2026.3.12 bug, OpenClaw 2026.3.13 fix, gateway handshake timeout, OpenClaw troubleshooting, OpenClaw logs follow">
+    <meta name="description" content="After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` failed with a misleading gateway error while the gateway stayed healthy. Updated with the 2026.3.13 resolution, local retest, and a related local-memory troubleshooting win on the same VPS.">
+    <meta name="keywords" content="OpenClaw logs --follow broken, OpenClaw 2026.3.12 bug, OpenClaw 2026.3.13 fix, gateway handshake timeout, OpenClaw troubleshooting, OpenClaw logs follow, OpenClaw local memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
-    <meta property="og:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest showing the regression is resolved locally.">
+    <meta property="og:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest and a related local-memory troubleshooting win on the same VPS.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy">
-    <meta name="twitter:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest showing it works again locally.">
+    <meta name="twitter:description" content="`openclaw logs --follow` failed after the 2026.3.12 upgrade with a misleading gateway error. Updated with the 2026.3.13 retest and a related local-memory win on the same VPS.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">
@@ -32,7 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-14",
-      "dateModified": "2026-03-16",
+      "dateModified": "2026-03-19",
       "url": "https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html",
       "publisher": {
         "@type": "Person",
@@ -82,7 +82,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</h1>
         <div class="meta">
-            <strong>March 14, 2026</strong> | By Jingxiao Cai | <strong>Updated March 16, 2026</strong><br>
+            <strong>March 14, 2026</strong> | By Jingxiao Cai | <strong>Updated March 19, 2026</strong><br>
             <span class="tags">Tags: openclaw, troubleshooting, regression, logs, websocket, devops</span>
         </div>
         <div class="disclaimer">
@@ -212,6 +212,16 @@ Gateway not reachable. Is it running and accessible?</code></pre>
             <li>If you use OpenClaw from a desktop terminal or VS Code workflow, keep a journal-based monitor handy until this is fixed upstream</li>
         </ul>
 
+        <h2>Related Troubleshooting Win: Local Memory Search Worked on the Same Box</h2>
+        <p>A few days after this regression, I enabled <a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">OpenClaw local semantic memory search</a> on the same 4-core ARM VPS using <code>node-llama-cpp</code> and the default <code>embeddinggemma</code> model.</p>
+        <p>That matters here because it reinforces the main diagnostic lesson: <strong>don't blame the whole machine just because one path is broken.</strong> The logs WebSocket path had regressed in <code>2026.3.12</code>, but the box itself was healthy enough to complete a full local memory index once the missing dependency was fixed and the job was run in a low-priority overnight background flow.</p>
+        <ul>
+            <li><strong>Result:</strong> 239 files indexed into 1,778 chunks</li>
+            <li><strong>Search mode:</strong> hybrid search active</li>
+            <li><strong>Takeaway:</strong> a broken client sub-path is not the same thing as an underpowered host</li>
+        </ul>
+        <p>That is a useful pattern well beyond this one bug: narrow failures deserve narrow diagnoses.</p>
+
         <h2>Why I’m Writing This Up</h2>
         <p>Because this is exactly the kind of bug people search for in the least patient mood possible:</p>
         <p><em>“OpenClaw logs --follow broken”</em><br>
@@ -226,8 +236,8 @@ Gateway not reachable. Is it running and accessible?</code></pre>
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</a></li>
                 <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
-                <li><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></li>
                 <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
             </ul>
         </div>
