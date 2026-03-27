@@ -6,8 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Mar 2026 20:50:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Mar 2026 21:20:00 +0000</lastBuildDate>
 
+
+    <item>
+      <title>Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory</title>
+      <description>After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. Bigger embedding models looked better on paper. In practice, text-embedding-3-small won because it fit the indexing path.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</guid>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
