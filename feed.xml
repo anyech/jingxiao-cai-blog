@@ -6,7 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Mar 2026 01:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Mar 2026 08:10:00 +0000</lastBuildDate>
+
+
+    <item>
+      <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
+      <description>How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</guid>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>

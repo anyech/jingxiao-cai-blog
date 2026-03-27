@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting.">
+    <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, infrastructure as code, GitOps, drift detection, declarative cron">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation and drift validation.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, and drift validation for cron automation that spans config, prompts, and runbooks.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Declarative Change Propagation: How I Built a Self-Documenting Cron System",
+      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-27",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+
+    <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        .timeline { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .timeline li { margin-bottom: 12px; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Declarative Change Propagation: How I Built a Self-Documenting Cron System</h1>
+        <div class="meta">
+            <strong>March 27, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Problem Was Never "Just Edit the Cron Job"</h2>
+        <p>I kept running into the same operational pattern: a change that looked tiny on paper actually had <strong>multiple dependent surfaces</strong>.</p>
+        <p>One update would change the intended state of a monitoring lane. That, in turn, meant a desired-state cron snapshot had to change, a monitoring prompt had to change, and the human-facing runbook had to stop lying.</p>
+        <p>Another update would change where automated reports were supposed to land. That meant delivery settings changed, but it also meant the routing guide needed to change and validation needed to know the new destination was intentional rather than drift.</p>
+        <p>By the time I hit the third version of this pattern, the real problem was obvious:</p>
+
+        <blockquote>
+            <p><strong>If one operational change fans out across multiple files, prompts, and policy notes, it is not a one-line edit anymore. It is a change class.</strong></p>
+        </blockquote>
+
+        <p>That was the moment I stopped treating these updates as ad hoc maintenance and started treating them as a small declarative system.</p>
+
+        <div class="success">
+            <strong>Result:</strong> I ended up with a local change-propagation harness that tracks <strong>three registered change classes</strong>, propagates intended state into managed targets, and validates the whole thing before commit so drift gets caught early instead of after a confusing incident.
+        </div>
+
+        <p>One early clarification, because the title can otherwise sound more magical than the implementation: by <strong>self-documenting</strong>, I do <em>not</em> mean AI writing prose for me. I mean the drift-prone documentation sections are derived from the same declared contract that drives the automation surfaces, so the docs stop being a separate manual follow-up task.</p>
+
+        <h2>The Borrowed Idea: GitOps, But Smaller and More Surgical</h2>
+        <p>The useful idea I borrowed from declarative infrastructure and GitOps was simple: <strong>make the intended state explicit, then make drift visible</strong>.</p>
+        <p>I did <em>not</em> need a giant reconciliation engine. I was not trying to auto-heal a Kubernetes cluster. I just needed a sane way to keep a handful of tightly related operational surfaces aligned.</p>
+        <p>So the design I landed on was much smaller:</p>
+        <ul>
+            <li>a <strong>manifest</strong> that defines the intended change contract</li>
+            <li>a <strong>propagator</strong> that fans that contract out into managed targets</li>
+            <li>a <strong>validator</strong> that detects drift when the targets no longer match the manifest</li>
+        </ul>
+
+        <pre><code>manifest = explicit contract
+propagator = fan-out into tracked targets
+validator = drift backstop</code></pre>
+
+        <p>That sounds almost boring. Good. Operational tooling should be boring.</p>
+
+        <h2>What the System Actually Covers</h2>
+        <p>Version 1 started with one change class and then grew only when I hit another recurring multi-surface pattern. That matters because it kept the system narrow and honest.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Change Class</th>
+                    <th>What changes</th>
+                    <th>Why it fans out</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Memory-lane promotion</strong> (<code>memory-model-promotion</code> internally)</td>
+                    <td>The intended provider/model/store lane for memory search</td>
+                    <td>Monitoring prompts and expected-state checks must match the promoted lane</td>
+                </tr>
+                <tr>
+                    <td><strong>Routed delivery change</strong></td>
+                    <td>Which channel/topic certain automated reports should go to</td>
+                    <td>Desired-state delivery settings and the human routing guide must stay aligned</td>
+                </tr>
+                <tr>
+                    <td><strong>Overlap-state change</strong></td>
+                    <td>Whether a temporary secondary monitor should remain enabled during stabilization</td>
+                    <td>Desired-state toggles and human policy notes must agree on whether overlap is still intentional</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>This is what made the system feel production-worthy instead of cute: each case existed because I had already paid the cost of manual drift once.</p>
+
+        <h2>Why I Mean Contract-Derived Documentation, Not Magic</h2>
+        <p>"Self-documenting" is one of those phrases that gets abused, so here is what I mean very specifically.</p>
+        <p>The runbooks and policy notes are not freehand prose that I am expected to remember to update later. They contain <strong>managed blocks</strong> — machine-managed sections marked by start/end comments — generated from the same manifests that drive the desired-state automation surfaces.</p>
+        <p>So when the contract changes, the generated policy block changes too.</p>
+        <p>That creates a much nicer operational property:</p>
+        <ul>
+            <li>the machine-readable contract changes first</li>
+            <li>the managed targets update from that contract</li>
+            <li>the validator checks whether those targets still match</li>
+            <li>the human-facing documentation becomes an output of the same change, not a separate memory exercise</li>
+        </ul>
+
+        <div class="note">
+            <strong>Important nuance:</strong> this is not "AI-generated docs" fluff. It is managed documentation blocks tied to a narrow declarative contract. That is a much safer and more useful thing.
+        </div>
+
+        <h2>The Core Files</h2>
+        <p>The system is small enough that the whole control plane fits in a few files:</p>
+        <ul>
+            <li>a registry of supported change classes</li>
+            <li>one manifest per change class</li>
+            <li>a propagation script</li>
+            <li>a validation script</li>
+            <li>tracked desired-state and policy files with managed blocks</li>
+        </ul>
+
+        <p>At a high level, the registry looks like this:</p>
+        <pre><code>{
+  "cases": {
+    "memory-model-promotion": { "manifestPath": "...", "targets": "..." },
+    "routed-cron-delivery-change": { "manifestPath": "...", "targets": "..." },
+    "memory-monitor-overlap-state": { "manifestPath": "...", "targets": "..." }
+  }
+}</code></pre>
+
+        <p>And a sanitized manifest entry can be as small as this:</p>
+        <pre><code>{
+  "changeType": "routed-cron-delivery-change",
+  "policy": {
+    "defaultRoute": "primary-updates",
+    "routes": [
+      {
+        "id": "ops",
+        "channel": "discord",
+        "to": "channel:ops-room",
+        "jobs": ["health-monitor", "backup-report"]
+      }
+    ]
+  }
+}</code></pre>
+
+        <p>The point is not the JSON shape itself. The point is that the manifest becomes the one explicit place where intent lives before it is projected into prompts, desired-state snapshots, and policy notes.</p>
+
+        <p>And the operating workflow stays intentionally simple:</p>
+        <div class="timeline">
+            <ol>
+                <li>Edit the manifest first.</li>
+                <li>Run the propagator for that change class.</li>
+                <li>Run the validator.</li>
+                <li>Commit the manifest and propagated outputs together.</li>
+            </ol>
+        </div>
+
+        <pre><code>python3 .github/scripts/propagate-change.py &lt;case&gt; --write
+python3 .github/scripts/validate-change-propagation.py</code></pre>
+
+        <p>I like this workflow because it makes the contract explicit and keeps the propagation step visible. Nothing mutates silently behind my back.</p>
+
+        <p>The validator checks <strong>tracked surfaces only</strong>. It does not intercept every possible live mutation path, which is exactly why I treat it as a drift backstop rather than a universal admission controller.</p>
+
+        <h2>What the Validator Checks</h2>
+        <p>The validator is not trying to prove the universe is correct. It is checking a narrower and much more valuable question:</p>
+        <blockquote>
+            <p><strong>Do the tracked surfaces still say what the manifest says they should say?</strong></p>
+        </blockquote>
+
+        <p>In practice, that means it checks things like:</p>
+        <ul>
+            <li>whether the configured memory lane matches the promotion manifest</li>
+            <li>whether generated monitoring prompts still match the expected lane literals</li>
+            <li>whether enabled routed jobs still match the declared delivery policy</li>
+            <li>whether temporary overlap monitoring is still enabled or retired exactly as the policy manifest says</li>
+            <li>whether the managed documentation blocks are still intact instead of being hand-edited into drift</li>
+        </ul>
+
+        <p>Right now the validation pass returns the kind of output I want from boring operational tooling:</p>
+        <pre><code>[change-propagation] memory-model-promotion: OK
+[change-propagation] routed-cron-delivery-change: OK
+[change-propagation] memory-monitor-overlap-state: OK</code></pre>
+
+        <p>No drama. No magic. Just a clean statement that the declared contract and the tracked projections still match.</p>
+
+        <p>If I bypassed the workflow and hand-edited one managed target instead, I would expect the failure to look more like this:</p>
+        <pre><code>[change-propagation] routed-cron-delivery-change: DRIFT
+  - health-monitor delivery ('discord', 'channel:fallback-room') does not match manifest route ('discord', 'channel:ops-room')</code></pre>
+
+        <p>That kind of output matters because it makes the failure actionable: the contract is still explicit, and the mismatch tells you which projection drifted.</p>
+
+        <h2>The Other Important Choice: Managed Blocks Instead of Search-and-Replace Folklore</h2>
+        <p>A surprisingly important implementation detail was using <strong>managed blocks</strong> inside the human-facing files rather than pretending the whole file should be generated.</p>
+        <p>That gave me a useful middle ground:</p>
+        <ul>
+            <li>stable surrounding prose can stay hand-written</li>
+            <li>the drift-prone section is machine-managed</li>
+            <li>the validator can check exact markers instead of guessing what is supposed to match</li>
+        </ul>
+
+        <p>That is the difference between "please remember to update the docs" and "this exact contract-owned section is out of sync."</p>
+
+        <h2>Why This Beat My Old Habit</h2>
+        <p>The old habit was familiar: fix the immediate thing, maybe remember the runbook, maybe remember the monitoring prompt, maybe remember the related job toggle, and hope pre-commit or future-you catches the rest.</p>
+        <p>That habit fails for the same reason many manual infrastructure workflows fail: <strong>the dependency graph lives in your head until the day it doesn't.</strong></p>
+
+        <p>The declarative version is better for four reasons:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Old habit</th>
+                    <th>Declarative propagation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Source of truth</strong></td>
+                    <td>Scattered across memory and habit</td>
+                    <td>Explicit manifest</td>
+                </tr>
+                <tr>
+                    <td><strong>Doc updates</strong></td>
+                    <td>Manual and easy to forget</td>
+                    <td>Managed blocks derived from the contract</td>
+                </tr>
+                <tr>
+                    <td><strong>Drift detection</strong></td>
+                    <td>Incidental or post-incident</td>
+                    <td>Dedicated validator</td>
+                </tr>
+                <tr>
+                    <td><strong>Rollback context</strong></td>
+                    <td>Often implicit</td>
+                    <td>Can live in the manifest next to current intent</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>What This Does <em>Not</em> Solve Yet</h2>
+        <p>This is still version 1, not a religion.</p>
+        <p>The system currently keeps tracked desired-state and policy surfaces aligned, but it does <strong>not</strong> provide universal admission control over every possible live mutation path.</p>
+        <p>That means there are still ways to bypass the contract if someone updates live state through raw tooling or another unguarded path. For example, someone could mutate a live cron delivery target directly without touching the manifest; the validator would flag the mismatch later, but it would not have prevented the live change from happening in the first place.</p>
+        <p>I am intentionally okay with that for now.</p>
+
+        <div class="warning">
+            <strong>Scope boundary:</strong> I did not want a giant hidden control plane that silently edits live systems. The current design is local, explicit, reversible, and biased toward visibility over cleverness.
+        </div>
+
+        <p>If I ever need stronger guarantees, the next step is some form of admission-style enforcement on the mutation path. But that is a phase-two problem, not something I wanted to overbuild before the narrow version proved itself.</p>
+
+        <h2>The Design Rule I Trust Most Now</h2>
+        <p>The most durable lesson from this work is not specific to cron jobs.</p>
+        <blockquote>
+            <p><strong>Whenever an operational change reliably fans out across multiple machine and human surfaces, promote it from "procedure" to "declared contract."</strong></p>
+        </blockquote>
+
+        <p>That one move gives you better documentation, better validation, cleaner commits, and a much lower chance of leaving a half-updated system behind.</p>
+
+        <h2>Why I Think Other People Can Steal This Pattern</h2>
+        <p>You do not need my exact files or my exact runtime to borrow the idea.</p>
+        <p>If you manage any automation system where a "simple change" actually touches multiple layers—job definitions, prompts, runbooks, routing policy, health checks—this pattern is portable:</p>
+        <ol>
+            <li>identify the recurring multi-surface change</li>
+            <li>give it a name</li>
+            <li>declare its intended contract once</li>
+            <li>generate the drift-prone targets from that contract</li>
+            <li>validate the projections continuously</li>
+        </ol>
+
+        <p>That is basically infrastructure-as-code thinking applied to the weird operational edge between cron, documentation, and agent behavior.</p>
+
+        <div class="success">
+            <strong>In plain English:</strong> my cron system became easier to trust the moment I stopped treating documentation, prompts, and policy as side effects and started treating them as outputs of the same declared change.
+        </div>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the architecture, file shapes, and workflow because those are the useful parts. I intentionally left out deployment-specific channel IDs, job IDs, exact schedules, and other details that would fingerprint the live environment without helping anyone copy the pattern.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+                <li><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</a></li>
+                <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Why AI Agent Skills Break in Production (and How to Troubleshoot Them)</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and has a soft spot for boring operational systems that fail loudly, validate cleanly, and do not require heroic memory to maintain. He is especially suspicious of workflows that only work when one specific human remembers all the hidden dependencies.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If a repeated operational change still depends on tribal knowledge, it is probably asking to become a contract.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you have ever built a smaller-than-Terraform declarative layer for ops glue, I would genuinely like to hear about it.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to the person still doing seven related edits by hand and calling it "just a quick cron tweak."</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
