@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what a March 2026 retrieval audit taught me about recall noise and metadata discipline.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, local embeddings, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma. The result: 239 files indexed, 1,778 chunks, hybrid search, and zero external embedding API cost.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added a March 2026 retrieval-audit follow-up on recall quality, noise, and memory hygiene.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, 239 files indexed, 1,778 chunks, hybrid search, no external API.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus a March 2026 retrieval-audit follow-up on recall quality and noise reduction.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,12 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what a March 2026 retrieval audit taught me about recall noise and metadata discipline.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
+      "dateModified": "2026-03-27",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -81,12 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated March 27, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
+        <div class="note"><strong>Follow-up (March 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline. I am intentionally keeping the later remote-stabilization story separate so this post stays about the local-memory win.</div>
     </header>
 
     <main>
@@ -265,11 +267,54 @@
         </ul>
 
         <h2>One Honest Caveat</h2>
-        <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for other operational reasons. That does <em>not</em> change the conclusion here.</p>
+        <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for other operational reasons and eventually stabilized a separate remote memory-only path on <code>text-embedding-3-small</code> after heavier candidates kept timing out. That is a different operational story, and it does <em>not</em> change the conclusion here.</p>
         <p>The important debugging result was already established:</p>
         <div class="success">
             <strong>OpenClaw local semantic memory absolutely worked on this 4-core ARM VPS once the dependency and indexing strategy were corrected.</strong>
         </div>
+
+        <h2>Retrieval Audit Results (March 2026)</h2>
+        <p>After the original local-memory win, I wanted one more sanity check: <strong>was the system merely indexed, or was it actually retrieving the right things cleanly?</strong></p>
+        <p>The useful answer was yes, with two important caveats about noise and memory hygiene.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Audit question</th>
+                    <th>What I saw</th>
+                    <th>Operational lesson</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Did English recall work?</strong></td>
+                    <td>Yes — targeted queries about memory-search stabilization returned the expected durable daily-note hits.</td>
+                    <td>Real retrieval quality matters more than a pretty "index complete" message.</td>
+                </tr>
+                <tr>
+                    <td><strong>Did Chinese recall work?</strong></td>
+                    <td>Yes — Chinese queries surfaced Chinese-language content again instead of falling back to generic noise.</td>
+                    <td>Cross-language recall was viable on the same memory corpus once the indexing path was clean again.</td>
+                </tr>
+                <tr>
+                    <td><strong>What reduced noise most?</strong></td>
+                    <td>Dropping session transcripts and keeping the index focused on durable memory notes made retrieval calmer and more relevant.</td>
+                    <td>More source material is not automatically better. Curated memory often beats transcript sprawl.</td>
+                </tr>
+                <tr>
+                    <td><strong>What content stayed noisy?</strong></td>
+                    <td>Transactional, Gmail-style, daily operational content is still much noisier than curated notes and troubleshooting writeups.</td>
+                    <td>If everything becomes memory, nothing feels like memory.</td>
+                </tr>
+                <tr>
+                    <td><strong>What improved transferability?</strong></td>
+                    <td>Clear headings, explicit labels, and disciplined note structure consistently made later recall easier.</td>
+                    <td>Metadata discipline is a retrieval feature, not just a writing preference.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The biggest practical lesson is boring and useful: <strong>embedding quality is only part of memory quality.</strong> Index scope, note structure, and whether you keep high-noise material out of the main retrieval path matter just as much.</p>
 
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>

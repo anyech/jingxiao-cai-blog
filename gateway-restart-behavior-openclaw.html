@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and the 30-second drain window can interrupt active sessions if you aren't expecting it.">
+    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and a March 2026 case study shows how mixed-state upgrades make restarts harder to reason about.">
     <meta name="keywords" content="OpenClaw gateway restart, OpenClaw config change behavior, config patch restart, OpenClaw auth profiles, OpenClaw plugins">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.">
+    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 mixed-state upgrade case study.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.">
+    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 mixed-state upgrade case study.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
@@ -26,12 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes",
-      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and the 30-second drain window can interrupt active sessions if you aren't expecting it.",
+      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and a March 2026 case study shows how mixed-state upgrades make restarts harder to reason about.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-11",
+      "dateModified": "2026-03-27",
       "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -83,12 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated March 27, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
+        <div class="note"><strong>Follow-up (March 2026):</strong> I added a case study from a later upgrade where legacy plugin configuration debt and a no-restart rollout path created confusing mixed state, plus one new rule: avoid restart-sensitive changes during active panel work.</div>
     </header>
 
     <main>
@@ -213,7 +215,7 @@
         <p>Don't drip-feed five tiny config edits one after another. The docs explicitly mention coalesced pending restarts and restart cooldown behavior. Use that signal correctly: batch changes, then restart once.</p>
 
         <h3>3. Don't edit restart-sensitive config mid-conversation unless you mean it</h3>
-        <p>If you're in an active support thread, a debugging session, or a long-running task, restart-sensitive config work can wait five minutes.</p>
+        <p>If you're in an active support thread, a debugging session, or a long-running task, restart-sensitive config work can wait five minutes. That applies doubly when you still have active panel deliberations or other multi-lane work in flight: a "graceful" restart can turn into a supersession mess surprisingly fast.</p>
 
         <h3>4. Prefer <code>config.patch</code> over partial <code>config.apply</code></h3>
         <p>This isn't just about restart behavior. It's about not nuking unrelated config. Full apply replaces the whole object. Patch is the sane default for narrow edits.</p>
@@ -272,6 +274,18 @@ Let's do it after this turn finishes.</code></pre>
             </tbody>
         </table>
 
+        <h2>Case Study: The 2026.3.23-2 Upgrade Incident</h2>
+        <p>A later upgrade gave me a much clearer example of why restart behavior gets confusing when local config debt and rollout strategy interact.</p>
+        <p>The upstream release itself was not the whole problem. The host still had <strong>legacy plugin configuration</strong> from an older layout, so the upgrade path was already carrying local debt before the restart question even showed up.</p>
+        <p>The most misleading choice was using <code>--no-restart</code>. That left three different things briefly out of sync: the code installed on disk, the gateway process still running in memory, and the config now being judged against the target version. Once the gateway did have to reconcile that state, the failure was harder to reason about than a clean stop-and-start would have been.</p>
+        <p>The eventual fix was boring in the best possible way: remove the stale plugin configuration, rerun the upgrade cleanly, and refresh the gateway service so the runtime entrypoint matched the installed version again.</p>
+
+        <div class="note">
+            <strong>Restart lesson:</strong> before you rely on a deferred or no-restart path, validate legacy plugin-related config first. Otherwise you may think you're avoiding interruption when you're really just deferring a more confusing one.
+        </div>
+
+        <p>This case did <em>not</em> change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.</p>
+
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>
         <ul>
@@ -296,15 +310,17 @@ Let's do it after this turn finishes.</code></pre>
 
         <h2>Checklist Before You Touch Restart-Sensitive Config</h2>
         <ol>
-            <li>Am I in an active conversation or long-running task?</li>
+            <li>Am I in an active conversation, long-running task, or panel deliberation?</li>
             <li>Is this a gateway wiring change or just data?</li>
             <li>Can I batch this with other pending changes?</li>
+            <li>Am I using a <code>--no-restart</code> path to postpone a problem I should validate now?</li>
+            <li>Have I checked for legacy plugin configuration that may no longer match the target version?</li>
             <li>Do I need <code>config.patch</code> rather than <code>config.apply</code>?</li>
             <li>Have I warned the human that a restart is coming?</li>
             <li>Do I know what I'll verify after the gateway comes back?</li>
         </ol>
 
-        <p>If you can answer those six questions first, gateway restarts stop feeling mysterious and start feeling manageable.</p>
+        <p>If you can answer those eight questions first, gateway restarts stop feeling mysterious and start feeling manageable.</p>
 
         <div class="related-posts">
             <h3>Related Posts</h3>

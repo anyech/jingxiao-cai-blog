@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with Moltbook's post-breach community response, Meta acquisition, and the March 2026 API re-verification reset.">
-  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, Moltbook breach, Meta Moltbook acquisition, agent API key reset, malicious skills">
+  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the March 2026 LiteLLM backdoor and Moltbook's breach-to-acquisition lessons.">
+  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Trivy CI compromise, Moltbook breach, malicious skills">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta property="og:description" content="A deep dive into malicious skills, defensive posture for OpenClaw users, and a March 2026 case study from Moltbook's breach-to-acquisition timeline.">
+  <meta property="og:description" content="A deep dive into malicious skills, the March 2026 LiteLLM incident, and what supply-chain hygiene should look like for OpenClaw users.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta name="twitter:description" content="Malicious skills are the new plugin supply-chain risk. Updated with Moltbook's post-breach reset and Meta-era security lessons.">
+  <meta name="twitter:description" content="Malicious skills are only one layer of agent supply-chain risk. Updated with the March 2026 LiteLLM backdoor and broader ecosystem lessons.">
   <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <script type="application/ld+json">
@@ -22,13 +22,13 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know",
-    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with Moltbook's post-breach community response, Meta acquisition, and the March 2026 API re-verification reset.",
+    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the March 2026 LiteLLM backdoor and Moltbook's breach-to-acquisition lessons.",
     "author": {
       "@type": "Person",
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-23",
-    "dateModified": "2026-03-16",
+    "dateModified": "2026-03-27",
     "url": "https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html",
     "publisher": {
       "@type": "Person",
@@ -65,11 +65,11 @@
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 16, 2026</strong></p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 27, 2026</strong></p>
   <p class="tags">Tags: security, openclaw, ai-agents, supply-chain, moltbook</p>
   
   <div class="update-banner">
-    <strong>📝 Update (March 2026):</strong> Added the Moltbook community-response section earlier this month, and now a post-acquisition case study covering Meta's takeover, the March 16 API reset, and what that sequence says about security cleanup versus platform momentum.
+    <strong>📝 Updates (March 2026):</strong> This post now includes both the Moltbook breach-to-acquisition case study added earlier this month and a new section on the LiteLLM 1.82.7-1.82.8 package compromise tied to the broader Trivy/TeamPCP supply-chain wave.
   </div>
   
   <div class="disclaimer">
@@ -79,7 +79,7 @@
 
 <p>Last week, a critical discovery sent shockwaves through the AI agent community: <strong>a credential-stealing skill disguised as a weather app</strong> was found lurking in ClawHub, the community skill repository. This wasn't a bug—it was a deliberate supply chain attack targeting AI agent users.</p>
   
-  <p>If you use OpenClaw or any AI agent platform with extensible skills, this affects you.</p>
+  <p>If you use OpenClaw or any AI agent platform with extensible skills, this is the kind of risk you need to model—whether the entry point is a community skill, a transitive package, or a compromised release pipeline.</p>
   
   <h2>What Happened</h2>
   <p>Security researcher eudaemon_0 discovered a skill called "Weather Now" that, when installed, would silently harvest API credentials from the user's environment. The skill appeared legitimate—positive reviews, proper documentation, a clean GitHub repo—but the actual code did something completely different.</p>
@@ -270,6 +270,29 @@ openclaw skills verify --author eudaemon_0 weather-now
   <div class="success">
     <strong>My practical read:</strong> if you operate agent integrations, treat security incidents and platform ownership changes as separate variables. Surviving the breach does not mean your integration survives the cleanup. Surviving the cleanup does not mean the platform is production-ready.
   </div>
+  
+  <h2>March 2026: The LiteLLM Supply Chain Incident</h2>
+  
+  <p>If the original ClawHub example felt like a community-repo problem, the March 2026 LiteLLM incident made the same lesson much harder to dismiss.</p>
+  
+  <p>Public reporting from <a href="https://docs.litellm.ai/blog/security-update-march-2026">LiteLLM's March 2026 advisory</a>, <a href="https://snyk.io/articles/poisoned-security-scanner-backdooring-litellm/">Snyk's incident write-up</a>, and other security vendors says PyPI packages <code>litellm==1.82.7</code> and <code>litellm==1.82.8</code> were published with malicious code after the attack chain reached LiteLLM's publishing path. Public attribution around the incident ties it to the broader TeamPCP campaign and the earlier Trivy compromise.</p>
+  
+  <div class="warning">
+    <strong>⚠️ Scope check:</strong> this is not an "every OpenClaw deployment is compromised" story. It matters if LiteLLM exists in your environment directly or transitively, or if an unpinned build pulled one of the compromised versions during the affected window.
+  </div>
+  
+  <p>That nuance matters. LiteLLM's own advisory says some deployment paths were <em>not</em> affected, including the official LiteLLM Proxy Docker image and source installs from GitHub. The real lesson is not blanket panic. The lesson is that <strong>transitive dependencies and release pipelines are part of your threat model whether or not you personally chose the package.</strong></p>
+  
+  <h3>Actionable takeaways if LiteLLM might be in your tree</h3>
+  <ul>
+    <li><strong>Check your dependency graph</strong> with tools like <code>pip show litellm</code> and <code>pipdeptree | grep litellm</code>.</li>
+    <li><strong>Treat credentials as exposed</strong> if you installed or ran <code>1.82.7</code> or <code>1.82.8</code>; rotate API keys, cloud credentials, tokens, and other secrets present on affected hosts.</li>
+    <li><strong>Inspect affected environments</strong> for obvious indicators like <code>litellm_init.pth</code> or suspicious outbound traffic tied to the domains documented in public advisories.</li>
+    <li><strong>Pin a known-safe version</strong> such as <code>1.82.6</code> or an explicitly verified later release instead of relying on floating installs.</li>
+    <li><strong>Review CI/CD and image builds</strong> from the affected window, not just your laptop venvs.</li>
+  </ul>
+  
+  <p>This is why I still think the agent ecosystem has a supply-chain problem even when the specific entry point changes. Sometimes it is an unsigned community skill. Sometimes it is a package release. Sometimes it is the security tooling in the release path. The operator lesson is the same: <strong>audit provenance, pin aggressively, and assume transitive dependencies can become first-order risk.</strong></p>
   
   <h2>Conclusion</h2>
   <p>The AI agent supply chain is only going to get more attacks. As these platforms become more powerful, they become more attractive targets.</p>

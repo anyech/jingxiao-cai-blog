@@ -6,7 +6,7 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Mar 2026 08:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Mar 2026 20:50:00 +0000</lastBuildDate>
 
 
     <item>
@@ -19,7 +19,7 @@
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma: 239 files indexed, 1,778 chunks, hybrid search active, and no external embedding API required.</description>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with a March 2026 retrieval-audit follow-up on English/Chinese recall, transcript-noise reduction, and metadata discipline.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
@@ -35,7 +35,7 @@
 
     <item>
       <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
-      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Here's what actually happens and how to avoid getting surprised mid-session.</description>
+      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 case study on mixed-state upgrades, no-restart pitfalls, and legacy plugin-config debt.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
       <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
@@ -91,7 +91,7 @@
 
     <item>
       <title>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</title>
-      <description>A deep dive into malicious skills in AI agent platforms, updated with Moltbook's breach-to-acquisition timeline and the March 2026 reset that forced bot operators back through re-verification.</description>
+      <description>A deep dive into malicious skills in AI agent platforms, now updated with the March 2026 LiteLLM backdoor incident plus Moltbook's breach-to-acquisition timeline and reset-era security lessons.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</guid>
       <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
