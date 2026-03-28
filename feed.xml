@@ -6,8 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2026 21:23:16 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 28 Mar 2026 21:46:57 +0000</lastBuildDate>
 
+
+    <item>
+      <title>The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</title>
+      <description>LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html</guid>
+      <pubDate>Sat, 28 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory</title>

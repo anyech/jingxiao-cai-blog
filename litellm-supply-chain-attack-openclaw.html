@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="In March 2026, LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. Here's the OpenClaw operator checklist: audit, rotate, inspect, pin.">
+    <meta name="keywords" content="LiteLLM supply chain attack, OpenClaw security, AI agent credential theft, PyPI backdoor 2026, Trivy CI compromise, TeamPCP">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know">
+    <meta property="og:description" content="LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. Here's the operator checklist I wish every OpenClaw user had on day one.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know">
+    <meta name="twitter:description" content="This was not a shady plugin story. It was the package and CI/CD layer underneath trusted tooling. Here is the OpenClaw operator version of the LiteLLM incident.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know",
+      "description": "In March 2026, LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. Here's the OpenClaw operator checklist: audit, rotate, inspect, pin.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-28",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
+
+    <title>The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</h1>
+        <div class="meta">
+            <strong>March 28, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: security, openclaw, ai-agents, supply-chain, python, incident-response</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn scattered vendor advisories, operator instincts, and review feedback into one cleaner incident memo: what to audit, what to rotate, and what not to overclaim.
+        </div>
+    </header>
+
+    <main>
+        <h2>This Was Not a Shady Plugin Story</h2>
+        <p>February's supply-chain story was about malicious community skills. March's was about compromised infrastructure underneath a trusted Python package.</p>
+        <p>On March 24, 2026, malicious <code>litellm==1.82.7</code> and <code>litellm==1.82.8</code> hit PyPI after the release path was tied publicly to the broader Trivy / TeamPCP compromise chain.</p>
+
+        <blockquote>
+            <p><strong>If you run OpenClaw, the lesson is simple: your supply chain is not just skills, prompts, and model providers. It is also the packages, scanners, build steps, and transitive dependencies underneath them.</strong></p>
+        </blockquote>
+
+        <div class="warning">
+            <strong>Scope first:</strong> this was not an “all OpenClaw installs are compromised” event. But it was exactly the kind of incident that should trigger a real dependency audit, a secrets review, and a pinning check.
+        </div>
+
+        <h2>What Happened</h2>
+        <ul>
+            <li><strong>Affected versions:</strong> <code>litellm==1.82.7</code> and <code>litellm==1.82.8</code></li>
+            <li><strong>Publicly linked chain:</strong> broader Trivy / TeamPCP compromise activity reaching LiteLLM's publishing path</li>
+            <li><strong>Publicly described impact:</strong> credential harvesting and exfiltration behavior</li>
+            <li><strong>Especially important detail:</strong> <code>1.82.8</code> used a <code>.pth</code>-style startup hook path, which weakens the comforting idea that “maybe I never imported the bad code”</li>
+        </ul>
+
+        <div class="note">
+            <strong>Important nuance:</strong> LiteLLM's own advisory said some deployment paths were <em>not</em> affected, including the official LiteLLM Proxy Docker image and GitHub source installs. Good incident writing should preserve that boundary instead of inflating the blast radius for drama.
+        </div>
+
+        <h2>Why OpenClaw Users Should Care</h2>
+        <p>You do not need to be a direct LiteLLM user for this to matter.</p>
+        <ul>
+            <li>LiteLLM can appear as a <strong>direct dependency</strong> in agent tooling and orchestration layers.</li>
+            <li>It can also appear <strong>transitively</strong>, which is usually the more annoying and less visible case.</li>
+            <li>The incident is a reminder that <strong>security tooling in CI/CD is itself part of the production threat model</strong>.</li>
+        </ul>
+
+        <div class="success">
+            <strong>Operator takeaway:</strong> for self-hosted agent stacks, dependency provenance, pinned builds, and build-pipeline hygiene are first-order reliability work — not optional security garnish.
+        </div>
+
+        <h2>Operator Checklist</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Check</th>
+                    <th>Why</th>
+                    <th>Immediate action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Dependency graph</strong></td>
+                    <td>You may be using LiteLLM transitively without realizing it.</td>
+                    <td>Check direct installs, dependency trees, and lockfiles.</td>
+                </tr>
+                <tr>
+                    <td><strong>Build / deploy surfaces</strong></td>
+                    <td>Impacted environments may have been created automatically, not by a person on a laptop.</td>
+                    <td>Review CI logs, Docker builds, ephemeral images, and package install history from the affected window.</td>
+                </tr>
+                <tr>
+                    <td><strong>Secrets exposure</strong></td>
+                    <td>Public guidance says affected hosts should be treated as credential exposure events.</td>
+                    <td>Rotate API keys, cloud credentials, tokens, SSH material, and config-file secrets present on those systems.</td>
+                </tr>
+                <tr>
+                    <td><strong>Indicators of compromise</strong></td>
+                    <td>Post-install artifacts and suspicious outbound destinations can help confirm impact.</td>
+                    <td>Look for <code>litellm_init.pth</code> and investigate outbound requests to domains named in public advisories.</td>
+                </tr>
+                <tr>
+                    <td><strong>Version pinning</strong></td>
+                    <td>Floating dependencies turn upstream incidents into surprise local incidents.</td>
+                    <td>Pin to a known-safe version such as <code>1.82.6</code> or a later release explicitly verified by the vendor.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Ten-Minute Audit Commands</h2>
+        <pre><code># direct package presence
+pip show litellm
+pipdeptree | grep litellm
+
+# manifests and build surfaces
+rg -n "litellm" requirements*.txt pyproject.toml poetry.lock uv.lock Dockerfile* .github/workflows/
+
+# obvious IoC artifact
+find . -name "litellm_init.pth"</code></pre>
+
+        <p>That is not a full investigation. It is the first ten minutes, which is usually the difference between a controlled response and a fuzzy one.</p>
+
+        <h2>What Was Safe — and Why That Still Does Not Mean Relax</h2>
+        <p>One of the most useful parts of the LiteLLM advisory was the explicit scope clarification:</p>
+        <ul>
+            <li>official LiteLLM Proxy Docker users were described as unaffected</li>
+            <li>GitHub source installs were described as unaffected</li>
+            <li>older versions such as <code>1.82.6</code> and earlier were the clean baseline in the advisory</li>
+        </ul>
+
+        <p>That is good news. It is just not the moral of the story.</p>
+        <p>The real moral is that <strong>build-path trust, transitive dependency visibility, and version pinning determine whether a bad upstream day becomes your bad day.</strong></p>
+
+        <h2>The Bigger Lesson</h2>
+        <p>The February skill-malware story and the March LiteLLM incident are different entry points into the same operational truth: in agent infrastructure, “I did not install anything shady” is not a complete defense model.</p>
+
+        <div class="warning">
+            <strong>OpenClaw rule of thumb:</strong> treat skills, Python packages, container bases, CI scanners, and release credentials as one continuous supply chain. If you only harden one layer, the other layers become the obvious entry points.
+        </div>
+
+        <h2>What I Would Change After Reading This Incident</h2>
+        <ol>
+            <li><strong>Pin more aggressively.</strong> Floating dependencies are convenience until they become incident response.</li>
+            <li><strong>Keep audits close to deployment reality.</strong> Check the environments that actually build and run your agent stack, not just the repo on your laptop.</li>
+            <li><strong>Assume security tooling can itself become attack surface.</strong> “It was the scanner” is not a joke anymore.</li>
+            <li><strong>Document the checklist before the next incident.</strong> The middle of an incident is a bad time to invent your audit process from scratch.</li>
+        </ol>
+
+        <h2>References</h2>
+        <ul>
+            <li><a href="https://docs.litellm.ai/blog/security-update-march-2026">LiteLLM — Security Update: Suspected Supply Chain Incident</a></li>
+            <li><a href="https://snyk.io/articles/poisoned-security-scanner-backdooring-litellm/">Snyk — How a Poisoned Security Scanner Became the Key to Backdooring LiteLLM</a></li>
+            <li><a href="https://thehackernews.com/2026/03/teampcp-backdoors-litellm-versions.html">The Hacker News — TeamPCP Backdoors LiteLLM Versions 1.82.7–1.82.8 via Trivy CI/CD Compromise</a></li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <p>The LiteLLM story matters because it is exactly the kind of supply-chain failure that becomes more likely as the agent ecosystem grows faster than its trust model.</p>
+        <p>If you run OpenClaw, you do not need perfect certainty to respond well. You need a clean checklist, a realistic scope model, and the discipline to audit, rotate, inspect, and pin before the next surprise arrives.</p>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
+                <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
+                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs Security Audits While I Sleep</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and self-hosted AI automation. He has become steadily less willing to treat build pipelines, package indexes, and “trusted” tooling as someone else's problem.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">Security incidents are expensive. Relearning the same supply-chain lesson twice is worse.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you have a cleaner operator checklist for incidents like this, or if you have seen other AI-agent stacks hide risky transitive dependencies in surprising places,
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">open an issue on GitHub</a>
+                and compare notes.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to the person still treating dependency pinning like optional paperwork.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>

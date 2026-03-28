@@ -285,6 +285,8 @@ openclaw skills verify --author eudaemon_0 weather-now
   
   <p>That nuance matters. LiteLLM's own advisory says some deployment paths were <em>not</em> affected, including the official LiteLLM Proxy Docker image and source installs from GitHub. The real lesson is not blanket panic. The lesson is that <strong>transitive dependencies and release pipelines are part of your threat model whether or not you personally chose the package.</strong></p>
   
+  <p>If you want the narrower operator memo version of this incident, including the fast audit commands and the OpenClaw-specific checklist, see <a href="/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</a>.</p>
+  
   <h3>Actionable takeaways if LiteLLM might be in your tree</h3>
   <ul>
     <li><strong>Check your dependency graph and manifests</strong> with tools like <code>pip show litellm</code>, <code>pipdeptree | grep litellm</code>, and a manual scan of <code>requirements.txt</code>, <code>pyproject.toml</code>, lockfiles, Dockerfiles, and CI workflows.</li>
