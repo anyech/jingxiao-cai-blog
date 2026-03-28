@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting.">
-    <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, infrastructure as code, GitOps, drift detection, declarative cron">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validation, and practical guidance for failures and new change classes.">
+    <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, declarative cron">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation and drift validation.">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation, drift validation, and a reusable extension pattern.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, and drift validation for cron automation that spans config, prompts, and runbooks.">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, and practical guidance for validator failures and new change classes.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
@@ -26,12 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Declarative Change Propagation: How I Built a Self-Documenting Cron System",
-      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting.",
+      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validation, and practical guidance for failures and new change classes.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-27",
+      "dateModified": "2026-03-28",
       "url": "https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html",
       "publisher": {
         "@type": "Person",
@@ -83,12 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Declarative Change Propagation: How I Built a Self-Documenting Cron System</h1>
         <div class="meta">
-            <strong>March 27, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated March 28, 2026</strong><br>
             <span class="tags">Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
         </div>
+        <div class="note"><strong>Updated March 28, 2026:</strong> I added a practical appendix for the two questions that show up immediately after publication: what to do when validation goes red, and how to register a new change class without turning the system into a junk drawer.</div>
     </header>
 
     <main>
@@ -315,6 +317,84 @@ python3 .github/scripts/validate-change-propagation.py</code></pre>
         </div>
 
         <p>If I ever need stronger guarantees, the next step is some form of admission-style enforcement on the mutation path. But that is a phase-two problem, not something I wanted to overbuild before the narrow version proved itself.</p>
+
+        <h2>When Validation Fails</h2>
+        <p>The right reaction to a failed validation pass is not panic. It is gratitude. The validator did its job before a bad commit, stale runbook, or drifted prompt taught you the same lesson more expensively.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Failure shape</th>
+                    <th>Likely cause</th>
+                    <th>What I do next</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Manifest will not parse</strong></td>
+                    <td>Broken JSON/YAML, missing required field, or schema drift in the contract itself.</td>
+                    <td>Fix the manifest first; do not touch projections until the contract is valid again.</td>
+                </tr>
+                <tr>
+                    <td><strong>Change class is unknown</strong></td>
+                    <td>The case was never registered in the registry or the target list is incomplete.</td>
+                    <td>Register it explicitly before running propagation. An ad hoc class is just drift with better intentions.</td>
+                </tr>
+                <tr>
+                    <td><strong>Managed block drift</strong></td>
+                    <td>A generated section was hand-edited or the propagator was skipped.</td>
+                    <td>Inspect the diff, rerun propagation for the affected case, and keep freehand prose outside the managed markers.</td>
+                </tr>
+                <tr>
+                    <td><strong>Validator timeout or stale state</strong></td>
+                    <td>The validator is looking at old generated state, or another mutation path changed live state underneath the contract.</td>
+                    <td>Run the validator manually, inspect logs and diffs, then decide whether the contract is wrong or the projection is wrong.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>My preferred recovery loop is intentionally boring:</p>
+        <ol>
+            <li>run the validator manually</li>
+            <li>inspect the manifest diff and the generated-target diff</li>
+            <li>rerun propagation only for the affected change class</li>
+            <li>if the validator is still red, either fix the manifest or manually correct the drifted target before trying again</li>
+        </ol>
+
+        <pre><code>python3 .github/scripts/validate-change-propagation.py
+python3 .github/scripts/propagate-change.py &lt;case&gt; --write
+git diff -- .</code></pre>
+
+        <div class="warning">
+            <strong>Fail-closed rule:</strong> a red validator is not a cosmetic paper cut. It means the contract and at least one projection disagree. Do not ship the mismatch and call it “probably fine.”
+        </div>
+
+        <h2>Registering a Fourth Change Class</h2>
+        <p>The extension rule is conservative on purpose: if a pattern still feels one-off, leave it as a procedure. A new change class should only appear when you can already see the same multi-surface failure trying to happen again.</p>
+
+        <ol>
+            <li><strong>Prove the pattern is recurring.</strong> One awkward edit does not earn a new abstraction. Repeated fan-out across machine and human surfaces does.</li>
+            <li><strong>Define the smallest contract that captures intent.</strong> Include only the fields the propagator and validator actually need.</li>
+            <li><strong>Register the case explicitly.</strong> Add it to the change-class registry with its manifest path and managed targets.</li>
+            <li><strong>Teach the propagator how to project it.</strong> Prefer managed blocks and narrowly owned targets over whole-file generation.</li>
+            <li><strong>Add validator coverage before trusting it.</strong> If the validator cannot explain the new class, you do not have a safe extension yet.</li>
+            <li><strong>Add one isolated regression fixture.</strong> The extension is not real until you can prove both the happy path and the obvious drift path.</li>
+        </ol>
+
+        <p>A sanitized shape can stay very small:</p>
+        <pre><code>{
+  "changeType": "new-change-class",
+  "owner": "ops",
+  "targets": ["desired-state.json", "runbook.md#managed-block"],
+  "policy": {
+    "mode": "enabled",
+    "route": "primary-updates"
+  }
+}</code></pre>
+
+        <div class="note">
+            <strong>Design guardrail:</strong> if adding the fourth class starts to feel easy, slow down. The goal is not to collect abstractions. The goal is to promote only the recurring patterns whose drift cost is already real.
+        </div>
 
         <h2>The Design Rule I Trust Most Now</h2>
         <p>The most durable lesson from this work is not specific to cron jobs.</p>

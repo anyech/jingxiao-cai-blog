@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. Bigger embedding models looked better on paper. In practice, text-embedding-3-small won because it fit the indexing path.">
-    <meta name="keywords" content="OpenClaw remote memory, text-embedding-3-small, OpenRouter embeddings, memory indexing, retrieval stability, embedding model selection, self-hosted AI memory">
+    <meta name="description" content="After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. Now updated with a retrieval reality check on source discipline, lexical anchors, and why hybrid search stayed in the picture.">
+    <meta name="keywords" content="OpenClaw remote memory, text-embedding-3-small, OpenRouter embeddings, retrieval audit, hybrid search, embedding model selection, self-hosted AI memory">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory">
-    <meta property="og:description" content="A real production lesson from OpenClaw memory search: workflow fit, batching, and sync stability can matter more than bigger embedding models on paper.">
+    <meta property="og:description" content="A real production lesson from OpenClaw memory search: workflow fit, source discipline, and hybrid retrieval can matter more than bigger embedding models on paper.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory">
-    <meta name="twitter:description" content="Bigger embedding models looked better on paper. In practice, text-embedding-3-small won because it fit OpenClaw's remote indexing path.">
+    <meta name="twitter:description" content="Workflow fit beat benchmark prestige, and the follow-up retrieval reality check pointed toward source discipline and hybrid retrieval instead of more model churn.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">
@@ -26,12 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory",
-      "description": "After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. Bigger embedding models looked better on paper. In practice, text-embedding-3-small won because it fit the indexing path.",
+      "description": "After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. Now updated with a retrieval reality check on source discipline, lexical anchors, and why hybrid search stayed in the picture.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-27",
+      "dateModified": "2026-03-28",
       "url": "https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html",
       "publisher": {
         "@type": "Person",
@@ -81,12 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</h1>
         <div class="meta">
-            <strong>March 27, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated March 28, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, memory, embeddings, debugging, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy model-churn episode into a cleaner operational lesson: in a real memory system, workflow fit and rebuild trust matter more than a prettier benchmark card.
         </div>
+        <div class="note"><strong>Updated March 28, 2026:</strong> I added a follow-up retrieval reality check. The interesting question after the lane stabilized was not whether another benchmark darling appeared. It was whether source discipline, lexical anchors, and hybrid retrieval behavior mattered more than another round of model churn.</div>
     </header>
 
     <main>
@@ -187,6 +189,45 @@
             <li><strong>Treat latency and batching fit as first-class metrics</strong> — not just embedding quality on paper.</li>
             <li><strong>Verify with real recall, not status cosmetics</strong> — a successful search is stronger evidence than a pretty scorecard.</li>
         </ol>
+
+        <h2>Retrieval Reality Check (First Follow-Up)</h2>
+        <p>After the post went live, the obvious temptation was to turn the story into a fake precision report card. I am deliberately not doing that. I did not run a glamorous 50-query benchmark and pretend it was science. I did a smaller operator-focused sanity pass: representative English and Chinese memory queries, top-result inspection, and one boring question — did the system still feel trustworthy without another migration cycle?</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Follow-up angle</th>
+                    <th>What held up</th>
+                    <th>What it pushed me toward</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Durable English note queries</strong></td>
+                    <td>The expected troubleshooting and decision notes still surfaced near the top when the corpus stayed focused on durable memory.</td>
+                    <td>Operational trust matters more than a prettier model card.</td>
+                </tr>
+                <tr>
+                    <td><strong>Chinese or mixed-language recall</strong></td>
+                    <td>Cross-language recall remained usable once the lane stayed clean and memory-only.</td>
+                    <td>The retrieval story was broader than one model ID.</td>
+                </tr>
+                <tr>
+                    <td><strong>Transcript / transactional noise</strong></td>
+                    <td>Noisy, low-signal content was still the biggest relevance tax.</td>
+                    <td>Prune sources before shopping for a heavier embedding model.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hybrid search question</strong></td>
+                    <td>Better headings, labels, and lexical anchors helped terse operator queries more than another round of model churn would have.</td>
+                    <td>Treat hybrid retrieval as a feature, not an admission of defeat.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The biggest follow-up lesson is that I only half-disagree with the popular "memory is grep" line. Keyword anchors, headings, and durable labels matter a lot more than vector-only enthusiasts like to admit. But that does not mean embeddings are fake. It means <strong>hybrid retrieval plus cleaner notes</strong> is often the right boring answer.</p>
+
+        <p>So the follow-up did not push me back toward heavier models. It pushed me toward the same unglamorous improvements the local-memory audit already hinted at: keep high-noise material out of the main lane, give durable notes better lexical anchors, and fix retrieval hygiene before reopening the model-shopping loop.</p>
 
         <h2>The Real Takeaway</h2>
         <p>The local-memory story taught me that small hardware was not the real villain.</p>
