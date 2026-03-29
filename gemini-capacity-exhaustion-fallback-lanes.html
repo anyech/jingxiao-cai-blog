@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt failure boundaries, live health probes, and quality-preserving degradation.">
+    <meta name="keywords" content="Gemini CLI fallback, AI agent reliability, model capacity exhaustion handling, OpenClaw, Gemini, LLM ops, fallback policy">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
+    <meta property="og:description" content="A practical design for Gemini fallback lanes: keep policy in OpenClaw-owned config, keep mapping thin, treat fast rescue as a real downgrade, and separate startup failures from prompt-time failures.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
+    <meta name="twitter:description" content="Config-owned fallback policy, thin provider mapping, health probes, and the hard boundary between startup fallback and prompt-time failure.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows",
+      "description": "How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt failure boundaries, live health probes, and quality-preserving degradation.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-03-29",
+      "dateModified": "2026-03-29",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "Gemini CLI fallback",
+        "AI agent reliability",
+        "model capacity exhaustion handling",
+        "OpenClaw",
+        "Gemini",
+        "LLM ops"
+      ]
+    }
+    </script>
+
+    <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</h1>
+        <div class="meta">
+            <strong>March 29, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal panel review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with current live behavior.
+        </div>
+        <div class="warning">
+            <strong>Important boundary up front:</strong> the wrapper described here improves <em>startup-layer</em> fallback. It does <strong>not</strong> yet solve prompt-time ACP failures after a Gemini session has already started. That is still the real engineering gap.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Real Question Wasn't “What Model Next?”</h2>
+        <p>When Gemini preview capacity collapses, the obvious question is: <em>what should I try next?</em></p>
+        <p>The more important question is: <strong>where should fallback policy live?</strong></p>
+        <p>I run Gemini through an ACP-backed path inside OpenClaw—a wrapper/runtime layer that lets Gemini act as a consultant inside a larger agent workflow. When that path fails, the user-facing symptom can be something generic like <code>acpx exited with code 1</code>, while the actual cause is upstream <code>429</code>, <code>RESOURCE_EXHAUSTED</code>, or <code>MODEL_CAPACITY_EXHAUSTED</code>.</p>
+        <p>That distinction matters because a model-capacity problem, an auth problem, and a local wrapper bug should not trigger the same fallback behavior. If your system collapses all of them into “Gemini failed,” the fallback strategy is already wrong.</p>
+
+        <blockquote>
+            <p><strong>The design problem was not “which model should come second?” It was “how do I keep model policy out of the wrong layers?”</strong></p>
+        </blockquote>
+
+        <h2>The Three Wrong Places to Put Fallback Policy</h2>
+        <p>Once I knew I needed fallback behavior, there were three obvious places to put it. All three were bad.</p>
+
+        <h3>1. Gemini CLI settings</h3>
+        <p>This is the tempting shortcut: repoint one alias when preview gets unreliable and call it a day.</p>
+        <p>That works once. It fails as a design. The provider settings should stay thin and concrete: alias-to-model mapping, auth mode, and tool-local defaults. The moment they start carrying lane order, rescue-lane logic, and failure triggers, they stop being a clean adapter surface and start becoming an orchestration layer in disguise.</p>
+
+        <h3>2. Every workflow that happens to use Gemini</h3>
+        <p>This is worse. If panel review code, summarization code, and research code all start manually walking <code>preview -&gt; stable -&gt; fast</code>, model policy gets scattered across business logic. A future model change becomes archaeology.</p>
+
+        <h3>3. Operator memory</h3>
+        <p>This is the classic 2 AM trap: “I know what to do when preview is down.”</p>
+        <p>That remains true until the failure mode turns out not to be preview capacity, or until someone else touches the system, or until yesterday’s outage shape stops matching today’s reality.</p>
+
+        <h2>The Design That Survived the Internal Panel Review</h2>
+        <p>The design that survived an <strong>internal five-model panel review</strong> was simple:</p>
+        <ul>
+            <li>define <strong>semantic lanes</strong></li>
+            <li>keep lane order and failure triggers in <strong>OpenClaw-owned config</strong></li>
+            <li>keep Gemini settings limited to <strong>alias -&gt; concrete model mapping</strong></li>
+            <li>use a small <strong>Gemini-specific wrapper</strong> to execute that lane plan</li>
+            <li>let higher-level workflows ask only for the <strong>logical Gemini consultant</strong></li>
+        </ul>
+
+        <p>The conceptual lane stack looked like this:</p>
+        <pre><code>{
+  "profiles": {
+    "consult-primary": {
+      "order": ["preview-primary", "stable-primary"],
+      "rescueOrder": ["fast-fallback"],
+      "enableRescueLane": false,
+      "fallbackOn": ["429", "RESOURCE_EXHAUSTED", "MODEL_CAPACITY_EXHAUSTED"]
+    }
+  },
+  "lanes": {
+    "preview-primary": { "alias": "gemini-preview" },
+    "stable-primary": { "alias": "gemini-stable" },
+    "fast-fallback": { "alias": "gemini-fast", "disabledByDefault": true }
+  }
+}</code></pre>
+
+        <div class="note">
+            <strong>Illustrative structure only:</strong> this JSON is a simplified example, not a byte-for-byte copy of my live config. The point is the separation of policy, mapping, and execution—not the exact local schema or alias names.
+        </div>
+
+        <p>That separation gave each layer one job:</p>
+        <ul>
+            <li><strong>Gemini settings</strong> answer: what concrete model does this alias mean?</li>
+            <li><strong>OpenClaw lane config</strong> answers: in what order should I try lanes, and under what failure class?</li>
+            <li><strong>The wrapper</strong> answers: how do I execute that policy and log what happened?</li>
+            <li><strong>The workflow</strong> answers only: I need the Gemini consultant role.</li>
+        </ul>
+
+        <div class="success">
+            <strong>Current live route:</strong> the original conceptual design prioritized <code>preview-primary -&gt; stable-primary -&gt; fast-fallback</code>. The <strong>current live deployment</strong> now runs <code>stable-primary -&gt; preview-primary</code> as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
+        </div>
+
+        <h2>Why “Quality-Preserving Degradation” Was the Right Mental Model</h2>
+        <p>Not every fallback is equivalent.</p>
+        <p>If a high-end preview lane is overloaded, the next question should not be “what is the fastest thing that still returns text?” The next question should be:</p>
+
+        <blockquote>
+            <p><strong>What is the best available downgrade that preserves answer quality for the kind of work I am doing?</strong></p>
+        </blockquote>
+
+        <p>For my use case, the conceptual answer was:</p>
+        <ol>
+            <li><strong>preview-primary</strong> — highest-quality, less stable lane</li>
+            <li><strong>stable-primary</strong> — quality-preserving fallback</li>
+            <li><strong>fast-fallback</strong> — emergency rescue lane, intentionally lower tier</li>
+        </ol>
+
+        <p>The important rule was that the fast lane should exist, but it should not silently become the everyday default just because it happens to be available.</p>
+
+        <p>That is still the design principle I like most here: <strong>make the downgrade legible</strong>. If you are using a fast rescue lane, that should mean something operationally. It should not masquerade as a normal quality path.</p>
+
+        <h2>Failure Classes Should Map to Different Behaviors</h2>
+        <p>This was the most reusable lesson in the whole exercise.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Failure shape</th>
+                    <th>What it probably means</th>
+                    <th>What I want the system to do</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong><code>429</code> / <code>MODEL_CAPACITY_EXHAUSTED</code> on preview</strong></td>
+                    <td>Temporary capacity pressure on the preferred lane</td>
+                    <td>Try the stable lane next; maybe use fast only if rescue is intentionally enabled</td>
+                </tr>
+                <tr>
+                    <td><strong><code>429</code> on stable too</strong></td>
+                    <td>The quality lanes are unhealthy right now</td>
+                    <td>Either use an explicit fast rescue route or mark Gemini degraded</td>
+                </tr>
+                <tr>
+                    <td><strong>Auth / permission error</strong></td>
+                    <td>Configuration or account problem</td>
+                    <td>Stop immediately; do not pretend another lane solves it</td>
+                </tr>
+                <tr>
+                    <td><strong>Generic ACP exit with no useful classification</strong></td>
+                    <td>Wrapper symptom, not root cause</td>
+                    <td>Run direct lane-health probes before blaming local ACP plumbing</td>
+                </tr>
+                <tr>
+                    <td><strong>All lanes unhealthy</strong></td>
+                    <td>Gemini is effectively unavailable for this workflow</td>
+                    <td>Continue the wider panel in degraded mode and say so plainly</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>What the Wrapper Solved — and What It Didn't</h2>
+        <p>The wrapper itself stayed intentionally boring:</p>
+        <pre><code>resolve profile -&gt; lane order
+for each lane:
+  run Gemini with that alias
+  if success: return
+  if error is capacity-only: try next lane
+  else: stop and surface the failure
+if all lanes fail: mark Gemini degraded/unavailable</code></pre>
+
+        <p>That design did a few useful things immediately:</p>
+        <ul>
+            <li>fallback became <strong>capacity-aware at startup</strong>, instead of blanket retry-everything chaos</li>
+            <li>event logging could explain whether a run succeeded on the first lane or fell back</li>
+            <li>the rest of the consultation workflow stopped hardcoding Gemini model tiers</li>
+            <li>lane policy became editable in one place</li>
+        </ul>
+
+        <div class="warning">
+            <strong>The boundary that matters most:</strong> this wrapper helps only when failure happens during lane selection or process start. It does <strong>not</strong> intercept prompt-time quota failures after the ACP session has already started.
+        </div>
+
+        <p>That correction mattered more than the original implementation.</p>
+        <p>The first version solved startup-layer lane choice cleanly. Later live failures showed that some Gemini ACP failures happened <em>after</em> the ACP process started successfully, during the prompt/session phase. At that point, the startup wrapper was already out of the decision path. The failure surfaced outward as a generic ACP exit, and the fallback chain never had a chance to run.</p>
+
+        <blockquote>
+            <p><strong>Fallback at startup is an operational improvement. Fallback at prompt/session time is the real long-term reliability fix.</strong></p>
+        </blockquote>
+
+        <p>That is why I now think the right architecture description is:</p>
+        <ul>
+            <li><strong>wrapper-layer fallback</strong> is a good first operational layer</li>
+            <li><strong>prompt/session-layer fallback</strong> is still the real engineering target</li>
+        </ul>
+
+        <h2>Health Probes Beat Preference</h2>
+        <p>The original conceptual story was <code>preview -&gt; stable -&gt; fast</code>. The live story got messier.</p>
+        <p>At one point, direct lane probes showed both quality lanes unhealthy while the fast lane still worked. That is exactly the sort of moment when design preference has to lose to operational evidence.</p>
+
+        <p>A sanitized failure-state probe looks like this:</p>
+        <pre><code>- preview-primary: capacity_exhausted
+- stable-primary: capacity_exhausted
+- fast-fallback: ok</code></pre>
+
+        <p>That is the sort of result that justifies a temporary emergency route. But it is not the whole story forever. Before publishing this post, a fresh probe showed all three lane aliases healthy again. The point of the health gate is not to memorialize one outage. The point is to keep route changes tied to <strong>current evidence</strong> instead of static preference.</p>
+
+        <div class="note">
+            <strong>Practical rule:</strong> route changes should be based on live lane health, not preference alone. If the health picture changes, the lane order should be cheap to change too.
+        </div>
+
+        <h2>The Design Rule I Trust Now</h2>
+        <p>The most durable lesson was not Gemini-specific. It was this:</p>
+
+        <blockquote>
+            <p><strong>Keep policy separate from mapping, and separate again from execution.</strong></p>
+        </blockquote>
+
+        <p>In plain English:</p>
+        <ul>
+            <li>do not bury lane policy inside the provider’s local settings file</li>
+            <li>do not scatter tier-walking logic across workflows</li>
+            <li>do not let a wrapper become your only explanation of runtime health</li>
+            <li>do keep one owner-controlled policy file that defines the semantic route</li>
+            <li>do keep one adapter layer that executes that policy</li>
+            <li>do keep one probe path that tells you whether the preferred route still matches reality</li>
+        </ul>
+
+        <p>That turns model fallback from folklore into an operating surface.</p>
+
+        <h2>What I'd Tell Anyone Building Agent Fallback Now</h2>
+        <ol>
+            <li><strong>Classify failure shapes before you classify models.</strong></li>
+            <li><strong>Prefer the best downgrade, not the first downgrade.</strong></li>
+            <li><strong>Put fallback policy in one owner-controlled place.</strong></li>
+            <li><strong>Make lane order cheap to change.</strong></li>
+            <li><strong>Separate startup fallback from prompt-time fallback in your head and in your code.</strong></li>
+            <li><strong>Use live health probes, not yesterday’s theory.</strong></li>
+        </ol>
+
+        <p>The real mistake is not failing over from a preview model. The real mistake is building a system where model policy lives in random places and then acting surprised when reliability turns into a scavenger hunt.</p>
+
+        <div class="success">
+            <strong>The winning shape for me:</strong> semantic lanes, OpenClaw-owned policy, thin provider mapping, explicit degraded mode, and health-gated route changes. Not fancy—just much harder to misread and much easier to maintain.
+        </div>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the architecture, public model names, and workflow shape because those are the useful parts. I intentionally generalized local alias names and left out deployment-specific IDs, exact schedules, and other fingerprints that would not help anyone copy the pattern safely.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
+                <li><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></li>
+                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and has a soft spot for boring reliability mechanisms: explicit policies, visible degradation, small wrappers, and tools that fail loudly instead of pretending everything is fine.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If your fallback policy only exists in scattered settings files and human memory, it is not really a policy yet.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you have built a similar lane-based fallback system—or if you solved prompt-time retries more cleanly than I did—I'd genuinely like to compare notes.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to the person who still thinks “just change the alias” counts as a fallback strategy.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>

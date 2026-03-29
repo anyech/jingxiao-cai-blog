@@ -6,8 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2026 21:46:57 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 29 Mar 2026 21:30:00 +0000</lastBuildDate>
 
+
+    <item>
+      <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
+      <description>When Gemini hits capacity exhaustion, the hard part is not picking a random next model. It's deciding where fallback policy belongs, what failures should trigger it, and how to keep startup fallback separate from prompt-time failure.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</title>
