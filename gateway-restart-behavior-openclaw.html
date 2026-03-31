@@ -32,7 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-11",
-      "dateModified": "2026-03-27",
+      "dateModified": "2026-03-31",
       "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated March 27, 2026</strong><br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated March 31, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
-        <div class="note"><strong>Follow-up (March 2026):</strong> I added a case study from a later upgrade where legacy plugin configuration debt and a no-restart rollout path created confusing mixed state, plus one new rule: avoid restart-sensitive changes during active panel work.</div>
+        <div class="note"><strong>Follow-up (March 2026):</strong> I added a case study from a later upgrade where legacy plugin configuration debt and a no-restart rollout path created confusing mixed state, plus a Discord health-monitor restart-loop incident and a new rule: avoid restart-sensitive changes during active panel work.</div>
     </header>
 
     <main>
@@ -285,6 +285,31 @@ Let's do it after this turn finishes.</code></pre>
         </div>
 
         <p>This case did <em>not</em> change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.</p>
+
+        <h2>Case Study: The 35-Minute Discord WebSocket Restart Loop</h2>
+        <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting every ~35 minutes</strong>, consistently but without any obvious config change triggering it.</p>
+        
+        <p>The pattern was confusing at first. No errors in the logs. No user-initiated config patches. Just regular, predictable restarts that looked like infrastructure noise.</p>
+        
+        <p>The root cause turned out to be the <strong>Discord health monitor's stale-socket detection</strong>. Discord WebSocket connections can enter a "zombie" state where the TCP connection appears alive but no messages flow. OpenClaw's health monitor detects this and triggers a clean reconnect — which looks exactly like a gateway restart in the logs.</p>
+        
+        <div class="note">
+            <strong>Key insight:</strong> the restarts were not failures. They were the <em>intended behavior</em> of a health-monitoring system doing its job. The confusion came from not recognizing the pattern.
+        </div>
+        
+        <h3>What I learned</h3>
+        <ul>
+            <li><strong>Stale-socket detection is a feature</strong> — without it, zombie connections would silently fail to deliver messages.</li>
+            <li><strong>35-minute cadence reflects Discord's behavior</strong> — it's not a timer you configured, but the natural interval at which the monitor detects stale state.</li>
+            <li><strong>Restart frequency alone is not a reliability signal</strong> — you have to understand <em>why</em> the restarts are happening.</li>
+        </ul>
+        
+        <h3>How this affects operational planning</h3>
+        <p>If you're running long-lived sessions (multi-turn conversations, extended debugging, panel work), you should expect brief interruptions roughly every 30-40 minutes on Discord-connected deployments. The gateway comes back quickly, but mid-flight work may need rehydration.</p>
+        
+        <div class="warning">
+            <strong>Practical rule:</strong> for restart-sensitive operations like config changes or long-running agent tasks, don't assume "no config edit means no restart." Health-monitor behavior is a separate variable.
+        </div>
 
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>

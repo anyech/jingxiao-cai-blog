@@ -32,7 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-03-27",
+      "dateModified": "2026-03-31",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,13 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated March 27, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated March 31, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
-        <div class="note"><strong>Follow-up (March 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline. I am intentionally keeping the later remote-stabilization story separate so this post stays about the local-memory win.</div>
+        <div class="note"><strong>Follow-up (March 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus a Perplexity 4B promotion section documenting the later shift to a larger remote embedding model.</div>
     </header>
 
     <main>
@@ -315,6 +315,49 @@
         </table>
 
         <p>The biggest practical lesson is boring and useful: <strong>embedding quality is only part of memory quality.</strong> Index scope, note structure, and whether you keep high-noise material out of the main retrieval path matter just as much.</p>
+
+        <h2>Perplexity 4B Promotion (March 2026)</h2>
+        <p>After proving the local-memory win and verifying clean retrieval, I later tested <strong>Perplexity's pplx-embed-v1-4b</strong> as a larger-dimension alternative to the default embeddinggemma model.</p>
+        
+        <div class="success">
+            <strong>Result:</strong> Perplexity 4B (2560 dimensions) succeeded where other alternatives had failed, completing a full shadow-index build and passing real semantic queries.
+        </div>
+        
+        <p>The key difference was not the model itself — it was recognizing that batch-indexing timeout pressure on a small VPS needed explicit mitigation, not just a model swap. Once the indexing path was adjusted, the larger model worked cleanly.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>embeddinggemma (local)</th>
+                    <th>Perplexity 4B (remote)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dimensions</td>
+                    <td>300M parameters, Q8 quantization</td>
+                    <td>2560 dims</td>
+                </tr>
+                <tr>
+                    <td>Hosting</td>
+                    <td>Local CPU via node-llama-cpp</td>
+                    <td>OpenRouter API</td>
+                </tr>
+                <tr>
+                    <td>Index build time</td>
+                    <td>Overnight background job</td>
+                    <td>~10-15 minutes with reduced batch size</td>
+                </tr>
+                <tr>
+                    <td>Retrieval quality</td>
+                    <td>Good for curated memory</td>
+                    <td>Comparable; slightly better cross-language</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p>The promotion lesson was clear: <strong>the system that proved local memory worked also became the baseline for evaluating larger models.</strong> Without the local win first, there would have been no clean comparison point.</p>
 
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>

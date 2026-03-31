@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the March 2026 LiteLLM backdoor via compromised Trivy CI/CD and an OpenClaw-focused response checklist.">
+  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with March 2026 LiteLLM incident, LangChain/LangGraph vulnerabilities, Ollama exposure stats, and an OpenClaw-focused response checklist.">
   <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Trivy CI compromise, credential rotation, malicious skills">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
@@ -28,7 +28,7 @@
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-23",
-    "dateModified": "2026-03-28",
+    "dateModified": "2026-03-31",
     "url": "https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html",
     "publisher": {
       "@type": "Person",
@@ -65,11 +65,11 @@
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 28, 2026</strong></p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 31, 2026</strong></p>
   <p class="tags">Tags: security, openclaw, ai-agents, supply-chain, moltbook</p>
   
   <div class="update-banner">
-    <strong>📝 Updates (March 2026):</strong> This post now includes both the Moltbook breach-to-acquisition case study added earlier this month and an expanded LiteLLM update covering the compromised Trivy CI/CD path, credential-exfiltration scope, and an OpenClaw-specific response checklist.
+    <strong>📝 Updates (March 2026):</strong> This post now includes the Moltbook breach-to-acquisition case study, the LiteLLM incident via compromised Trivy CI/CD, the March 27 LangChain/LangGraph vulnerabilities, Ollama exposure statistics, and an expanded OpenClaw-specific response checklist.
   </div>
   
   <div class="disclaimer">
@@ -299,8 +299,64 @@ openclaw skills verify --author eudaemon_0 weather-now
   
   <p>This is why I still think the agent ecosystem has a supply-chain problem even when the specific entry point changes. Sometimes it is an unsigned community skill. Sometimes it is a package release. Sometimes it is the security tooling in the release path. The operator lesson is the same: <strong>audit provenance, pin aggressively, and assume transitive dependencies can become first-order risk.</strong></p>
   
+  <h2>March 27, 2026: LangChain and LangGraph Vulnerabilities</h2>
+  
+  <p>Just days after the LiteLLM incident, researchers disclosed three high-impact vulnerabilities in <strong>LangChain</strong> and <strong>LangGraph</strong> — two of the most widely used frameworks for building LLM-powered applications.</p>
+  
+  <p>According to Cyera security researcher Vladimir Tokarev, the flaws expose "filesystem files, environment secrets, and conversation history" — three distinct data classes that together cover most of what enterprises care about protecting.</p>
+  
+  <div class="warning">
+    <strong>⚠️ Scope:</strong> LangChain, LangChain-Core, and LangGraph were downloaded more than <strong>52 million, 23 million, and 9 million times</strong> respectively in the week before disclosure. This is not a niche library problem.
+  </div>
+  
+  <h3>The vulnerabilities</h3>
+  <ul>
+    <li><strong>CVE-2026-34070 (CVSS 7.5)</strong> — Path traversal in LangChain's prompt-loading API (<code>langchain_core/prompts/loading.py</code>). Allows arbitrary file access via crafted prompt templates.</li>
+    <li><strong>CVE-2025-68664 (CVSS 9.3)</strong> — Deserialization vulnerability that can expose environment secrets.</li>
+    <li>A third vulnerability affecting conversation history exposure in LangGraph workflows.</li>
+  </ul>
+  
+  <p>The pattern here is familiar: frameworks that legitimately need broad access to files, environment variables, and persistent state become attractive attack surfaces once they reach critical mass.</p>
+  
+  <h3>What to do</h3>
+  <ul>
+    <li><strong>Update immediately</strong> — both projects have released patches.</li>
+    <li><strong>Audit prompt templates</strong> — if you accept external or user-supplied templates, review them for path traversal patterns.</li>
+    <li><strong>Review deserialization paths</strong> — anywhere LangChain loads serialized objects is now a potential vector.</li>
+    <li><strong>Segment secrets</strong> — environment-variable-based secret injection is convenient but fragile. Consider explicit secret management instead.</li>
+  </ul>
+  
+  <h2>175,000 Ollama Servers Exposed: Infrastructure Hygiene Still Matters</h2>
+  
+  <p>Also in early 2026: internet-wide scans identified <strong>175,000 Ollama servers</strong> publicly accessible without authentication across 130 countries.</p>
+  
+  <p>Ollama itself binds to localhost by default. The exposure is not a software bug — it's a deployment hygiene problem. Users are exposing their instances to the internet without protection, which means:</p>
+  
+  <ul>
+    <li>Attackers can access inference APIs</li>
+    <li>Compute resources can be hijacked for "LLMjacking" abuse</li>
+    <li>Tool-calling capabilities may enable remote code execution</li>
+  </ul>
+  
+  <div class="note">
+    <strong>Important context:</strong> the TeamPCP campaign behind the LiteLLM compromise was also tied to <strong>300,000+ dark-web users</strong> according to later reporting. Supply-chain attacks and infrastructure exposure are not separate threat models — they're adjacent surfaces.
+  </div>
+  
+  <p>The pattern keeps repeating: self-hosted AI tools ship secure by default, but convenience-driven deployment choices open massive exposure windows.</p>
+  
+  <h3>Infrastructure hardening checklist</h3>
+  <ul>
+    <li><strong>Never expose Ollama directly to the internet</strong> — use a reverse proxy with authentication.</li>
+    <li><strong>Bind to localhost only</strong> — this is the default; don't change it without a specific reason.</li>
+    <li><strong>Network segmentation</strong> — if you need remote access, use VPNs or private networks, not public IPs.</li>
+    <li><strong>Monitor resource usage</strong> — unexpected GPU/CPU spikes may indicate hijacked inference.</li>
+  </ul>
+  
   <h2>References and Follow-Up Coverage</h2>
   <ul>
+    <li><a href="https://thehackernews.com/2026/03/langchain-langgraph-flaws-expose-files.html">The Hacker News: LangChain, LangGraph Flaws Expose Files, Secrets, Databases in Widely Used AI Frameworks</a></li>
+    <li><a href="https://www.cyera.com/research/langdrained-3-paths-to-your-data-through-the-worlds-most-popular-ai-framework">Cyera: LangDrained — 3 Paths to Your Data Through the World's Most Popular AI Framework</a></li>
+    <li><a href="https://thehackernews.com/2026/01/researchers-find-175000-publicly.html">The Hacker News: Researchers Find 175,000 Publicly Exposed Ollama AI Servers Across 130 Countries</a></li>
     <li><a href="https://docs.litellm.ai/blog/security-update-march-2026">LiteLLM: Security Update (March 2026)</a></li>
     <li><a href="https://snyk.io/articles/poisoned-security-scanner-backdooring-litellm/">Snyk: How a Poisoned Security Scanner Became the Key to Backdooring LiteLLM</a></li>
     <li><a href="https://thehackernews.com/2026/03/teampcp-backdoors-litellm-versions.html">The Hacker News: TeamPCP Backdoors LiteLLM Versions 1.82.7–1.82.8 via Trivy CI/CD Compromise</a></li>
