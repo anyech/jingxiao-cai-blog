@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.">
+    <meta name="keywords" content="openclaw upgrade rollback, AI agent runtime regression, safe deployment practices, incident response, release engineering, OpenClaw">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression">
+    <meta property="og:description" content="A clean OpenClaw upgrade still regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the safer release guardrails that followed.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression">
+    <meta name="twitter:description" content="Startup checks passed. Real use did not. Here's the rollback, the verifier false alarm, and the safer upgrade guardrails that came out of the incident.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression",
+      "description": "A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-04-02",
+      "dateModified": "2026-04-02",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "OpenClaw",
+        "upgrade rollback",
+        "runtime regression",
+        "incident response",
+        "safe deployment practices",
+        "AI agents"
+      ]
+    }
+    </script>
+
+    <title>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .timeline { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .timeline li { margin-bottom: 12px; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</h1>
+        <div class="meta">
+            <strong>April 2, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy upgrade investigation, rollback trail, and protocol follow-through into a cleaner incident report instead of a dramatic but useless "bad release" story.
+        </div>
+        <div class="warning">
+            <strong>Short version:</strong> the upgrade to <code>2026.4.1</code> installed cleanly, restarted cleanly, and passed immediate health checks. It still regressed under real use. The rollback to <code>2026.3.28</code> was the right call, and the durable lesson was to deepen verification—not to panic about the entire upgrade process.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Failure Was Not at Install Time</h2>
+        <p>This incident is interesting because the obvious things went right.</p>
+        <p>The target version changed mid-flight, so the upgrade review was stopped, re-run, and re-locked against the new target. Backup posture was handled carefully instead of waved away. The manual restart gate was preserved. Immediate post-restart checks looked healthy.</p>
+        <p>And then the real workload showed up.</p>
+
+        <blockquote>
+            <p><strong>A release can pass startup checks and still be wrong for production.</strong></p>
+        </blockquote>
+
+        <p>That sounds obvious in the abstract. It becomes much more memorable when the system looks clean right after restart and only later starts misbehaving on the exact paths the user actually cares about.</p>
+
+        <h2>What Regressed</h2>
+        <p>The degradation was not a cosmetic warning or a single unlucky prompt. It hit two meaningful paths:</p>
+        <ul>
+            <li><strong>ordinary user-facing replies</strong></li>
+            <li><strong>higher-value panel / multi-model workflows</strong></li>
+        </ul>
+
+        <p>In practice, "representative use" here meant exactly the work I actually cared about protecting: a normal reply path plus a compact multi-model review flow. The system looked healthy at restart time, but it did not stay healthy once those real paths were exercised.</p>
+
+        <p>The smoking-gun signature was GPT-5.4 / Codex embedded-profile timeout and failover behavior in the live gateway journal, not just a vague feeling that replies were getting weird.</p>
+
+        <p>The most useful signature in the live gateway journal looked like this:</p>
+        <pre><code>[agent/embedded] Profile openai-codex:&lt;profile&gt; timed out. Trying next account...
+[agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=openai-codex/gpt-5.4</code></pre>
+
+        <p>The important point was not the exact wording. The important point was the pattern:</p>
+        <ul>
+            <li>repeated timeout/failover events in a short window</li>
+            <li>impact on the primary reply path, not just an obscure side route</li>
+            <li>the same bad window also catching a panel-style workflow, which meant this was not a tiny one-lane annoyance</li>
+        </ul>
+
+        <div class="note">
+            <strong>Durable troubleshooting lesson:</strong> for this class of current runtime incident, the live <code>systemd</code> journal was more trustworthy than older file logs under <code>/tmp</code>. The file log could be stale enough to mislead the investigation.
+        </div>
+
+        <h2>Why I Rolled Back Instead of Hunting Longer</h2>
+        <p>I did <em>not</em> have a full upstream root cause in hand before rolling back.</p>
+        <p>I did have enough to justify the decision:</p>
+
+        <div class="timeline">
+            <ol>
+                <li><strong>T+0:</strong> the upgrade completed cleanly and immediate restart checks looked healthy.</li>
+                <li><strong>Later real use:</strong> repeated timeout/failover behavior started hitting both the normal reply path and a compact multi-model review path.</li>
+                <li><strong>Decision point:</strong> the pattern repeated often enough that staying on the new version meant paying reliability cost while a known-good downgrade target was available.</li>
+            </ol>
+        </div>
+
+        <p>That was enough.</p>
+
+        <div class="success">
+            <strong>Rollback trigger rule I trust now:</strong> if a fresh upgrade produces repeated timeout/failover behavior on both the normal reply path and one representative advanced path within roughly the first 10–15 minutes of representative use after restart, rollback is justified even before full upstream root cause is proven. In practice, the soak can stay simple: spend about 10 minutes running one ordinary reply path, one high-value advanced path you actually depend on, then watch briefly for new timeout/failover lines.
+        </div>
+
+        <h2>The Rollback Sequence</h2>
+        <p>The rollback itself was intentionally boring:</p>
+        <ol>
+            <li>Create a fresh backup first.</li>
+            <li>Downgrade installed code back to <code>2026.3.28</code>.</li>
+            <li>Keep the manual restart gate; let the human restart the gateway explicitly.</li>
+            <li>Smoke-test one normal reply path and one representative advanced path.</li>
+            <li>Do a short live watch after restart instead of declaring victory instantly.</li>
+        </ol>
+
+        <p>That sequence worked. The early post-rollback watch window stopped showing the new timeout/failover pattern, and a later short watch stayed clean as well.</p>
+
+        <h2>The Weirdest Part: A Rollback Warning That Wasn't Actually a Rollback Failure</h2>
+        <p>The rollback path did emit a verifier complaint about bundled sidecar files, and it caused real uncertainty in the moment. If you stop reading there, it looks like the downgrade itself may have landed in a corrupt state.</p>
+        <p>That turned out to be the wrong interpretation.</p>
+        <p>The correct check was to compare the warning against the <strong>official npm package ground truth</strong>. Once that was done, the supposedly missing bundled files turned out not to be part of the target package in the first place.</p>
+
+        <div class="warning">
+            <strong>Important distinction:</strong> a rollback verifier mismatch is not automatically proof of rollback corruption. It may still be serious. It just needs to be checked against the actual release artifact before you conclude the rollback is broken.
+        </div>
+
+        <p>This is exactly the kind of moment where incident handling can go sideways: one scary warning appears during rollback, and suddenly the team starts doubting the only thing that just restored service. The better rule is calmer:</p>
+        <blockquote>
+            <p><strong>Do not ignore verifier warnings. Do verify whether the warning matches the official package contents before turning it into a larger story.</strong></p>
+        </blockquote>
+
+        <h2>What the Incident Changed in My Upgrade Procedure</h2>
+        <p>I do <em>not</em> think this incident proves that the upgrade procedure was broken.</p>
+        <p>I think it proves that the <strong>verification depth</strong> was too shallow for this failure mode.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Before</th>
+                    <th>After</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Startup checks were treated as near-success.</td>
+                    <td>Startup checks are only entry criteria for a roughly 10-minute runtime soak.</td>
+                </tr>
+                <tr>
+                    <td>Rollback was possible, but triggers were mostly implicit.</td>
+                    <td>Rollback criteria are now explicit for timeout/failover patterns on representative paths.</td>
+                </tr>
+                <tr>
+                    <td>Backup trouble could feel like friction to push through.</td>
+                    <td>Degraded backup posture must be surfaced as an explicit go/no-go decision.</td>
+                </tr>
+                <tr>
+                    <td>Post-rollback success could be declared too early.</td>
+                    <td>A short live watch is now part of rollback verification.</td>
+                </tr>
+                <tr>
+                    <td>Baseline capture was optional and easy to skip.</td>
+                    <td>Known suspect anomaly classes should get a small pre-update baseline when practical.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>The New Guardrails I Kept</h2>
+        <p>The durable changes were intentionally small. I did not want one bad release to turn into a giant ritual.</p>
+
+        <h3>1. A roughly 10-minute post-restart runtime soak</h3>
+        <p>Not hours. Not an elaborate ceremony. Just enough representative use to catch the class of regression that hides behind green startup checks. For this kind of deployment, that means one normal reply path, one high-value advanced path, and a short watch for fresh timeout/failover signatures.</p>
+
+        <h3>2. Explicit rollback trigger language</h3>
+        <p>I now want the decision threshold written down <em>before</em> the release, not improvised after the pain starts accumulating.</p>
+
+        <h3>3. A short post-rollback live watch</h3>
+        <p>"The process came back" is not the same thing as "the bad pattern stopped." The watch window is there to distinguish those two claims.</p>
+
+        <h3>4. Manual restart control stays</h3>
+        <p>For this deployment, manual restart remains the right default. The user should decide when the interruption actually happens.</p>
+
+        <h3>5. Backup posture must be honest</h3>
+        <p>If the full backup path is messy, the right move is to surface that risk explicitly—not to quietly pretend the safety posture is stronger than it is. In this case, that meant treating config-only backup plus dry-run as a temporary holding posture while working toward a clean verified full backup, rather than silently downgrading the safety bar.</p>
+
+        <div class="note">
+            <strong>Industry sanity check:</strong> this lines up with <a href="https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/" target="_blank">Amazon's rollback-safety deployment guidance</a>: prepare rollback safety before every deployment, not only after production starts hurting. It also argues for something I now agree with more strongly: check release notes and known-risk surfaces before upgrade day, but do not confuse that preflight work with real runtime validation after the restart.
+        </div>
+
+        <h2>What I Am Not Claiming</h2>
+        <ul>
+            <li>I am <strong>not</strong> claiming that <code>2026.4.1</code> was universally bad for everyone.</li>
+            <li>I am <strong>not</strong> claiming the install, restart, or rollback procedure itself was botched.</li>
+            <li>I am <strong>not</strong> claiming every warning observed during the trial belonged to the same root cause.</li>
+        </ul>
+
+        <p>What I <em>am</em> claiming is narrower and more useful:</p>
+        <div class="success">
+            <strong>For this deployment, the upgrade had a bad runtime outcome under representative use, and the rollback process contained the blast radius cleanly.</strong>
+        </div>
+
+        <h2>Why This Matters for AI Agent Runtimes Specifically</h2>
+        <p>AI agent systems make this kind of failure easy to underestimate because they have multiple surfaces that can all look healthy at once: the gateway can be up, channels can reconnect, tooling can load, and auxiliary paths can look fine while the actual user-facing model lane is already worse.</p>
+
+        <p>That is why "green after restart" is such a dangerous stopping point for agent platforms. A lot of the stack can be alive while the part that matters most is already quietly worse.</p>
+
+        <blockquote>
+            <p><strong>The safest upgrade story is not “it restarted.” The safest upgrade story is “it survived realistic use, and we knew exactly when we would roll it back if it didn’t.”</strong></p>
+        </blockquote>
+
+        <h2>My Final Read</h2>
+        <p>This incident improved my confidence in the process more than it reduced my confidence in upgrades.</p>
+        <p>That sounds backwards, but it is the real takeaway. The update did something bad. The procedure caught it, bounded it, and reversed it without drama.</p>
+        <p>That is what a healthy rollback path is for.</p>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle working on distributed AI/ML infrastructure. He uses OpenClaw as a personal automation and investigation platform, which means he gets to enjoy both the convenience of agent workflows and the occasional reminder that release engineering is still a very human discipline.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally keeps deployment-specific identifiers, host-local paths, and internal run metadata out of the public write-up. The useful lesson is the release pattern, not the fingerprint of one machine.</p>
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+                <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
+                <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
+                <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you've had an AI-agent upgrade pass startup checks and still fail later under real use, I'd love to compare notes.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to someone who thinks a green restart banner means the deployment is done.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>

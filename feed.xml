@@ -6,8 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 29 Mar 2026 21:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Apr 2026 22:02:00 +0000</lastBuildDate>
 
+
+    <item>
+      <title>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</title>
+      <description>A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</guid>
+      <pubDate>Thu, 02 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
