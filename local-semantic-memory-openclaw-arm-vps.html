@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what a March 2026 retrieval audit taught me about recall noise and metadata discipline.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits and remote-memory follow-ups taught me about recall noise, source discipline, and keeping the local win honest.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, local embeddings, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added a March 2026 retrieval-audit follow-up on recall quality, noise, and memory hygiene.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added retrieval-audit and later-developments notes on why the remote story became its own follow-up.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus a March 2026 retrieval-audit follow-up on recall quality and noise reduction.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus retrieval-audit and later-developments notes on the eventual remote follow-up.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what a March 2026 retrieval audit taught me about recall noise and metadata discipline.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits and remote-memory follow-ups taught me about recall noise, source discipline, and keeping the local win honest.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-03-31",
+      "dateModified": "2026-04-02",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,13 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated March 31, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 2, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
-        <div class="note"><strong>Follow-up (March 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus a Perplexity 4B promotion section documenting the later shift to a larger remote embedding model.</div>
+        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus a short later-developments note on why the eventual remote-memory stabilization story belongs in its own <code>text-embedding-3-small</code> follow-up instead of rewriting this local-memory win.</div>
     </header>
 
     <main>
@@ -267,8 +267,8 @@
         </ul>
 
         <h2>One Honest Caveat</h2>
-        <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for other operational reasons and eventually stabilized a separate remote memory-only path on <code>text-embedding-3-small</code> after heavier candidates kept timing out. That is a different operational story, and it does <em>not</em> change the conclusion here.</p>
-        <p>The important debugging result was already established:</p>
+        <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for different operational reasons. That later work eventually stabilized on a separate <strong>memory-only remote lane with <code>text-embedding-3-small</code></strong> after larger or more ambitious candidates kept tripping timeout and indexing-path problems.</p>
+        <p>I am deliberately not turning that into the main story here, because it answers a different question. The local result already stood on its own: once the dependency and indexing model were fixed, local semantic memory worked on the small ARM VPS.</p>
         <div class="success">
             <strong>OpenClaw local semantic memory absolutely worked on this 4-core ARM VPS once the dependency and indexing strategy were corrected.</strong>
         </div>
@@ -316,48 +316,16 @@
 
         <p>The biggest practical lesson is boring and useful: <strong>embedding quality is only part of memory quality.</strong> Index scope, note structure, and whether you keep high-noise material out of the main retrieval path matter just as much.</p>
 
-        <h2>Perplexity 4B Promotion (March 2026)</h2>
-        <p>After proving the local-memory win and verifying clean retrieval, I later tested <strong>Perplexity's pplx-embed-v1-4b</strong> as a larger-dimension alternative to the default embeddinggemma model.</p>
-        
-        <div class="success">
-            <strong>Result:</strong> Perplexity 4B (2560 dimensions) succeeded where other alternatives had failed, completing a full shadow-index build and passing real semantic queries.
-        </div>
-        
-        <p>The key difference was not the model itself — it was recognizing that batch-indexing timeout pressure on a small VPS needed explicit mitigation, not just a model swap. Once the indexing path was adjusted, the larger model worked cleanly.</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>embeddinggemma (local)</th>
-                    <th>Perplexity 4B (remote)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Dimensions</td>
-                    <td>300M parameters, Q8 quantization</td>
-                    <td>2560 dims</td>
-                </tr>
-                <tr>
-                    <td>Hosting</td>
-                    <td>Local CPU via node-llama-cpp</td>
-                    <td>OpenRouter API</td>
-                </tr>
-                <tr>
-                    <td>Index build time</td>
-                    <td>Overnight background job</td>
-                    <td>~10-15 minutes with reduced batch size</td>
-                </tr>
-                <tr>
-                    <td>Retrieval quality</td>
-                    <td>Good for curated memory</td>
-                    <td>Comparable; slightly better cross-language</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <p>The promotion lesson was clear: <strong>the system that proved local memory worked also became the baseline for evaluating larger models.</strong> Without the local win first, there would have been no clean comparison point.</p>
+        <h2>Later Developments: Why the Remote Story Became Its Own Post</h2>
+        <p>The later remote-memory work taught a different lesson from the original local-memory post. The important instability was not “local bad, remote good.” It was that <strong>source scope and indexing-path behavior</strong> mattered more than jumping to a bigger model.</p>
+
+        <ul>
+            <li>Dropping session transcripts and focusing on durable memory notes made retrieval calmer and more relevant.</li>
+            <li>Several larger or more exotic remote candidates looked stronger on paper but were less stable in the real indexing workflow.</li>
+            <li>The boring stable remote landing zone ended up being <code>text-embedding-3-small</code> on a memory-only path, not the flashiest model I tried.</li>
+        </ul>
+
+        <p>That is why the remote stabilization story belongs in the separate follow-up, <a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory</a>, instead of being pasted wholesale into this post. This page is about proving that local semantic memory was viable on a modest self-hosted box. The later page is about what happened when I kept experimenting after that proof.</p>
 
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>
@@ -382,6 +350,7 @@
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></li>
                 <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
                 <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
                 <li><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></li>
@@ -398,7 +367,7 @@
             <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
             <p style="margin-bottom: 0; color: #555;">
                 If you've been running local embeddings for agent memory on similarly modest hardware, I'd love to compare notes.
-                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a>
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
                 or reach out directly.
             </p>
         </div>

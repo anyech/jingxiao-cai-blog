@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and a March 2026 case study shows how mixed-state upgrades make restarts harder to reason about.">
+    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and later case studies show how mixed-state upgrades and a 2026.4.1 rollback make restart safety a process problem, not just a button click.">
     <meta name="keywords" content="OpenClaw gateway restart, OpenClaw config change behavior, config patch restart, OpenClaw auth profiles, OpenClaw plugins">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 mixed-state upgrade case study.">
+    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with mixed-state upgrade and April 2026 rollback case studies.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 mixed-state upgrade case study.">
+    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with mixed-state upgrade and April 2026 rollback lessons.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes",
-      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and a March 2026 case study shows how mixed-state upgrades make restarts harder to reason about.",
+      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and later case studies show how mixed-state upgrades and a 2026.4.1 rollback make restart safety a process problem, not just a button click.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-11",
-      "dateModified": "2026-03-31",
+      "dateModified": "2026-04-02",
       "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated March 31, 2026</strong><br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated April 2, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
-        <div class="note"><strong>Follow-up (March 2026):</strong> I added a case study from a later upgrade where legacy plugin configuration debt and a no-restart rollout path created confusing mixed state, plus a Discord health-monitor restart-loop incident and a new rule: avoid restart-sensitive changes during active panel work.</div>
+        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, and a 2026.4.1 rollback case study covering backup → downgrade → manual restart → smoke test, plus the false-alarm verifier mismatch lesson.</div>
     </header>
 
     <main>
@@ -286,7 +286,7 @@ Let's do it after this turn finishes.</code></pre>
 
         <p>This case did <em>not</em> change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.</p>
 
-        <h2>Case Study: The 35-Minute Discord WebSocket Restart Loop</h2>
+        <h2>Case Study: Late March 2026 and the 35-Minute Discord WebSocket Restart Loop</h2>
         <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting every ~35 minutes</strong>, consistently but without any obvious config change triggering it.</p>
         
         <p>The pattern was confusing at first. No errors in the logs. No user-initiated config patches. Just regular, predictable restarts that looked like infrastructure noise.</p>
@@ -310,6 +310,29 @@ Let's do it after this turn finishes.</code></pre>
         <div class="warning">
             <strong>Practical rule:</strong> for restart-sensitive operations like config changes or long-running agent tasks, don't assume "no config edit means no restart." Health-monitor behavior is a separate variable.
         </div>
+
+        <h2>Case Study: The 2026.4.1 Rollback</h2>
+        <p>A later update taught a different restart lesson: a rollout can look healthy at restart time and still deserve rollback once real workload hits it.</p>
+
+        <p>The upgrade itself completed cleanly. Backup happened first, the new code landed on disk, the manual restart gate was preserved, and the immediate post-restart checks looked fine. The trouble only showed up later, when ordinary replies and multi-turn assistant work started hitting repeated timeout/failover behavior.</p>
+
+        <div class="timeline">
+            <ol>
+                <li>Create a fresh backup before changing installed code.</li>
+                <li>Downgrade to the last known-good OpenClaw version.</li>
+                <li>Keep the manual restart gate: let the human restart the gateway explicitly.</li>
+                <li>Smoke-test one normal reply path and one multi-turn or subagent-style path after restart.</li>
+                <li>Do a short live watch instead of declaring victory the moment the service comes back.</li>
+            </ol>
+        </div>
+
+        <p>The oddest moment in the rollback was a verifier complaint about missing bundled sidecar files. That looked scary until the official package contents were checked directly. The supposedly “missing” files were not part of the target release at all, so the better read was <strong>verifier mismatch, not rollback corruption</strong>.</p>
+
+        <div class="note">
+            <strong>Rollback lesson:</strong> separate install-time health from runtime stability under real use. And if a rollback verifier says files are missing, compare the warning against the official package ground truth before deciding the rollback itself is broken.
+        </div>
+
+        <p>The practical outcome was straightforward: the rollback was the right call, the post-rollback smoke tests were clean, and the stronger lesson was not “never update.” It was “do not declare an update successful on startup checks alone.”</p>
 
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>
@@ -366,7 +389,7 @@ Let's do it after this turn finishes.</code></pre>
             <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
             <p style="margin-bottom: 0; color: #555;">
                 If OpenClaw has surprised you with restart behavior too, I'd love to hear what the trigger was.
-                <a href="https://github.com/anyech/jingxiao-cai-blog/discussions" target="_blank">Open a discussion on GitHub</a>
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
                 or reach out directly.
             </p>
         </div>

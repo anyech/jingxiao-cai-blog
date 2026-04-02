@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with March 2026 LiteLLM incident, LangChain/LangGraph vulnerabilities, Ollama exposure stats, and an OpenClaw-focused response checklist.">
-  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Trivy CI compromise, credential rotation, malicious skills">
+  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM incident, LangChain/LangGraph flaws, exposed Ollama servers, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.">
+  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Trivy CI compromise, Moltbook API instability, approved-but-blocked operations">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta property="og:description" content="A deep dive into malicious skills, the March 2026 LiteLLM incident, and the concrete dependency-audit and credential-rotation steps OpenClaw users should take.">
+  <meta property="og:description" content="A deep dive into malicious skills, the LiteLLM incident, and the later Moltbook API-stability lesson that led to an approved-but-blocked operating model.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta name="twitter:description" content="Malicious skills are only one layer of agent supply-chain risk. Updated with the March 2026 LiteLLM backdoor, compromised Trivy CI/CD path, and operator response checklist.">
+  <meta name="twitter:description" content="Malicious skills are only one layer of agent supply-chain risk. Updated with the LiteLLM backdoor, compromised CI/CD path, and an April 2026 Moltbook API-stability follow-up.">
   <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <script type="application/ld+json">
@@ -22,13 +22,13 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know",
-    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the March 2026 LiteLLM backdoor via compromised Trivy CI/CD and an OpenClaw-focused response checklist.",
+    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM backdoor, exposed AI infrastructure, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.",
     "author": {
       "@type": "Person",
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-23",
-    "dateModified": "2026-03-31",
+    "dateModified": "2026-04-02",
     "url": "https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html",
     "publisher": {
       "@type": "Person",
@@ -65,11 +65,11 @@
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated March 31, 2026</strong></p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated April 2, 2026</strong></p>
   <p class="tags">Tags: security, openclaw, ai-agents, supply-chain, moltbook</p>
   
   <div class="update-banner">
-    <strong>📝 Updates (March 2026):</strong> This post now includes the Moltbook breach-to-acquisition case study, the LiteLLM incident via compromised Trivy CI/CD, the March 27 LangChain/LangGraph vulnerabilities, Ollama exposure statistics, and an expanded OpenClaw-specific response checklist.
+    <strong>📝 Updates (March–April 2026):</strong> This post now includes the Moltbook breach-to-acquisition case study, the LiteLLM incident via compromised Trivy CI/CD, the March 27 LangChain/LangGraph vulnerabilities, Ollama exposure statistics, and an April 2026 Moltbook API-stability follow-up on the approved-but-blocked operating model.
   </div>
   
   <div class="disclaimer">
@@ -270,6 +270,18 @@ openclaw skills verify --author eudaemon_0 weather-now
   <div class="success">
     <strong>My practical read:</strong> if you operate agent integrations, treat security incidents and platform ownership changes as separate variables. Surviving the breach does not mean your integration survives the cleanup. Surviving the cleanup does not mean the platform is production-ready.
   </div>
+
+  <h3>April 2026: When “Approved” Still Doesn’t Mean “Executable”</h3>
+
+  <p>A later Moltbook follow-up made the platform-risk story less about the original breach headlines and more about the shape of the developer surface after the cleanup. Public post and comment actions began returning server errors even while the public page shell still loaded, which left comment handling in a strange half-live state.</p>
+
+  <p>That mattered because the policy layer was no longer the hard part. The review queue, reply policy, and human-approval gate were clear. What failed was the execution path: actions that were permissible on paper were still blocked in practice by an unhealthy or under-authorized API surface.</p>
+
+  <div class="warning">
+    <strong>Operational lesson:</strong> when public action is approved but the platform API is unhealthy or under-authorized, treat it as <strong>approved but blocked</strong>. Do not pretend the action succeeded, and do not post a sloppier substitute just to make progress look real.
+  </div>
+
+  <p>This still belongs in the supply-chain conversation. The earlier breach story was about malicious code entering the ecosystem; this later chapter was about whether a critical platform dependency remained coherent enough to automate against safely after the incident. Platform trust is part of the supply-chain model too.</p>
   
   <h2>March 2026: The LiteLLM Supply Chain Incident</h2>
   

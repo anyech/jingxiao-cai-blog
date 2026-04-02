@@ -43,7 +43,7 @@
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with a March 2026 retrieval-audit follow-up on English/Chinese recall, transcript-noise reduction, and metadata discipline.</description>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with retrieval-audit follow-up notes and a cleaner handoff to the separate remote-memory stabilization post.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
@@ -59,7 +59,7 @@
 
     <item>
       <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
-      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a March 2026 case study on mixed-state upgrades, no-restart pitfalls, and legacy plugin-config debt.</description>
+      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with mixed-state upgrade and rollback case studies, plus a verifier-mismatch lesson.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
       <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
@@ -115,7 +115,7 @@
 
     <item>
       <title>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</title>
-      <description>A deep dive into malicious skills in AI agent platforms, now updated with the March 2026 LiteLLM backdoor via compromised Trivy CI/CD, clearer credential-theft scope, and an OpenClaw-focused response checklist.</description>
+      <description>A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM supply-chain incident, LangChain/LangGraph flaws, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook's unstable post-incident API surface.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</guid>
       <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
