@@ -6,8 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Apr 2026 20:26:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Apr 2026 21:10:00 +0000</lastBuildDate>
 
+
+    <item>
+      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
+      <description>How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with lineup resolution, timeout classes, async handoff rules, and user-visible dissent that does not collapse under partial failure.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
+      <pubDate>Fri, 03 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</title>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How I run a full multi-LLM jury in OpenClaw consult-panel: config-backed roles, benchmark-informed weighting, timeout classes, async completion handling, and dissent visibility without orchestration chaos.">
+    <meta name="keywords" content="multi-LLM consultation, LLM panel orchestration, OpenClaw consult-panel, AI agent orchestration, multi-model review, jury mode, consult-panel skill">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
+    <meta property="og:description" content="A practical architecture for multi-LLM consultation in OpenClaw: thin skill, config-backed routing, benchmark-informed weighting, timeout classes, and async handoff rules that survive real panel runs.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
+    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with lineup resolution, weighting rules, timeout classes, and clean user-visible synthesis.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
+      "description": "How I run a full multi-LLM jury in OpenClaw consult-panel: config-backed roles, benchmark-informed weighting, timeout classes, async completion handling, and dissent visibility without orchestration chaos.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "multi-LLM consultation",
+        "LLM panel orchestration",
+        "OpenClaw consult-panel",
+        "AI agent orchestration",
+        "multi-model review"
+      ]
+    }
+    </script>
+
+    <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
+        <div class="meta">
+            <strong>April 3, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy internal evolution—manual mixed-panel runs, async handoff bugs, routing drift, and repeated hardening passes—into a cleaner operator memo that actually matches the live system.
+        </div>
+        <div class="note">
+            <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
+        </div>
+        <div class="warning">
+            <strong>Another boundary up front:</strong> a full jury panel is expensive and is <strong>not</strong> my default for routine queries. I use it for worthwhile ambiguity, higher-cost decisions, explicit panel requests, or cases where dissent is actually worth the latency.
+        </div>
+        <p>The same routing policy also supports lighter consultation modes. I am focusing on the full jury here because that is where orchestration bugs, weighting mistakes, and async handoff failures become easiest to see.</p>
+    </header>
+
+    <main>
+        <h2>The Hard Part Was Never “Ask More Models”</h2>
+        <p>Running eight LLMs in parallel is not the interesting problem. Spawning eight children is easy. Keeping the result coherent is the real work.</p>
+        <p>The failures I kept hitting were never glamorous:</p>
+        <ul>
+            <li>one expected panelist quietly did not get launched</li>
+            <li>an ACP-backed lane finished, but the answer did not auto-surface to the parent thread</li>
+            <li>a partial result arrived, then the orchestrator went silent</li>
+            <li>a slow non-core model held the whole panel hostage</li>
+            <li>a wildcard dissent looked louder than it deserved because the weighting rules stayed implicit</li>
+            <li>late completions arrived after the real answer was already delivered</li>
+        </ul>
+
+        <blockquote>
+            <p><strong>The real unit of work is not “query 8 models.” It is “finish one user-visible review exactly once, with lineup integrity, visible weighting, and bounded latency.”</strong></p>
+        </blockquote>
+
+        <p>That is the problem the <code>consult-panel</code> workflow now solves inside my OpenClaw setup.</p>
+
+        <div class="success">
+            <strong>Current live full-jury shape:</strong> the panel currently resolves to <strong>8 roles</strong> — OCI Grok 4.20 reasoning, Gemini 2.5 Pro via ACP, GLM-5, Qwen3.5 Plus, Kimi K2.5, MiniMax M2.5, GPT-OSS-120B, and OpenRouter free — with explicit lineup resolution, timeout classes, dissent visibility, and degradation rules.
+        </div>
+
+        <h2>The Design Decision That Saved the Whole Thing</h2>
+        <p>The best decision was architectural, not prompt-related.</p>
+        <p>The public invocation surface stays deliberately small. Natural requests like <em>consult the panel</em>, <em>panel review</em>, <em>have the consultants weigh in</em>, or <em>run jury mode</em> map into the same orchestration layer, while the routing truth stays in durable config and ops docs rather than inside the prompt wrapper.</p>
+        <p>The canonical grounding for current behavior lives in three places: the consultant-routing config, the consult-panel skill, and the routing operations guide. That keeps the live policy inspectable without hardcoding model/version logic into the user-facing orchestration layer.</p>
+        <blockquote>
+            <p><strong>Keep the skill thin. Keep the routing truth in config and ops docs.</strong></p>
+        </blockquote>
+
+        <p>The user-facing skill exists to do orchestration:</p>
+        <ul>
+            <li>detect that the user wants a panel review</li>
+            <li>resolve the configured lineup</li>
+            <li>shape the review packet</li>
+            <li>spawn the panel</li>
+            <li>track completions and synthesize the result</li>
+        </ul>
+        <p>Every panelist gets the <strong>same review packet</strong>. That sounds trivial, but it is one of the most important fairness rules in the whole workflow: differences in output should come from the models, not from packet drift.</p>
+
+        <p>What it does <em>not</em> do is hardcode model/version policy. That lives in durable config and the ops guide instead:</p>
+        <ul>
+            <li><code>.github/config/consultant-routing.json</code></li>
+            <li><code>memory/categories/consultant-routing-operations-guide-2026-03-13.md</code></li>
+            <li><code>.github/scripts/consultant-panel-shape.py</code></li>
+            <li><code>.github/scripts/consultant-routing-check.py</code></li>
+        </ul>
+
+        <p>That split matters because it keeps model churn from leaking into workflow prose. If Grok changes, or Gemini lane policy changes, or GPT-OSS gets replaced, I want to edit config—not rewrite orchestration logic in six places.</p>
+
+        <div class="note">
+            <strong>Naming lesson:</strong> the skill is called <code>consult-panel</code>, not <code>jury</code>. “Jury” is a useful mode name, but it is a bad public skill name because it leaks internal taxonomy into the invocation surface.
+        </div>
+
+        <h2>What the Current Panel Actually Looks Like</h2>
+        <p>The live jury lineup is not “eight random models.” Each lane has a role and a weight class.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Panelist</th>
+                    <th>Role</th>
+                    <th>Class</th>
+                    <th>Why it exists</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>OCI Grok 4.20 reasoning</strong></td>
+                    <td>Primary consultant</td>
+                    <td><code>stable_core</code></td>
+                    <td>Main decision anchor for full-panel review.</td>
+                </tr>
+                <tr>
+                    <td><strong>Gemini 2.5 Pro</strong></td>
+                    <td>ACP-backed consultant lane</td>
+                    <td><code>stable_external_nonblocking</code></td>
+                    <td>Full-weight external voice when present; if degraded, the panel synthesizes without waiting forever.</td>
+                </tr>
+                <tr>
+                    <td><strong>GLM-5</strong></td>
+                    <td>Challenger consultant</td>
+                    <td><code>stable_core</code></td>
+                    <td>Compact-packet challenger with strong broad capability; oversize packets fall back to Qwen or skip.</td>
+                </tr>
+                <tr>
+                    <td><strong>Qwen3.5 Plus</strong></td>
+                    <td>Core critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Reliable core critic and oversize fallback for GLM when needed.</td>
+                </tr>
+                <tr>
+                    <td><strong>Kimi K2.5</strong></td>
+                    <td>Core critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Independent strong core voice.</td>
+                </tr>
+                <tr>
+                    <td><strong>MiniMax M2.5</strong></td>
+                    <td>Diversity critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Semantic diversity lane without inventing a second wildcard slot.</td>
+                </tr>
+                <tr>
+                    <td><strong>GPT-OSS-120B</strong></td>
+                    <td>Fixed experimental panelist</td>
+                    <td><code>fixed_experimental</code></td>
+                    <td>Meaningful non-core lane with stable identity that can corroborate consensus or widen a real split.</td>
+                </tr>
+                <tr>
+                    <td><strong>OpenRouter free</strong></td>
+                    <td>Rotating wildcard panelist</td>
+                    <td><code>rotating_wildcard</code></td>
+                    <td>Exploratory dissent / novelty lane, never decisive by itself.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. That is how I stopped “full panel” from quietly meaning four models one week and seven the next.</p>
+        <p>If the resolved lineup and the accepted spawn set do not match, the run is degraded immediately instead of being presented as a successful full panel. That one rule fixed a surprising amount of quiet orchestration dishonesty.</p>
+
+        <pre><code>python3 .github/scripts/consultant-panel-shape.py --mode jury</code></pre>
+
+        <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
+
+        <h2>The Schema That Matters More Than the Prompt</h2>
+        <p>The routing config now carries three layers of truth:</p>
+        <ol>
+            <li><strong>role mapping</strong> — what each semantic lane currently points to</li>
+            <li><strong>mode shape</strong> — which panelists belong to <code>standard</code>, <code>jury</code>, and compatibility aliases like <code>deepJury</code></li>
+            <li><strong>panel heuristics</strong> — timeout classes, weight bands, checkpoint timing, and benchmark reference guidance</li>
+        </ol>
+
+        <p>A simplified shape looks like this:</p>
+        <pre><code>{
+  "roles": {
+    "primary_consultant": { "preferred": "oci-genai/xai.grok-4.20-reasoning" },
+    "gemini_consultant": { "agentId": "gemini", "modelAlias": "openclaw-consult-stable" },
+    "fixed_experimental_panelist": { "preferred": "oci-genai-chi/openai.gpt-oss-120b" },
+    "rotating_wildcard_panelist": { "preferred": "openrouter/openrouter/free" }
+  },
+  "modes": {
+    "jury": {
+      "panelists": [
+        "primary_consultant",
+        "gemini_consultant",
+        "fixed_experimental_panelist",
+        "rotating_wildcard_panelist",
+        "bailian/glm-5",
+        "bailian/qwen3.5-plus",
+        "bailian/kimi-k2.5",
+        "diversity_critic"
+      ]
+    }
+  },
+  "panelHeuristics": {
+    "classes": {
+      "stable_core": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
+      "stable_external_nonblocking": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
+      "fixed_experimental": { "nominalWeight": 0.75, "softTimeoutSeconds": 120 },
+      "rotating_wildcard": { "nominalWeight": 0.4, "softTimeoutSeconds": 90 }
+    }
+  }
+}</code></pre>
+
+        <div class="note">
+            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of the live file. I keep the reusable design, class logic, and role split; I leave out the local debris nobody else needs. The <code>diversity_critic</code> role shown in the schema currently resolves to MiniMax M2.5 in the live panel.
+        </div>
+
+        <h2>Why Timeout Policy Had To Change</h2>
+        <p>One of the most useful corrections was embarrassingly simple:</p>
+        <blockquote>
+            <p><strong>Parallel panel timeout is tail-latency control, not additive latency math.</strong></p>
+        </blockquote>
+
+        <p>That sounds obvious once you say it. But it matters operationally.</p>
+        <p>If seven lanes are done and the only remaining holdout is a rotating wildcard endpoint, I should not keep acting as if the panel is “still incomplete” in the same way it would be if two stable-core critics were missing. Those are different situations.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Nominal weight</th>
+                    <th>Soft timeout</th>
+                    <th>Practical rule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>stable_core</code></td>
+                    <td>1.0</td>
+                    <td>150s</td>
+                    <td>Default decision anchor. Keep the leash longest.</td>
+                </tr>
+                <tr>
+                    <td><code>stable_external_nonblocking</code></td>
+                    <td>1.0</td>
+                    <td>150s</td>
+                    <td>Full interpretive weight if present, but do not block forever.</td>
+                </tr>
+                <tr>
+                    <td><code>fixed_experimental</code></td>
+                    <td>0.75</td>
+                    <td>120s</td>
+                    <td>Useful corroboration or dissent, but non-core.</td>
+                </tr>
+                <tr>
+                    <td><code>rotating_wildcard</code></td>
+                    <td>0.4</td>
+                    <td>90s</td>
+                    <td>Exploratory only. Drop aggressively when it becomes tail latency.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>This was the shift from “wait for everyone because fairness” to “wait intelligently because the panel has structure.”</p>
+
+        <h2>Benchmark-Informed Weighting Helped, But Only After I Put It in Its Place</h2>
+        <p>I do use benchmark families as a rough reference band. I do <em>not</em> use them as a vote-counting formula.</p>
+        <p>The live ops guide records a checked snapshot with broad public numbers like:</p>
+        <ul>
+            <li>GLM-5 — 50</li>
+            <li>Grok 4.20 reasoning — 48</li>
+            <li>Kimi K2.5 — 47</li>
+            <li>Qwen3.5 — 45</li>
+            <li>MiniMax M2.5 — 42</li>
+            <li>Gemini 2.5 Pro — 35</li>
+            <li>GPT-OSS-120B — 33</li>
+        </ul>
+
+        <p>That was useful only because it reinforced a design distinction I already wanted:</p>
+        <ul>
+            <li>the core cluster is strong enough to anchor the answer</li>
+            <li>GPT-OSS is meaningful, but still non-core</li>
+            <li>OpenRouter free should not be benchmark-weighted like a fixed model at all because it is a rotating endpoint</li>
+        </ul>
+
+        <div class="warning">
+            <strong>Important caution:</strong> benchmark-informed weighting is helpful only when it stays advisory. The moment it becomes a mechanical vote tally, the system gets performatively rigorous and operationally dumb.
+        </div>
+
+        <h2>The Async Rules Are Why the Workflow Finally Feels Trustworthy</h2>
+        <p>The strongest part of the current setup is no longer the model lineup. It is the coordination layer around it.</p>
+        <p>The workflow now explicitly tracks:</p>
+        <ul>
+            <li>expected panelists</li>
+            <li>pending vs completed lanes</li>
+            <li>first substantive result arrival</li>
+            <li>whether interim checkpoint updates have already been sent</li>
+            <li>which panelists are eligible for timeout-drop</li>
+            <li>whether ACP needs a targeted follow-up check</li>
+            <li>whether the panel is merely closed or fully superseded</li>
+        </ul>
+
+        <p>The practical control loop looks more like this now:</p>
+        <pre><code>resolve lineup from config
+spawn all expected panelists
+track expected vs completed lanes
+send one bounded checkpoint when the first real result arrives
+send one second checkpoint only if state changes meaningfully
+if only ACP remains, inspect ACP directly before waiting blindly
+after the second checkpoint, timeout-drop non-core stragglers
+synthesize immediately once all expected lanes are complete or dropped</code></pre>
+
+        <p>That is not glamorous. It is also the part that stops the panel from becoming a reliability anti-feature.</p>
+
+        <h2>The Two Delivery Bugs That Taught Me the Most</h2>
+        <h3>1. ACP completion is not the same as normal subagent completion</h3>
+        <p>One of the nastier failure modes was: Gemini finished, useful text existed, but the parent thread still looked silent. The fix was not “wait harder.” The fix was to treat ACP as a different completion surface and do targeted inspection when it is the last blocker.</p>
+
+        <h3>2. Fresh user follow-up is not a late duplicate</h3>
+        <p>Another failure mode was subtle: after a final synthesis was already delivered, a true late completion and a fresh user-authored follow-up could land in the same general window. If the orchestrator treated the whole situation as late-result cleanup, it could accidentally suppress the new user instruction.</p>
+        <p>That is why the current workflow keeps <strong>panel-closed</strong> and <strong>superseded</strong> as separate states.</p>
+
+        <div class="note">
+            <strong>Durable lesson:</strong> multi-agent workflows fail less from “the model said something weird” than from lifecycle ambiguity. Most bugs live in the handoff layer.
+        </div>
+
+        <h2>What I Learned About User-Facing Synthesis</h2>
+        <p>I used to think the final answer should hide as much orchestration detail as possible. That turned out to be half-right.</p>
+        <p>The user does <em>not</em> need raw routing trivia. But they <em>do</em> need visible weighting.</p>
+        <p>So the synthesis now tries to make one thing explicit:</p>
+        <blockquote>
+            <p><strong>Did the disagreement come from stable-core lanes, or only from non-core lanes?</strong></p>
+        </blockquote>
+
+        <p>That one distinction dramatically improves the trustworthiness of the result. “There was disagreement” is weak. “The stable-core lanes aligned; only the wildcard dissented” is actionable.</p>
+
+        <h2>What Other People Can Steal From This Pattern</h2>
+        <p>You do not need my exact stack to steal the shape.</p>
+        <p>If you run any multi-model or multi-agent review workflow, the parts worth copying are:</p>
+        <ol>
+            <li><strong>semantic roles, not hardcoded versions</strong></li>
+            <li><strong>config-resolved lineup before spawn</strong></li>
+            <li><strong>same packet for fair comparison</strong></li>
+            <li><strong>weight classes that are visible in synthesis</strong></li>
+            <li><strong>timeout as tail-latency control</strong></li>
+            <li><strong>explicit ACP / external-lane delivery handling</strong></li>
+            <li><strong>clear distinction between closed, degraded, and superseded runs</strong></li>
+        </ol>
+
+        <p>What I would <em>not</em> copy is “always ask all models.” Full panel is expensive. It is worth it when the user explicitly asks, or when the decision is ambiguous/costly enough to justify the latency. Reduced modes are part of the design, not a fallback embarrassment.</p>
+
+        <div class="success">
+            <strong>In plain English:</strong> the system got easier to trust the moment I stopped treating multi-model review as “fan out and pray” and started treating it like a first-class orchestration problem with schema, lifecycle, and delivery rules.
+        </div>
+
+        <h2>The Design Rule I Trust Most Now</h2>
+        <p>If I had to compress the whole thing into one line, it would be this:</p>
+        <blockquote>
+            <p><strong>A good panel workflow does not just collect opinions. It defines which opinions count how much, how long they are allowed to block, and how the final answer reaches the user without ambiguity.</strong></p>
+        </blockquote>
+
+        <p>That is what changed the workflow from an interesting prompt trick into a reusable piece of operating infrastructure.</p>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the architecture, role taxonomy, class policy, and workflow lessons because those are the reusable parts. I intentionally left out local session keys, job IDs, run IDs, exact Discord thread IDs, and other runtime fingerprints that would expose the live environment without helping anyone copy the pattern.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
+                <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
+                <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Why AI Agent Skills Break in Production (and How to Troubleshoot Them)</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and likes orchestration systems that fail loudly, surface dissent honestly, and do not depend on one human remembering where all the asynchronous bodies are buried.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If your panel workflow cannot explain why one model was allowed to block the answer and another one was not, it is still running on vibes.</p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px;">
+            <h3 style="margin-bottom: 10px;">💬 Comments & Feedback</h3>
+            <p style="margin-bottom: 0; color: #555;">
+                If you have built a multi-model consultation workflow that stays honest under partial failure, I would genuinely like to compare notes.
+                <a href="https://github.com/anyech/jingxiao-cai-blog/issues" target="_blank">Open an issue on GitHub</a>
+                or reach out directly.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Found this useful? Send it to the person still calling eight parallel model calls a “simple jury prompt.”</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+</body>
+</html>
