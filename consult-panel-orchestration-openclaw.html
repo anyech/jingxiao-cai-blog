@@ -124,7 +124,7 @@
         <p>That is the problem the <code>consult-panel</code> workflow now solves inside my OpenClaw setup.</p>
 
         <div class="success">
-            <strong>Current live full-jury shape:</strong> the panel currently resolves to <strong>8 roles</strong> — OCI Grok 4.20 reasoning, Gemini 2.5 Pro via ACP, GLM-5, Qwen3.5 Plus, Kimi K2.5, MiniMax M2.5, GPT-OSS-120B, and OpenRouter free — with explicit lineup resolution, timeout classes, dissent visibility, and degradation rules.
+            <strong>Current live full-jury shape:</strong> the panel currently resolves to <strong>8 roles</strong> — a primary reasoning consultant, an ACP-backed secondary lane, a compact-packet challenger, two additional stable core critics, a diversity critic, a fixed experimental panelist, and a rotating wildcard endpoint — with explicit lineup resolution, timeout classes, dissent visibility, and degradation rules.
         </div>
 
         <h2>The Design Decision That Saved the Whole Thing</h2>
@@ -147,13 +147,13 @@
 
         <p>What it does <em>not</em> do is hardcode model/version policy. That lives in durable config and the ops guide instead:</p>
         <ul>
-            <li><code>.github/config/consultant-routing.json</code></li>
-            <li><code>memory/categories/consultant-routing-operations-guide-2026-03-13.md</code></li>
-            <li><code>.github/scripts/consultant-panel-shape.py</code></li>
-            <li><code>.github/scripts/consultant-routing-check.py</code></li>
+            <li><code>routing config</code></li>
+            <li><code>operations guide</code></li>
+            <li><code>lineup resolver</code></li>
+            <li><code>packet-size gate</code></li>
         </ul>
 
-        <p>That split matters because it keeps model churn from leaking into workflow prose. If Grok changes, or Gemini lane policy changes, or GPT-OSS gets replaced, I want to edit config—not rewrite orchestration logic in six places.</p>
+        <p>That split matters because it keeps model churn from leaking into workflow prose. If the primary lane changes, or the ACP secondary policy changes, or the fixed experimental lane gets replaced, I want to edit config—not rewrite orchestration logic in six places.</p>
 
         <div class="note">
             <strong>Naming lesson:</strong> the skill is called <code>consult-panel</code>, not <code>jury</code>. “Jury” is a useful mode name, but it is a bad public skill name because it leaks internal taxonomy into the invocation surface.
@@ -173,49 +173,49 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>OCI Grok 4.20 reasoning</strong></td>
+                    <td><strong>Primary reasoning consultant</strong></td>
                     <td>Primary consultant</td>
                     <td><code>stable_core</code></td>
                     <td>Main decision anchor for full-panel review.</td>
                 </tr>
                 <tr>
-                    <td><strong>Gemini 2.5 Pro</strong></td>
-                    <td>ACP-backed consultant lane</td>
+                    <td><strong>ACP-backed secondary consultant</strong></td>
+                    <td>Secondary consultant lane</td>
                     <td><code>stable_external_nonblocking</code></td>
                     <td>Full-weight external voice when present; if degraded, the panel synthesizes without waiting forever.</td>
                 </tr>
                 <tr>
-                    <td><strong>GLM-5</strong></td>
+                    <td><strong>Compact-packet challenger</strong></td>
                     <td>Challenger consultant</td>
                     <td><code>stable_core</code></td>
-                    <td>Compact-packet challenger with strong broad capability; oversize packets fall back to Qwen or skip.</td>
+                    <td>Compact-packet challenger with strong broad capability; oversize packets fall back to a larger stable-core lane or skip.</td>
                 </tr>
                 <tr>
-                    <td><strong>Qwen3.5 Plus</strong></td>
+                    <td><strong>Stable core critic A</strong></td>
                     <td>Core critic</td>
                     <td><code>stable_core</code></td>
-                    <td>Reliable core critic and oversize fallback for GLM when needed.</td>
+                    <td>Reliable core critic and oversize fallback for the challenger when needed.</td>
                 </tr>
                 <tr>
-                    <td><strong>Kimi K2.5</strong></td>
+                    <td><strong>Stable core critic B</strong></td>
                     <td>Core critic</td>
                     <td><code>stable_core</code></td>
                     <td>Independent strong core voice.</td>
                 </tr>
                 <tr>
-                    <td><strong>MiniMax M2.5</strong></td>
+                    <td><strong>Diversity critic</strong></td>
                     <td>Diversity critic</td>
                     <td><code>stable_core</code></td>
                     <td>Semantic diversity lane without inventing a second wildcard slot.</td>
                 </tr>
                 <tr>
-                    <td><strong>GPT-OSS-120B</strong></td>
+                    <td><strong>Fixed experimental panelist</strong></td>
                     <td>Fixed experimental panelist</td>
                     <td><code>fixed_experimental</code></td>
                     <td>Meaningful non-core lane with stable identity that can corroborate consensus or widen a real split.</td>
                 </tr>
                 <tr>
-                    <td><strong>OpenRouter free</strong></td>
+                    <td><strong>Rotating wildcard endpoint</strong></td>
                     <td>Rotating wildcard panelist</td>
                     <td><code>rotating_wildcard</code></td>
                     <td>Exploratory dissent / novelty lane, never decisive by itself.</td>
@@ -226,7 +226,7 @@
         <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. That is how I stopped “full panel” from quietly meaning four models one week and seven the next.</p>
         <p>If the resolved lineup and the accepted spawn set do not match, the run is degraded immediately instead of being presented as a successful full panel. That one rule fixed a surprising amount of quiet orchestration dishonesty.</p>
 
-        <pre><code>python3 .github/scripts/consultant-panel-shape.py --mode jury</code></pre>
+        <pre><code>resolve_panel_shape(mode="jury")</code></pre>
 
         <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
 
@@ -241,21 +241,21 @@
         <p>A simplified shape looks like this:</p>
         <pre><code>{
   "roles": {
-    "primary_consultant": { "preferred": "oci-genai/xai.grok-4.20-reasoning" },
-    "gemini_consultant": { "agentId": "gemini", "modelAlias": "openclaw-consult-stable" },
-    "fixed_experimental_panelist": { "preferred": "oci-genai-chi/openai.gpt-oss-120b" },
-    "rotating_wildcard_panelist": { "preferred": "openrouter/openrouter/free" }
+    "primary_consultant": { "preferred": "&lt;primary-reasoning-model&gt;" },
+    "secondary_consultant": { "agentId": "&lt;secondary-agent&gt;", "modelAlias": "&lt;stable-secondary-lane&gt;" },
+    "fixed_experimental_panelist": { "preferred": "&lt;fixed-experimental-model&gt;" },
+    "rotating_wildcard_panelist": { "preferred": "&lt;rotating-wildcard-endpoint&gt;" }
   },
   "modes": {
     "jury": {
       "panelists": [
         "primary_consultant",
-        "gemini_consultant",
+        "secondary_consultant",
         "fixed_experimental_panelist",
         "rotating_wildcard_panelist",
-        "bailian/glm-5",
-        "bailian/qwen3.5-plus",
-        "bailian/kimi-k2.5",
+        "stable_core_challenger",
+        "stable_core_critic_a",
+        "stable_core_critic_b",
         "diversity_critic"
       ]
     }
@@ -271,7 +271,7 @@
 }</code></pre>
 
         <div class="note">
-            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of the live file. I keep the reusable design, class logic, and role split; I leave out the local debris nobody else needs. The <code>diversity_critic</code> role shown in the schema currently resolves to MiniMax M2.5 in the live panel.
+            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of the live file. I keep the reusable design, class logic, and role split; I leave out the local debris nobody else needs. The <code>diversity_critic</code> role shown in the schema resolves to the active diversity lane in the live panel.
         </div>
 
         <h2>Why Timeout Policy Had To Change</h2>
@@ -324,22 +324,12 @@
 
         <h2>Benchmark-Informed Weighting Helped, But Only After I Put It in Its Place</h2>
         <p>I do use benchmark families as a rough reference band. I do <em>not</em> use them as a vote-counting formula.</p>
-        <p>The live ops guide records a checked snapshot with broad public numbers like:</p>
+        <p>The live ops guide records a checked snapshot, but the useful signal is structural rather than brand-specific:</p>
         <ul>
-            <li>GLM-5 — 50</li>
-            <li>Grok 4.20 reasoning — 48</li>
-            <li>Kimi K2.5 — 47</li>
-            <li>Qwen3.5 — 45</li>
-            <li>MiniMax M2.5 — 42</li>
-            <li>Gemini 2.5 Pro — 35</li>
-            <li>GPT-OSS-120B — 33</li>
-        </ul>
-
-        <p>That was useful only because it reinforced a design distinction I already wanted:</p>
-        <ul>
-            <li>the core cluster is strong enough to anchor the answer</li>
-            <li>GPT-OSS is meaningful, but still non-core</li>
-            <li>OpenRouter free should not be benchmark-weighted like a fixed model at all because it is a rotating endpoint</li>
+            <li>the stable-core cluster is close enough to anchor the answer</li>
+            <li>the ACP secondary lane is strong enough to matter, but remains operationally nonblocking</li>
+            <li>the fixed experimental lane is meaningful, but still non-core</li>
+            <li>the rotating wildcard should not be benchmark-weighted like a fixed model at all because it is intentionally not stable enough to deserve that treatment</li>
         </ul>
 
         <div class="warning">
