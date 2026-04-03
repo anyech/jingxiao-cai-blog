@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM incident, LangChain/LangGraph flaws, exposed Ollama servers, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.">
-  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Trivy CI compromise, Moltbook API instability, approved-but-blocked operations">
+  <meta name="description" content="Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM incident, first public downstream victim reports, LangChain/LangGraph flaws, exposed Ollama servers, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.">
+  <meta name="keywords" content="AI agent supply chain attack, OpenClaw skills security, LiteLLM backdoor, Mercor LiteLLM, Trivy CI compromise, approved-but-blocked operations">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta property="og:description" content="A deep dive into malicious skills, the LiteLLM incident, and the later Moltbook API-stability lesson that led to an approved-but-blocked operating model.">
+  <meta property="og:description" content="A deep dive into malicious skills, the LiteLLM incident, the first named downstream victim report, and the later Moltbook API-stability lesson that led to an approved-but-blocked operating model.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know">
-  <meta name="twitter:description" content="Malicious skills are only one layer of agent supply-chain risk. Updated with the LiteLLM backdoor, compromised CI/CD path, and an April 2026 Moltbook API-stability follow-up.">
+  <meta name="twitter:description" content="Malicious skills are only one layer of agent supply-chain risk. Updated with the LiteLLM backdoor, first downstream impact reports, the compromised CI/CD path, and an April 2026 Moltbook API-stability follow-up.">
   <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
   <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">
   <script type="application/ld+json">
@@ -22,13 +22,13 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know",
-    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM backdoor, exposed AI infrastructure, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.",
+    "description": "Malicious AI agent skills turn plugin ecosystems into a supply-chain problem. Updated with the LiteLLM backdoor, first downstream victim reports, exposed AI infrastructure, and an April 2026 Moltbook API-stability lesson about approved-but-blocked operations.",
     "author": {
       "@type": "Person",
       "name": "Jingxiao Cai"
     },
     "datePublished": "2026-02-23",
-    "dateModified": "2026-04-02",
+    "dateModified": "2026-04-03",
     "url": "https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html",
     "publisher": {
       "@type": "Person",
@@ -65,11 +65,11 @@
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated April 2, 2026</strong></p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated April 3, 2026</strong></p>
   <p class="tags">Tags: security, openclaw, ai-agents, supply-chain, moltbook</p>
   
   <div class="update-banner">
-    <strong>📝 Updates (March–April 2026):</strong> This post now includes the Moltbook breach-to-acquisition case study, the LiteLLM incident via compromised Trivy CI/CD, the March 27 LangChain/LangGraph vulnerabilities, Ollama exposure statistics, and an April 2026 Moltbook API-stability follow-up on the approved-but-blocked operating model.
+    <strong>📝 Updates (March–April 2026):</strong> This post now includes the Moltbook breach-to-acquisition case study, the LiteLLM incident via compromised Trivy CI/CD, the first named downstream victim report from the LiteLLM fallout, the March 27 LangChain/LangGraph vulnerabilities, Ollama exposure statistics, and an April 2026 Moltbook API-stability follow-up on the approved-but-blocked operating model.
   </div>
   
   <div class="disclaimer">
@@ -310,6 +310,18 @@ openclaw skills verify --author eudaemon_0 weather-now
   </ul>
   
   <p>This is why I still think the agent ecosystem has a supply-chain problem even when the specific entry point changes. Sometimes it is an unsigned community skill. Sometimes it is a package release. Sometimes it is the security tooling in the release path. The operator lesson is the same: <strong>audit provenance, pin aggressively, and assume transitive dependencies can become first-order risk.</strong></p>
+
+  <h3>Downstream Impact (Updated April 2026)</h3>
+
+  <p>By early April, the LiteLLM story had moved from a plausible downstream-risk warning to a named public victim report. <a href="https://www.theregister.com/2026/04/02/mercor_supply_chain_attack/">The Register</a> reported that Mercor publicly said it was "one of thousands of companies" affected by the LiteLLM supply-chain attack, and <a href="https://techcrunch.com/2026/03/31/mercor-says-it-was-hit-by-cyberattack-tied-to-compromise-of-open-source-litellm-project/">TechCrunch</a> independently reported the same company statement while noting that forensics and scope questions were still ongoing.</p>
+
+  <p>I think this matters because supply-chain incidents often stay psychologically abstract until a downstream operator puts a name on the blast radius. Mercor appears to be the first downstream company to publicly confirm impact from this branch of the TeamPCP campaign, but the same public reporting also pointed to a much larger likely blast radius: responders were already talking about <strong>1,000+ impacted SaaS environments</strong> with expectations that the downstream count would keep expanding.</p>
+
+  <div class="note">
+    <strong>Scope clarification:</strong> a named downstream victim does <em>not</em> mean every LiteLLM user was compromised. It means the earlier warning was not hypothetical. The bad-package window, the stolen-credential path, and the downstream-exploitation path were all real enough to produce public confirmations.
+  </div>
+
+  <p>That is why the original vigilance thesis still holds. A supply-chain incident is not over when the malicious release is removed. The harder question is how far the stolen credentials traveled, which downstream environments were explored, and how long it takes for public victim reporting to catch up.</p>
   
   <h2>March 27, 2026: LangChain and LangGraph Vulnerabilities</h2>
   
@@ -371,6 +383,8 @@ openclaw skills verify --author eudaemon_0 weather-now
     <li><a href="https://thehackernews.com/2026/01/researchers-find-175000-publicly.html">The Hacker News: Researchers Find 175,000 Publicly Exposed Ollama AI Servers Across 130 Countries</a></li>
     <li><a href="https://docs.litellm.ai/blog/security-update-march-2026">LiteLLM: Security Update (March 2026)</a></li>
     <li><a href="https://snyk.io/articles/poisoned-security-scanner-backdooring-litellm/">Snyk: How a Poisoned Security Scanner Became the Key to Backdooring LiteLLM</a></li>
+    <li><a href="https://www.theregister.com/2026/04/02/mercor_supply_chain_attack/">The Register: AI recruiting biz Mercor says it was "one of thousands" hit in LiteLLM supply-chain attack</a></li>
+    <li><a href="https://techcrunch.com/2026/03/31/mercor-says-it-was-hit-by-cyberattack-tied-to-compromise-of-open-source-litellm-project/">TechCrunch: Mercor says it was hit by cyberattack tied to compromise of open source LiteLLM project</a></li>
     <li><a href="https://thehackernews.com/2026/03/teampcp-backdoors-litellm-versions.html">The Hacker News: TeamPCP Backdoors LiteLLM Versions 1.82.7–1.82.8 via Trivy CI/CD Compromise</a></li>
     <li><a href="https://cybernews.com/security/critical-litellm-supply-chain-attack-sends-shockwaves/">Cybernews: Critical supply chain attack hits LiteLLM, exposing AI developers</a></li>
   </ul>

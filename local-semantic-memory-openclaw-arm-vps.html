@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits and remote-memory follow-ups taught me about recall noise, source discipline, and keeping the local win honest.">
-    <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, local embeddings, OpenClaw memory search">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits plus a separate Gemini Embedding 2 pilot taught me about source discipline, multimodal exceptions, and keeping the local win honest.">
+    <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added retrieval-audit and later-developments notes on why the remote story became its own follow-up.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added retrieval-audit notes and a bounded Gemini Embedding 2 follow-up to keep the local-memory story honest.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus retrieval-audit and later-developments notes on the eventual remote follow-up.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus retrieval-audit notes and a bounded Gemini Embedding 2 follow-up for a separate multimodal lane.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits and remote-memory follow-ups taught me about recall noise, source discipline, and keeping the local win honest.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits plus a separate Gemini Embedding 2 pilot taught me about source discipline, multimodal exceptions, and keeping the local win honest.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-04-02",
+      "dateModified": "2026-04-03",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,13 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 2, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 3, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
-        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus a short later-developments note on why the eventual remote-memory stabilization story belongs in its own <code>text-embedding-3-small</code> follow-up instead of rewriting this local-memory win.</div>
+        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus two bounded follow-ups: why the remote-memory stabilization story belongs in its own <code>text-embedding-3-small</code> post, and why a separate Gemini Embedding 2 pilot was the right lane for multimodal clustering rather than text memory.</div>
     </header>
 
     <main>
@@ -326,6 +326,62 @@
         </ul>
 
         <p>That is why the remote stabilization story belongs in the separate follow-up, <a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory</a>, instead of being pasted wholesale into this post. This page is about proving that local semantic memory was viable on a modest self-hosted box. The later page is about what happened when I kept experimenting after that proof.</p>
+
+        <h2>April 2026 Follow-Up: A Separate Multimodal Lane Worked Better Than Forcing Everything Through Text Memory</h2>
+        <p>The cleanest later example came from a photo-clustering problem, not from memory search itself. I wanted semantically similar stills and GIFs grouped together. Hash-only approaches were fine for exact or near-duplicate cleanup, but they were the wrong primary feature space for “these belong together” ordering.</p>
+
+        <p>That turned into a deliberately separate Gemini Embedding 2 pilot instead of another attempt to overload the memory stack:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pilot signal</th>
+                    <th>What I saw</th>
+                    <th>Why it matters</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Corpus</strong></td>
+                    <td>96 items total: 72 stills and 24 GIFs</td>
+                    <td>Large enough to expose whether the workflow was real or just a toy success.</td>
+                </tr>
+                <tr>
+                    <td><strong>Embedding lane</strong></td>
+                    <td>Gemini Embedding 2 returned 3072-dimensional vectors</td>
+                    <td>The API path worked cleanly for a separate multimodal workflow on the same VPS.</td>
+                </tr>
+                <tr>
+                    <td><strong>Top-1 similarity</strong></td>
+                    <td>min 0.6609, max 0.9947, avg 0.8900</td>
+                    <td>The neighbors were strong enough to justify moving on from hash-only tuning.</td>
+                </tr>
+                <tr>
+                    <td><strong>Sanity check</strong></td>
+                    <td>Top-1 neighbors stayed same-lane (still→still, GIF→GIF)</td>
+                    <td>The results passed a basic modality sanity check instead of collapsing into obvious nonsense.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The operational pattern mattered as much as the numbers. I did <strong>not</strong> change the live gateway memory configuration. I created a dedicated local virtual environment and called Gemini Embedding 2 directly from small task-specific scripts, while keeping the vectors and review artifacts local.</p>
+
+        <pre><code>python3 -m venv ~/.openclaw/workspace/.venvs/photo-semantic
+source ~/.openclaw/workspace/.venvs/photo-semantic/bin/activate
+python3 scripts/gemini_embedding2_probe.py
+python3 scripts/gemini_embedding2_pilot.py</code></pre>
+
+        <div class="note">
+            <strong>Why this matters:</strong> the honest architecture is hybrid. Use local <code>embeddinggemma</code> when the problem is <strong>text memory on your own notes</strong>. Use a separate remote multimodal lane when the problem is <strong>image/GIF semantics</strong> or another feature space the text-memory lane was never meant to solve.
+        </div>
+
+        <ul>
+            <li><strong>Keep local</strong> when privacy, cost, and durable text recall are the primary goals.</li>
+            <li><strong>Use remote</strong> when the input is multimodal or when the feature space itself is different enough that reusing the text-memory lane would be fake simplicity.</li>
+            <li><strong>Keep the lanes separate</strong> when you want task-specific experimentation without turning a stable memory pipeline into a moving target.</li>
+        </ul>
+
+        <p>That distinction matters because the title claim here is still true. Local semantic memory worked on this VPS without external APIs. The later Gemini pilot did not overturn that result. It showed where a separate remote lane was the right tool for a different class of problem.</p>
 
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>

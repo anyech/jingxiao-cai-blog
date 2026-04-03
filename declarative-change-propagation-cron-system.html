@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validation, and practical guidance for failures and new change classes.">
-    <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, declarative cron">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validator-backed migration evidence, and a narrow exemption for ephemeral reminder jobs.">
+    <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, ephemeral reminders">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation, drift validation, and a reusable extension pattern.">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation, drift validation, live migration evidence, and a narrow ephemeral-reminder exception.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, and practical guidance for validator failures and new change classes.">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, batch evidence, and the narrow exception I kept for ephemeral reminder jobs.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Declarative Change Propagation: How I Built a Self-Documenting Cron System",
-      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validation, and practical guidance for failures and new change classes.",
+      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validator-backed migration evidence, and a narrow exemption for ephemeral reminder jobs.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-27",
-      "dateModified": "2026-03-28",
+      "dateModified": "2026-04-03",
       "url": "https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Declarative Change Propagation: How I Built a Self-Documenting Cron System</h1>
         <div class="meta">
-            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated March 28, 2026</strong><br>
+            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated April 3, 2026</strong><br>
             <span class="tags">Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
         </div>
-        <div class="note"><strong>Updated March 28, 2026:</strong> I added a practical appendix for the two questions that show up immediately after publication: what to do when validation goes red, and how to register a new change class without turning the system into a junk drawer.</div>
+        <div class="note"><strong>Updated March–April 2026:</strong> I added a practical appendix for validator failures and new change classes, then extended the post with live proof-batch evidence, pre-validation outputs, and the narrow exemption pattern I kept for ephemeral reminder jobs.</div>
     </header>
 
     <main>
@@ -395,6 +395,57 @@ git diff -- .</code></pre>
         <div class="note">
             <strong>Design guardrail:</strong> if adding the fourth class starts to feel easy, slow down. The goal is not to collect abstractions. The goal is to promote only the recurring patterns whose drift cost is already real.
         </div>
+
+        <h2>What the Next Two Batches Taught Me</h2>
+        <p>The March 27 version of this post described the design. The next few days supplied something better: live evidence that the pattern still held once I used it under pressure.</p>
+
+        <h3>Batch 2: A Narrow Live Migration Was Enough to Prove the Loop</h3>
+        <p>The second proof batch stayed intentionally small: one comment-monitor job that had actually hit the triggering incident, plus two recruiter-facing weekday monitors. The point was not to chase maximum coverage. The point was to prove that a narrow contract and validation loop could absorb a real migration without dragging unrelated jobs into the blast radius.</p>
+
+        <p>The useful evidence was exactly the kind of boring output I want from operational guardrails:</p>
+
+        <pre><code>CRON_HYGIENE_OK
+cron-agentturn-model-policy: regression checks passed</code></pre>
+
+        <p>That is the point. No cleverness. No hand-wavy “looks fine to me.” Just confirmation that the tracked desired/live surfaces and the guard logic were still coherent after the batch.</p>
+
+        <h3>Batch 3 Prep: Validate First, Mutate Later</h3>
+        <p>The third batch never started as a live mutation. It started as a preflight on four low-risk daily maintenance lanes — DNS reachability, workspace-size monitoring, log maintenance, and config backup — because the natural-run gate for the earlier batches had not cleared yet.</p>
+
+        <p>That turned out to be the better habit. I could validate the exact intended edit without pretending preparation was the same thing as rollout:</p>
+
+        <pre><code>cron-safe: pre-validation OK for edit
+cron-safe: pre-validation OK for edit
+cron-safe: pre-validation OK for edit
+cron-safe: pre-validation OK for edit</code></pre>
+
+        <p>The deeper lesson was procedural: declarative change propagation gets safer when <strong>not yet</strong> is treated as a first-class state. A manifest, validator, and wrapper can prove the edit shape before the runtime gate opens.</p>
+
+        <h3>A Necessary Exception: Ephemeral Reminder Jobs Are Not Durable Policy</h3>
+        <p>The sharpest edge case was not the migrations themselves. It was the temporary one-shot reminder jobs used to revisit a thread at the right time without creating a new recurring monitor. Those jobs were real live runtime state, but they were the wrong thing to encode into the durable manifest.</p>
+
+        <p>The fix was a deliberately narrow exemption. A reminder qualified only if it was:</p>
+        <ul>
+            <li><strong>one-shot</strong> (<code>schedule.kind = at</code>)</li>
+            <li><strong>self-cleaning</strong> (<code>deleteAfterRun = true</code>)</li>
+            <li><strong>session-bound</strong> to a specific main-session thread</li>
+            <li><strong><code>agentTurn</code>-based</strong> rather than the old main-bound <code>systemEvent</code> shape</li>
+            <li><strong>still explicitly modeled</strong> with a concrete <code>payload.model</code></li>
+        </ul>
+
+        <p>That let the guardrails stay strict without polluting durable policy with thread-local checkpoints. The validator/export side then looked like this:</p>
+
+        <pre><code>[change-propagation] memory-model-promotion: OK
+[change-propagation] routed-cron-delivery-change: OK
+[change-propagation] memory-monitor-overlap-state: OK
+
+Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder job(s))</code></pre>
+
+        <div class="note">
+            <strong>Pattern I trust now:</strong> recurring policy belongs in the manifest; thread-local checkpoint reminders do not. The moment a temporary runtime artifact is promoted into durable policy just to quiet a validator, the validator has stopped protecting the right boundary.
+        </div>
+
+        <p>That edge case made the whole post more real for me. The system was not just generating clean examples anymore. It was learning where strictness helped, where narrow exceptions were justified, and how to preserve both without turning the contract into mush.</p>
 
         <h2>The Design Rule I Trust Most Now</h2>
         <p>The most durable lesson from this work is not specific to cron jobs.</p>
