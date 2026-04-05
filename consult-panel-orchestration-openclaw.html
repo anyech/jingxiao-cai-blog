@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a full multi-LLM jury in OpenClaw consult-panel: config-backed roles, benchmark-informed weighting, timeout classes, async completion handling, and dissent visibility without orchestration chaos.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, weight classes, watchdog-backed waiting states, and honest dissent without orchestration chaos.">
     <meta name="keywords" content="multi-LLM consultation, LLM panel orchestration, OpenClaw consult-panel, AI agent orchestration, multi-model review, jury mode, consult-panel skill">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="A practical architecture for multi-LLM consultation in OpenClaw: thin skill, config-backed routing, benchmark-informed weighting, timeout classes, and async handoff rules that survive real panel runs.">
+    <meta property="og:description" content="A practical architecture for multi-model consultation in OpenClaw: config-backed routing, launch guards, weight classes, watchdog-backed waiting states, and async handoff rules that survive real panel runs.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with lineup resolution, weighting rules, timeout classes, and clean user-visible synthesis.">
+    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with lineup resolution, launch guards, weight classes, watchdog-backed waiting states, and clean user-visible synthesis.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
-      "description": "How I run a full multi-LLM jury in OpenClaw consult-panel: config-backed roles, benchmark-informed weighting, timeout classes, async completion handling, and dissent visibility without orchestration chaos.",
+      "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, weight classes, watchdog-backed waiting states, and honest dissent without orchestration chaos.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
+      "dateModified": "2026-04-05",
       "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -89,11 +89,14 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai<br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated April 5, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy internal evolution—manual mixed-panel runs, async handoff bugs, routing drift, and repeated hardening passes—into a cleaner operator memo that actually matches the live system.
+        </div>
+        <div class="note">
+            <strong>April 5 follow-up:</strong> I extended this write-up with the current 7-voice default lineup, the fail-closed launch guard, watchdog coverage as a real launch invariant, and the smaller delivery-ledger fix that suppresses stale checkpoints after terminal synthesis.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -106,7 +109,7 @@
 
     <main>
         <h2>The Hard Part Was Never “Ask More Models”</h2>
-        <p>Running eight LLMs in parallel is not the interesting problem. Spawning eight children is easy. Keeping the result coherent is the real work.</p>
+        <p>Running a full panel of LLMs in parallel is not the interesting problem. Spawning the children is easy. Keeping the result coherent is the real work.</p>
         <p>The failures I kept hitting were never glamorous:</p>
         <ul>
             <li>one expected panelist quietly did not get launched</li>
@@ -160,7 +163,7 @@
         </div>
 
         <h2>What the Current Panel Actually Looks Like</h2>
-        <p>The live jury lineup is not “eight random models.” Each lane has a role and a weight class.</p>
+        <p>The live jury lineup is not “eight random models.” The default active panel is currently seven voices with different jobs, different timeout leashes, and different interpretive weight.</p>
 
         <table>
             <thead>
@@ -179,22 +182,16 @@
                     <td>Main decision anchor for full-panel review.</td>
                 </tr>
                 <tr>
-                    <td><strong>ACP-backed secondary consultant</strong></td>
-                    <td>Secondary consultant lane</td>
-                    <td><code>stable_external_nonblocking</code></td>
-                    <td>Full-weight external voice when present; if degraded, the panel synthesizes without waiting forever.</td>
-                </tr>
-                <tr>
                     <td><strong>Compact-packet challenger</strong></td>
                     <td>Challenger consultant</td>
                     <td><code>stable_core</code></td>
-                    <td>Compact-packet challenger with strong broad capability; oversize packets fall back to a larger stable-core lane or skip.</td>
+                    <td>First stable-core challenger when the packet is compact enough.</td>
                 </tr>
                 <tr>
                     <td><strong>Stable core critic A</strong></td>
                     <td>Core critic</td>
                     <td><code>stable_core</code></td>
-                    <td>Reliable core critic and oversize fallback for the challenger when needed.</td>
+                    <td>Reliable large-context core voice and oversize fallback for the challenger.</td>
                 </tr>
                 <tr>
                     <td><strong>Stable core critic B</strong></td>
@@ -224,6 +221,7 @@
         </table>
 
         <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. That is how I stopped “full panel” from quietly meaning four models one week and seven the next.</p>
+        <p>I also stopped pretending a dormant route definition was the same thing as an active default lane. The Gemini ACP path still exists in config, but it is intentionally <strong>not</strong> part of the default active jury lineup right now because that route became too finicky to treat as a routine full-weight core lane. If it comes back later, it returns explicitly as a nonblocking external lane rather than a hidden substitute.</p>
         <p>If the resolved lineup and the accepted spawn set do not match, the run is degraded immediately instead of being presented as a successful full panel. That one rule fixed a surprising amount of quiet orchestration dishonesty.</p>
 
         <pre><code>resolve_panel_shape(mode="jury")</code></pre>
@@ -242,7 +240,7 @@
         <pre><code>{
   "roles": {
     "primary_consultant": { "preferred": "&lt;primary-reasoning-model&gt;" },
-    "secondary_consultant": { "agentId": "&lt;secondary-agent&gt;", "modelAlias": "&lt;stable-secondary-lane&gt;" },
+    "optional_external_lane": { "agentId": "&lt;secondary-agent&gt;", "modelAlias": "&lt;stable-secondary-lane&gt;" },
     "fixed_experimental_panelist": { "preferred": "&lt;fixed-experimental-model&gt;" },
     "rotating_wildcard_panelist": { "preferred": "&lt;rotating-wildcard-endpoint&gt;" }
   },
@@ -250,13 +248,12 @@
     "jury": {
       "panelists": [
         "primary_consultant",
-        "secondary_consultant",
-        "fixed_experimental_panelist",
-        "rotating_wildcard_panelist",
         "stable_core_challenger",
         "stable_core_critic_a",
         "stable_core_critic_b",
-        "diversity_critic"
+        "diversity_critic",
+        "fixed_experimental_panelist",
+        "rotating_wildcard_panelist"
       ]
     }
   },
@@ -327,7 +324,7 @@
         <p>The live ops guide records a checked snapshot, but the useful signal is structural rather than brand-specific:</p>
         <ul>
             <li>the stable-core cluster is close enough to anchor the answer</li>
-            <li>the ACP secondary lane is strong enough to matter, but remains operationally nonblocking</li>
+            <li>an external secondary lane can matter a lot when it is present, but it should remain operationally nonblocking instead of being silently required</li>
             <li>the fixed experimental lane is meaningful, but still non-core</li>
             <li>the rotating wildcard should not be benchmark-weighted like a fixed model at all because it is intentionally not stable enough to deserve that treatment</li>
         </ul>
@@ -361,6 +358,22 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
 
         <p>That is not glamorous. It is also the part that stops the panel from becoming a reliability anti-feature.</p>
 
+        <h2>Why Watchdog Coverage Had To Become a Launch Invariant</h2>
+        <p>The ugliest real failure was not “a model said something weird.” It was simpler: the panel could emit a clean <em>waiting on X</em> checkpoint and then never speak again.</p>
+        <p>That is why I no longer treat “children launched” as a valid waiting state by itself. A multi-child run is only allowed to settle into waiting after two things are true:</p>
+        <ol>
+            <li>the resolved lineup matches the accepted spawn set</li>
+            <li>real follow-up wakes exist to carry the panel to the next checkpoint or terminal synthesis</li>
+        </ol>
+        <p>In my implementation that means a small launch guard plus a watchdog planner. The planner defaults those wakes to <strong>visible delivery</strong> and rejects internal-only coverage by default, because a hidden watchdog is not much comfort if the user still experiences silence.</p>
+        <p>Just as important: <strong>generated plans are not proof.</strong> I only count coverage as real once the follow-up jobs actually exist. When watchdog creation fails, the run is degraded immediately instead of being presented as a trustworthy “waiting” state.</p>
+
+        <div class="note">
+            <strong>Important boundary:</strong> this is stronger orchestration hardening, not a formal guarantee. Real cron-backed visible-delivery watchdog wakes now carry the panel through to synthesis in my local repros, but I still describe the result as <em>best-effort fail-closed behavior</em>, not mathematical certainty.
+        </div>
+
+        <p>A second late bug was older queued checkpoints leaking out after a terminal answer. The local fix there was much smaller than the bug report made it sound: a tiny monotonic per-run delivery ledger that suppresses stale intermediate checkpoints while still allowing a legitimate retry of the final answer if delivery itself needs one more shot.</p>
+
         <h2>The Two Delivery Bugs That Taught Me the Most</h2>
         <h3>1. ACP completion is not the same as normal subagent completion</h3>
         <p>One of the nastier failure modes was: Gemini finished, useful text existed, but the parent thread still looked silent. The fix was not “wait harder.” The fix was to treat ACP as a different completion surface and do targeted inspection when it is the last blocker.</p>
@@ -391,6 +404,7 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
             <li><strong>config-resolved lineup before spawn</strong></li>
             <li><strong>same packet for fair comparison</strong></li>
             <li><strong>weight classes that are visible in synthesis</strong></li>
+            <li><strong>watchdog coverage as a launch invariant, not a hopeful afterthought</strong></li>
             <li><strong>timeout as tail-latency control</strong></li>
             <li><strong>explicit ACP / external-lane delivery handling</strong></li>
             <li><strong>clear distinction between closed, degraded, and superseded runs</strong></li>

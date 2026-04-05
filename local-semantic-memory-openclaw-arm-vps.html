@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits plus a separate Gemini Embedding 2 pilot taught me about source discipline, multimodal exceptions, and keeping the local win honest.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and a separate multimodal exception instead of muddling the architecture.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS with node-llama-cpp + embeddinggemma, then added retrieval-audit notes and a bounded Gemini Embedding 2 follow-up to keep the local-memory story honest.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it to session transcripts with a safer blue/green rollout and a live 0.6B session-memory lane.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS: node-llama-cpp + embeddinggemma, plus retrieval-audit notes and a bounded Gemini Embedding 2 follow-up for a separate multimodal lane.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with session transcript indexing, a blue/green rollout pattern, and a live 0.6B session-memory lane.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS using node-llama-cpp and embeddinggemma—and what later retrieval audits plus a separate Gemini Embedding 2 pilot taught me about source discipline, multimodal exceptions, and keeping the local win honest.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and a separate multimodal exception instead of muddling the architecture.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-04-03",
+      "dateModified": "2026-04-05",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,13 +82,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 3, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 5, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
-        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a retrieval-audit section on English/Chinese recall, transcript-noise reduction, and metadata discipline, plus two bounded follow-ups: why the remote-memory stabilization story belongs in its own <code>text-embedding-3-small</code> post, and why a separate Gemini Embedding 2 pilot was the right lane for multimodal clustering rather than text memory.</div>
+        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added retrieval-audit notes on English/Chinese recall, then treated session transcript indexing as a blue/green rollout problem instead of a casual model swap, and kept a separate Gemini Embedding 2 pilot for multimodal clustering rather than overloading the text-memory lane.</div>
     </header>
 
     <main>
@@ -326,6 +326,62 @@
         </ul>
 
         <p>That is why the remote stabilization story belongs in the separate follow-up, <a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory</a>, instead of being pasted wholesale into this post. This page is about proving that local semantic memory was viable on a modest self-hosted box. The later page is about what happened when I kept experimenting after that proof.</p>
+
+        <h2>April 2026 Follow-Up: Session Transcript Indexing Turned This Into a Blue/Green Rollout Problem</h2>
+        <p>The next meaningful step after the original local-memory win was not “try another embedding model.” It was <strong>add session transcripts without breaking the live lane</strong>.</p>
+        <p>That sounds like a small follow-up. It was not. The first design correction was easy to miss: <strong>session transcript indexing is agent-scoped</strong>. A brand-new shadow agent would index its own mostly empty session folder, not the real history from my main agent. That meant the honest experiment kept the same agent identity and changed the config and SQLite target instead.</p>
+
+        <div class="warning">
+            <strong>The easy comparison trap:</strong> comparing <code>memory-only + 4B</code> against <code>memory + sessions + 0.6B</code> looks tidy, but it changes <strong>two variables at once</strong> — source set and embedding model. That is not an A/B test. It is an accidental mash-up.
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Lane</th>
+                    <th>Sources</th>
+                    <th>Embedding model</th>
+                    <th>Why I kept it</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>A</strong></td>
+                    <td><code>memory + sessions</code></td>
+                    <td><code>perplexity/pplx-embed-v1-4b</code></td>
+                    <td>Isolate the effect of adding session transcripts while holding the stronger known-good model family constant.</td>
+                </tr>
+                <tr>
+                    <td><strong>B</strong></td>
+                    <td><code>memory + sessions</code></td>
+                    <td><code>perplexity/pplx-embed-v1-0.6b</code></td>
+                    <td>Test the cheaper lane on the same corpus instead of hiding a source-set change inside a model swap.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The trade-off was real. The smaller <code>0.6b</code> lane was about <strong>7.5× cheaper per embedded token</strong>, used <strong>1024</strong>-dimensional vectors instead of <strong>2560</strong>, and produced a meaningfully denser on-disk index. The bigger <code>4b</code> lane still looked stronger on several public retrieval benchmarks I checked by low-single-digit absolute margins. That is exactly why I wanted the rollout to separate <em>source-set enablement</em> from <em>model choice</em> instead of hiding both inside one “upgrade”.</p>
+
+        <p>The honest operational pattern turned out to be blue/green, not clever live toggling:</p>
+        <ol>
+            <li>build shadow configs first</li>
+            <li>keep agent-scoped SQLite paths because the session index is agent-scoped too</li>
+            <li>validate with real <code>memory status</code> and <code>memory search</code> checks</li>
+            <li>patch the live config deliberately</li>
+            <li>restart manually on purpose so rollback is obvious if the first live sync goes wrong</li>
+        </ol>
+
+        <div class="note">
+            <strong>Important scope note:</strong> I am not claiming that agent-scoped storage is a universal best practice for every retrieval system. It was the honest fit for <em>this</em> design because the session corpus itself was scoped per agent.
+        </div>
+
+        <p>My current live lane now resolves to the smaller session-enabled path:</p>
+        <pre><code>sources: ["memory", "sessions"]
+model: perplexity/pplx-embed-v1-0.6b
+vector dims: 1024
+dbPath: ~/.openclaw/memory/{agentId}-sessions-shadow-pplx06b.sqlite</code></pre>
+
+        <p>More importantly, the live checks return real <code>source: "sessions"</code> hits. That is the proof I actually care about. The point was never to win an embedding beauty pageant. The point was to add session recall without lying to myself about what changed.</p>
 
         <h2>April 2026 Follow-Up: A Separate Multimodal Lane Worked Better Than Forcing Everything Through Text Memory</h2>
         <p>The cleanest later example came from a photo-clustering problem, not from memory search itself. I wanted semantically similar stills and GIFs grouped together. Hash-only approaches were fine for exact or near-duplicate cleanup, but they were the wrong primary feature space for “these belong together” ordering.</p>

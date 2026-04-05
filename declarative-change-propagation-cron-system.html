@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validator-backed migration evidence, and a narrow exemption for ephemeral reminder jobs.">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation, then learned where declarative intent still needs isolated fix validation and fresh runtime identity when live state stays sticky.">
     <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, ephemeral reminders">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes with contract-derived documentation, drift validation, live migration evidence, and a narrow ephemeral-reminder exception.">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes, then later forced me to confront sticky runtime identity and isolated fix validation beyond cron alone.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, batch evidence, and the narrow exception I kept for ephemeral reminder jobs.">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, plus two harder follow-ups: isolated fix validation and fresh runtime identity when declarative intent alone was not enough.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Declarative Change Propagation: How I Built a Self-Documenting Cron System",
-      "description": "How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, validator-backed migration evidence, and a narrow exemption for ephemeral reminder jobs.",
+      "description": "How I built a declarative change propagation system for cron automation, then learned where declarative intent still needs isolated fix validation and fresh runtime identity when live state stays sticky.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-27",
-      "dateModified": "2026-04-03",
+      "dateModified": "2026-04-05",
       "url": "https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Declarative Change Propagation: How I Built a Self-Documenting Cron System</h1>
         <div class="meta">
-            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated April 3, 2026</strong><br>
+            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated April 5, 2026</strong><br>
             <span class="tags">Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
         </div>
-        <div class="note"><strong>Updated March–April 2026:</strong> I added a practical appendix for validator failures and new change classes, then extended the post with live proof-batch evidence, pre-validation outputs, and the narrow exemption pattern I kept for ephemeral reminder jobs.</div>
+        <div class="note"><strong>Updated March–April 2026:</strong> I added a practical appendix for validator failures and new change classes, then extended the post with live proof-batch evidence, the narrow exemption pattern for ephemeral reminder jobs, and two later runtime-boundary lessons: isolated fix validation before touching a compiled live install, and fresh job identity when sticky cron state survived in-place edits.</div>
     </header>
 
     <main>
@@ -446,6 +446,26 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
         </div>
 
         <p>That edge case made the whole post more real for me. The system was not just generating clean examples anymore. It was learning where strictness helped, where narrow exceptions were justified, and how to preserve both without turning the contract into mush.</p>
+
+        <h2>Two Later Incidents Made the Runtime Boundary Harder to Ignore</h2>
+
+        <h3>1. Incident walkthrough: validate the fix upstream before touching the live compiled install</h3>
+        <p>A later voice-call bring-up forced me to use the same discipline outside cron itself. The live compiled install showed a mock-provider webhook bug. Instead of hot-patching the bundled runtime in place, I reproduced the bug in a separate upstream source checkout, validated a narrow fix there, and kept the live deployment on the safer path until I knew what was actually broken.</p>
+        <p>That separation mattered. I could prove a real Twilio notify path end-to-end, try an OpenAI-backed conversation upgrade, and then roll that upgrade back cleanly when the conversational path failed without confusing the isolated fix validation with the production baseline.</p>
+        <p>The end state was explicit, not hand-wavy: <strong>Twilio notify remained the known-good live baseline</strong>; the OpenAI conversation path stayed a separate debugging lane. Only after the isolated fix was validated did it make sense to decide whether the next move should be an upstream issue, an upstream PR, or no public escalation yet.</p>
+
+        <div class="warning">
+            <strong>Important exception:</strong> this is not a theological ban on live patching. Emergency rollback, security containment, or similarly urgent break-fix work can justify it. The point is narrower: do not treat a compiled production install as your first debugging playground when a clean isolated repro is available.
+        </div>
+
+        <h3>2. When declarative intent met sticky runtime identity</h3>
+        <p>The sharper cron lesson arrived in a model-switch failure where in-place job edits still did not clear the fault. The desired state was correct on paper, but the runtime kept behaving as if an older job lineage still mattered.</p>
+        <p>That is what I mean by <strong>sticky runtime identity</strong> in plain English: sometimes the scheduler keeps acting like yesterday's job still exists even after you edit today's config.</p>
+        <p>The recovery pattern that actually worked was not another round of careful field edits. It was <strong>fresh job identity + correct cron session wiring + explicit validation</strong>. In practice that meant recreating the affected jobs cleanly, force-running the new versions, and only then treating the model-switch fault as cleared.</p>
+
+        <div class="note">
+            <strong>Why this belongs in a declarative post:</strong> the declarative contract still mattered. It told me what the jobs <em>should</em> look like. But the incident taught me that desired state alone is not always enough when runtime identity is sticky. Sometimes the right repair is declarative intent plus a clean new runtime object.
+        </div>
 
         <h2>The Design Rule I Trust Most Now</h2>
         <p>The most durable lesson from this work is not specific to cron jobs.</p>

@@ -6,12 +6,12 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Apr 2026 21:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2026 21:35:00 +0000</lastBuildDate>
 
 
     <item>
       <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
-      <description>How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with lineup resolution, timeout classes, async handoff rules, and user-visible dissent that does not collapse under partial failure.</description>
+      <description>How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, a current 7-voice lineup, and user-visible dissent that does not collapse under partial failure.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
       <pubDate>Fri, 03 Apr 2026 00:00:00 +0000</pubDate>
@@ -51,7 +51,7 @@
 
     <item>
       <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
-      <description>How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with live batch evidence and a narrow exemption for ephemeral reminder jobs.</description>
+      <description>How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with isolated fix validation and fresh runtime identity when live state stayed sticky.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</guid>
       <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
@@ -59,7 +59,7 @@
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with retrieval-audit follow-up notes, a cleaner remote-memory handoff, and a bounded Gemini Embedding 2 follow-up for a separate multimodal lane.</description>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with session transcript indexing, a safer blue/green rollout, and a live 0.6B session-memory lane.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
