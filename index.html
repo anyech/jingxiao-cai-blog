@@ -70,161 +70,161 @@
   <p><a href="/jingxiao-cai-blog/feed.xml">RSS Feed</a></p>
   
   <h2>Blog Posts</h2>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">Building Fail-Closed Stage Environments for AI Agents on a Small VPS</a></h3>
     <p class="date">April 8, 2026</p>
     <p class="categories">Categories: openclaw, devops, ai-agents, staging, release-engineering, self-hosted</p>
     <p>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, container isolation, and a mock-to-real-to-higher-risk validation ladder.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</a></h3>
     <p class="date">April 3, 2026 · Updated April 8, 2026</p>
     <p class="categories">Categories: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</p>
     <p>How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, deduplicated progress updates, and user-visible dissent that does not collapse under partial failure.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</a></h3>
-    <p class="date">April 2, 2026</p>
-    <p class="categories">Categories: openclaw, devops, ai-agents, incident-response, rollback, reliability</p>
-    <p>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></h3>
-    <p class="date">February 23, 2026 · Updated April 3, 2026</p>
-    <p class="categories">Categories: security, openclaw, ai-agents, supply-chain, moltbook</p>
-    <p>A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook's unstable post-incident API surface.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</a></h3>
-    <p class="date">March 19, 2026 · Updated April 8, 2026</p>
-    <p class="categories">Categories: openclaw, ai-agents, self-hosted, memory, embeddings, devops</p>
-    <p>How I got OpenClaw local memory search working on a small ARM VPS using <code>node-llama-cpp</code> + <code>embeddinggemma</code>, now with session transcript indexing, a safer blue/green rollout, and a candid limitations section on rebuild safety and indexing pressure.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></h3>
-    <p class="date">March 11, 2026 · Updated April 2, 2026</p>
-    <p class="categories">Categories: openclaw, devops, ai-agents, configuration, gateway, reliability</p>
-    <p>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a rollback case study, a verifier-mismatch lesson, and the Discord health-monitor restart loop.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></h3>
-    <p class="date">March 29, 2026</p>
-    <p class="categories">Categories: openclaw, ai-agents, gemini, reliability, devops, llm-ops</p>
-    <p>When Gemini hits capacity exhaustion, the hard part is not picking a random next model. It's deciding where fallback policy belongs, what failures should trigger it, and how to keep startup fallback separate from prompt-time failure.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</a></h3>
-    <p class="date">March 28, 2026</p>
-    <p class="categories">Categories: security, openclaw, ai-agents, supply-chain, python, incident-response</p>
-    <p>LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.</p>
-  </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></h3>
-    <p class="date">March 27, 2026 · Updated March 28, 2026</p>
-    <p class="categories">Categories: openclaw, ai-agents, memory, embeddings, debugging, devops</p>
-    <p>After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.</p>
-  </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></h3>
     <p class="date">March 27, 2026 · Updated April 8, 2026</p>
     <p class="categories">Categories: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</p>
     <p>How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with a stage-validation ladder from mock to real to a narrow higher-risk lane.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></h3>
-    <p class="date">March 7, 2026</p>
-    <p class="categories">Categories: ai-agents, devops, recovery, openclaw, automation, safety</p>
-    <p>I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.</p>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</a></h3>
+    <p class="date">March 19, 2026 · Updated April 8, 2026</p>
+    <p class="categories">Categories: openclaw, ai-agents, self-hosted, memory, embeddings, devops</p>
+    <p>How I got OpenClaw local memory search working on a small ARM VPS using <code>node-llama-cpp</code> + <code>embeddinggemma</code>, now with session transcript indexing, a safer blue/green rollout, and a candid limitations section on rebuild safety and indexing pressure.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></h3>
-    <p class="date">March 3, 2026</p>
-    <p class="categories">Categories: writing, security, blogging, opsec, technical-writing</p>
-    <p>I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts for technical bloggers.</p>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></h3>
+    <p class="date">February 23, 2026 · Updated April 3, 2026</p>
+    <p class="categories">Categories: security, openclaw, ai-agents, supply-chain, moltbook</p>
+    <p>A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook's unstable post-incident API surface.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></h3>
-    <p class="date">March 2, 2026</p>
-    <p class="categories">Categories: ai-agents, devops, automation, openclaw, security</p>
-    <p>My AI agent runs multiple autonomous cron jobs every night—security audits, health checks, documentation. Here's the full architecture and lessons learned from 30 days of unsupervised operation.</p>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</a></h3>
+    <p class="date">April 2, 2026</p>
+    <p class="categories">Categories: openclaw, devops, ai-agents, incident-response, rollback, reliability</p>
+    <p>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></h3>
-    <p class="date">February 25, 2026</p>
-    <p class="categories">Categories: tutorial, oauth, vps, devops, automation, google-cloud</p>
-    <p>Complete tutorial on OAuth 2.0 for headless servers. Learn how to set up Google APIs on VPS without a browser using OAuth Playground workaround. Includes working Python scripts.</p>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></h3>
+    <p class="date">March 11, 2026 · Updated April 2, 2026</p>
+    <p class="categories">Categories: openclaw, devops, ai-agents, configuration, gateway, reliability</p>
+    <p>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a rollback case study, a verifier-mismatch lesson, and the Discord health-monitor restart loop.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></h3>
+    <p class="date">March 29, 2026</p>
+    <p class="categories">Categories: openclaw, ai-agents, gemini, reliability, devops, llm-ops</p>
+    <p>When Gemini hits capacity exhaustion, the hard part is not picking a random next model. It's deciding where fallback policy belongs, what failures should trigger it, and how to keep startup fallback separate from prompt-time failure.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</a></h3>
+    <p class="date">March 28, 2026</p>
+    <p class="categories">Categories: security, openclaw, ai-agents, supply-chain, python, incident-response</p>
+    <p>LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></h3>
+    <p class="date">March 27, 2026 · Updated March 28, 2026</p>
+    <p class="categories">Categories: openclaw, ai-agents, memory, embeddings, debugging, devops</p>
+    <p>After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.</p>
+  </div>
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></h3>
     <p class="date">February 24, 2026 · Updated March 16, 2026</p>
     <p class="categories">Categories: llm, debugging, bailian, claude, pricing</p>
     <p>A debugging story about hidden platform caps, now updated with Anthropic's March 2026 flat 1M Claude pricing change and why cheaper long context still doesn't eliminate API-level ceilings.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></h3>
+    <p class="date">March 7, 2026</p>
+    <p class="categories">Categories: ai-agents, devops, recovery, openclaw, automation, safety</p>
+    <p>I run 13 autonomous cron jobs with zero undo capability. When Moltbook's community started talking about recovery primitives, I realized my deployment has a critical safety gap.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></h3>
+    <p class="date">March 3, 2026</p>
+    <p class="categories">Categories: writing, security, blogging, opsec, technical-writing</p>
+    <p>I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts for technical bloggers.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></h3>
+    <p class="date">March 2, 2026</p>
+    <p class="categories">Categories: ai-agents, devops, automation, openclaw, security</p>
+    <p>My AI agent runs multiple autonomous cron jobs every night—security audits, health checks, documentation. Here's the full architecture and lessons learned from 30 days of unsupervised operation.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></h3>
+    <p class="date">February 25, 2026</p>
+    <p class="categories">Categories: tutorial, oauth, vps, devops, automation, google-cloud</p>
+    <p>Complete tutorial on OAuth 2.0 for headless servers. Learn how to set up Google APIs on VPS without a browser using OAuth Playground workaround. Includes working Python scripts.</p>
+  </div>
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/workspace-skills-bug.html">Why Custom Skills Don't Load in OpenClaw - A Known Bug</a></h3>
     <p class="date">February 23, 2026</p>
     <p class="categories">Categories: openclaw, bugs, ai-agents</p>
     <p>I tried creating a custom blog-publishing skill for OpenClaw and discovered it's a known bug (#10386). Here's what I learned.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant with Gmail - Morning Memo Automation</a></h3>
     <p class="date">February 21, 2026</p>
     <p class="categories">Categories: ai, automation, gmail</p>
     <p>How I built an AI assistant to automate my morning email routine.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Troubleshooting AI Agent Skills</a></h3>
     <p class="date">February 18, 2026</p>
     <p class="categories">Categories: ai-agents, troubleshooting</p>
     <p>Common issues and solutions when working with AI agent skills.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></h3>
-    <p class="date">February 18, 2026</p>
-    <p class="categories">Categories: api, google, tutorial</p>
-    <p>A comprehensive guide to setting up Google APIs for your projects.</p>
-  </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/onedrive-multcloud-story.html">The OneDrive and MultCloud Story</a></h3>
     <p class="date">February 18, 2026</p>
     <p class="categories">Categories: cloud, onedrive, multcloud</p>
     <p>How I migrated my cloud storage using MultCloud.</p>
   </div>
-  
-  <div class="post">
-    <h3><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a></h3>
-    <p class="date">February 17, 2026</p>
-    <p class="categories">Categories: blog, tech</p>
-    <p>I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...</p>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></h3>
+    <p class="date">February 18, 2026</p>
+    <p class="categories">Categories: api, google, tutorial</p>
+    <p>A comprehensive guide to setting up Google APIs for your projects.</p>
   </div>
-  
-  <div class="post">
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/welcome.html">Welcome to My Blog</a></h3>
     <p class="date">February 17, 2026</p>
     <p class="categories">Categories: intro, personal</p>
     <p>After several years in industry, I'm starting to share my learnings, thoughts, and experiences...</p>
   </div>
-  
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a></h3>
+    <p class="date">February 17, 2026</p>
+    <p class="categories">Categories: blog, tech</p>
+    <p>I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...</p>
+  </div>
+
   <hr>
   <p><a href="https://anyech.github.io/jingxiao-cai/">← Back to Personal Site</a></p>
 </body>
