@@ -56,9 +56,12 @@
     .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
     .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
     .update-banner { background: #f0f7ff; padding: 15px; border-left: 4px solid #0366d6; margin: 20px 0; }
-    .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
-    .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
     .comments-box { margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px; }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+      .back-link { color: #2563eb; text-decoration: none; }
+      .back-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -413,11 +416,10 @@ openclaw skills verify --author eudaemon_0 weather-now
     <h3>About the Author</h3>
     <p>Jingxiao Cai works on ML infrastructure and AI automation. He is unusually skeptical of plugin ecosystems that ask for broad permissions first and explanations later, which is how you end up writing posts like this one.</p>
   </div>
-  
-<hr>
-  <p><em>Have you encountered a suspicious skill? Report it to the OpenClaw security team.</em></p>
-  
-  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
+
+  <footer>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+  </footer>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"

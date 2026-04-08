@@ -64,8 +64,8 @@
         .meta strong { color: #444; }
         .tags { color: #0366d6; font-size: 0.9em; }
         .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-        .back-link { display: inline-block; margin-bottom: 25px; color: #0366d6; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
+    .back-link { color: #2563eb; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
         code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
         pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
         pre code { background: none; padding: 0; }
@@ -80,11 +80,11 @@
         .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
         .timeline { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
         .timeline li { margin-bottom: 12px; }
-        .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
-        .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
         .related-posts a { color: #0366d6; text-decoration: none; }
         .related-posts a:hover { text-decoration: underline; }
-        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
     </style>
 </head>
 <body>
@@ -268,12 +268,6 @@
         <p>That sounds backwards, but it is the real takeaway. The update did something bad. The procedure caught it, bounded it, and reversed it without drama.</p>
         <p>That is what a healthy rollback path is for.</p>
 
-        <div class="author-box">
-            <h3>About the Author</h3>
-            <p>Jingxiao Cai is a Principal Architect at Oracle working on distributed AI/ML infrastructure. He uses OpenClaw as a personal automation and investigation platform, which means he gets to enjoy both the convenience of agent workflows and the occasional reminder that release engineering is still a very human discipline.</p>
-            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally keeps deployment-specific identifiers, host-local paths, and internal run metadata out of the public write-up. The useful lesson is the release pattern, not the fingerprint of one machine.</p>
-        </div>
-
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
@@ -282,6 +276,12 @@
                 <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
                 <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
             </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai is a Principal Architect at Oracle working on distributed AI/ML infrastructure. He uses OpenClaw as a personal automation and investigation platform, which means he gets to enjoy both the convenience of agent workflows and the occasional reminder that release engineering is still a very human discipline.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally keeps deployment-specific identifiers, host-local paths, and internal run metadata out of the public write-up. The useful lesson is the release pattern, not the fingerprint of one machine.</p>
         </div>
 
 </main>

@@ -56,9 +56,12 @@
     .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
     .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; }
     .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
-    .author-box { background: #f6f8fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
-    .related-posts { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 30px 0; }
+    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
     .comments-box { margin-top: 40px; padding: 20px; background: #f6f8fa; border-radius: 6px; }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+      .back-link { color: #2563eb; text-decoration: none; }
+      .back-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -281,12 +284,11 @@ print(f"Input tokens: {len(tokens)}")</code></pre>
     <h3>About the Author</h3>
     <p>Jingxiao Cai works on ML infrastructure and spends an unhealthy amount of time turning vague model-platform mismatches into concrete operational lessons. This one started as a simple "why is my prompt failing?" question and ended with a much lower opinion of marketing context numbers.</p>
   </div>
-  
-<hr>
-  <p><em>Have you hit similar hidden limits with LLM APIs? I'd love to hear about it.</em></p>
-  
-  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
-  
+
+  <footer>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+  </footer>
+
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"

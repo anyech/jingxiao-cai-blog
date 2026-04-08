@@ -74,6 +74,10 @@
     table { border-collapse: collapse; width: 100%; margin: 15px 0; }
     th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
     th { background: #f4f4f4; }
+      .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+      .back-link { color: #2563eb; text-decoration: none; }
+      .back-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -236,23 +240,23 @@
     
     <p>Next, I'm working on more advanced automation — maybe automatic file categorization or intelligent document routing. Stay tuned!</p>
     
-    <hr>
     <div class="related-posts">
-      <h3>📚 Related Posts</h3>
+      <h3>Related Posts</h3>
       <ul>
         <li><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Setting Up Google APIs for Self-Hosted AI Agents</a> — How to set up Google Drive access</li>
         <li><a href="/jingxiao-cai-blog/migrating-from-wordpress.html">Migrating from WordPress to GitHub Pages</a> — This blog's hosting setup</li>
       </ul>
     </div>
-    
-    <hr>
-    <p><em>Have a similar horror story with OneDrive or another cloud? Let's chat in the comments.</em></p>
 
-    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">
+    <div class="author-box">
       <h3>About the Author</h3>
       <p><strong>Jingxiao Cai</strong> is a Principal Architect specializing in ML infrastructure. PhD in Radar Signal Processing from University of Oklahoma. Previously at Oracle building HeatWave ML infrastructure.</p>
     </div>
   </div>
+
+  <footer>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+  </footer>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"

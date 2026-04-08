@@ -108,15 +108,8 @@
       margin-right: 5px;
       color: #555;
     }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #0066cc;
-      text-decoration: none;
-    }
-    .back-link:hover {
-      text-decoration: underline;
-    }
+    .back-link { color: #2563eb; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
     ul, ol {
       padding-left: 25px;
     }
@@ -147,6 +140,9 @@
       padding: 15px;
       margin: 20px 0;
     }
+      .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
+      .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
   </style>
 </head>
 <body>
@@ -439,16 +435,11 @@ print('✅ Scopes updated')
     <p>Start small. Maybe just email summaries first. Then expand to calendar, Drive, and beyond.</p>
     <p>The future of personal productivity isn't a better to-do app. It's having your own AI that knows what matters and tells you.</p>
     
-    <hr>
-    <p><em>Questions? Feel free to reach out. I'm also active on <a href="https://www.linkedin.com/in/jingxiao-cai/">LinkedIn</a>.</em></p>
-    
   </article>
-  
-  <p style="text-align: center; margin-top: 40px; color: #888;">
-    <a href="/jingxiao-cai-blog/">Back to Blog</a> | 
-    <a href="https://github.com/anyech">GitHub</a> | 
-    <a href="https://www.linkedin.com/in/jingxiao-cai/">LinkedIn</a>
-  </p>
+
+  <footer>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+  </footer>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
