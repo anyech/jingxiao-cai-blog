@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I built a declarative change propagation system for cron automation, then learned where declarative intent still needs isolated fix validation and fresh runtime identity when live state stays sticky.">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation, then extended it with stage-validation gates: mock first, real second, and a narrow risky lane only after the cheap checks stay boring.">
     <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, ephemeral reminders">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes, then later forced me to confront sticky runtime identity and isolated fix validation beyond cron alone.">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes, then grew a stage-validation ladder: mock first, real second, risky lane last.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, plus two harder follow-ups: isolated fix validation and fresh runtime identity when declarative intent alone was not enough.">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, and a stage-validation ladder: mock first, real second, risky lane last.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
@@ -32,7 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-27",
-      "dateModified": "2026-04-05",
+      "dateModified": "2026-04-08",
       "url": "https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Declarative Change Propagation: How I Built a Self-Documenting Cron System</h1>
         <div class="meta">
-            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated April 5, 2026</strong><br>
+            <strong>March 27, 2026</strong> | By Jingxiao Cai | <strong>Updated April 8, 2026</strong><br>
             <span class="tags">Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
         </div>
-        <div class="note"><strong>Updated March–April 2026:</strong> I added a practical appendix for validator failures and new change classes, then extended the post with live proof-batch evidence, the narrow exemption pattern for ephemeral reminder jobs, and two later runtime-boundary lessons: isolated fix validation before touching a compiled live install, and fresh job identity when sticky cron state survived in-place edits.</div>
+        <div class="note"><strong>April 8 follow-up:</strong> I added a stage-validation section covering the promotion ladder from mock → real → risky lane, plus the two hard boundaries that made the stage work believable: zero-secret bootstrap and containerized isolation with no production env inheritance.</div>
     </header>
 
     <main>
@@ -465,6 +465,36 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
 
         <div class="note">
             <strong>Why this belongs in a declarative post:</strong> the declarative contract still mattered. It told me what the jobs <em>should</em> look like. But the incident taught me that desired state alone is not always enough when runtime identity is sticky. Sometimes the right repair is declarative intent plus a clean new runtime object.
+        </div>
+
+        <h2>Stage Validation Changed What “Safe to Roll Out” Means</h2>
+        <p>The declarative cron layer solved a specific class of drift. It did <em>not</em> solve the adjacent question: how do you prove a runtime change is safe before letting it near the main lane? That is where I ended up needing a separate <strong>stage-validation ladder</strong> instead of pretending a clean startup was enough.</p>
+
+        <p>The promotion order that held up best was intentionally asymmetric:</p>
+        <ol>
+            <li><strong>mock stage</strong> for the broadest cheap fail-fast battery</li>
+            <li><strong>real stage</strong> for a narrower slice on real infrastructure</li>
+            <li><strong>risky OCA lane</strong> only after the earlier tiers were already boring</li>
+        </ol>
+
+        <p>That shape looks lopsided on purpose. The mock lane should be the <em>broadest</em> battery because it is the cheapest place to catch logic, config-shape, restart, and contract problems. The real lane should be narrower because it costs more and proves a different thing: that the runtime still behaves under representative non-scary load. The risky lane should be the smallest blast radius of all, because that is where historical timeout/failover pain actually lived.</p>
+
+        <div class="note">
+            <strong>Important gate:</strong> “mock booted” is not enough. If the mock lane lacks an approved inference path, that is a coverage gap to log honestly, not a reason to silently widen to the next stage and pretend validation already happened.
+        </div>
+
+        <p>The boundary design mattered just as much as the test order. I only trust a stage lane if it is <strong>container-isolated</strong> and obviously <strong>not inheriting production state by accident</strong>. In practical terms that meant:</p>
+        <ul>
+            <li>fresh stage runtime trees instead of reusing the live state directory</li>
+            <li>no production <code>.env</code> mount or shell-env inheritance</li>
+            <li>stage-only credentials where real external access was required</li>
+            <li>fail closed if a stage credential is missing instead of quietly falling through to another provider family</li>
+        </ul>
+
+        <p>I now think of that as the <strong>zero-secret bootstrap requirement</strong>: the first stage lane should come up and prove its isolation story <em>before</em> anyone argues about how much real functionality it has. If the boundary is leaky at bootstrap time, the later green checks are not worth much.</p>
+
+        <div class="warning">
+            <strong>Why this belongs in a declarative post:</strong> a manifest can keep intended state coherent across cron surfaces, but rollout safety still needs promotion gates and boundary proof. Declarative intent tells you what the system <em>should</em> be. Stage validation tells you whether the runtime actually deserves trust.
         </div>
 
         <h2>The Design Rule I Trust Most Now</h2>
