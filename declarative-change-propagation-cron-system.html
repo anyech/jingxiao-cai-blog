@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I built a declarative change propagation system for cron automation, then extended it with stage-validation gates: mock first, real second, and a narrow risky lane only after the cheap checks stay boring.">
+    <meta name="description" content="How I built a declarative change propagation system for cron automation, then extended it with stage-validation gates: mock first, real second, and a narrow higher-risk lane only after the cheap checks stay boring.">
     <meta name="keywords" content="declarative infrastructure, cron job automation, change propagation system, drift detection, validator troubleshooting, ephemeral reminders">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes, then grew a stage-validation ladder: mock first, real second, risky lane last.">
+    <meta property="og:description" content="A small declarative layer turned my cron automation from scattered edits into manifest-driven change classes, then grew a stage-validation ladder: mock first, real second, higher-risk lane last.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Declarative Change Propagation: How I Built a Self-Documenting Cron System">
-    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, and a stage-validation ladder: mock first, real second, risky lane last.">
+    <meta name="twitter:description" content="Manifest-driven updates, contract-derived documentation, drift validation, and a stage-validation ladder: mock first, real second, higher-risk lane last.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">
@@ -90,7 +90,7 @@
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the evolution from a one-off operational fix into a clearer design: manifest as contract, propagation as fan-out, and validation as the drift backstop.
         </div>
-        <div class="note"><strong>April 8 follow-up:</strong> I added a stage-validation section covering the promotion ladder from mock → real → risky lane, plus the two hard boundaries that made the stage work believable: zero-secret bootstrap and containerized isolation with no production env inheritance.</div>
+        <div class="note"><strong>April 8 follow-up:</strong> I added a stage-validation section covering the promotion ladder from mock → real → higher-risk lane, plus the two hard boundaries that made the stage work believable: zero-secret bootstrap and isolation with no production secrets or ambient environment inheritance.</div>
     </header>
 
     <main>
@@ -474,21 +474,21 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
         <ol>
             <li><strong>mock stage</strong> for the broadest cheap fail-fast battery</li>
             <li><strong>real stage</strong> for a narrower slice on real infrastructure</li>
-            <li><strong>risky OCA lane</strong> only after the earlier tiers were already boring</li>
+            <li><strong>higher-risk lane</strong> only after the earlier tiers were already boring</li>
         </ol>
 
-        <p>That shape looks lopsided on purpose. The mock lane should be the <em>broadest</em> battery because it is the cheapest place to catch logic, config-shape, restart, and contract problems. The real lane should be narrower because it costs more and proves a different thing: that the runtime still behaves under representative non-scary load. The risky lane should be the smallest blast radius of all, because that is where historical timeout/failover pain actually lived.</p>
+        <p>That shape looks lopsided on purpose. The mock lane should be the <em>broadest</em> battery because it is the cheapest place to catch logic, config-shape, restart, and contract problems. The real lane should be narrower because it costs more and proves a different thing: that the runtime still behaves under representative non-scary load. The higher-risk lane should be the smallest blast radius of all, because that is where historical timeout/failover pain actually lived.</p>
 
         <div class="note">
             <strong>Important gate:</strong> “mock booted” is not enough. If the mock lane lacks an approved inference path, that is a coverage gap to log honestly, not a reason to silently widen to the next stage and pretend validation already happened.
         </div>
 
-        <p>The boundary design mattered just as much as the test order. I only trust a stage lane if it is <strong>container-isolated</strong> and obviously <strong>not inheriting production state by accident</strong>. In practical terms that meant:</p>
+        <p>The boundary design mattered just as much as the test order. I only trust a stage lane if it is <strong>isolated</strong> and obviously <strong>not inheriting production state by accident</strong>. In practical terms that meant:</p>
         <ul>
             <li>fresh stage runtime trees instead of reusing the live state directory</li>
-            <li>no production <code>.env</code> mount or shell-env inheritance</li>
+            <li>no production secrets or ambient environment inheritance</li>
             <li>stage-only credentials where real external access was required</li>
-            <li>fail closed if a stage credential is missing instead of quietly falling through to another provider family</li>
+            <li>fail closed if a stage credential is missing instead of quietly falling through to another backend</li>
         </ul>
 
         <p>I now think of that as the <strong>zero-secret bootstrap requirement</strong>: the first stage lane should come up and prove its isolation story <em>before</em> anyone argues about how much real functionality it has. If the boundary is leaky at bootstrap time, the later green checks are not worth much.</p>

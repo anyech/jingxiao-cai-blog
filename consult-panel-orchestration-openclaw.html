@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waiting states, duplicate-checkpoint suppression, and honest dissent without orchestration chaos.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waiting states, deduplicated progress updates, and honest dissent without orchestration chaos.">
     <meta name="keywords" content="multi-LLM consultation, LLM panel orchestration, OpenClaw consult-panel, AI agent orchestration, multi-model review, jury mode, consult-panel skill">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="A practical architecture for multi-model consultation in OpenClaw: config-backed routing, launch guards, watchdog-backed waiting states, duplicate-checkpoint suppression, and async handoff rules that survive real panel runs.">
+    <meta property="og:description" content="A practical architecture for multi-model consultation in OpenClaw: config-backed routing, launch guards, watchdog-backed waiting states, deduplicated progress updates, and async handoff rules that survive real panel runs.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, duplicate-checkpoint suppression, and clean user-visible synthesis.">
+    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, deduplicated progress updates, and clean user-visible synthesis.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
@@ -96,7 +96,7 @@
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy internal evolution—manual mixed-panel runs, async handoff bugs, routing drift, and repeated hardening passes—into a cleaner operator memo that actually matches the live system.
         </div>
         <div class="note">
-            <strong>April 8 follow-up:</strong> I extended this write-up with the later watchdog-hardening pass: duplicate checkpoint suppression, per-run checkpoint fingerprints, a 40/40 regression suite, and one stale-closeout path that still deserves future cleanup.
+            <strong>April 8 follow-up:</strong> I extended this write-up with the later watchdog-hardening pass: deduplicated progress updates, per-run duplicate-state checks, a full regression suite, and one remaining lifecycle edge case that still deserves future cleanup.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -377,14 +377,14 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
         <h2>Watchdog Hardening: The Bug Was Not Just Silence, It Was Repeated Almost-The-Same Progress</h2>
         <p>The next reliability problem was more embarrassing than dramatic. The panel was no longer always going silent, but it could still emit <em>repeated user-facing checkpoint blocks</em> that looked meaningfully new only because they arrived on different async branches.</p>
 
-        <p>The important diagnosis was that this was <strong>not</strong> a Discord transport duplication issue. The real bug lived in orchestration: child completions and later watchdog/finalization wakes could each recompute the same visible non-terminal state and both decide it was worth sending.</p>
+        <p>The important diagnosis was that this was <strong>not</strong> a transport-duplication issue. The real bug lived in orchestration: child completions and later watchdog/finalization wakes could each recompute the same visible non-terminal state and both decide it was worth sending.</p>
 
         <p>The hardening rule that actually helped was small and specific:</p>
         <blockquote>
-            <p><strong>For non-terminal updates, validate not only run identity and closure state, but also whether the visible checkpoint fingerprint for this panel run has already been delivered.</strong></p>
+            <p><strong>For non-terminal updates, validate not only run identity and closure state, but also whether the same visible progress state for this panel run has already been delivered.</strong></p>
         </blockquote>
 
-        <p>In plain English, the panel now remembers the <em>shape</em> of the last user-visible checkpoint for the current run. If a later async branch only regenerates the same <code>Mode / Done / Pending / Degraded</code> state, the watchdog is supposed to do nothing and return quietly instead of spamming the thread with a cosmetically fresh duplicate.</p>
+        <p>In plain English, the panel now remembers the <em>shape</em> of the last user-visible checkpoint for the current run. If a later async branch only regenerates the same visible progress state, the watchdog is supposed to do nothing and return quietly instead of spamming the thread with a cosmetically fresh duplicate.</p>
 
         <ul>
             <li><strong>duplicate same-state checkpoint</strong> → suppress it</li>
@@ -392,10 +392,10 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
             <li><strong>material state actually changes</strong> → allow the next bounded checkpoint through</li>
         </ul>
 
-        <p>I trust the fix more because it stopped being just a theory. The deterministic regression suite now passes <strong>40/40</strong>, including the same-state duplicate case, the watchdog-recomputation case, and the “state really changed, so the next checkpoint is legitimate” case.</p>
+        <p>I trust the fix more because it stopped being just a theory. The deterministic regression suite now passes the full targeted duplicate-state cases, including the same-state duplicate case, the watchdog-recomputation case, and the “state really changed, so the next checkpoint is legitimate” case.</p>
 
         <div class="note">
-            <strong>What I would still not overclaim:</strong> this hardening closes the duplicate-checkpoint class much more convincingly, but one stale-closeout/watchdog path still deserves a future cleanup pass. Right now it looks more like unnecessary probing/log noise than a user-facing synthesis corruption bug, but it is still not the kind of lifecycle ambiguity I want to leave permanent.
+            <strong>What I would still not overclaim:</strong> this hardening closes the duplicate-checkpoint class much more convincingly, but one stale lifecycle edge case still deserves a future cleanup pass. Right now it looks more like unnecessary probing/log noise than a user-facing synthesis corruption bug, but it is still not the kind of lifecycle ambiguity I want to leave permanent.
         </div>
 
         <h2>The Two Delivery Bugs That Taught Me the Most</h2>

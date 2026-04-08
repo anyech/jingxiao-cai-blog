@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and clear operational limits around the 120-second indexing wall.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and clearer limits around rebuild safety and indexing pressure.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it to session transcripts with a safer blue/green rollout and clear limits around the 120-second indexing wall.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it to session transcripts with a safer blue/green rollout and clearer limits around rebuild safety and indexing pressure.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with session transcript indexing, a blue/green rollout pattern, and clear limits around the 120-second indexing wall.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with session transcript indexing, a blue/green rollout pattern, and clearer limits around rebuild safety and indexing pressure.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,7 +26,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and a separate multimodal exception instead of muddling the architecture.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and clearer limits around rebuild safety and indexing pressure.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
@@ -88,7 +88,7 @@
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
-        <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering the stubborn 120-second indexing wall, the safer shadow-index workaround, the reduced-pressure session-sync settings that keep the live lane calmer, and the diagnostic split between <code>fetch failed</code> and a hard embedding-batch timeout.</div>
+        <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
     </header>
 
     <main>
@@ -440,32 +440,27 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
         <p>That distinction matters because the title claim here is still true. Local semantic memory worked on this VPS without external APIs. The later Gemini pilot did not overturn that result. It showed where a separate remote lane was the right tool for a different class of problem.</p>
 
         <h2>Known Limitations: A Stable Live Lane Is Not the Same Thing as a Universally Safe Rebuild Path</h2>
-        <p>The session-transcript upgrade made the memory lane more useful, but it did <em>not</em> magically make every indexing path safe. The hardest limit I can now state plainly is this: on my current install, the built-in full indexing path can still die against a hard <strong>120-second embedding timeout wall</strong> even when the surrounding status surface suggests a much longer configured timeout.</p>
+        <p>The session-transcript upgrade made the memory lane more useful, but it did <em>not</em> magically make every indexing path safe. The hardest limit I can now state plainly is this: the built-in full indexing path can still fail against a <strong>shorter-than-expected embedding timeout ceiling</strong> even when the surrounding status surface suggests a much longer configured timeout.</p>
 
-        <p>That distinction matters because two failure signatures showed up, and they are similar only if you look at them too casually:</p>
+        <p>That distinction matters because two failure families showed up, and they are similar only if you look at them too casually:</p>
         <ul>
-            <li><strong><code>memory embeddings batch timed out after 120s</code></strong> points to the builtin sync/indexing envelope hitting a hard wall during embedding work.</li>
-            <li><strong><code>fetch failed</code></strong> points more toward request-path or provider instability during the embedding call, which is related operationally but should not be collapsed into the same diagnosis by default.</li>
+            <li>one points to the builtin sync/indexing envelope timing out during embedding work</li>
+            <li>the other looks more like request-path or provider instability during the embedding call</li>
         </ul>
 
         <p>The practical workaround that actually held up was <strong>not</strong> “just tune the live lane harder.” The reliable recovery path was a <strong>shadow indexing workflow</strong>: build or rebuild the index in a reduced-pressure lane first, validate that it is queryable, and only then treat it as a promotion candidate instead of assuming the stock live rebuild path is trustworthy under pressure.</p>
 
         <div class="warning">
-            <strong>What I would not claim:</strong> the current live setup has become calmer, but I would still not describe plain built-in full reindex as a boring solved problem on this class of hardware/runtime. The shadow path is still the safety net I trust when a real rebuild matters.
+            <strong>What I would not claim:</strong> the current live setup has become calmer, but I would still not describe plain built-in full reindex as a boring solved problem in this environment. The shadow path is still the safety net I trust when a real rebuild matters.
         </div>
 
-        <p>The reduced-pressure live settings are still worth keeping because they make the system less eager to stampede itself on ordinary session churn:</p>
-        <pre><code>sync.onSearch = false
-sync.onSessionStart = false
-sync.sessions.deltaBytes = 500000
-sync.sessions.deltaMessages = 200
-sync.sessions.postCompactionForce = false</code></pre>
+        <p>More conservative live sync behavior is still worth keeping because it makes the system less eager to stampede itself on ordinary session churn.</p>
 
         <p>Those settings help by reducing how often automatic sync fires. They do <strong>not</strong> prove that a manual full build is now safe. That is the operational split I wish I had written down earlier:</p>
         <ul>
             <li><strong>reduced sync pressure</strong> is a stability helper for normal live use</li>
             <li><strong>shadow indexing</strong> is the safer recovery/rebuild plan</li>
-            <li><strong>a plain forced rebuild</strong> is still where the 120-second wall can reappear</li>
+            <li><strong>a plain forced rebuild</strong> is still where the timeout ceiling can reappear</li>
         </ul>
 
         <div class="note">
@@ -489,7 +484,7 @@ sync.sessions.postCompactionForce = false</code></pre>
         </ul>
 
         <div class="note">
-            <strong>Sanitization note:</strong> I kept the config shape, provider names, model path, and performance/result numbers because those are the useful parts. I intentionally left out deployment-specific IDs, host-specific paths, and any secrets or internal tokens.
+            <strong>Sanitization note:</strong> I kept the overall architecture, provider names, model path, and performance/result numbers because those are the useful parts. I intentionally left out deployment-specific IDs, host-specific paths, exact tuning knobs, and any secrets or internal tokens.
         </div>
 
         <div class="related-posts">
