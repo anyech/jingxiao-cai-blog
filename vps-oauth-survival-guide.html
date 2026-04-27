@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers. Learn how to set up Google APIs on VPS without a browser using OAuth Playground workaround. Includes working Python scripts.">
-    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth 2.0 Python">
+    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.">
+    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth readiness gate, OAuth 2.0 Python">
     <meta name="author" content="Jingxiao Cai">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
+    <meta property="og:description" content="A headless-server OAuth guide with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
+    <meta name="twitter:description" content="Headless OAuth on a VPS, plus the readiness checks that keep automated jobs from failing open.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "VPS OAuth Survival Guide: Google APIs Without a Browser",
+      "description": "Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-02-25",
+      "dateModified": "2026-04-27",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      }
+    }
+    </script>
     
     <title>VPS OAuth Survival Guide: Google APIs Without a Browser | Jingxiao Cai's Blog</title>
     
@@ -52,14 +86,14 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>VPS OAuth Survival Guide: Google APIs Without a Browser</h1>
         <div class="meta">
-            <strong>February 25, 2026</strong> | By Jingxiao Cai | <strong>Updated March 3, 2026</strong><br>
+            <strong>February 25, 2026</strong> | By Jingxiao Cai | <strong>Updated April 27, 2026</strong><br>
             <span class="tags">Tags: tutorial, oauth, vps, devops, automation, google-cloud</span>
         </div>
         <div class="disclaimer">
             This post was co-created with Clawsistant, my OpenClaw AI agent. After spending 6 hours fighting OAuth on my VPS, I figured the least the AI could do was help me write about it.
         </div>
         <div class="update-banner">
-            <strong>📝 Update (March 2026):</strong> Added OAuth Playground screenshots and enhanced token scope troubleshooting section.
+            <strong>📝 Update (April 2026):</strong> Added a fail-closed readiness-gate pattern so OAuth-backed automation stops before side effects when credentials, scopes, or cheap API probes are not healthy.
         </div>
     </header>
 
@@ -76,6 +110,7 @@ https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
             <li>✅ <strong>Two Python scripts</strong> to automate the flow (ready to use)</li>
             <li>✅ <strong>Token lifecycle management</strong> (detect expiring tokens, auto-refresh)</li>
             <li>✅ <strong>Security best practices</strong> (where to store credentials, rotation strategies)</li>
+            <li>✅ <strong>Fail-closed readiness gates</strong> (credential/scopes/API checks before automation runs)</li>
             <li>✅ <strong>Troubleshooting flowchart</strong> (for when things go wrong)</li>
             <li>✅ <strong>NEW: Calendar/Drive 403 troubleshooting</strong> (token.json scope staleness fix)</li>
         </ul>
@@ -287,6 +322,36 @@ python3 generate_oauth_url.py</code></pre>
             </ul>
         </div>
 
+        <h2 id="oauth-readiness-gate">2026 Update: Add a Fail-Closed OAuth Readiness Gate</h2>
+        <p>The headless OAuth flow gets you credentials. It does not, by itself, prove that every automated job should run.</p>
+        <p>A later automation lesson made this stricter for me: if an AI-agent cron job depends on OAuth-backed APIs, the job should perform a cheap readiness gate before it starts doing useful work or sending reports. If the gate fails, the job should stop with a clear credential/scope/readiness error instead of drifting into partial output.</p>
+
+        <div class="warning">
+            <strong>Fail-closed rule:</strong> missing credentials, stale scopes, refresh failure, or a failed cheap API probe should block the automation before side effects. Do not let a downstream report pretend the integration is merely empty.
+        </div>
+
+        <p>The gate I now prefer checks:</p>
+        <ul>
+            <li><strong>Credential file exists</strong> and has restrictive permissions</li>
+            <li><strong>Refresh works</strong> before the main script starts</li>
+            <li><strong>Expected scopes are present</strong> in the loaded token metadata</li>
+            <li><strong>One cheap API probe succeeds</strong> for each required integration family</li>
+            <li><strong>Failure exits nonzero</strong> with a layer-specific message such as credential missing, scope mismatch, refresh failure, or API probe failure</li>
+        </ul>
+
+        <pre><code class="language-python">def oauth_readiness_gate(creds, required_scopes, probes):
+    if not creds:
+        raise SystemExit("oauth readiness failed: credentials missing")
+    if not required_scopes.issubset(set(creds.scopes or [])):
+        raise SystemExit("oauth readiness failed: scope mismatch")
+    if creds.expired and creds.refresh_token:
+        creds.refresh(request)
+    for name, probe in probes.items():
+        if not probe(creds):
+            raise SystemExit(f"oauth readiness failed: {name} probe")</code></pre>
+
+        <p>This is the same reliability shape as my <a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">exact-exec cron driver</a> rule: make the deterministic preconditions explicit before asking an agent wrapper to summarize or deliver anything.</p>
+
         <h2>Troubleshooting</h2>
         <div class="note">
             <strong>Note:</strong> If the flowchart below doesn't render well, view the <a href="https://github.com/anyech/jingxiao-cai-blog/blob/main/vps-oauth-survival-guide.md">source on GitHub</a>.
@@ -424,7 +489,7 @@ print('Drive API: ✅ Working')
             <h3>Related Posts</h3>
             <ul>
                 <li><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></li>
-                <li><a href="/jingxiao-cai-blog/hidden-input-limit-llm-apis.html">The Hidden Input Limit: When "202K Context" Doesn't Mean 202K</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
                 <li><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant with Gmail</a></li>
             </ul>
         </div>
@@ -438,7 +503,7 @@ print('Drive API: ✅ Working')
 </main>
 
     <footer>
-        <p>Found this helpful? Share it with someone else fighting headless OAuth.</p>
+        <p>Updated April 27, 2026 • Found this helpful? Share it with someone else fighting headless OAuth.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
   <script src="https://utteranc.es/client.js"
