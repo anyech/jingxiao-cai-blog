@@ -103,7 +103,7 @@
     </header>
 
     <main>
-        <h2>The Failure Mode: Capability Turns Into Brush</h2>
+        <h2>The Failure Mode: Capability Turns Into Underbrush</h2>
         <p>Agent skills are useful because they make repeated workflows easier to execute correctly. That is also why they are dangerous.</p>
 
         <p>Once a skill system works, every bit of friction starts to look like a skill candidate:</p>
@@ -114,7 +114,9 @@
             <li>“This alias phrase failed once; maybe add a redirect skill.”</li>
         </ul>
 
-        <p>Individually, each suggestion can sound reasonable. Collectively, they create a skill jungle: too many overlapping entry points, unclear ownership, stale aliases, package artifacts that carry local junk, and a catalog that becomes harder for the agent to choose from.</p>
+        <p>Individually, each suggestion can sound reasonable. Collectively, they create a skill jungle. I do not mean “many skills.” I mean unmanaged growth: overlapping entry points, unclear ownership, stale aliases, package artifacts that carry local junk, and a catalog that becomes harder for the agent to choose from.</p>
+
+        <p>The maintenance move is not to bulldoze the catalog. It is to prune it and mark its paths: one best owner for each recurring problem, short trigger surfaces, explicit capability gates, and a clear retirement path when a skill becomes only an alias for something better.</p>
 
         <blockquote>
             <p><strong>A skill catalog is not a trophy shelf. It is part of the runtime decision surface.</strong></p>
@@ -127,14 +129,20 @@
 
         <p>That means skill governance is not just documentation hygiene. It affects routing. If the short description is fuzzy, the skill may never load. If ten skills all sound adjacent, the wrong one may load. If an old alias remains as a separate skill, it can steal traffic from the real owner or keep a stale mental model alive.</p>
 
+        <p>Not every agent host implements skill loading exactly the same way, but the interface lesson travels: the routing metadata is part of the product. Treating it as an afterthought is how a helpful catalog becomes a maze.</p>
+
         <p>Plugin architecture has the same old lesson in different clothing. A plugin should have clear boundaries, a stable interface, loose coupling, and a reason to exist outside the host. General plugin-design writeups emphasize <a href="https://arjancodes.com/blog/best-practices-for-decoupling-software-using-plugins/" target="_blank" rel="noopener">separation of concerns, clear interfaces, and independent maintenance</a>. Agent skills need the same discipline, plus one extra concern: the model has to choose the right one from a compressed catalog.</p>
 
         <div class="note">
             <strong>Practical consequence:</strong> every skill carries a trigger tax. It must earn that tax by solving a repeated, stable problem better than a protocol note, script, config change, or ordinary memory entry would.
         </div>
 
+        <div class="note">
+            <strong>Caveat:</strong> size by itself is not the enemy. A large catalog with crisp ownership, unique triggers, and clean packaging is healthier than a small catalog with ambiguous overlaps. The danger is unmanaged growth, not ambition.
+        </div>
+
         <h2>The Governance Shape That Worked</h2>
-        <p>The modernization pass that finally felt sane had three surfaces:</p>
+        <p>The modernization pass that finally felt sane had three surfaces. This is where the jungle metaphor turns into maintenance rules:</p>
 
         <table>
             <thead>
@@ -293,6 +301,7 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.</cod
             <li><strong>Best artifact:</strong> is this really a skill, or would a protocol/script/config/note be cleaner?</li>
             <li><strong>Trigger stability:</strong> can I describe when it should and should not load in one short paragraph?</li>
             <li><strong>Owner clarity:</strong> is there exactly one best home for this workflow?</li>
+            <li><strong>Consolidation path:</strong> if a nearby owner already exists, can this become a trigger phrase, reference note, or merge instead of a new standalone skill?</li>
             <li><strong>Package hygiene:</strong> does the packaged artifact avoid local caches, virtual environments, secrets, and runtime residue?</li>
             <li><strong>Capability gate:</strong> does the skill fail closed when a required tool, route, credential class, or artifact is missing?</li>
             <li><strong>Validation:</strong> did at least one realistic prompt hit the right skill and avoid the wrong neighbor?</li>
