@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waiting states, deduplicated progress updates, and honest dissent without orchestration chaos.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
     <meta name="keywords" content="multi-LLM consultation, LLM panel orchestration, OpenClaw consult-panel, AI agent orchestration, multi-model review, jury mode, consult-panel skill">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="A practical architecture for multi-model consultation in OpenClaw: config-backed routing, launch guards, watchdog-backed waiting states, deduplicated progress updates, and async handoff rules that survive real panel runs.">
+    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, deduplicated progress updates, and clean user-visible synthesis.">
+    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
-      "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, weight classes, watchdog-backed waiting states, and honest dissent without orchestration chaos.",
+      "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-04-03",
-      "dateModified": "2026-04-08",
+      "dateModified": "2026-04-29",
       "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -89,7 +89,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated April 8, 2026</strong><br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
@@ -97,6 +97,9 @@
         </div>
         <div class="note">
             <strong>April 8 follow-up:</strong> I extended this write-up with the later watchdog-hardening pass: deduplicated progress updates, per-run duplicate-state checks, a full regression suite, and one remaining lifecycle edge case that still deserves future cleanup.
+        </div>
+        <div class="note">
+            <strong>April 29 follow-up:</strong> I added the final-delivery bridge-back lesson from long-running Discord work: detaching the work is only half the reliability story; the final answer still needs a contract-derived route back to the right conversation.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -133,7 +136,7 @@
         <h2>The Design Decision That Saved the Whole Thing</h2>
         <p>The best decision was architectural, not prompt-related.</p>
         <p>The public invocation surface stays deliberately small. Natural requests like <em>consult the panel</em>, <em>panel review</em>, <em>have the consultants weigh in</em>, or <em>run jury mode</em> map into the same orchestration layer, while the routing truth stays in durable config and ops docs rather than inside the prompt wrapper.</p>
-        <p>The canonical grounding for current behavior lives in three places: the consultant-routing config, the consult-panel skill, and the routing operations guide. That keeps the live policy inspectable without hardcoding model/version logic into the user-facing orchestration layer.</p>
+        <p>The canonical grounding for current behavior lives in three places: the routing config, the consult-panel skill, and the routing operations guide. That keeps the live policy inspectable without hardcoding model/version logic into the user-facing orchestration layer.</p>
         <blockquote>
             <p><strong>Keep the skill thin. Keep the routing truth in config and ops docs.</strong></p>
         </blockquote>
@@ -358,6 +361,31 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
 
         <p>That is not glamorous. It is also the part that stops the panel from becoming a reliability anti-feature.</p>
 
+        <h2>Final Delivery Needs a Bridge Back, Not Just a Background Thread</h2>
+        <p>The long-running-work version of this bug has the same shape as the panel bug: the worker can finish correctly while the user-facing conversation still never receives the final result. Moving a task into the background protects the main turn budget, but it does <em>not</em> automatically solve final delivery.</p>
+        <p>The reliable pattern is a small delivery contract created before the detached work starts. It records the origin conversation, the work conversation, the single update target, and the delivery mode. Default detached work reports to its bound work thread. Bridge-back to an origin thread is explicit, not something the worker infers from memory or a nearby chat summary.</p>
+
+        <blockquote>
+            <p><strong>A background worker should never guess where its final answer belongs.</strong></p>
+        </blockquote>
+
+        <p>The practical loop now looks like this:</p>
+        <pre><code>persist a delivery contract before launch
+launch the worker with the contract reference and final-ready marker
+wait for an explicit final-ready signal
+dry-run the delivery plan against the persisted contract
+send the final answer once through an idempotent ledger
+split oversized finals deterministically instead of truncating them
+record delivered message identifiers when the channel returns them</code></pre>
+
+        <p>That is deliberately boring distributed-systems hygiene: stable identity, explicit target selection, idempotent side effects, and observable delivery state. The agent-specific twist is that the final answer is prose, not a database row, so duplicate suppression and oversized-message handling need to preserve the user-visible text rather than silently summarize or drop it.</p>
+
+        <div class="warning">
+            <strong>Important boundary:</strong> this is a helper-level bridge-back pattern, not yet a native runtime event dispatcher. It is strong enough for local use because delivery targets come from a validated contract and retries are ledger-backed. A true Gateway/runtime event dispatcher would be a different risk class and deserves its own reviewed design.
+        </div>
+
+        <p>The general lesson is simple: if a task is long enough to detach, it is long enough to deserve an explicit final-delivery path. Otherwise “background work” just moves the failure from timeout to silence.</p>
+
         <h2>Why Watchdog Coverage Had To Become a Launch Invariant</h2>
         <p>The ugliest real failure was not “a model said something weird.” It was simpler: the panel could emit a clean <em>waiting on X</em> checkpoint and then never speak again.</p>
         <p>That is why I no longer treat “children launched” as a valid waiting state by itself. A multi-child run is only allowed to settle into waiting after two things are true:</p>
@@ -429,6 +457,7 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
             <li><strong>same packet for fair comparison</strong></li>
             <li><strong>weight classes that are visible in synthesis</strong></li>
             <li><strong>watchdog coverage as a launch invariant, not a hopeful afterthought</strong></li>
+            <li><strong>explicit final-delivery contracts for detached work</strong></li>
             <li><strong>timeout as tail-latency control</strong></li>
             <li><strong>explicit ACP / external-lane delivery handling</strong></li>
             <li><strong>clear distinction between closed, degraded, and superseded runs</strong></li>
@@ -457,6 +486,7 @@ synthesize immediately once all expected lanes are complete or dropped</code></p
             <ul>
                 <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
                 <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
                 <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Why AI Agent Skills Break in Production (and How to Troubleshoot Them)</a></li>
             </ul>
         </div>

@@ -6,7 +6,7 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Apr 2026 04:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Apr 2026 22:35:27 +0000</lastBuildDate>
 
     <item>
       <title>Modernizing Agent Skills Without Growing a Skill Jungle</title>
@@ -21,6 +21,13 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
       <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
+      <description>How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
+      <pubDate>Fri, 03 Apr 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
@@ -49,13 +56,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</guid>
       <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
-      <description>How I turned multi-model consultation from manual chaos into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, deduplicated progress updates, and user-visible dissent that does not collapse under partial failure.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
-      <pubDate>Fri, 03 Apr 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
