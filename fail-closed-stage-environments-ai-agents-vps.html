@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, benchmark-aware validation, and a mock-to-real-to-higher-risk ladder.">
+    <meta name="description" content="An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.">
     <meta name="keywords" content="OpenClaw stage environment, fail-closed testing, AI agent staging, VPS deployment isolation, zero-secret bootstrap, containerized staging">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Building Fail-Closed Stage Environments for AI Agents on a Small VPS">
-    <meta property="og:description" content="A practical OpenClaw stage-environment design for a small VPS: zero-production-secret bootstrap, container isolation, benchmark-aware gates, and a fail-closed promotion ladder.">
+    <meta property="og:description" content="A practical OpenClaw stage-environment design for a small VPS: zero-production-secret bootstrap, detect-only catalog refresh, container isolation, and a fail-closed promotion ladder.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Building Fail-Closed Stage Environments for AI Agents on a Small VPS">
-    <meta name="twitter:description" content="If your AI-agent stage can quietly inherit production secrets or skip readiness evidence, it is not staging. Here's the fail-closed VPS design I trust more.">
+    <meta name="twitter:description" content="If your stage can inherit production secrets, skip readiness evidence, or mutate its catalog on weak evidence, it is not staging. Here is the fail-closed pattern.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Building Fail-Closed Stage Environments for AI Agents on a Small VPS",
-      "description": "An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, benchmark-aware validation, and a mock-to-real-to-higher-risk ladder.",
+      "description": "An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-04-08",
-      "dateModified": "2026-04-27",
+      "dateModified": "2026-04-29",
       "url": "https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html",
       "publisher": {
         "@type": "Person",
@@ -91,7 +91,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</h1>
         <div class="meta">
-            <strong>April 8, 2026</strong> | By Jingxiao Cai | <strong>Updated April 27, 2026</strong><br>
+            <strong>April 8, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted</span>
         </div>
         <div class="disclaimer">
@@ -101,7 +101,7 @@
             <strong>Short version:</strong> if a stage environment can quietly inherit production secrets, production state, or production side effects, it is not staging. It is a dangerously optimistic copy of production. On a small VPS, the right goal is not perfect mimicry. The right goal is <strong>fail-closed isolation</strong> plus a promotion ladder that only widens after the cheap lanes stay boring.
         </div>
         <div class="update-banner">
-            <strong>📝 Update (April 2026):</strong> Added benchmark/readiness context from later cron reliability work: a stage lane should prove the deterministic command and wrapper boundary separately before it treats an agent result as trustworthy.
+            <strong>📝 Updates (April 2026):</strong> Added benchmark/readiness context from later cron reliability work and a detect-only catalog-refresh lesson: stage coverage should be allowed to recommend changes without mutating canonical docs on weak or degraded evidence.
         </div>
     </header>
 
@@ -196,6 +196,29 @@
         <div class="note">
             <strong>Benchmark context:</strong> later cron reliability work reinforced why the stage ladder needs both command-level and wrapper-level evidence. A clean direct command run is not the same thing as a clean agent-scheduled run; the latter also has timeout, readback, final-response, and delivery seams. That distinction is the core of <a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a>.
         </div>
+
+        <h2>April 2026 Follow-Up: Stage Catalogs Need Detect-Only Watchdogs</h2>
+        <p>The next operational lesson was that the stage test catalog itself can drift.</p>
+
+        <p>A validation pyramid is useful only if the late-lane tests still match recent real use. If the assistant starts relying on a new workflow every week, but the stage catalog never notices, the catalog becomes a historical artifact instead of a living canary plan.</p>
+
+        <p>The fix I trust is not automatic mutation. It is a detect-only refresh loop:</p>
+        <ol>
+            <li>look at recent high-value usage and recent stage artifacts</li>
+            <li>recommend whether to promote, retain, or demote a small number of current overlays</li>
+            <li>label missing or degraded evidence explicitly</li>
+            <li>only update the canonical catalog after a deliberate apply step</li>
+        </ol>
+
+        <div class="note">
+            <strong>Why detect-only matters:</strong> a watchdog that cannot gather clean evidence should report degraded coverage, not quietly rewrite the stage catalog. Catalog mutation is a decision boundary, not a side effect of checking.
+        </div>
+
+        <p>This keeps the stage system honest in both directions. It can say, “this newer workflow is important enough to test now,” but it can also say, “I do not have enough evidence to change the catalog.” That distinction matters on small self-hosted systems where the control plane can occasionally be under pressure and where a broad session scan may fail even though the underlying stage question is still valid.</p>
+
+        <blockquote>
+            <p><strong>The watchdog's first job is to preserve truth, not to make the catalog look freshly maintained.</strong></p>
+        </blockquote>
 
         <h2>Zero-Secret Bootstrap Was the Turning Point</h2>
         <p>The most important boundary was not about Docker itself. It was about secrets.</p>
@@ -329,6 +352,7 @@
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
                 <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
                 <li><a href="/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</a></li>
                 <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
@@ -344,7 +368,7 @@
 </main>
 
     <footer>
-        <p>Published on April 8, 2026 • Updated April 27, 2026 • Part of my ongoing OpenClaw operations and self-hosting series</p>
+        <p>Published on April 8, 2026 • Updated April 29, 2026 • Part of my ongoing OpenClaw operations and self-hosting series</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
   <script src="https://utteranc.es/client.js"

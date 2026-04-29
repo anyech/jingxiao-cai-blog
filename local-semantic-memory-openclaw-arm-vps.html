@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and clearer limits around rebuild safety and indexing pressure.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, OpenClaw memory search">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it to session transcripts with a safer blue/green rollout and clearer limits around rebuild safety and indexing pressure.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with session transcript indexing, a blue/green rollout pattern, and clearer limits around rebuild safety and indexing pressure.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it to session transcripts with a blue/green rollout, a live 0.6B session-memory lane, and clearer limits around rebuild safety and indexing pressure.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-04-08",
+      "dateModified": "2026-04-29",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,13 +82,14 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 8, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy debugging session into a cleaner explanation of what actually broke, what actually fixed it, and why a small self-hosted box was not the limiting factor.
         </div>
         <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
+        <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
     </header>
 
     <main>
@@ -467,6 +468,55 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
             <strong>Best current reading:</strong> the memory stack is stable enough to use, but not yet honest to describe as “full rebuild is solved.” The right mental model is a useful live lane with a separate lower-risk rebuild path, not one magical knob that fixed everything.
         </div>
 
+        <h2>April 2026 Follow-Up: Source Hygiene Is an Anti-Echo Control</h2>
+        <p>The latest memory-search lesson was not another embedding benchmark. It was source hygiene.</p>
+
+        <p>Any retrieval or scouting system can accidentally start chasing its own echoes. A generated report summarizes yesterday's evidence. The next scan sees that report and treats it as fresh signal. A later summary then cites the summary of the summary. If you are not careful, the system starts amplifying its own prose instead of discovering new reality.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Source type</th>
+                    <th>How I treat it now</th>
+                    <th>Why</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Direct artifact or command result</strong></td>
+                    <td>Primary evidence.</td>
+                    <td>It is closest to what actually happened.</td>
+                </tr>
+                <tr>
+                    <td><strong>Durable human- or agent-written note</strong></td>
+                    <td>Useful context, especially when it records outcome and next step.</td>
+                    <td>It preserves intent, but still needs freshness checks.</td>
+                </tr>
+                <tr>
+                    <td><strong>Generated scout or roundup</strong></td>
+                    <td>Candidate source, not proof of novelty.</td>
+                    <td>It may already contain prior rankings, bias, or repeated phrasing.</td>
+                </tr>
+                <tr>
+                    <td><strong>Older scout report</strong></td>
+                    <td>Anti-repeat evidence.</td>
+                    <td>It is good for avoiding duplicates, not for claiming something is newly important.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>That gives me a cleaner rule for local memory and topic scouting:</p>
+        <blockquote>
+            <p><strong>Use generated summaries to find candidates. Use direct evidence to decide what is true.</strong></p>
+        </blockquote>
+
+        <p>This also changes how I interpret retrieval quality. A search result is not good just because it is semantically similar. It is good when the source tier matches the decision. For a new blog idea, fresh daily-memory evidence should outrank an older generated scout. For an operational claim, a direct validation artifact should outrank a polished recap.</p>
+
+        <div class="note">
+            <strong>Connection to skill governance:</strong> the same anti-echo rule applies to agent skills. A skill radar should not create new skills merely because prior skill-radar prose kept mentioning them. See <a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a> for the catalog-governance version of this lesson.
+        </div>
+
+
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>
         <ul>
@@ -490,6 +540,7 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
                 <li><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></li>
                 <li><a href="/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html">OpenClaw 2026.3.12 Regression: When <code>logs --follow</code> Breaks But the Gateway Stays Healthy</a></li>
                 <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>

@@ -6,21 +6,35 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Apr 2026 07:25:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Apr 2026 04:30:00 +0000</lastBuildDate>
 
+    <item>
+      <title>Modernizing Agent Skills Without Growing a Skill Jungle</title>
+      <description>How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
+      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</title>
       <description>Why AI cron reliability needs exact-exec drivers: artifact-first execution, explicit timeout budgets, and deterministic delivery instead of freeform agent prompts.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</guid>
       <pubDate>Mon, 27 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
-      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, benchmark-aware validation, and a mock-to-real-to-higher-risk ladder.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
-      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>The Nightly Build: How My Agent Runs Security Audits While I Sleep</title>
@@ -49,13 +63,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</guid>
       <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS using node-llama-cpp + embeddinggemma, now with session transcript indexing, a safer blue/green rollout, and a candid limitations section on rebuild safety and indexing pressure.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
-      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</title>
