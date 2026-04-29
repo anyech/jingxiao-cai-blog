@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.">
-    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth readiness gate, OAuth 2.0 Python">
+    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.">
+    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth readiness gate, agent launch readiness, OAuth 2.0 Python">
     <meta name="author" content="Jingxiao Cai">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
-    <meta property="og:description" content="A headless-server OAuth guide with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.">
+    <meta property="og:description" content="A headless-server OAuth guide with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that generalizes to agent tool launches.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
-    <meta name="twitter:description" content="Headless OAuth on a VPS, plus the readiness checks that keep automated jobs from failing open.">
+    <meta name="twitter:description" content="Headless OAuth on a VPS, plus the readiness checks that keep automated jobs and agent launches from failing open.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "VPS OAuth Survival Guide: Google APIs Without a Browser",
-      "description": "Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate for automation.",
+      "description": "Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-02-25",
-      "dateModified": "2026-04-27",
+      "dateModified": "2026-04-29",
       "url": "https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html",
       "publisher": {
         "@type": "Person",
@@ -86,14 +86,14 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>VPS OAuth Survival Guide: Google APIs Without a Browser</h1>
         <div class="meta">
-            <strong>February 25, 2026</strong> | By Jingxiao Cai | <strong>Updated April 27, 2026</strong><br>
+            <strong>February 25, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
             <span class="tags">Tags: tutorial, oauth, vps, devops, automation, google-cloud</span>
         </div>
         <div class="disclaimer">
             This post was co-created with Clawsistant, my OpenClaw AI agent. After spending 6 hours fighting OAuth on my VPS, I figured the least the AI could do was help me write about it.
         </div>
         <div class="update-banner">
-            <strong>📝 Update (April 2026):</strong> Added a fail-closed readiness-gate pattern so OAuth-backed automation stops before side effects when credentials, scopes, or cheap API probes are not healthy.
+            <strong>📝 Update (April 2026):</strong> Added a fail-closed readiness-gate pattern so OAuth-backed automation stops before side effects when credentials, scopes, or cheap API probes are not healthy. April 29 follow-up: linked that OAuth-specific gate to the broader agent-launch gate pattern.
         </div>
     </header>
 
@@ -110,7 +110,7 @@ https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
             <li>✅ <strong>Two Python scripts</strong> to automate the flow (ready to use)</li>
             <li>✅ <strong>Token lifecycle management</strong> (detect expiring tokens, auto-refresh)</li>
             <li>✅ <strong>Security best practices</strong> (where to store credentials, rotation strategies)</li>
-            <li>✅ <strong>Fail-closed readiness gates</strong> (credential/scopes/API checks before automation runs)</li>
+            <li>✅ <strong>Fail-closed readiness gates</strong> (credential/scopes/API checks before automation or agent tool launches run)</li>
             <li>✅ <strong>Troubleshooting flowchart</strong> (for when things go wrong)</li>
             <li>✅ <strong>NEW: Calendar/Drive 403 troubleshooting</strong> (token.json scope staleness fix)</li>
         </ul>
@@ -352,6 +352,8 @@ python3 generate_oauth_url.py</code></pre>
 
         <p>This is the same reliability shape as my <a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">exact-exec cron driver</a> rule: make the deterministic preconditions explicit before asking an agent wrapper to summarize or deliver anything.</p>
 
+        <p>The same gate also applies one layer above OAuth itself. In <a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches</a>, I describe the broader pattern: prove auth intent, isolate unrelated ambient credentials, run cheap route-readiness probes, and block before starting the tool adapter if the launch contract is not healthy.</p>
+
         <h2>Troubleshooting</h2>
         <div class="note">
             <strong>Note:</strong> If the flowchart below doesn't render well, view the <a href="https://github.com/anyech/jingxiao-cai-blog/blob/main/vps-oauth-survival-guide.md">source on GitHub</a>.
@@ -489,6 +491,7 @@ print('Drive API: ✅ Working')
             <h3>Related Posts</h3>
             <ul>
                 <li><a href="/jingxiao-cai-blog/google-api-setup-guide.html">Google API Setup Guide</a></li>
+                <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></li>
                 <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
                 <li><a href="/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html">Building a Personal AI Assistant with Gmail</a></li>
             </ul>
@@ -503,7 +506,7 @@ print('Drive API: ✅ Working')
 </main>
 
     <footer>
-        <p>Updated April 27, 2026 • Found this helpful? Share it with someone else fighting headless OAuth.</p>
+        <p>Updated April 29, 2026 • Found this helpful? Share it with someone else fighting headless OAuth.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
   <script src="https://utteranc.es/client.js"

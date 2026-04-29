@@ -6,13 +6,20 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Apr 2026 22:35:27 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Apr 2026 23:50:00 +0000</lastBuildDate>
 
     <item>
       <title>Modernizing Agent Skills Without Growing a Skill Jungle</title>
       <description>How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</title>
+      <description>Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
@@ -37,6 +44,13 @@
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
+      <title>VPS OAuth Survival Guide: Google APIs Without a Browser</title>
+      <description>Complete tutorial on OAuth 2.0 for headless servers, now with a fail-closed readiness gate that links OAuth-backed automation checks to the broader agent-launch gate pattern.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</guid>
+      <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
       <title>Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</title>
       <description>Why AI cron reliability needs exact-exec drivers: artifact-first execution, explicit timeout budgets, and deterministic delivery instead of freeform agent prompts.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</link>
@@ -49,13 +63,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</guid>
       <pubDate>Mon, 02 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>VPS OAuth Survival Guide: Google APIs Without a Browser</title>
-      <description>Complete tutorial on OAuth 2.0 for headless servers, now with a fail-closed readiness gate so OAuth-backed automation stops before side effects when credentials, scopes, or cheap API probes are unhealthy.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</guid>
-      <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
