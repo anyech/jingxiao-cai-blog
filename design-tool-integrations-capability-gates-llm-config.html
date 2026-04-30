@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="Why design-tool integrations need capability gates before LLM generation: validate inputs, route readiness, model config, and artifact proof early.">
+    <meta name="keywords" content="design tool integration, LLM config gating, Presenton automation, agent workflow validation, AI agents, workflow reliability, capability gates">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config">
+    <meta property="og:description" content="A missing LLM configuration should be a clean blocked state, not an invitation for an agent to improvise a design-tool route.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Design-Tool Integrations Need Capability Gates">
+    <meta name="twitter:description" content="Validate design-tool automation routes before generation: input contract, route capability, LLM config, and artifact proof.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config",
+      "description": "Why design-tool integrations need capability gates before LLM generation: validate inputs, route readiness, model config, and artifact proof early.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-04-30",
+      "dateModified": "2026-04-30",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "design tool integration",
+        "LLM config gating",
+        "Presenton automation",
+        "agent workflow validation",
+        "AI agents",
+        "workflow reliability"
+      ]
+    }
+    </script>
+
+    <title>Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { color: #2563eb; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config</h1>
+        <div class="meta">
+            <strong>April 30, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: tooling, ai-agents, workflow, design-tools, llm-ops, validation</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a blocked design-automation route into a reusable capability-gating pattern, then helped remove the deployment-specific details that were not needed for the public lesson.
+        </div>
+        <div class="warning">
+            <strong>Short version:</strong> if a design-tool integration needs an LLM route, the route must prove that its model configuration, permissions, input contract, and artifact obligations are ready before generation starts. Missing config should produce a clean blocked state, not creative improvisation.
+        </div>
+    </header>
+
+    <main>
+        <h2>The Tiny Failure That Exposes the Whole Integration</h2>
+        <p>The failure looked boring: a presentation-design automation path could not run because the LLM generation lane it expected was not configured.</p>
+
+        <p>That sounds like a small setup miss. In practice, it is exactly the kind of miss that design-tool integrations must catch early.</p>
+
+        <p>Design tools are not plain text editors. A useful automation route may need to preserve layout constraints, templates, source assets, speaker intent, image policy, export format, and human review points. If the route silently swaps to a weaker path, the agent can produce something that looks successful while violating the actual contract.</p>
+
+        <blockquote>
+            <p><strong>A design artifact is not done when an API returns. It is done when the promised artifact exists with the promised constraints preserved.</strong></p>
+        </blockquote>
+
+        <p>That is why I now treat a missing LLM config as a capability-gate failure, not as a runtime inconvenience. The system should say “blocked: the chosen generation route is not configured” before it mutates anything, spends tokens, creates partial files, or asks the user to trust a degraded artifact.</p>
+
+        <div class="note">
+            <strong>Public-surface note:</strong> this post is about the reusable design pattern. It intentionally generalizes local helper names, private paths, exact provider/model routes, operational identifiers, and deployment topology. Public tool names appear only where they explain the external integration class.
+        </div>
+
+        <h2>Why Design Automation Is Easy to Fake</h2>
+        <p>LLM-backed design automation creates a particularly tempting illusion: if the model can talk confidently about the desired output, it can feel as if the output route is ready.</p>
+
+        <p>It is not.</p>
+
+        <p>A presentation generator, diagram tool, image route, or design-system plugin usually crosses at least four boundaries:</p>
+        <ol>
+            <li><strong>Semantic intent:</strong> what the user actually wants the artifact to communicate.</li>
+            <li><strong>Source contract:</strong> what inputs, assets, data, and evidence must survive the transformation.</li>
+            <li><strong>Tool capability:</strong> what the selected design route can actually generate or preserve.</li>
+            <li><strong>Configured execution:</strong> which model, credentials, permissions, and export paths are currently available.</li>
+        </ol>
+
+        <p>Agents are good at the first boundary. They can be dangerously overconfident at the other three unless the integration makes those boundaries explicit.</p>
+
+        <p>This is not unique to one tool. Presenton, for example, is a public open-source AI presentation generator and API that supports self-hosting, custom templates, and multiple model backends. That flexibility is useful precisely because it decouples artifact generation from one fixed SaaS route. It also means the integration must know which route is actually configured before it claims it can generate a deck.</p>
+
+        <h2>Capabilities Are Contracts, Not Hints</h2>
+        <p>The broader software ecosystem already knows this lesson. Good integrations declare what they can do before they do it.</p>
+
+        <p>Figma plugin manifests make network access an explicit manifest concern: when network access is declared, allowed domains constrain what the plugin may reach. The <a href="https://developers.figma.com/docs/plugins/manifest/" target="_blank" rel="noopener">Figma plugin manifest documentation</a> treats this as part of the plugin description, not a side conversation after the plugin runs.</p>
+
+        <p>The Model Context Protocol does the same kind of thing for tools. Servers that support tools <a href="https://modelcontextprotocol.io/specification/2025-06-18/server/tools" target="_blank" rel="noopener">must declare the tools capability</a>, and each tool exposes metadata plus an input schema. Discovery comes before invocation.</p>
+
+        <p>LLM tool frameworks also point in the same direction. The <a href="https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling" target="_blank" rel="noopener">AI SDK tool-calling documentation</a> describes tool definitions with input schemas used both by the model and for validation, strict-mode options where providers support them, and explicit approval flows for sensitive operations.</p>
+
+        <p>Design-tool integrations should borrow that posture:</p>
+
+        <div class="success">
+            <strong>Declare capability before generation.</strong> Then validate that the declared capability matches the current route, the current config, and the requested artifact.
+        </div>
+
+        <h2>The Capability Gate I Want Before Any Design Generation</h2>
+        <p>For a design-tool route, I want a preflight gate that is boring, explicit, and hard to bypass. It should answer four questions before the first generation side effect:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Gate</th>
+                    <th>Question</th>
+                    <th>Fail-closed behavior</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Input contract</strong></td>
+                    <td>Are the required source text, assets, constraints, and output obligations present?</td>
+                    <td>Stop and list the missing inputs. Do not fabricate missing assets.</td>
+                </tr>
+                <tr>
+                    <td><strong>Route capability</strong></td>
+                    <td>Can this route preserve the artifact class being requested?</td>
+                    <td>Choose an authorized stronger route, ask for approval to degrade, or block.</td>
+                </tr>
+                <tr>
+                    <td><strong>LLM configuration</strong></td>
+                    <td>Is the model lane required by this design route configured and reachable?</td>
+                    <td>Report a blocked state. Do not silently borrow another lane with different behavior.</td>
+                </tr>
+                <tr>
+                    <td><strong>Artifact proof</strong></td>
+                    <td>Did the output file or design object satisfy the original artifact obligations?</td>
+                    <td>Mark the run incomplete even if the service call succeeded.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The third gate is the one that triggered this post. But the point is not “remember to configure the model.” The point is that model configuration is part of the artifact contract. If it is absent, the design route is absent.</p>
+
+        <h2>A Minimal Preflight Contract</h2>
+        <p>I do not want the agent to reason about this from vibes every time. I want the route to expose a small, inspectable contract.</p>
+
+        <pre><code>design_route:
+  purpose: "generate or update a presentation artifact"
+  input_contract:
+    requires_outline: true
+    requires_source_assets: declared_by_request
+    requires_template_constraints: declared_by_request
+  capabilities:
+    preserves_layout_constraints: true
+    exports_pptx: true
+    exports_pdf: true
+    supports_image_generation: route_dependent
+  execution_readiness:
+    llm_configured: must_be_true
+    required_permissions_present: must_be_true
+    dry_run_available: recommended
+  failure_policy:
+    missing_config: block_before_generation
+    unsupported_asset_class: block_or_user_approved_degradation
+    artifact_validation_failure: do_not_mark_complete</code></pre>
+
+        <p>This is conceptual, not a dump of a live config. The shape matters more than the exact syntax. A real implementation might use a manifest, a typed config object, a tool registry, or a preflight function. What matters is that the design route can explain itself before the agent asks it to produce public-looking work.</p>
+
+        <div class="note">
+            <strong>Conceptual pattern vs. live behavior:</strong> the example above is an abstract contract shape. It is not a current production config, provider list, helper filename, or deployment inventory.
+        </div>
+
+        <h2>What “Blocked” Should Look Like</h2>
+        <p>A useful blocked state is not just an error string. It should preserve the decision context so the next move is obvious.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Failure</th>
+                    <th>Bad behavior</th>
+                    <th>Better blocked state</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Missing LLM config</td>
+                    <td>Try a different model route without telling the user.</td>
+                    <td>“The selected design route is not configured for generation. No artifact was created.”</td>
+                </tr>
+                <tr>
+                    <td>Route cannot preserve assets</td>
+                    <td>Generate a text-only approximation and call it done.</td>
+                    <td>“This route would drop required assets. Approve degradation or choose another route.”</td>
+                </tr>
+                <tr>
+                    <td>Permissions are absent</td>
+                    <td>Request broad access at runtime because the agent is in a hurry.</td>
+                    <td>“The route lacks required access. Configure the permission boundary first.”</td>
+                </tr>
+                <tr>
+                    <td>Artifact validation fails</td>
+                    <td>Report success because the API returned normally.</td>
+                    <td>“Generation returned, but the artifact did not satisfy the contract.”</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>This is especially important for design artifacts because partial success can look polished. A wrong deck with clean typography is more dangerous than a loud failure.</p>
+
+        <h2>The Checklist I Use Now</h2>
+        <p>Before letting an agent drive a design-tool integration, I want these checks to pass:</p>
+
+        <ul>
+            <li><strong>Name the artifact:</strong> deck, diagram, mockup, image set, template, or export bundle.</li>
+            <li><strong>Name the non-negotiables:</strong> required assets, template constraints, data fidelity, branding boundaries, and export formats.</li>
+            <li><strong>Name the route class:</strong> text-only planning, design-aware generation, API-backed artifact creation, or manual-assist workflow.</li>
+            <li><strong>Prove model readiness:</strong> the selected LLM lane is configured, reachable, and appropriate for the route.</li>
+            <li><strong>Prove tool readiness:</strong> permissions, network boundaries, local dependencies, and output directories are ready before side effects.</li>
+            <li><strong>Run a tiny proof:</strong> prefer a bounded dry run before committing a large design task.</li>
+            <li><strong>Label degradation:</strong> if a route cannot preserve something, say so before generation.</li>
+            <li><strong>Verify the artifact:</strong> inspect the final file or design object against the original contract.</li>
+        </ul>
+
+        <p>The human should not have to reverse-engineer which route the agent silently chose. The route should be visible enough that the human can approve the risk.</p>
+
+        <h2>How This Connects to Agent Workflow Validation</h2>
+        <p>This is the same pattern I use elsewhere: fail closed before the expensive or irreversible step, and keep the failure legible.</p>
+
+        <p>In <a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches</a>, the lesson was that auth and readiness checks should block before tooling starts. In <a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a>, the related lesson was that skills need explicit capability boundaries instead of optimistic routing.</p>
+
+        <p>Design-tool integrations combine both problems. They are tool launches that produce artifacts. That means they need launch readiness <em>and</em> artifact proof.</p>
+
+        <blockquote>
+            <p><strong>If a route cannot prove its capability up front, it should not get to create something polished enough to be mistaken for success.</strong></p>
+        </blockquote>
+
+        <h2>The Bigger Lesson</h2>
+        <p>LLMs make design automation feel more fluid, but they do not remove integration contracts. They make those contracts more important.</p>
+
+        <p>A missing LLM config is not embarrassing. It is useful signal. It tells you the route has not earned the right to generate yet.</p>
+
+        <p>That is the design-tool integration standard I want: explicit route contracts, fail-closed model readiness, visible degradation, and artifact validation that checks the output rather than the agent's confidence.</p>
+
+        <p>When that standard is in place, a blocked run is not a failure of the workflow. It is the workflow doing its job.</p>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></li>
+                <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
+                <li><a href="/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">LLM Panel Orchestration in OpenClaw</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He likes automation that is explicit about capability, permission, and failure boundaries before it touches real artifacts.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">A clean blocked state is often the safest design artifact an agent can produce.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Published on April 30, 2026 • Part of my ongoing AI-agent workflow and tooling reliability series</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+  <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>
