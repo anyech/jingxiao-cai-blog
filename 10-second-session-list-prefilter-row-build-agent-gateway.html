@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A self-hosted agent-gateway performance lesson: filter cheap session candidates before building expensive rows, or tiny list requests still pay full-history cost.">
+    <meta name="keywords" content="agent gateway performance, sessions list latency, prefilter before row build, OpenClaw, control plane, self-hosted AI agents, performance debugging">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways">
+    <meta property="og:description" content="If a list request asks for one recent session, it should not enrich the whole session history first. Filter cheap candidates, then build rows.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The 10-Second Session List">
+    <meta name="twitter:description" content="A reusable agent-gateway performance rule: push cheap filters ahead of expensive row construction.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways",
+      "description": "A self-hosted agent-gateway performance lesson: filter cheap session candidates before building expensive rows, or tiny list requests still pay full-history cost.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-05-02",
+      "dateModified": "2026-05-02",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "agent gateway performance",
+        "sessions list latency",
+        "prefilter before row build",
+        "OpenClaw",
+        "control plane",
+        "self-hosted AI agents"
+      ]
+    }
+    </script>
+
+    <title>The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { color: #2563eb; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways</h1>
+        <div class="meta">
+            <strong>May 2, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: openclaw, ai-agents, performance, devops, control-plane, self-hosted</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the debugging timeline, separate live symptoms from isolated evidence, and keep the public version focused on the reusable performance pattern rather than deployment-specific details.
+        </div>
+        <div class="warning">
+            <strong>Short version:</strong> if a session-list request asks for one recent row, the gateway should not enrich the entire session history first. Filter cheap candidates, sort and limit cheaply, then build the expensive rows.
+        </div>
+    </header>
+
+    <main>
+        <p>One of the easiest ways to make an agent gateway feel broken is to let a tiny control-plane request accidentally pay for the whole history of the system.</p>
+
+        <p>That was the shape of a recent OpenClaw performance issue I chased down. A session-list call that should have been narrow could sit close to the caller timeout under load. The gateway was not dead. Cheap health checks could still pass. But richer control-plane calls were slow enough that the user-visible experience looked like a connectivity problem.</p>
+
+        <p>I call this the 10-second session list because the visible failure lived near a roughly ten-second RPC boundary. The isolated benchmarks below are not all ten seconds; they show why a narrow call could drift into that timeout class when the gateway was under real control-plane pressure.</p>
+
+        <p>The root cause was more interesting than “the box is small” or “the network is flaky.” The slow path was doing the right work in the wrong order.</p>
+
+        <blockquote>
+            <p><strong>The gateway was building expensive session rows before applying the cheap filters that would have thrown most of those rows away.</strong></p>
+        </blockquote>
+
+        <div class="note">
+            <strong>Public-surface note:</strong> the details below are sanitized from self-hosted OpenClaw operations. I keep the reusable structure and representative performance counters, but omit private paths, channel IDs, task IDs, hostnames, live config values, helper filenames, and exact deployment inventory.
+        </div>
+
+        <h2>The Symptom: Healthy Gateway, Slow Control Plane</h2>
+        <p>The confusing part was that the gateway did not look simply “down.” A basic status or health check could pass, while higher-level calls that needed session metadata stalled or timed out.</p>
+
+        <p>That distinction matters. A health endpoint can answer “the process is alive” without proving that the expensive control-plane routes are responsive. If one route monopolizes the event loop doing synchronous or CPU-heavy work, the system can be alive and still feel unavailable.</p>
+
+        <p>The practical symptom was a session-list request shaped like this:</p>
+
+        <pre><code>give me a very small number of recently active sessions</code></pre>
+
+        <p>That sounds cheap. It should be cheap. But it was not, because the implementation treated “limit” as a final presentation step rather than as a way to avoid work.</p>
+
+        <h2>The Bad Shape: Enrich Everything, Then Throw Most of It Away</h2>
+        <p>The slow path looked roughly like this:</p>
+
+        <pre><code>load session stores
+for each candidate session:
+    build a rich display row
+        resolve child sessions
+        read derived usage or title fields when needed
+        attach status and metadata
+sort rich rows
+apply recent-activity filter
+apply limit
+return the remaining rows</code></pre>
+
+        <p>That order is fine when the caller genuinely asks for a full rich listing. It is terrible when the caller asks for one or a few recent sessions.</p>
+
+        <p>The expensive part was not just JSON parsing. It was row construction: deriving display state, resolving child relationships, and falling back to transcript-derived metadata when the compact session row did not already contain what the UI wanted.</p>
+
+        <p>Once those operations sit inside a loop over hundreds of historical rows, the caller’s <code>limit=1</code> does not protect anything. The gateway still pays the cost of enriching rows that will never be returned.</p>
+
+        <div class="warning">
+            <strong>Performance smell:</strong> if <code>limit</code> appears only after expensive row construction, it is not a workload reducer. It is just a final trim.
+        </div>
+
+        <h2>The Better Shape: Filter Before Row Build</h2>
+        <p>The corrected fast path is not exotic. It is the same principle database people call predicate pushdown, applied inside an agent gateway:</p>
+
+        <pre><code>load session stores
+apply cheap key / agent / label / activity-window filters
+sort by raw timestamp
+apply raw limit
+for each selected candidate:
+    build the rich display row
+return rows</code></pre>
+
+        <p>The important constraint is that “cheap” has to mean cheap and semantically safe. Some filters can be applied before row construction because they depend only on raw session-store fields. Others may still require the richer legacy path until their semantics are proven.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Where it belongs</th>
+                    <th>Why</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>agent, label, explicit key filters</td>
+                    <td>before row build</td>
+                    <td>They can be checked directly against raw candidates.</td>
+                </tr>
+                <tr>
+                    <td>recent-activity window</td>
+                    <td>before row build when raw timestamps are enough</td>
+                    <td>It can collapse the candidate set dramatically.</td>
+                </tr>
+                <tr>
+                    <td>sort and limit for the fast path</td>
+                    <td>before row build</td>
+                    <td>The gateway should enrich only the rows it may return.</td>
+                </tr>
+                <tr>
+                    <td>free-text search or relationship-heavy filters</td>
+                    <td>legacy/rich path until proven safe</td>
+                    <td>Correctness matters more than forcing every option into the fast path.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>That last row is important. The fix was not “always skip enrichment.” The fix was “do not enrich rows that cheap filters already prove are irrelevant.”</p>
+
+        <h2>The Evidence That Changed My Mind</h2>
+        <p>Before the source-level validation, it was tempting to blame stale session residue, broad store size, or generic gateway pressure. Those were contributors, but cleanup alone was not the structural fix.</p>
+
+        <p>The decisive evidence came from isolated validation against copied state and then a stage-style probe of the filtered hot path. The filtered request collapsed from hundreds of row builds to a couple:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Before</th>
+                    <th>After prefiltering</th>
+                    <th>What it means</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rows sent through expensive row build</td>
+                    <td>381</td>
+                    <td>2</td>
+                    <td>The request stopped enriching almost the whole history.</td>
+                </tr>
+                <tr>
+                    <td>Transcript-derived fallback time</td>
+                    <td>about 953 ms</td>
+                    <td>about 28 ms</td>
+                    <td>Less row build means fewer fallback reads.</td>
+                </tr>
+                <tr>
+                    <td>Child-relationship resolution time</td>
+                    <td>about 109 ms</td>
+                    <td>about 2 ms</td>
+                    <td>Relationship work moved off discarded rows.</td>
+                </tr>
+                <tr>
+                    <td>Total filtered-probe wall time</td>
+                    <td>about 1.31 s</td>
+                    <td>about 216 ms</td>
+                    <td>The narrow control-plane call became narrow in practice.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Another copied-state benchmark showed the same direction even more sharply: a narrow list phase that took seconds in the enrich-first shape dropped to milliseconds when the implementation limited before enrichment.</p>
+
+        <p>Full-list probes, meanwhile, stayed broadly similar. That was expected and actually reassuring. If the caller asks for a rich full listing, the gateway still has to build the rich rows. The win is for the common hot path that asks for a tiny recent slice.</p>
+
+        <div class="success">
+            <strong>The durable conclusion:</strong> this was not primarily a loopback problem, a generic health-check problem, or a “delete a few more old rows” problem. It was an execution-order problem in the session-list path.
+        </div>
+
+        <h2>Why Cleanup Was Not Enough</h2>
+        <p>Session-store hygiene still matters. Big stale rows, bulky metadata, missing compact usage fields, and accumulated historical state can all amplify latency.</p>
+
+        <p>But cleanup is a weak fix if the route still does O(N) enrichment for tiny queries. You can make N smaller today and watch it grow again tomorrow.</p>
+
+        <p>The better question is:</p>
+
+        <blockquote>
+            <p><strong>Does the cost of this request scale with the number of rows it returns, or with the number of rows the system has ever seen?</strong></p>
+        </blockquote>
+
+        <p>For a recent-session hot path, the answer should be much closer to “rows returned.” If it scales with historical cardinality, the gateway will keep rediscovering the same failure mode as the deployment ages.</p>
+
+        <h2>The General Agent-Gateway Lesson</h2>
+        <p>Agent gateways are full of deceptively small list/status routes:</p>
+
+        <ul>
+            <li>recent sessions</li>
+            <li>running tasks</li>
+            <li>active workers</li>
+            <li>pending approvals</li>
+            <li>thread or conversation summaries</li>
+            <li>tool-call histories</li>
+        </ul>
+
+        <p>Those routes often start life as admin conveniences. Then agents begin calling them in watchdogs, status cards, thread handoffs, cron monitors, and final-delivery checks. Suddenly the route is not occasional UI sugar anymore. It is part of the control plane.</p>
+
+        <p>When that happens, the implementation needs control-plane discipline:</p>
+
+        <ol>
+            <li><strong>Push cheap filters earlier.</strong> Do not derive rich display rows before raw predicates have narrowed the candidate set.</li>
+            <li><strong>Make <code>limit</code> a work reducer.</strong> A limit after enrichment is too late for performance.</li>
+            <li><strong>Cache or batch repeated side lookups.</strong> Per-row registry reads and relationship scans turn small routes into multipliers.</li>
+            <li><strong>Separate fast path from rich path.</strong> Keep search-heavy or relationship-heavy semantics on the safe path until proven equivalent.</li>
+            <li><strong>Instrument row-build counts, not only wall time.</strong> “It took 10 seconds” is a symptom. “It built 381 rows to return 2” is a root-cause clue.</li>
+        </ol>
+
+        <h2>The Trap in Health Checks</h2>
+        <p>This bug also reminded me not to overtrust cheap health signals.</p>
+
+        <p>A gateway can answer a health probe while a richer RPC path is expensive enough to time out. That is not hypocrisy; it is just two different questions:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>What it proves</th>
+                    <th>What it does not prove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Is the process alive?</td>
+                    <td>The service can answer a cheap probe.</td>
+                    <td>Control-plane routes are responsive.</td>
+                </tr>
+                <tr>
+                    <td>Can the gateway list recent sessions quickly?</td>
+                    <td>A real hot path is healthy.</td>
+                    <td>Every full-history rich listing is cheap.</td>
+                </tr>
+                <tr>
+                    <td>Did cleanup reduce stored state?</td>
+                    <td>Hygiene improved.</td>
+                    <td>The route no longer scales with history.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>For agent systems, the health check I care about is not just “can I connect?” It is “can the routes my automation calls under pressure still answer within their budget?”</p>
+
+        <h2>What I Would Look for in Any Similar System</h2>
+        <p>If I were reviewing another agent gateway with similar symptoms, I would ask for this evidence before proposing bigger knobs:</p>
+
+        <ul>
+            <li>How many raw candidates are loaded?</li>
+            <li>How many candidates survive cheap filters?</li>
+            <li>How many rows are actually enriched?</li>
+            <li>How many side lookups happen per returned row?</li>
+            <li>Does <code>limit=1</code> change the amount of work, or only the output size?</li>
+            <li>Which filters are safe to apply before enrichment, and which ones are not?</li>
+        </ul>
+
+        <p>Those questions are boring in the best way. They turn a spooky “gateway timeout” into a small performance profile.</p>
+
+        <h2>The Bigger Pattern</h2>
+        <p>The pattern is broader than OpenClaw and broader than session lists:</p>
+
+        <blockquote>
+            <p><strong>Do not materialize expensive objects until cheap predicates prove you need them.</strong></p>
+        </blockquote>
+
+        <p>That is obvious in a database. It is easier to forget in application code, where “build the row object” feels harmless until the row object quietly performs filesystem reads, relationship resolution, derived metadata fallback, and display-status work.</p>
+
+        <p>In agent gateways, those “display” objects become operational objects. They show up in watchdogs, monitors, handoffs, and status checks. If they are expensive to build, they can block the control plane itself.</p>
+
+        <p>So the best fix was not a bigger timeout, a restart ritual, or more cleanup. It was to put the work in the right order.</p>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the API shape, performance deltas, and execution-order lesson because they are the transferable parts. I removed private state paths, live host identifiers, channel/thread IDs, task/session IDs, exact helper filenames, and provider/model routing fingerprints.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html">Treating AI Agent Updates Like Production Deployments</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers</a></li>
+                <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, debugging, and operational discipline. He likes performance fixes that turn scary symptoms into boring counters.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If a tiny query builds the whole world before answering, the bug is usually not the tiny query.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Published on May 2, 2026 • Part of my ongoing OpenClaw operations and agent-gateway performance series</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+  <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

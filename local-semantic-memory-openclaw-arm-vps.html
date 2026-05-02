@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
-    <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, OpenClaw memory search">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
+    <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, active memory canaries, sessions list performance">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, clearer rebuild limits, and a source-hygiene lesson about anti-echo retrieval.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-04-29",
+      "dateModified": "2026-05-02",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,7 +82,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 2, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -90,6 +90,7 @@
         </div>
         <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
         <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
+        <div class="note"><strong>May 2 follow-up:</strong> I added two related operational lessons: active-memory canaries need a latency budget, and the session-list control plane needed a filtered fast path before row enrichment.</div>
     </header>
 
     <main>
@@ -516,6 +517,56 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
             <strong>Connection to skill governance:</strong> the same anti-echo rule applies to agent skills. A skill radar should not create new skills merely because prior skill-radar prose kept mentioning them. See <a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a> for the catalog-governance version of this lesson.
         </div>
 
+
+
+        <h2>May 2026 Follow-Up: Active Memory Canaries Need a Latency Budget</h2>
+        <p>The next memory lesson was not about whether a helper could finish. It was about whether it could finish inside the reply path without making the whole assistant feel stuck.</p>
+
+        <p>A 60-second active-memory canary found a working setting in the narrow sense: the helper stopped immediately failing under the previous shorter timeout pattern, and early real runs produced non-empty summaries instead of timing out. But the observed pre-reply latency was still roughly <strong>45-53 seconds</strong>.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Canary answer</th>
+                    <th>Operational interpretation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Can the helper complete under a larger budget?</td>
+                    <td>Yes, in early real runs.</td>
+                    <td>The failure class changed from immediate timeout to slow success.</td>
+                </tr>
+                <tr>
+                    <td>Is that comfortable for the reply path?</td>
+                    <td>No.</td>
+                    <td>Forty-plus seconds before a response is a ceiling, not a polished default.</td>
+                </tr>
+                <tr>
+                    <td>What should tighten first?</td>
+                    <td>Helper shape and query scope.</td>
+                    <td>Reducing work is safer than blindly shrinking the timeout and rediscovering failure.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <blockquote>
+            <p><strong>“It completes” is not the same as “it belongs on the critical reply path.”</strong></p>
+        </blockquote>
+
+        <p>That is now how I think about active-memory helpers: a successful canary proves a ceiling, not a production tuning. The next step after a slow success is to make the helper smaller, more targeted, or more asynchronous before treating it as part of the normal interaction loop.</p>
+
+        <h2>May 2026 Follow-Up: Session Lists Have a Memory-Search Lesson Too</h2>
+        <p>The session-list latency work looked separate at first, but it rhymed with the memory story. The gateway was doing expensive derived-row work before cheap filters had narrowed the candidate set.</p>
+
+        <p>In a stage-style filtered probe, the fast-path fix collapsed expensive row construction from <strong>381 rows to 2 rows</strong>. Transcript-derived fallback time moved from roughly <strong>953 ms to 28 ms</strong>, child-relationship resolution from roughly <strong>109 ms to 2 ms</strong>, and total filtered-probe wall time from roughly <strong>1.31 seconds to 216 ms</strong>.</p>
+
+        <p>The takeaway is the same as the memory-indexing lesson: source scope matters. A tiny query should not behave like a full-corpus operation just because the implementation builds the rich view too early.</p>
+
+        <div class="note">
+            <strong>Related write-up:</strong> I expanded the control-plane performance side of this into <a href="/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">The 10-Second Session List</a>.
+        </div>
 
         <h2>Why I Think This Matters</h2>
         <p>A lot of OpenClaw users are exactly in this bucket:</p>

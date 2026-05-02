@@ -3,7 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Why Custom Skills Don't Load in OpenClaw - A Known Bug - Jingxiao Cai's Blog</title>
+  <meta name="author" content="Jingxiao Cai">
+  <meta name="description" content="A historical OpenClaw custom-skill loading bug, plus a later generated-markdown regression lesson: test the artifact shape, not just the intent.">
+  <meta name="keywords" content="OpenClaw skills, custom skills, generated markdown, regression testing, MD001, AI agents">
+  <meta property="og:title" content="Why Custom Skills Do Not Load in OpenClaw - A Historical Bug and Follow-Up">
+  <meta property="og:description" content="The workspace skill-loading issue is now historical, but a later generated-markdown regression showed why extensibility still needs artifact-level tests.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html">
+  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OpenClaw Skills: Historical Bug and Follow-Up">
+  <meta name="twitter:description" content="Custom skill loading became less of the story; generated artifact contracts became the durable lesson.">
+  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why Custom Skills Do Not Load in OpenClaw - A Historical Bug and Follow-Up",
+    "description": "A historical OpenClaw custom-skill loading bug, plus a later generated-markdown regression lesson: test the artifact shape, not just the intent.",
+    "author": { "@type": "Person", "name": "Jingxiao Cai" },
+    "datePublished": "2026-02-23",
+    "dateModified": "2026-05-02",
+    "url": "https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html",
+    "publisher": { "@type": "Person", "name": "Jingxiao Cai" },
+    "keywords": ["OpenClaw skills", "custom skills", "generated markdown", "regression testing", "AI agents"]
+  }
+  </script>
+  <title>Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up | Jingxiao Cai</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
     h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -12,6 +39,8 @@
     a:hover { text-decoration: underline; }
     .post-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
     .tags { color: #999; font-size: 0.85em; }
+    .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+    .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
     code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
     pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
     blockquote { border-left: 4px solid #ddd; margin: 20px 0; padding-left: 20px; color: #666; }
@@ -25,13 +54,15 @@
 <body>
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
-  <h1>Why Custom Skills Don't Load in OpenClaw - A Known Bug</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai</p>
+  <h1>Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up</h1>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated May 2, 2026</strong></p>
   <p class="tags">Tags: openclaw, bugs, ai-agents, customization</p>
+
+  <div class="note"><strong>May 2026 follow-up:</strong> workspace skill discovery is no longer the only interesting part of this story. The newer lesson is that generated artifacts need regression tests too: a nightly generated-memory report failed on a Markdown heading-level jump, and the durable fix was to normalize the emitted artifact shape rather than merely ask the agent to be more careful.</div>
   
-  <blockquote>
-    <p><strong>This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.</strong></p>
-  </blockquote>
+  <div class="disclaimer">
+    This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped debug the original skill-loading failure and later connect that lesson to generated-artifact regression tests.
+  </div>
 
   <p>I've been building my AI assistant setup with OpenClaw, and recently tried to create a custom "blog-publishing" skill to automate my workflow. After spending hours configuring everything, I discovered it simply doesn't work—and it's not just me.</p>
   
@@ -83,10 +114,45 @@
   
   <p>It works—you're reading this blog post! But it's not as elegant as it should be.</p>
   
-  <h2>Conclusion</h2>
-  <p>If you're trying to create custom skills in OpenClaw and they're not loading, you're not crazy. It's a known bug (#10386). Star the issue to show support for a fix.</p>
 
-  <p><em>Have you encountered this bug? Star <a href="https://github.com/openclaw/openclaw/issues/10386">#10386</a> to help prioritize the fix.</em></p>
+  <h2>May 2026 Follow-Up: Skill Loading Is Only Half the Contract</h2>
+  <p>This post started as a complaint about custom skills not loading. That was a real operator problem at the time, and later OpenClaw releases made workspace skill discovery much less fragile for this setup.</p>
+
+  <p>The more durable lesson showed up in a different place: generated Markdown. A nightly generated-memory report produced a heading-level jump that tripped a Markdown structure rule and broke the automation even though the underlying summary content was fine.</p>
+
+  <p>The first tempting fix was too simple: make the generator emit one heading depth everywhere. The real fix had to respect two output shapes:</p>
+  <ul>
+    <li>inline blocks embedded inside a daily note need one parent heading depth</li>
+    <li>standalone reports need a different parent heading depth</li>
+  </ul>
+
+  <p>That is the same kind of contract thinking custom skills need. A skill is not only a folder that loads. It is also an artifact producer, and the artifacts need tests at the boundary where users actually consume them.</p>
+
+  <blockquote>
+    <p><strong>For generated agent output, test the rendered artifact shape, not just the prompt intent.</strong></p>
+  </blockquote>
+
+  <p>The useful regression test was not “did the agent mention the right topic?” It was “does the generated Markdown have a valid heading hierarchy in each supported context?” That is a small distinction, but it is the difference between a pretty summary and a reliable automation surface.</p>
+
+  <h2>Conclusion</h2>
+  <p>If you are reading this as a current OpenClaw operator, treat the original custom-skill loading bug as historical context rather than a fresh diagnosis. The durable takeaway is broader: extension systems need both discovery checks and artifact-contract tests.</p>
+
+  <p><em>If a skill loads but the files it generates are structurally invalid, the extensibility story is still incomplete.</em></p>
+
+
+  <div class="related-posts">
+    <h3>Related Posts</h3>
+    <ul>
+      <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
+      <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers</a></li>
+      <li><a href="/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">Building Fail-Closed Stage Environments for AI Agents</a></li>
+    </ul>
+  </div>
+
+  <div class="author-box">
+    <h3>About the Author</h3>
+    <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation, and the small contracts that keep generated tooling reliable.</p>
+  </div>
 
   <footer>
     <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
