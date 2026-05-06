@@ -286,8 +286,8 @@ Let's do it after this turn finishes.</code></pre>
 
         <p>This case did <em>not</em> change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.</p>
 
-        <h2>Case Study: Late March 2026 and the 35-Minute Discord WebSocket Restart Loop</h2>
-        <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting on a roughly half-hour cadence</strong>, consistently but without any obvious config change triggering it.</p>
+        <h2>Case Study: A Periodic Discord WebSocket Restart Loop</h2>
+        <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting on a recurring cadence</strong>, consistently but without any obvious config change triggering it.</p>
         
         <p>The pattern was confusing at first. No errors in the logs. No user-initiated config patches. Just regular, predictable restarts that looked like infrastructure noise.</p>
         
@@ -300,7 +300,7 @@ Let's do it after this turn finishes.</code></pre>
         <h3>What I learned</h3>
         <ul>
             <li><strong>Stale-socket detection is a feature</strong> — without it, zombie connections would silently fail to deliver messages.</li>
-            <li><strong>The cadence reflects Discord's behavior</strong> — it's not a timer you configured, but the natural interval at which the monitor detects stale state.</li>
+            <li><strong>The timing reflects connection behavior</strong> — it's not a timer you configured, but the natural point at which the monitor detects stale state.</li>
             <li><strong>Restart frequency alone is not a reliability signal</strong> — you have to understand <em>why</em> the restarts are happening.</li>
         </ul>
         
