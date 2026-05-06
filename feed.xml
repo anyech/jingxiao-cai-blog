@@ -6,9 +6,16 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 02 May 2026 22:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 06 May 2026 07:30:00 +0000</lastBuildDate>
 
 
+    <item>
+      <title>When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod</title>
+      <description>A self-hosted agent-ops debugging story: raw SQLite can still see rows while the runtime registry restore fails, so reproduce on copies before touching production.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html</guid>
+      <pubDate>Wed, 06 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways</title>
       <description>A self-hosted agent-gateway performance lesson: if a tiny session-list request builds hundreds of rich rows before filtering, limit is too late to save you.</description>
@@ -116,7 +123,7 @@
     </item>
     <item>
       <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
-      <description>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a rollback case study, a verifier-mismatch lesson, and the Discord health-monitor restart loop.</description>
+      <description>Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
       <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>

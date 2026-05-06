@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and later case studies show how mixed-state upgrades and a 2026.4.1 rollback make restart safety a process problem, not just a button click.">
+    <meta name="description" content="OpenClaw config changes do not all behave the same. Some apply live, some restart the gateway, and later case studies show why rollback, health-monitor restarts, and state-store repair need explicit downtime control.">
     <meta name="keywords" content="OpenClaw gateway restart, OpenClaw config change behavior, config patch restart, OpenClaw auth profiles, OpenClaw plugins">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta property="og:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with mixed-state upgrade and April 2026 rollback case studies.">
+    <meta property="og:description" content="Some OpenClaw config changes apply live. Others restart the gateway. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes">
-    <meta name="twitter:description" content="Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with mixed-state upgrade and April 2026 rollback lessons.">
+    <meta name="twitter:description" content="Gateway restarts are lifecycle events, not casual edits. Updated with a task-registry repair lesson about copy-first evidence and offline control.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes",
-      "description": "OpenClaw config changes don't all behave the same. Some apply live, some trigger deferred gateway restarts, and later case studies show how mixed-state upgrades and a 2026.4.1 rollback make restart safety a process problem, not just a button click.",
+      "description": "OpenClaw config changes do not all behave the same. Some apply live, some restart the gateway, and later case studies show why rollback, health-monitor restarts, and state-store repair need explicit downtime control.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-11",
-      "dateModified": "2026-04-02",
+      "dateModified": "2026-05-06",
       "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
       "publisher": {
         "@type": "Person",
@@ -84,13 +84,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated April 2, 2026</strong><br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated May 6, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
-        <div class="note"><strong>Follow-up (March–April 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, and a 2026.4.1 rollback case study covering backup → downgrade → manual restart → smoke test, plus the false-alarm verifier mismatch lesson.</div>
+        <div class="note"><strong>Follow-up (March–May 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, and a task-registry restore-gap lesson covering copy-first evidence, isolated repair validation, and explicit offline control.</div>
     </header>
 
     <main>
@@ -287,7 +287,7 @@ Let's do it after this turn finishes.</code></pre>
         <p>This case did <em>not</em> change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.</p>
 
         <h2>Case Study: Late March 2026 and the 35-Minute Discord WebSocket Restart Loop</h2>
-        <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting every ~35 minutes</strong>, consistently but without any obvious config change triggering it.</p>
+        <p>A different kind of restart behavior showed up later: <strong>the gateway was restarting on a roughly half-hour cadence</strong>, consistently but without any obvious config change triggering it.</p>
         
         <p>The pattern was confusing at first. No errors in the logs. No user-initiated config patches. Just regular, predictable restarts that looked like infrastructure noise.</p>
         
@@ -300,12 +300,12 @@ Let's do it after this turn finishes.</code></pre>
         <h3>What I learned</h3>
         <ul>
             <li><strong>Stale-socket detection is a feature</strong> — without it, zombie connections would silently fail to deliver messages.</li>
-            <li><strong>35-minute cadence reflects Discord's behavior</strong> — it's not a timer you configured, but the natural interval at which the monitor detects stale state.</li>
+            <li><strong>The cadence reflects Discord's behavior</strong> — it's not a timer you configured, but the natural interval at which the monitor detects stale state.</li>
             <li><strong>Restart frequency alone is not a reliability signal</strong> — you have to understand <em>why</em> the restarts are happening.</li>
         </ul>
         
         <h3>How this affects operational planning</h3>
-        <p>If you're running long-lived sessions (multi-turn conversations, extended debugging, panel work), you should expect brief interruptions roughly every 30-40 minutes on Discord-connected deployments. The gateway comes back quickly, but mid-flight work may need rehydration.</p>
+        <p>If you're running long-lived sessions (multi-turn conversations, extended debugging, panel work), you should expect periodic brief interruptions on Discord-connected deployments. The gateway comes back quickly, but mid-flight work may need rehydration.</p>
         
         <div class="warning">
             <strong>Practical rule:</strong> for restart-sensitive operations like config changes or long-running agent tasks, don't assume "no config edit means no restart." Health-monitor behavior is a separate variable.
@@ -333,6 +333,19 @@ Let's do it after this turn finishes.</code></pre>
         </div>
 
         <p>The practical outcome was straightforward: the rollback was the right call, the post-rollback smoke tests were clean, and the stronger lesson was not “never update.” It was “do not declare an update successful on startup checks alone.”</p>
+
+        <h2>Case Study: Task-Registry Repair Has a Restart Boundary Too</h2>
+        <p>A later task-registry incident added one more restart-adjacent lesson: sometimes the hard part is not the restart itself, but the state repair that needs the gateway offline.</p>
+
+        <p>The confusing symptom was a restore gap. Raw SQLite inspection could still find historical task rows, while the runtime restore path treated the registry as unusable or effectively empty. That is not a contradiction. It means “rows are physically readable” and “the application can safely restore this registry” are different claims.</p>
+
+        <div class="warning">
+            <strong>Repair lesson:</strong> if raw database checks and runtime restore behavior disagree, treat production as evidence, not a workbench. Preserve the database and sidecars, reproduce on copies, and prove the repair path before any live cutover.
+        </div>
+
+        <p>This also changes the lifecycle plan. A repair that requires gateway downtime should not be supervised by the same gateway-backed chat session that disappears when the service stops. Either the human runs the maintenance window directly, or a pre-approved host-detached one-shot runner writes durable phase/result markers before taking the gateway down.</p>
+
+        <p>I wrote the database side of that lesson separately in <a href="/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html">When SQLite Looks Empty but Isn’t</a>. The restart-side takeaway for this post is shorter: state-store repair is a deployment event, even when the SQL command looks small.</p>
 
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>
@@ -362,6 +375,7 @@ Let's do it after this turn finishes.</code></pre>
             <li>Is this a gateway wiring change or just data?</li>
             <li>Can I batch this with other pending changes?</li>
             <li>Am I using a <code>--no-restart</code> path to postpone a problem I should validate now?</li>
+            <li>If this touches state-store repair, have I preserved copy-first evidence and proven the repair outside production?</li>
             <li>Have I checked for legacy plugin configuration that may no longer match the target version?</li>
             <li>Do I need <code>config.patch</code> rather than <code>config.apply</code>?</li>
             <li>Have I warned the human that a restart is coming?</li>
@@ -373,16 +387,16 @@ Let's do it after this turn finishes.</code></pre>
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html">When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod</a></li>
                 <li><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></li>
-                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></li>
-                <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
+                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs Security Audits While I Sleep</a></li>
             </ul>
         </div>
 
         <div class="author-box">
             <h3>About the Author</h3>
-            <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. He runs OpenClaw in production for personal automation and has developed a healthy respect for config changes that look small and behave large.</p>
-            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally avoids deployment-specific IDs and other sensitive details. The behavior is the point; the exact wiring is not.</p>
+            <p>Jingxiao Cai works on distributed systems, ML infrastructure, and self-hosted AI-agent operations. He runs OpenClaw for personal automation and has developed a healthy respect for changes that look small and behave large.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">This post intentionally avoids deployment-specific IDs, private paths, hostnames, exact schedules, and other sensitive details. The behavior is the point; the exact wiring is not.</p>
         </div>
 
 </main>

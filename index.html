@@ -72,6 +72,20 @@
   <h2>Blog Posts</h2>
 
 <div class="post">
+    <h3><a href="/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html">When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod</a></h3>
+    <p class="date">May 6, 2026</p>
+    <p class="categories">Categories: sqlite, openclaw, ai-agents, incident-response, debugging</p>
+    <p>A self-hosted agent-ops debugging story: raw SQLite can still see rows while the runtime registry restore fails, so reproduce on copies before touching production.</p>
+  </div>
+
+<div class="post">
+    <h3><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></h3>
+    <p class="date">March 11, 2026 · Updated May 6, 2026</p>
+    <p class="categories">Categories: openclaw, devops, ai-agents, configuration, gateway, reliability</p>
+    <p>Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.</p>
+  </div>
+
+<div class="post">
     <h3><a href="/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways</a></h3>
     <p class="date">May 2, 2026</p>
     <p class="categories">Categories: openclaw, ai-agents, performance, devops, control-plane</p>
@@ -181,13 +195,6 @@
     <p class="date">April 2, 2026</p>
     <p class="categories">Categories: openclaw, devops, ai-agents, incident-response, rollback, reliability</p>
     <p>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.</p>
-  </div>
-
-<div class="post">
-    <h3><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></h3>
-    <p class="date">March 11, 2026 · Updated April 2, 2026</p>
-    <p class="categories">Categories: openclaw, devops, ai-agents, configuration, gateway, reliability</p>
-    <p>Some OpenClaw config changes apply live. Others trigger deferred gateway restarts with a 30-second drain window. Now updated with a rollback case study, a verifier-mismatch lesson, and the Discord health-monitor restart loop.</p>
   </div>
 
 <div class="post">
