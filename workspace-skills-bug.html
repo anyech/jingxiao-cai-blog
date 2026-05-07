@@ -24,7 +24,7 @@
     "description": "A historical OpenClaw custom-skill loading bug, plus a later generated-markdown regression lesson: test the artifact shape, not just the intent.",
     "author": { "@type": "Person", "name": "Jingxiao Cai" },
     "datePublished": "2026-02-23",
-    "dateModified": "2026-05-02",
+    "dateModified": "2026-05-07",
     "url": "https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html",
     "publisher": { "@type": "Person", "name": "Jingxiao Cai" },
     "keywords": ["OpenClaw skills", "custom skills", "generated markdown", "regression testing", "AI agents"]
@@ -55,10 +55,10 @@
   <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
   
   <h1>Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up</h1>
-  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated May 2, 2026</strong></p>
+  <p class="post-meta">February 23, 2026 | By Jingxiao Cai | <strong>Updated May 7, 2026</strong></p>
   <p class="tags">Tags: openclaw, bugs, ai-agents, customization</p>
 
-  <div class="note"><strong>May 2026 follow-up:</strong> workspace skill discovery is no longer the only interesting part of this story. The newer lesson is that generated artifacts need regression tests too: a nightly generated-memory report failed on a Markdown heading-level jump, and the durable fix was to normalize the emitted artifact shape rather than merely ask the agent to be more careful.</div>
+  <div class="note"><strong>May 2026 follow-up:</strong> workspace skill discovery is no longer the only interesting part of this story. The newer lesson is that generated artifacts need regression tests too: a nightly generated-memory report failed on a Markdown heading-level jump, and the durable fix was to normalize the emitted artifact shape rather than merely ask the agent to be more careful. <strong>May 7 refinement:</strong> the useful regression was two-shaped, not one-shaped: inline daily-note blocks and standalone reports need separate heading-depth checks.</div>
   
   <div class="disclaimer">
     This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped debug the original skill-loading failure and later connect that lesson to generated-artifact regression tests.
@@ -133,6 +133,21 @@
   </blockquote>
 
   <p>The useful regression test was not “did the agent mention the right topic?” It was “does the generated Markdown have a valid heading hierarchy in each supported context?” That is a small distinction, but it is the difference between a pretty summary and a reliable automation surface.</p>
+
+  <h2>May 2026 Follow-Up: One Heading Level Was Enough to Break the Nightly Path</h2>
+  <p>The later closeout made the generated-artifact lesson sharper. The bug was small: one generated report jumped heading levels in a way the Markdown checker correctly rejected. The fix was not to make every generated heading globally shallower or deeper. That would only move the bug.</p>
+
+  <p>The real contract had two valid shapes:</p>
+  <ul>
+    <li>an inline generated block embedded under a daily note already has a parent heading</li>
+    <li>a standalone generated report starts from its own document root</li>
+  </ul>
+
+  <p>Those two surfaces need different heading depths. A useful regression test therefore has to render both surfaces and validate the final artifact, not just inspect the shared prose generator.</p>
+
+  <blockquote>
+    <p><strong>Generated content has to satisfy the consumer's structure, not the generator's internal convenience.</strong></p>
+  </blockquote>
 
   <h2>Conclusion</h2>
   <p>If you are reading this as a current OpenClaw operator, treat the original custom-skill loading bug as historical context rather than a fresh diagnosis. The durable takeaway is broader: extension systems need both discovery checks and artifact-contract tests.</p>

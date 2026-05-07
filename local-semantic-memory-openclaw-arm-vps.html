@@ -32,7 +32,7 @@
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-05-02",
+      "dateModified": "2026-05-07",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,7 +82,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 2, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 7, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -90,7 +90,7 @@
         </div>
         <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
         <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
-        <div class="note"><strong>May 2 follow-up:</strong> I added two related operational lessons: active-memory canaries need a latency budget, and the session-list control plane needed a filtered fast path before row enrichment.</div>
+        <div class="note"><strong>May 7 follow-up:</strong> I added two related operational lessons and sharpened the active-memory canary conclusion: slow success proves a ceiling, not a comfortable reply-path default; the next lever is smaller helper scope before tighter timeout knobs.</div>
     </header>
 
     <main>
@@ -556,6 +556,35 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
         </blockquote>
 
         <p>That is now how I think about active-memory helpers: a successful canary proves a ceiling, not a production tuning. The next step after a slow success is to make the helper smaller, more targeted, or more asynchronous before treating it as part of the normal interaction loop.</p>
+
+        <p>The May 7 refinement is mostly about wording and rollout discipline: a slow successful canary should be recorded as <em>working but not yet user-comfortable</em>. That keeps the team from declaring victory merely because the timeout class disappeared.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Canary result</th>
+                    <th>What it proves</th>
+                    <th>What it does not prove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Slow success</strong></td>
+                    <td>The helper can finish under the larger budget.</td>
+                    <td>The helper belongs synchronously in every reply path.</td>
+                </tr>
+                <tr>
+                    <td><strong>Non-empty summaries</strong></td>
+                    <td>The recall path can produce useful material.</td>
+                    <td>The query shape is already minimal enough.</td>
+                </tr>
+                <tr>
+                    <td><strong>No immediate timeouts</strong></td>
+                    <td>The previous budget was too tight for this lane.</td>
+                    <td>A permanent large timeout is the right product behavior.</td>
+                </tr>
+            </tbody>
+        </table>
 
         <h2>May 2026 Follow-Up: Session Lists Have a Memory-Search Lesson Too</h2>
         <p>The session-list latency work looked separate at first, but it rhymed with the memory story. The gateway was doing expensive derived-row work before cheap filters had narrowed the candidate set.</p>
