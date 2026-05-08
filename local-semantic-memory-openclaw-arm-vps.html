@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory promotion gates, session-list fast paths, and source hygiene.">
     <meta name="keywords" content="OpenClaw local memory search, self-hosted semantic memory, VPS LLM embeddings, node-llama-cpp, embeddinggemma, Gemini Embedding 2, active memory canaries, sessions list performance">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
+    <meta property="og:description" content="I enabled OpenClaw local memory search on a small ARM VPS, then extended it with safer rollout, active-memory promotion gates, session-list fast paths, and source hygiene.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.">
+    <meta name="twitter:description" content="OpenClaw local memory search on a 4-core ARM VPS, now with safer rollout, active-memory promotion gates, session-list fast paths, and source hygiene.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency limits, session-list fast paths, and source hygiene.",
+      "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory promotion gates, session-list fast paths, and source hygiene.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-19",
-      "dateModified": "2026-05-07",
+      "dateModified": "2026-05-08",
       "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
       "publisher": {
         "@type": "Person",
@@ -82,7 +82,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 7, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 8, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -90,7 +90,7 @@
         </div>
         <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
         <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
-        <div class="note"><strong>May 7 follow-up:</strong> I added two related operational lessons and sharpened the active-memory canary conclusion: slow success proves a ceiling, not a comfortable reply-path default; the next lever is smaller helper scope before tighter timeout knobs.</div>
+        <div class="note"><strong>May 8 follow-up:</strong> I added two related operational lessons and sharpened the active-memory canary conclusion: slow success proves a ceiling, not a comfortable reply-path default; the next lever is smaller helper scope or asynchronous delivery before tighter timeout knobs.</div>
     </header>
 
     <main>
@@ -558,6 +558,8 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
         <p>That is now how I think about active-memory helpers: a successful canary proves a ceiling, not a production tuning. The next step after a slow success is to make the helper smaller, more targeted, or more asynchronous before treating it as part of the normal interaction loop.</p>
 
         <p>The May 7 refinement is mostly about wording and rollout discipline: a slow successful canary should be recorded as <em>working but not yet user-comfortable</em>. That keeps the team from declaring victory merely because the timeout class disappeared.</p>
+
+        <p>The May 8 closeout made the promotion gate stricter: I would not treat a long canary budget as a normal product budget. Before this belongs in the ordinary reply path, the helper needs a narrower query contract, a smaller source set, or an asynchronous delivery shape that keeps normal replies responsive.</p>
 
         <table>
             <thead>

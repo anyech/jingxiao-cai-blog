@@ -6,9 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 07 May 2026 21:45:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 08 May 2026 22:00:00 +0000</lastBuildDate>
 
-
+    <item>
+      <title>One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports</title>
+      <description>A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</guid>
+      <pubDate>Fri, 08 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Long-Running Agent Work Needs a Bridge Back, Not Just a Background Thread</title>
       <description>Detaching long-running agent work is not enough. The workflow also needs an admission gate, a validated return path, and audit feedback when coverage misses.</description>
@@ -81,7 +87,7 @@
     </item>
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, slow active-memory canary limits, session-list fast-path lessons, and source hygiene.</description>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, active-memory promotion gates, session-list fast-path lessons, and source hygiene.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
@@ -179,7 +185,7 @@
     </item>
     <item>
       <title>Why Custom Skills Don&#x27;t Load in OpenClaw - A Historical Bug and Follow-Up</title>
-      <description>A historical custom-skill loading bug, refreshed with a generated-Markdown regression lesson: test each emitted artifact shape, not just the agent intent.</description>
+      <description>A historical custom-skill loading bug, refreshed with a generated-Markdown regression lesson and a standalone artifact-contract follow-up.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html</guid>
       <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
