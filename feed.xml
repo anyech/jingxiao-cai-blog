@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 May 2026 22:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 09 May 2026 22:00:00 +0000</lastBuildDate>
 
+    <item>
+      <title>When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern</title>
+      <description>A daily scan job generated its report, but the final delivery side effect failed. The fix was to replay the saved artifact, not rerun the whole workflow.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html</guid>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports</title>
       <description>A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.</description>
@@ -87,7 +94,7 @@
     </item>
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, active-memory promotion gates, session-list fast-path lessons, and source hygiene.</description>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
