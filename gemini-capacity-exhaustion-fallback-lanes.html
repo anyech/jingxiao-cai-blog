@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt failure boundaries, live health probes, and quality-preserving degradation.">
+    <meta name="description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.">
     <meta name="keywords" content="Gemini CLI fallback, AI agent reliability, model capacity exhaustion handling, OpenClaw, Gemini, LLM ops, fallback policy">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
-    <meta property="og:description" content="A practical design for Gemini fallback lanes: keep policy in OpenClaw-owned config, keep mapping thin, treat fast rescue as a real downgrade, and separate startup failures from prompt-time failures.">
+    <meta property="og:description" content="A practical design for Gemini fallback lanes: keep policy in OpenClaw-owned config, separate startup from prompt-time failures, and close healthy drift threads with passive monitoring.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
-    <meta name="twitter:description" content="Config-owned fallback policy, thin provider mapping, health probes, and the hard boundary between startup fallback and prompt-time failure.">
+    <meta name="twitter:description" content="Config-owned fallback policy, health probes, startup-vs-session boundaries, and a May 2026 passive-watch closeout lesson.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">
@@ -26,13 +26,13 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows",
-      "description": "How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt failure boundaries, live health probes, and quality-preserving degradation.",
+      "description": "How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.",
       "author": {
         "@type": "Person",
         "name": "Jingxiao Cai"
       },
       "datePublished": "2026-03-29",
-      "dateModified": "2026-03-29",
+      "dateModified": "2026-05-10",
       "url": "https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html",
       "publisher": {
         "@type": "Person",
@@ -90,7 +90,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</h1>
         <div class="meta">
-            <strong>March 29, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 29, 2026 · Updated May 10, 2026</strong> | By Jingxiao Cai<br>
             <span class="tags">Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops</span>
         </div>
         <div class="disclaimer">
@@ -98,6 +98,9 @@
         </div>
         <div class="warning">
             <strong>Important boundary up front:</strong> the wrapper described here improves <em>startup-layer</em> fallback. It does <strong>not</strong> yet solve prompt-time ACP failures after a Gemini session has already started. That is still the real engineering gap.
+        </div>
+        <div class="note">
+            <strong>May 2026 update:</strong> a later Gemini ACP closeout reinforced the same boundary from a different angle: when readiness is green and remaining dependencies are already watched, the right action can be passive monitoring—not another route change.
         </div>
     </header>
 
@@ -278,6 +281,43 @@ if all lanes fail: mark Gemini degraded/unavailable</code></pre>
             <strong>Practical rule:</strong> route changes should be based on live lane health, not preference alone. If the health picture changes, the lane order should be cheap to change too.
         </div>
 
+        <h2>May 2026 Follow-Up: Drift Closure Is a State Machine</h2>
+        <p>A later Gemini ACP closeout made the fallback lesson more concrete. The route had multiple possible failure meanings: capacity pressure, auth drift, upstream dependency movement, and a local adapter compatibility seam. Treating all of those as “Gemini is broken” would have pushed the system toward the wrong fix.</p>
+
+        <p>The useful closeout split was:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>What it means</th>
+                    <th>Best next action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Passive watch</strong></td>
+                    <td>Readiness is green and the remaining risk is future drift.</td>
+                    <td>Close active implementation work, keep the watch surface, and write reopen criteria.</td>
+                </tr>
+                <tr>
+                    <td><strong>Upstream wait</strong></td>
+                    <td>The meaningful movement belongs to an upstream issue, pull request, or provider surface.</td>
+                    <td>Monitor for maintainer feedback, check failures, or fresh provider evidence instead of patching locally.</td>
+                </tr>
+                <tr>
+                    <td><strong>Local repair</strong></td>
+                    <td>A narrow wrapper or adapter incompatibility is reproducible at the integration boundary.</td>
+                    <td>Patch the compatibility seam in an isolated checkout and preserve the broader lane policy.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>That distinction kept the system from turning every degraded coding-agent lane into a configuration change. If the health probe is green and the remaining dependency is already watched, the honest state is passive monitoring. If a backend rejects a control message before work starts, that is a local adapter contract bug. Different state, different response.</p>
+
+        <div class="success">
+            <strong>Follow-up rule:</strong> route drift needs classification before action. Do not use fallback policy as a broom for capacity, auth, upstream, and adapter failures that need different handling.
+        </div>
+
         <h2>The Design Rule I Trust Now</h2>
         <p>The most durable lesson was not Gemini-specific. It was this:</p>
 
@@ -320,9 +360,9 @@ if all lanes fail: mark Gemini degraded/unavailable</code></pre>
         <div class="related-posts">
             <h3>Related Posts</h3>
             <ul>
+                <li><a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes</a></li>
                 <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
-                <li><a href="/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html">Bigger Embeddings ≠ Better Memory: Why I Chose <code>text-embedding-3-small</code> for OpenClaw Remote Memory</a></li>
-                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+                <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></li>
             </ul>
         </div>
 

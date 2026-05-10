@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A sanitized agent-operations pattern for handling coding-agent route drift: separate passive watch, upstream waiting, and local repair instead of patching every degraded lane.">
+    <meta name="keywords" content="coding agents, Gemini ACP, agent operations, route drift, OpenClaw, degraded lane, automation reliability, debugging workflow">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="When a Coding-Agent Route Drifts">
+    <meta property="og:description" content="A coding-agent lane can be degraded without needing an immediate local fix. Close the loop by separating passive watch, upstream waiting, and local repair.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="When a Coding-Agent Route Drifts">
+    <meta name="twitter:description" content="Do not turn every degraded coding-agent lane into a config change. Name the state: passive watch, upstream wait, or local repair.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes",
+      "description": "A sanitized agent-operations pattern for handling coding-agent route drift: separate passive watch, upstream waiting, and local repair instead of patching every degraded lane.",
+      "author": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "datePublished": "2026-05-10",
+      "dateModified": "2026-05-10",
+      "url": "https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jingxiao Cai"
+      },
+      "keywords": [
+        "coding agents",
+        "Gemini ACP",
+        "agent operations",
+        "route drift",
+        "OpenClaw",
+        "degraded lane",
+        "automation reliability"
+      ]
+    }
+    </script>
+
+    <title>When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes | Jingxiao Cai</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
+        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        header a { color: #0366d6; text-decoration: none; }
+        header a:hover { text-decoration: underline; }
+        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
+        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
+        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
+        .meta strong { color: #444; }
+        .tags { color: #0366d6; font-size: 0.9em; }
+        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
+        .back-link { color: #2563eb; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
+        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
+        pre code { background: none; padding: 0; }
+        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
+        th { background: #f6f8fa; font-weight: 600; }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 8px 0; }
+        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
+        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
+        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
+        .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
+        .related-posts a { color: #0366d6; text-decoration: none; }
+        .related-posts a:hover { text-decoration: underline; }
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes</h1>
+        <div class="meta">
+            <strong>May 10, 2026</strong> | By Jingxiao Cai<br>
+            <span class="tags">Tags: ai-agents, coding-agents, openclaw, gemini, reliability, devops</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the route-drift timeline, separate true repair work from passive monitoring, and keep the public version focused on the reusable operating pattern instead of private thread details.
+        </div>
+        <div class="warning">
+            <strong>Short version:</strong> a degraded coding-agent route is not automatically a local repair task. First decide whether the correct state is passive watch, upstream wait, or local fix.
+        </div>
+    </header>
+
+    <main>
+        <p>Coding-agent integrations fail in a particularly annoying way: the visible symptom often says only that a route degraded. That can mean capacity pressure, auth drift, an upstream tool regression, a local adapter mismatch, a transient provider incident, or a real bug in your orchestration code.</p>
+
+        <p>The reflex is to patch something. Change the route. Swap the model. Restart the wrapper. Add a fallback. Close the thread by making the local system different.</p>
+
+        <p>That reflex is dangerous. Sometimes the right closeout is not a fix. Sometimes the right closeout is a clean state label, a watch surface, and a narrow reopen criterion.</p>
+
+        <blockquote>
+            <p><strong>Closing the loop is not the same as changing the system.</strong></p>
+        </blockquote>
+
+        <div class="note">
+            <strong>Conceptual scope:</strong> this is a sanitized agent-operations pattern drawn from a Gemini ACP / coding-agent route. I am intentionally leaving out private paths, channel and thread identifiers, exact local helper names, raw logs, and deployment-specific topology. Public issue and PR numbers are not needed for the lesson, so I omit them too.
+        </div>
+
+        <h2>The Failure Shape</h2>
+        <p>The route had shown several different kinds of drift over time:</p>
+
+        <ul>
+            <li>a provider lane could be temporarily capacity-exhausted,</li>
+            <li>an auth path could silently point at the wrong credential source,</li>
+            <li>a coding-agent adapter could reject a control message that another adapter tolerated,</li>
+            <li>an upstream fix could be waiting in normal review, and</li>
+            <li>a chat thread could keep looking “open” even after there was no active local implementation work left.</li>
+        </ul>
+
+        <p>Those are different states. If they all collapse into “Gemini route is broken,” the operator will keep reaching for the wrong lever.</p>
+
+        <h2>Three States, Three Responses</h2>
+        <p>The useful split was this small state machine:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>Evidence</th>
+                    <th>Right response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Passive watch</strong></td>
+                    <td>Current readiness probes are green; no active local change is needed; remaining risk is future drift.</td>
+                    <td>Close the active work thread, keep watch coverage, and write explicit reopen criteria.</td>
+                </tr>
+                <tr>
+                    <td><strong>Upstream wait</strong></td>
+                    <td>The relevant fix or issue lives upstream; local evidence is already captured; no extra local patch improves the situation.</td>
+                    <td>Track the upstream item and respond only to meaningful review, CI, or maintainer movement.</td>
+                </tr>
+                <tr>
+                    <td><strong>Local repair</strong></td>
+                    <td>A narrow local adapter or wrapper incompatibility is reproducible and owned by your integration boundary.</td>
+                    <td>Build the smallest repro, patch in an isolated checkout, validate, and publish the fix through the normal review lane.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The important part is that each state has a different default action. Passive watch should not mutate config. Upstream wait should not create a local fork of policy. Local repair should not hide behind “probably upstream.”</p>
+
+        <h2>Passive Watch Is an Active Decision</h2>
+        <p>The cleanest closeout happened when the route readiness was green and the remaining risks were already represented on the watch surface. There was nothing useful left to patch locally.</p>
+
+        <p>That did not mean “forget it.” It meant:</p>
+
+        <ul>
+            <li>the current route was healthy under the readiness check,</li>
+            <li>the relevant upstream issues or pull requests were tracked elsewhere,</li>
+            <li>the old contaminated repair path was superseded,</li>
+            <li>the chat thread no longer owned implementation work, and</li>
+            <li>reopen criteria were explicit.</li>
+        </ul>
+
+        <p>That is a legitimate closeout state. In fact, it is healthier than keeping a thread open forever just because something related might break again.</p>
+
+        <blockquote>
+            <p><strong>“Closable with passive monitoring” is not denial. It is a boundary between current work and future evidence.</strong></p>
+        </blockquote>
+
+        <h2>When It Was a Real Local Repair</h2>
+        <p>Later, a different failure appeared. This one was not just capacity pressure or upstream waiting. A coding-agent adapter rejected a timeout-control message before it could return a substantive result.</p>
+
+        <p>That changed the classification. The failure was now at the adapter contract boundary: one backend did not support a control method that another backend effectively tolerated. The right action was not to relax the whole route, add a broad retry, or blame the model. It was to make the adapter boundary handle unsupported timeout controls safely.</p>
+
+        <p>The repair stayed narrow:</p>
+
+        <ul>
+            <li>reproduce the rejected control message,</li>
+            <li>identify the adapter boundary that forwarded it,</li>
+            <li>no-op or suppress only the unsupported timeout control for the affected backend shape,</li>
+            <li>preserve existing behavior for other backends, and</li>
+            <li>validate through the upstream checkout instead of touching the live runtime.</li>
+        </ul>
+
+        <p>The distinction matters. Passive monitoring would have been wrong for this failure. But a broad local route reshuffle would also have been wrong. The fix belonged exactly at the compatibility seam.</p>
+
+        <h2>The Anti-Pattern: Closing by Patching</h2>
+        <p>The bad habit is treating thread closure as proof that some local knob must change.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tempting move</th>
+                    <th>Why it is risky</th>
+                    <th>Safer default</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Change lane order because one run failed.</td>
+                    <td>One transient failure becomes a durable policy change.</td>
+                    <td>Check readiness and failure class first.</td>
+                </tr>
+                <tr>
+                    <td>Leave every thread open until upstream is perfect.</td>
+                    <td>The work surface becomes a graveyard of unresolved-but-not-actionable items.</td>
+                    <td>Move true upstream dependencies to a watch surface with reopen criteria.</td>
+                </tr>
+                <tr>
+                    <td>Call every adapter failure “upstream.”</td>
+                    <td>Local integration bugs hide behind someone else’s queue.</td>
+                    <td>Patch the compatibility seam when the repro points there.</td>
+                </tr>
+                <tr>
+                    <td>Add a catch-all fallback.</td>
+                    <td>Auth, capacity, adapter, and prompt-time failures get blurred together.</td>
+                    <td>Classify the failure before choosing fallback behavior.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>The Closeout Checklist I Trust</h2>
+        <p>For a degraded coding-agent route, I now want the closeout packet to answer five questions:</p>
+
+        <ol>
+            <li><strong>What is the current readiness state?</strong> Not yesterday’s failure, not the first symptom—the current probe result.</li>
+            <li><strong>Where does the remaining work live?</strong> Local adapter, upstream project, provider capacity, or passive monitoring.</li>
+            <li><strong>What would reopen this?</strong> A failing readiness probe, maintainer feedback, check failure, auth drift, or a new real-world regression.</li>
+            <li><strong>What should not happen now?</strong> No broad config changes, no live-runtime patching, no rerouting without fresh evidence.</li>
+            <li><strong>Where is the watch surface?</strong> The future signal needs a place to land that is not the old chat thread.</li>
+        </ol>
+
+        <p>That packet is boring by design. It turns “this route feels flaky” into an operational state that another agent—or a future me—can safely resume.</p>
+
+        <h2>Why This Matters Beyond Gemini</h2>
+        <p>Gemini ACP is just the example. The same pattern applies to any coding-agent lane that combines local wrappers, upstream CLIs, provider capacity, auth state, and chat/thread lifecycle:</p>
+
+        <ul>
+            <li>do not make provider incidents into permanent local policy,</li>
+            <li>do not make upstream waiting into fake local work,</li>
+            <li>do not make real adapter incompatibilities someone else’s problem, and</li>
+            <li>do not keep a thread open just because a monitored dependency can change later.</li>
+        </ul>
+
+        <div class="success">
+            <strong>The reusable rule:</strong> close the work when the current state is known, the remaining signals have an owner, and the reopen criteria are explicit. Patch only when the evidence points at a local seam you actually own.
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>A degraded coding-agent route needs classification before action. The question is not “how do I make the warning disappear?” The question is “what state am I in?”</p>
+
+        <p>If the route is healthy and future risk is already watched, close the thread with passive monitoring. If the fix is upstream, wait on upstream evidence. If the adapter contract is wrong, patch the narrow seam in an isolated lane.</p>
+
+        <p>That discipline keeps agent operations from turning into superstition. Not every degraded lane deserves a fix. But every degraded lane deserves a named state.</p>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
+                <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches</a></li>
+                <li><a href="/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html">Closing External Threads Cleanly: An Agent-Ops Pattern</a></li>
+                <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the small operational boundaries that keep complex toolchains understandable.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">A degraded lane is a signal. A patch is only one possible response.</p>
+        </div>
+    </main>
+
+    <footer>
+        <h2>Comments</h2>
+        <p>Found this useful? Discussion is open below via the comment embed—or send it to someone who is about to “fix” a route that only needed a watch state.</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+    <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

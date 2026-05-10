@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 May 2026 22:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 May 2026 21:50:00 +0000</lastBuildDate>
 
+    <item>
+      <title>When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes</title>
+      <description>A degraded coding-agent lane is not automatically a local repair task. Classify it as passive watch, upstream wait, or a narrow adapter fix before changing fallback policy.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern</title>
       <description>A daily scan job generated its report, but the final delivery side effect failed. The fix was to replay the saved artifact, not rerun the whole workflow.</description>
@@ -150,7 +157,7 @@
     </item>
     <item>
       <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
-      <description>When Gemini hits capacity exhaustion, the hard part is not picking a random next model. It&#x27;s deciding where fallback policy belongs, what failures should trigger it, and how to keep startup fallback separate from prompt-time failure.</description>
+      <description>When Gemini route health drifts, the hard part is not picking a random next model. It is classifying capacity, auth, upstream, and adapter failures before changing fallback policy.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
       <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
