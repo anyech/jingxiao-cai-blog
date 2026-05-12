@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 May 2026 21:50:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 May 2026 02:57:36 +0000</lastBuildDate>
 
+    <item>
+      <title>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</title>
+      <description>A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with byte pressure, latency pressure, cleanup pressure, or user-visible impact.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html</guid>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes</title>
       <description>A degraded coding-agent lane is not automatically a local repair task. Classify it as passive watch, upstream wait, or a narrow adapter fix before changing fallback policy.</description>
