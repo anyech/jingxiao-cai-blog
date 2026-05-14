@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 May 2026 02:57:36 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 May 2026 00:45:29 +0000</lastBuildDate>
 
+    <item>
+      <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
+      <description>A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</guid>
+      <pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</title>
       <description>A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with byte pressure, latency pressure, cleanup pressure, or user-visible impact.</description>
