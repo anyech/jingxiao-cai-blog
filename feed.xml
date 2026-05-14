@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 May 2026 00:45:29 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 May 2026 22:24:15 +0000</lastBuildDate>
 
+    <item>
+      <title>Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</title>
+      <description>Updated with a monitor-timeout follow-up: exact-exec drivers need durable artifacts, layered timeout budgets, silent-success contracts, and permission-aware follow-up checks.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</guid>
+      <pubDate>Mon, 27 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
       <description>A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.</description>
@@ -126,13 +133,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html</guid>
       <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</title>
-      <description>Why AI cron reliability needs exact-exec drivers: artifact-first execution, explicit timeout budgets, and deterministic delivery instead of freeform agent prompts.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html</guid>
-      <pubDate>Mon, 27 Apr 2026 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>The Nightly Build: How My Agent Runs Security Audits While I Sleep</title>
