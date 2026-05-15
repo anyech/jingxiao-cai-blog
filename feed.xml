@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 May 2026 22:24:15 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 May 2026 20:57:10 GMT</lastBuildDate>
 
+    <item>
+      <title>Before Opening Another Agent PR, Reduce the Queue First</title>
+      <description>Agent PR hygiene starts before the next branch: check upstream, consolidate overlapping fixes, close superseded work with pointers, and keep one review surface.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html</guid>
+      <pubDate>Fri, 15 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</title>
       <description>Updated with a monitor-timeout follow-up: exact-exec drivers need durable artifacts, layered timeout budgets, silent-success contracts, and permission-aware follow-up checks.</description>
