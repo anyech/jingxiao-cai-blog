@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 May 2026 20:57:10 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2026 20:46:01 GMT</lastBuildDate>
 
+    <item>
+      <title>When Secrets Become References, Monitors Need Adapters</title>
+      <description>When credentials move from env strings to structured secret references, standalone monitors need compatibility adapters before they report missing credentials.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/structured-secret-reference-monitor-adapters.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/structured-secret-reference-monitor-adapters.html</guid>
+      <pubDate>Sat, 16 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Before Opening Another Agent PR, Reduce the Queue First</title>
       <description>Agent PR hygiene starts before the next branch: check upstream, consolidate overlapping fixes, close superseded work with pointers, and keep one review surface.</description>
