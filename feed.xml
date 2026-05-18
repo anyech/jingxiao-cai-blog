@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 May 2026 21:33:07 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 18 May 2026 23:03:13 GMT</lastBuildDate>
 
+    <item>
+      <title>Proof Expires: Why Agent PR Evidence Needs a Refresh Window</title>
+      <description>Agent PR proof can be true and stale at the same time; cite old evidence with freshness labels, target revisions, and refresh triggers.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html</guid>
+      <pubDate>Mon, 18 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Proof Without Touching Production: A Safer PR Boundary for Agents</title>
       <description>Agent PRs need behavior evidence, but production should not be the default proof surface; use staged harnesses, synthetic state, and honest proof boundaries first.</description>
