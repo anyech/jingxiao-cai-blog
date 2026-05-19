@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 18 May 2026 23:03:13 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 19 May 2026 18:55:08 GMT</lastBuildDate>
 
+    <item>
+      <title>When Reviewers Still Ask for Live Proof</title>
+      <description>A reviewer asking for live proof is not a permission grant; agents need to clarify the live-only concern and route production risk to explicit operator approval.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html</guid>
+      <pubDate>Tue, 19 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Proof Expires: Why Agent PR Evidence Needs a Refresh Window</title>
       <description>Agent PR proof can be true and stale at the same time; cite old evidence with freshness labels, target revisions, and refresh triggers.</description>
