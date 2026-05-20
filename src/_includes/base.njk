@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="{{ site.author }}">
+    <meta name="description" content="{{ description or site.description }}">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="{{ site.url }}{{ site.basePath }}{{ canonicalPath or (slug + '.html' if slug else '') }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ site.url }}{{ site.basePath }}feed.xml">
+    <link rel="stylesheet" href="{{ site.basePath }}assets/site.css">
+    <meta property="og:type" content="{{ ogType or ('article' if slug else 'website') }}">
+    <meta property="og:title" content="{{ title or site.title }}">
+    <meta property="og:description" content="{{ description or summary or site.description }}">
+    <meta property="og:url" content="{{ site.url }}{{ site.basePath }}{{ canonicalPath or (slug + '.html' if slug else '') }}">
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:image" content="{{ site.image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title or site.title }}">
+    <meta name="twitter:description" content="{{ description or summary or site.description }}">
+    <meta name="twitter:image" content="{{ site.image }}">
+    {% if slug %}
+    <script type="application/ld+json">{{ {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": title,
+      "description": description or summary,
+      "author": {"@type": "Person", "name": site.author},
+      "publisher": {"@type": "Person", "name": site.author},
+      "datePublished": date,
+      "dateModified": updated or date,
+      "url": site.url + site.basePath + slug + '.html',
+      "image": site.image
+    } | json | safe }}</script>
+    {% else %}
+    <script type="application/ld+json">{{ {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": site.title,
+      "url": site.url + site.basePath,
+      "description": site.description,
+      "inLanguage": "en-US",
+      "author": {"@type": "Person", "name": site.author, "url": "https://anyech.github.io/jingxiao-cai/"},
+      "publisher": {"@type": "Person", "name": site.author, "url": "https://anyech.github.io/jingxiao-cai/"}
+    } | json | safe }}</script>
+    {% endif %}
+    <title>{{ title or site.title }}</title>
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Site">
+      <a href="{{ site.basePath }}">Home</a>
+      <a href="{{ site.basePath }}search.html">Search</a>
+      <a href="{{ site.basePath }}feed.xml">RSS</a>
+    </nav>
+    {{ content | safe }}
+  </body>
+</html>

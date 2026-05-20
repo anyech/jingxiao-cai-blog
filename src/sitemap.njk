@@ -1,0 +1,21 @@
+---
+permalink: sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{{ site.url }}{{ site.basePath }}</loc>
+    <lastmod>{{ collections.posts[0].data.updated or collections.posts[0].data.date }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+{% for post in collections.posts %}{% if post.data.inSitemap %}
+  <url>
+    <loc>{{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html</loc>
+    <lastmod>{{ post.data.sitemapLastmod or post.data.updated or post.data.date }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>{{ post.data.sitemapPriority or '0.7' }}</priority>
+  </url>
+{% endif %}{% endfor %}
+</urlset>

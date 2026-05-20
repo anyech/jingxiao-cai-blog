@@ -1,0 +1,444 @@
+---
+layout: post.njk
+permalink: 'consult-panel-orchestration-openclaw.html'
+title: 'LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos'
+slug: 'consult-panel-orchestration-openclaw'
+description: 'How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.'
+summary: 'How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent that survives partial failure.'
+date: '2026-04-03'
+updated: '2026-04-29'
+tags: ['openclaw', 'ai-agents', 'llm', 'orchestration', 'devops', 'multi-model-review']
+keywords: ['multi-LLM consultation', 'LLM panel orchestration', 'OpenClaw consult-panel', 'AI agent orchestration', 'multi-model review', 'jury mode', 'consult-panel skill']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos'
+feedDescription: 'How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.'
+feedPubDate: 'Fri, 03 Apr 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-04-29'
+---
+<header>
+        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+        <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
+        <div class="meta">
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
+            <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
+        </div>
+        <div class="disclaimer">
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy internal evolution—manual mixed-panel runs, async handoff bugs, routing drift, and repeated hardening passes—into a cleaner operator memo that actually matches the live system.
+        </div>
+        <div class="note">
+            <strong>April 8 follow-up:</strong> I extended this write-up with the later watchdog-hardening pass: deduplicated progress updates, per-run duplicate-state checks, a full regression suite, and one remaining lifecycle edge case that still deserves future cleanup.
+        </div>
+        <div class="note">
+            <strong>April 29 follow-up:</strong> I added the final-delivery bridge-back lesson from long-running Discord work: detaching the work is only half the reliability story; the final answer still needs a contract-derived route back to the right conversation.
+        </div>
+        <div class="note">
+            <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
+        </div>
+        <div class="warning">
+            <strong>Another boundary up front:</strong> a full jury panel is expensive and is <strong>not</strong> my default for routine queries. I use it for worthwhile ambiguity, higher-cost decisions, explicit panel requests, or cases where dissent is actually worth the latency.
+        </div>
+        <p>The same routing policy also supports lighter consultation modes. I am focusing on the full jury here because that is where orchestration bugs, weighting mistakes, and async handoff failures become easiest to see.</p>
+    </header>
+
+    <main>
+        <h2>The Hard Part Was Never “Ask More Models”</h2>
+        <p>Running a full panel of LLMs in parallel is not the interesting problem. Spawning the children is easy. Keeping the result coherent is the real work.</p>
+        <p>The failures I kept hitting were never glamorous:</p>
+        <ul>
+            <li>one expected panelist quietly did not get launched</li>
+            <li>an ACP-backed lane finished, but the answer did not auto-surface to the parent thread</li>
+            <li>a partial result arrived, then the orchestrator went silent</li>
+            <li>a slow non-core model held the whole panel hostage</li>
+            <li>a wildcard dissent looked louder than it deserved because the weighting rules stayed implicit</li>
+            <li>late completions arrived after the real answer was already delivered</li>
+        </ul>
+
+        <blockquote>
+            <p><strong>The real unit of work is not “query 8 models.” It is “finish one user-visible review exactly once, with lineup integrity, visible weighting, and bounded latency.”</strong></p>
+        </blockquote>
+
+        <p>That is the problem the <code>consult-panel</code> workflow now solves inside my OpenClaw setup.</p>
+
+        <div class="success">
+            <strong>Current live full-jury shape:</strong> the default active panel currently resolves to <strong>7 voices</strong> — a primary reasoning consultant, three additional stable-core critics, a diversity critic, a fixed experimental panelist, and a rotating wildcard endpoint — with explicit lineup resolution, timeout classes, dissent visibility, and degradation rules. The old Gemini ACP lane still exists as a dormant route definition, but it is no longer part of the default lineup.
+        </div>
+
+        <h2>The Design Decision That Saved the Whole Thing</h2>
+        <p>The best decision was architectural, not prompt-related.</p>
+        <p>The public invocation surface stays deliberately small. Natural requests like <em>consult the panel</em>, <em>panel review</em>, <em>have the consultants weigh in</em>, or <em>run jury mode</em> map into the same orchestration layer, while the routing truth stays in durable config and ops docs rather than inside the prompt wrapper.</p>
+        <p>The canonical grounding for current behavior lives in three places: the routing config, the consult-panel skill, and the routing operations guide. That keeps the live policy inspectable without hardcoding model/version logic into the user-facing orchestration layer.</p>
+        <blockquote>
+            <p><strong>Keep the skill thin. Keep the routing truth in config and ops docs.</strong></p>
+        </blockquote>
+
+        <p>The user-facing skill exists to do orchestration:</p>
+        <ul>
+            <li>detect that the user wants a panel review</li>
+            <li>resolve the configured lineup</li>
+            <li>shape the review packet</li>
+            <li>spawn the panel</li>
+            <li>track completions and synthesize the result</li>
+        </ul>
+        <p>Every panelist gets the <strong>same review packet</strong>. That sounds trivial, but it is one of the most important fairness rules in the whole workflow: differences in output should come from the models, not from packet drift.</p>
+
+        <p>What it does <em>not</em> do is hardcode model/version policy. That lives in durable config and the ops guide instead:</p>
+        <ul>
+            <li><code>routing config</code></li>
+            <li><code>operations guide</code></li>
+            <li><code>lineup resolver</code></li>
+            <li><code>packet-size gate</code></li>
+        </ul>
+
+        <p>That split matters because it keeps model churn from leaking into workflow prose. If the primary lane changes, or the ACP secondary policy changes, or the fixed experimental lane gets replaced, I want to edit config—not rewrite orchestration logic in six places.</p>
+
+        <div class="note">
+            <strong>Naming lesson:</strong> the skill is called <code>consult-panel</code>, not <code>jury</code>. “Jury” is a useful mode name, but it is a bad public skill name because it leaks internal taxonomy into the invocation surface.
+        </div>
+
+        <h2>What the Current Panel Actually Looks Like</h2>
+        <p>The live jury lineup is not “eight random models.” The default active panel is currently seven voices with different jobs, different timeout leashes, and different interpretive weight.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Panelist</th>
+                    <th>Role</th>
+                    <th>Class</th>
+                    <th>Why it exists</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Primary reasoning consultant</strong></td>
+                    <td>Primary consultant</td>
+                    <td><code>stable_core</code></td>
+                    <td>Main decision anchor for full-panel review.</td>
+                </tr>
+                <tr>
+                    <td><strong>Compact-packet challenger</strong></td>
+                    <td>Challenger consultant</td>
+                    <td><code>stable_core</code></td>
+                    <td>First stable-core challenger when the packet is compact enough.</td>
+                </tr>
+                <tr>
+                    <td><strong>Stable core critic A</strong></td>
+                    <td>Core critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Reliable large-context core voice and oversize fallback for the challenger.</td>
+                </tr>
+                <tr>
+                    <td><strong>Stable core critic B</strong></td>
+                    <td>Core critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Independent strong core voice.</td>
+                </tr>
+                <tr>
+                    <td><strong>Diversity critic</strong></td>
+                    <td>Diversity critic</td>
+                    <td><code>stable_core</code></td>
+                    <td>Semantic diversity lane without inventing a second wildcard slot.</td>
+                </tr>
+                <tr>
+                    <td><strong>Fixed experimental panelist</strong></td>
+                    <td>Fixed experimental panelist</td>
+                    <td><code>fixed_experimental</code></td>
+                    <td>Meaningful non-core lane with stable identity that can corroborate consensus or widen a real split.</td>
+                </tr>
+                <tr>
+                    <td><strong>Rotating wildcard endpoint</strong></td>
+                    <td>Rotating wildcard panelist</td>
+                    <td><code>rotating_wildcard</code></td>
+                    <td>Exploratory dissent / novelty lane, never decisive by itself.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. That is how I stopped “full panel” from quietly meaning four models one week and seven the next.</p>
+        <p>I also stopped pretending a dormant route definition was the same thing as an active default lane. The Gemini ACP path still exists in config, but it is intentionally <strong>not</strong> part of the default active jury lineup right now because that route became too finicky to treat as a routine full-weight core lane. If it comes back later, it returns explicitly as a nonblocking external lane rather than a hidden substitute.</p>
+        <p>If the resolved lineup and the accepted spawn set do not match, the run is degraded immediately instead of being presented as a successful full panel. That one rule fixed a surprising amount of quiet orchestration dishonesty.</p>
+
+        <pre><code>resolve_panel_shape(mode="jury")</code></pre>
+
+        <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
+
+        <h2>The Schema That Matters More Than the Prompt</h2>
+        <p>The routing config now carries three layers of truth:</p>
+        <ol>
+            <li><strong>role mapping</strong> — what each semantic lane currently points to</li>
+            <li><strong>mode shape</strong> — which panelists belong to <code>standard</code>, <code>jury</code>, and compatibility aliases like <code>deepJury</code></li>
+            <li><strong>panel heuristics</strong> — timeout classes, weight bands, checkpoint timing, and benchmark reference guidance</li>
+        </ol>
+
+        <p>A simplified shape looks like this:</p>
+        <pre><code>{
+  "roles": {
+    "primary_consultant": { "preferred": "&lt;primary-reasoning-model&gt;" },
+    "optional_external_lane": { "agentId": "&lt;secondary-agent&gt;", "modelAlias": "&lt;stable-secondary-lane&gt;" },
+    "fixed_experimental_panelist": { "preferred": "&lt;fixed-experimental-model&gt;" },
+    "rotating_wildcard_panelist": { "preferred": "&lt;rotating-wildcard-endpoint&gt;" }
+  },
+  "modes": {
+    "jury": {
+      "panelists": [
+        "primary_consultant",
+        "stable_core_challenger",
+        "stable_core_critic_a",
+        "stable_core_critic_b",
+        "diversity_critic",
+        "fixed_experimental_panelist",
+        "rotating_wildcard_panelist"
+      ]
+    }
+  },
+  "panelHeuristics": {
+    "classes": {
+      "stable_core": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
+      "stable_external_nonblocking": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
+      "fixed_experimental": { "nominalWeight": 0.75, "softTimeoutSeconds": 120 },
+      "rotating_wildcard": { "nominalWeight": 0.4, "softTimeoutSeconds": 90 }
+    }
+  }
+}</code></pre>
+
+        <div class="note">
+            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of the live file. I keep the reusable design, class logic, and role split; I leave out the local debris nobody else needs. The <code>diversity_critic</code> role shown in the schema resolves to the active diversity lane in the live panel.
+        </div>
+
+        <h2>Why Timeout Policy Had To Change</h2>
+        <p>One of the most useful corrections was embarrassingly simple:</p>
+        <blockquote>
+            <p><strong>Parallel panel timeout is tail-latency control, not additive latency math.</strong></p>
+        </blockquote>
+
+        <p>That sounds obvious once you say it. But it matters operationally.</p>
+        <p>If seven lanes are done and the only remaining holdout is a rotating wildcard endpoint, I should not keep acting as if the panel is “still incomplete” in the same way it would be if two stable-core critics were missing. Those are different situations.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Nominal weight</th>
+                    <th>Soft timeout</th>
+                    <th>Practical rule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>stable_core</code></td>
+                    <td>1.0</td>
+                    <td>150s</td>
+                    <td>Default decision anchor. Keep the leash longest.</td>
+                </tr>
+                <tr>
+                    <td><code>stable_external_nonblocking</code></td>
+                    <td>1.0</td>
+                    <td>150s</td>
+                    <td>Full interpretive weight if present, but do not block forever.</td>
+                </tr>
+                <tr>
+                    <td><code>fixed_experimental</code></td>
+                    <td>0.75</td>
+                    <td>120s</td>
+                    <td>Useful corroboration or dissent, but non-core.</td>
+                </tr>
+                <tr>
+                    <td><code>rotating_wildcard</code></td>
+                    <td>0.4</td>
+                    <td>90s</td>
+                    <td>Exploratory only. Drop aggressively when it becomes tail latency.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>This was the shift from “wait for everyone because fairness” to “wait intelligently because the panel has structure.”</p>
+
+        <h2>Benchmark-Informed Weighting Helped, But Only After I Put It in Its Place</h2>
+        <p>I do use benchmark families as a rough reference band. I do <em>not</em> use them as a vote-counting formula.</p>
+        <p>The live ops guide records a checked snapshot, but the useful signal is structural rather than brand-specific:</p>
+        <ul>
+            <li>the stable-core cluster is close enough to anchor the answer</li>
+            <li>an external secondary lane can matter a lot when it is present, but it should remain operationally nonblocking instead of being silently required</li>
+            <li>the fixed experimental lane is meaningful, but still non-core</li>
+            <li>the rotating wildcard should not be benchmark-weighted like a fixed model at all because it is intentionally not stable enough to deserve that treatment</li>
+        </ul>
+
+        <div class="warning">
+            <strong>Important caution:</strong> benchmark-informed weighting is helpful only when it stays advisory. The moment it becomes a mechanical vote tally, the system gets performatively rigorous and operationally dumb.
+        </div>
+
+        <h2>The Async Rules Are Why the Workflow Finally Feels Trustworthy</h2>
+        <p>The strongest part of the current setup is no longer the model lineup. It is the coordination layer around it.</p>
+        <p>The workflow now explicitly tracks:</p>
+        <ul>
+            <li>expected panelists</li>
+            <li>pending vs completed lanes</li>
+            <li>first substantive result arrival</li>
+            <li>whether interim checkpoint updates have already been sent</li>
+            <li>which panelists are eligible for timeout-drop</li>
+            <li>whether ACP needs a targeted follow-up check</li>
+            <li>whether the panel is merely closed or fully superseded</li>
+        </ul>
+
+        <p>The practical control loop looks more like this now:</p>
+        <pre><code>resolve lineup from config
+spawn all expected panelists
+track expected vs completed lanes
+send one bounded checkpoint when the first real result arrives
+send one second checkpoint only if state changes meaningfully
+if only ACP remains, inspect ACP directly before waiting blindly
+after the second checkpoint, timeout-drop non-core stragglers
+synthesize immediately once all expected lanes are complete or dropped</code></pre>
+
+        <p>That is not glamorous. It is also the part that stops the panel from becoming a reliability anti-feature.</p>
+
+        <h2>Final Delivery Needs a Bridge Back, Not Just a Background Thread</h2>
+        <p>The long-running-work version of this bug has the same shape as the panel bug: the worker can finish correctly while the user-facing conversation still never receives the final result. Moving a task into the background protects the main turn budget, but it does <em>not</em> automatically solve final delivery.</p>
+        <p>The reliable pattern is a small delivery contract created before the detached work starts. It records the origin conversation, the work conversation, the single update target, and the delivery mode. Default detached work reports to its bound work thread. Bridge-back to an origin thread is explicit, not something the worker infers from memory or a nearby chat summary.</p>
+
+        <blockquote>
+            <p><strong>A background worker should never guess where its final answer belongs.</strong></p>
+        </blockquote>
+
+        <p>The practical loop now looks like this:</p>
+        <pre><code>persist a delivery contract before launch
+launch the worker with the contract reference and final-ready marker
+wait for an explicit final-ready signal
+dry-run the delivery plan against the persisted contract
+send the final answer once through an idempotent ledger
+split oversized finals deterministically instead of truncating them
+record delivered message identifiers when the channel returns them</code></pre>
+
+        <p>That is deliberately boring distributed-systems hygiene: stable identity, explicit target selection, idempotent side effects, and observable delivery state. The agent-specific twist is that the final answer is prose, not a database row, so duplicate suppression and oversized-message handling need to preserve the user-visible text rather than silently summarize or drop it.</p>
+
+        <div class="warning">
+            <strong>Important boundary:</strong> this is a helper-level bridge-back pattern, not yet a native runtime event dispatcher. It is strong enough for local use because delivery targets come from a validated contract and retries are ledger-backed. A true Gateway/runtime event dispatcher would be a different risk class and deserves its own reviewed design.
+        </div>
+
+        <p>The general lesson is simple: if a task is long enough to detach, it is long enough to deserve an explicit final-delivery path. Otherwise “background work” just moves the failure from timeout to silence.</p>
+
+        <h2>Why Watchdog Coverage Had To Become a Launch Invariant</h2>
+        <p>The ugliest real failure was not “a model said something weird.” It was simpler: the panel could emit a clean <em>waiting on X</em> checkpoint and then never speak again.</p>
+        <p>That is why I no longer treat “children launched” as a valid waiting state by itself. A multi-child run is only allowed to settle into waiting after two things are true:</p>
+        <ol>
+            <li>the resolved lineup matches the accepted spawn set</li>
+            <li>real follow-up wakes exist to carry the panel to the next checkpoint or terminal synthesis</li>
+        </ol>
+        <p>In my implementation that means a small launch guard plus a watchdog planner. The planner defaults those wakes to <strong>visible delivery</strong> and rejects internal-only coverage by default, because a hidden watchdog is not much comfort if the user still experiences silence.</p>
+        <p>Just as important: <strong>generated plans are not proof.</strong> I only count coverage as real once the follow-up jobs actually exist. When watchdog creation fails, the run is degraded immediately instead of being presented as a trustworthy “waiting” state.</p>
+
+        <div class="note">
+            <strong>Important boundary:</strong> this is stronger orchestration hardening, not a formal guarantee. Real cron-backed visible-delivery watchdog wakes now carry the panel through to synthesis in my local repros, but I still describe the result as <em>best-effort fail-closed behavior</em>, not mathematical certainty.
+        </div>
+
+        <p>A second late bug was older queued checkpoints leaking out after a terminal answer. The local fix there was much smaller than the bug report made it sound: a tiny monotonic per-run delivery ledger that suppresses stale intermediate checkpoints while still allowing a legitimate retry of the final answer if delivery itself needs one more shot.</p>
+
+        <h2>Watchdog Hardening: The Bug Was Not Just Silence, It Was Repeated Almost-The-Same Progress</h2>
+        <p>The next reliability problem was more embarrassing than dramatic. The panel was no longer always going silent, but it could still emit <em>repeated user-facing checkpoint blocks</em> that looked meaningfully new only because they arrived on different async branches.</p>
+
+        <p>The important diagnosis was that this was <strong>not</strong> a transport-duplication issue. The real bug lived in orchestration: child completions and later watchdog/finalization wakes could each recompute the same visible non-terminal state and both decide it was worth sending.</p>
+
+        <p>The hardening rule that actually helped was small and specific:</p>
+        <blockquote>
+            <p><strong>For non-terminal updates, validate not only run identity and closure state, but also whether the same visible progress state for this panel run has already been delivered.</strong></p>
+        </blockquote>
+
+        <p>In plain English, the panel now remembers the <em>shape</em> of the last user-visible checkpoint for the current run. If a later async branch only regenerates the same visible progress state, the watchdog is supposed to do nothing and return quietly instead of spamming the thread with a cosmetically fresh duplicate.</p>
+
+        <ul>
+            <li><strong>duplicate same-state checkpoint</strong> → suppress it</li>
+            <li><strong>watchdog recomputes the same visible state</strong> → suppress it</li>
+            <li><strong>material state actually changes</strong> → allow the next bounded checkpoint through</li>
+        </ul>
+
+        <p>I trust the fix more because it stopped being just a theory. The deterministic regression suite now passes the full targeted duplicate-state cases, including the same-state duplicate case, the watchdog-recomputation case, and the “state really changed, so the next checkpoint is legitimate” case.</p>
+
+        <div class="note">
+            <strong>What I would still not overclaim:</strong> this hardening closes the duplicate-checkpoint class much more convincingly, but one stale lifecycle edge case still deserves a future cleanup pass. Right now it looks more like unnecessary probing/log noise than a user-facing synthesis corruption bug, but it is still not the kind of lifecycle ambiguity I want to leave permanent.
+        </div>
+
+        <h2>The Two Delivery Bugs That Taught Me the Most</h2>
+        <h3>1. ACP completion is not the same as normal subagent completion</h3>
+        <p>One of the nastier failure modes was: Gemini finished, useful text existed, but the parent thread still looked silent. The fix was not “wait harder.” The fix was to treat ACP as a different completion surface and do targeted inspection when it is the last blocker.</p>
+
+        <h3>2. Fresh user follow-up is not a late duplicate</h3>
+        <p>Another failure mode was subtle: after a final synthesis was already delivered, a true late completion and a fresh user-authored follow-up could land in the same general window. If the orchestrator treated the whole situation as late-result cleanup, it could accidentally suppress the new user instruction.</p>
+        <p>That is why the current workflow keeps <strong>panel-closed</strong> and <strong>superseded</strong> as separate states.</p>
+
+        <div class="note">
+            <strong>Durable lesson:</strong> multi-agent workflows fail less from “the model said something weird” than from lifecycle ambiguity. Most bugs live in the handoff layer.
+        </div>
+
+        <h2>What I Learned About User-Facing Synthesis</h2>
+        <p>I used to think the final answer should hide as much orchestration detail as possible. That turned out to be half-right.</p>
+        <p>The user does <em>not</em> need raw routing trivia. But they <em>do</em> need visible weighting.</p>
+        <p>So the synthesis now tries to make one thing explicit:</p>
+        <blockquote>
+            <p><strong>Did the disagreement come from stable-core lanes, or only from non-core lanes?</strong></p>
+        </blockquote>
+
+        <p>That one distinction dramatically improves the trustworthiness of the result. “There was disagreement” is weak. “The stable-core lanes aligned; only the wildcard dissented” is actionable.</p>
+
+        <h2>What Other People Can Steal From This Pattern</h2>
+        <p>You do not need my exact stack to steal the shape.</p>
+        <p>If you run any multi-model or multi-agent review workflow, the parts worth copying are:</p>
+        <ol>
+            <li><strong>semantic roles, not hardcoded versions</strong></li>
+            <li><strong>config-resolved lineup before spawn</strong></li>
+            <li><strong>same packet for fair comparison</strong></li>
+            <li><strong>weight classes that are visible in synthesis</strong></li>
+            <li><strong>watchdog coverage as a launch invariant, not a hopeful afterthought</strong></li>
+            <li><strong>explicit final-delivery contracts for detached work</strong></li>
+            <li><strong>timeout as tail-latency control</strong></li>
+            <li><strong>explicit ACP / external-lane delivery handling</strong></li>
+            <li><strong>clear distinction between closed, degraded, and superseded runs</strong></li>
+        </ol>
+
+        <p>What I would <em>not</em> copy is “always ask all models.” Full panel is expensive. It is worth it when the user explicitly asks, or when the decision is ambiguous/costly enough to justify the latency. Reduced modes are part of the design, not a fallback embarrassment.</p>
+
+        <div class="success">
+            <strong>In plain English:</strong> the system got easier to trust the moment I stopped treating multi-model review as “fan out and pray” and started treating it like a first-class orchestration problem with schema, lifecycle, and delivery rules.
+        </div>
+
+        <h2>The Design Rule I Trust Most Now</h2>
+        <p>If I had to compress the whole thing into one line, it would be this:</p>
+        <blockquote>
+            <p><strong>A good panel workflow does not just collect opinions. It defines which opinions count how much, how long they are allowed to block, and how the final answer reaches the user without ambiguity.</strong></p>
+        </blockquote>
+
+        <p>That is what changed the workflow from an interesting prompt trick into a reusable piece of operating infrastructure.</p>
+
+        <div class="note">
+            <strong>Sanitization note:</strong> I kept the architecture, role taxonomy, class policy, and workflow lessons because those are the reusable parts. I intentionally left out local session keys, job IDs, run IDs, exact Discord thread IDs, and other runtime fingerprints that would expose the live environment without helping anyone copy the pattern.
+        </div>
+
+        <div class="related-posts">
+            <h3>Related Posts</h3>
+            <ul>
+                <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
+                <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
+                <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
+                <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Why AI Agent Skills Break in Production (and How to Troubleshoot Them)</a></li>
+            </ul>
+        </div>
+
+        <div class="author-box">
+            <h3>About the Author</h3>
+            <p>Jingxiao Cai works on ML infrastructure and likes orchestration systems that fail loudly, surface dissent honestly, and do not depend on one human remembering where all the asynchronous bodies are buried.</p>
+            <p style="margin-top: 15px; font-style: italic; color: #555;">If your panel workflow cannot explain why one model was allowed to block the answer and another one was not, it is still running on vibes.</p>
+        </div>
+
+</main>
+
+    <footer>
+        <p>Found this useful? Send it to the person still calling eight parallel model calls a “simple jury prompt.”</p>
+        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+    </footer>
+  <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>

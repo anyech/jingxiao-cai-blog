@@ -1,0 +1,15 @@
+---
+layout: base.njk
+permalink: search.html
+title: "Search - Jingxiao Cai's Blog"
+description: "Static Pagefind search for Jingxiao Cai's Blog."
+canonicalPath: "search.html"
+---
+<h1>Search</h1>
+<p>This page is indexed by Pagefind during the post-build step; no server component is required.</p>
+<link href="{{ site.basePath }}pagefind/pagefind-ui.css" rel="stylesheet">
+<div id="search"></div>
+<script src="{{ site.basePath }}pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => new PagefindUI({ element: '#search', showSubResults: true }));
+</script>

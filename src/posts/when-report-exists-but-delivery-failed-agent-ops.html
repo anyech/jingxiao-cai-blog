@@ -1,0 +1,188 @@
+---
+layout: post.njk
+permalink: 'when-report-exists-but-delivery-failed-agent-ops.html'
+title: 'When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern'
+slug: 'when-report-exists-but-delivery-failed-agent-ops'
+description: 'A sanitized agent-operations lesson: when a daily scan job generates its report but delivery fails, verify the artifact, check the delivery surface, and replay instead of rerunning.'
+summary: 'A daily scan job generated its report, but the final delivery side effect failed; the recovery pattern was to replay the saved artifact instead of rerunning the whole workflow.'
+date: '2026-05-09'
+updated: ''
+tags: ['ai-agents', 'automation', 'debugging', 'reliability', 'openclaw', 'agent-ops']
+keywords: ['AI agents', 'agent operations', 'automation reliability', 'delivery failures', 'cron workflows', 'OpenClaw', 'debugging workflow']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern'
+feedDescription: 'A daily scan job generated its report, but the final delivery side effect failed. The fix was to replay the saved artifact, not rerun the whole workflow.'
+feedPubDate: 'Sat, 09 May 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-05-09'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern</h1>
+    <div class="meta">
+        <strong>May 9, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped separate the generation evidence from the delivery evidence, then strip the public version down to the reusable operations pattern without exposing private identifiers.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> if an automated job creates the report but fails to deliver the message, do not rerun the whole workflow first. Verify the saved artifact, check the delivery surface, and replay the already-generated output when that is enough.
+    </div>
+</header>
+
+<main>
+    <p>The failure looked like a failed automation job. A daily scan was supposed to collect a small digest and post it to a configured output channel. Instead, the visible message did not land.</p>
+
+    <p>The important detail was easy to miss: the report itself existed. The collection and summarization path had completed. The broken piece was the final delivery side effect.</p>
+
+    <blockquote>
+        <p><strong>Delivery failure is not automatically generation failure.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized agent-operations story. I am intentionally leaving out exact job names, identifiers, schedules, channels, private paths, hostnames, raw logs, and deployment topology. The public lesson is the triage pattern, not my local fingerprint.
+    </div>
+
+    <h2>The Failure Shape</h2>
+    <p>The incident had three separate surfaces:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Surface</th>
+                <th>What mattered</th>
+                <th>Interpretation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Generated artifact</strong></td>
+                <td>The saved digest existed and contained the expected summary.</td>
+                <td>The data collection and summarization lane was probably healthy.</td>
+            </tr>
+            <tr>
+                <td><strong>Delivery state</strong></td>
+                <td>The configured output channel did not receive the final message.</td>
+                <td>The last-mile delivery side effect needed investigation.</td>
+            </tr>
+            <tr>
+                <td><strong>Sibling lanes</strong></td>
+                <td>Some nearby automations delivered normally while another delivery-oriented lane also showed transient trouble.</td>
+                <td>The provider surface looked flaky, not uniformly broken.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>That split changed the response. If the artifact had been missing, the right move would have been to debug collection, credentials, source API access, or the summarizer. But with the artifact already present, a full rerun risked creating duplicate work, different output, or confusing evidence.</p>
+
+    <h2>The Triage Ladder</h2>
+    <p>The useful ladder was deliberately boring:</p>
+
+    <ol>
+        <li><strong>Check whether the artifact exists.</strong> If yes, preserve it and treat it as the source of truth for recovery.</li>
+        <li><strong>Check whether delivery actually completed.</strong> Do not infer success from generation logs or from the job reaching the final step.</li>
+        <li><strong>Compare neighboring lanes.</strong> If unrelated delivery lanes are also flaky, suspect the shared delivery surface before rewriting local config.</li>
+        <li><strong>Check external provider health.</strong> A transient message-send incident can look like a local automation regression if you only stare at your own logs.</li>
+        <li><strong>Replay the saved output when safe.</strong> If the report is already generated and public-safe for its intended destination, replaying is often better than rerunning the collector.</li>
+    </ol>
+
+    <p>This is the same reliability habit I want in larger agent systems: distinguish the durable artifact from the side effects around it.</p>
+
+    <h2>Why Rerunning Was the Wrong First Move</h2>
+    <p>Rerunning feels productive because it gives the operator a new attempt. But it also changes the evidence.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Move</th>
+                <th>Risk</th>
+                <th>Better default</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Rerun the whole scan immediately.</td>
+                <td>Duplicate collection, drifted summary, or a second delivery attempt that hides the original failure shape.</td>
+                <td>Replay the already-saved digest if it is complete.</td>
+            </tr>
+            <tr>
+                <td>Patch local config during the incident.</td>
+                <td>Fixes the wrong layer when the shared provider is briefly unhealthy.</td>
+                <td>Check provider health and sibling delivery lanes first.</td>
+            </tr>
+            <tr>
+                <td>Declare the job broken.</td>
+                <td>Mislabels a last-mile delivery failure as a generation failure.</td>
+                <td>Name the failing surface precisely.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The outcome was intentionally unglamorous: the saved digest was replayed to the configured destination, the local workflow was left unchanged, and the next natural run was allowed to prove whether the issue repeated.</p>
+
+    <h2>The General Agent-Ops Lesson</h2>
+    <p>Agent workflows often mix three things that deserve separate status:</p>
+
+    <ul>
+        <li><strong>artifact generation</strong> — did the workflow create the report, summary, file, or decision packet?</li>
+        <li><strong>state recording</strong> — did the system record enough evidence to recover or audit the run?</li>
+        <li><strong>external delivery</strong> — did the final message, post, email, or notification reach its destination?</li>
+    </ul>
+
+    <p>When those are collapsed into one success bit, operators make bad choices. A failed delivery can trigger a needless rerun. A successful generation can look like a total outage. A transient provider incident can send you hunting through local code that did nothing wrong.</p>
+
+    <div class="success">
+        <strong>The healthier pattern:</strong> make generated artifacts durable before external delivery, record delivery as its own side effect, and keep a replay path for the already-generated output.
+    </div>
+
+    <h2>A Small Playbook I Would Reuse</h2>
+    <p>For any unattended agent job that posts somewhere public, semi-public, or team-visible, I would want this playbook:</p>
+
+    <ol>
+        <li><strong>Artifact-first execution.</strong> Write the report before trying to send it.</li>
+        <li><strong>Separate delivery status.</strong> Store whether the message reached the configured destination.</li>
+        <li><strong>Idempotent replay.</strong> Make it easy to resend the saved output without recollecting data.</li>
+        <li><strong>Sibling-lane comparison.</strong> Before changing local settings, check whether other jobs using the same delivery surface were also flaky.</li>
+        <li><strong>External incident check.</strong> If the error smells like upstream availability, check provider health before assuming local drift.</li>
+    </ol>
+
+    <p>None of that is complicated. That is why it is useful. The goal is not a heroic recovery story; the goal is to make the boring recovery path obvious while the incident is still fresh.</p>
+
+    <h2>Conclusion</h2>
+    <p>The lesson from this incident is not that daily scan jobs are fragile. The lesson is that delivery is a separate operational surface from generation.</p>
+
+    <p>If the artifact exists, preserve it. If the delivery surface is flaky, diagnose that layer directly. If the output is already complete, replay it instead of rerunning the whole workflow and manufacturing new uncertainty.</p>
+
+    <p>That one distinction turns a vague failed-job alert into a clean agent-ops decision: recover the visible output, avoid unnecessary local changes, and only reopen the system if the same failure repeats outside a known external incident window.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers</a></li>
+            <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
+            <li><a href="/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html">Closing External Threads Cleanly: An Agent-Ops Pattern</a></li>
+            <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs Security Audits While I Sleep</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A report that exists is an asset. A delivery failure is a side effect. Treat them differently.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Found this useful? Leave a comment below, or send it to someone whose automation still treats generation and delivery as one giant success bit.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>

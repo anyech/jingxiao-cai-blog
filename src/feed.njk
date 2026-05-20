@@ -1,0 +1,24 @@
+---
+permalink: feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.title | xmlEscape | safe }}</title>
+    <description>{{ site.description | xmlEscape | safe }}</description>
+    <link>{{ site.url }}{{ site.basePath }}</link>
+    <atom:link href="{{ site.url }}{{ site.basePath }}feed.xml" rel="self" type="application/rss+xml"/>
+    <language>en-us</language>
+    <lastBuildDate>{% for post in collections.posts %}{% if post.data.inFeed %}{% if loop.first %}{{ post.data.feedPubDate or (post.data.updated or post.data.date | rfc822) }}{% endif %}{% endif %}{% endfor %}</lastBuildDate>
+{% for post in collections.posts %}{% if post.data.inFeed %}
+    <item>
+      <title>{{ (post.data.feedTitle or post.data.title) | xmlEscape | safe }}</title>
+      <description>{{ (post.data.feedDescription or post.data.summary or post.data.description) | xmlEscape | safe }}</description>
+      <link>{{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html</link>
+      <guid>{{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html</guid>
+      <pubDate>{{ post.data.feedPubDate or (post.data.date | rfc822) }}</pubDate>
+    </item>
+{% endif %}{% endfor %}
+  </channel>
+</rss>

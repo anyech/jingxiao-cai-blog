@@ -1,0 +1,22 @@
+---
+layout: base.njk
+permalink: index.html
+title: "Jingxiao Cai's Blog | ML Infrastructure, Distributed Systems, Self-Hosted AI"
+description: "Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering."
+canonicalPath: ""
+---
+<h1>Jingxiao Cai's Blog</h1>
+<p>Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.</p>
+<p class="search-box"><a href="{{ site.basePath }}search.html">Search this static archive</a> · <a href="{{ site.basePath }}feed.xml">RSS Feed</a></p>
+<p class="prototype-note">Eleventy prototype: Markdown posts generated from the current static HTML, Nunjucks layouts for shared metadata, fixed <code>.html</code> permalinks, and Pagefind indexing after build.</p>
+<h2>Blog Posts</h2>
+{% for post in collections.posts %}
+<div class="post">
+  <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title }}</a></h3>
+  <p class="date">{{ post.data.date | dateDisplay }}{% if post.data.updated %} · Updated {{ post.data.updated | dateDisplay }}{% endif %}</p>
+  {% if post.data.tags and post.data.tags.length %}<p class="categories">Categories: {{ post.data.tags | join(', ') }}</p>{% endif %}
+  <p>{{ post.data.summary or post.data.description }}</p>
+</div>
+{% endfor %}
+<hr>
+<p><a href="https://github.com/anyech/jingxiao-cai-blog">GitHub Repository</a></p>
