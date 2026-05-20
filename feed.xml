@@ -6,8 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 May 2026 18:55:08 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 20 May 2026 21:44:37 GMT</lastBuildDate>
 
+    <item>
+      <title>When Multiple Agents Share the Same Proof Surface</title>
+      <description>Staged proof is only low-risk when shared harnesses, fixtures, queues, and scratch state have owners, namespaces, collision checks, and cleanup rules.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html</guid>
+      <pubDate>Wed, 20 May 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>When Reviewers Still Ask for Live Proof</title>
       <description>A reviewer asking for live proof is not a permission grant; agents need to clarify the live-only concern and route production risk to explicit operator approval.</description>
