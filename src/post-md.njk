@@ -1,0 +1,21 @@
+---
+pagination:
+  data: collections.posts
+  size: 1
+  alias: post
+permalink: "{{ post.data.slug }}.html.md"
+eleventyExcludeFromCollections: true
+---
+# {{ post.data.title | safe }}
+
+URL: {{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html
+Markdown mirror: {{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html.md
+Date: {{ post.data.date }}{% if post.data.updated %}
+Updated: {{ post.data.updated }}{% endif %}
+{% if post.data.tags and post.data.tags.length %}Tags: {{ post.data.tags | join(', ') }}{% endif %}
+
+Summary: {{ post.data.summary or post.data.description }}
+
+---
+
+{{ post.templateContent | markdownish | safe }}

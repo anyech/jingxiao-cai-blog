@@ -22,6 +22,7 @@ Search page: {{ site.url }}{{ site.basePath }}search.html
 ## Posts
 
 {% for post in collections.posts %}- [{{ post.data.title | safe }}]({{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html)
+  - Markdown mirror: {{ site.url }}{{ site.basePath }}{{ post.data.slug }}.html.md
   - Date: {{ post.data.date }}{% if post.data.updated %}; updated: {{ post.data.updated }}{% endif %}
   - Summary: {{ post.data.summary or post.data.description }}
   {% if post.data.tags and post.data.tags.length %}- Tags: {{ post.data.tags | join(', ') }}{% endif %}

@@ -11,6 +11,7 @@
     <link rel="canonical" href="{{ site.url }}{{ site.basePath }}{{ canonicalPath or (slug + '.html' if slug else '') }}">
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ site.url }}{{ site.basePath }}feed.xml">
     <link rel="alternate" type="text/plain" title="LLMs text overview" href="{{ site.url }}{{ site.basePath }}llms.txt">
+    {% if slug %}<link rel="alternate" type="text/markdown" title="Markdown mirror" href="{{ site.url }}{{ site.basePath }}{{ slug }}.html.md">{% endif %}
     <link rel="sitemap" type="application/xml" href="{{ site.url }}{{ site.basePath }}sitemap.xml">
     <link rel="stylesheet" href="{{ site.basePath }}assets/site.css">
     <meta property="og:type" content="{{ ogType or ('article' if slug else 'website') }}">

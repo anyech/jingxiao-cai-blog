@@ -34,3 +34,31 @@ Legacy imported posts are `.html` inputs, not `.md`, because raw HTML bodies ins
 - Add a GitHub Actions Pages deployment workflow only when ready to publish.
 - Update the blog publishing protocol/scripts so new posts generate the required frontmatter and keep Moltbook teaser copy separate.
 - Run a final live/staging verification before changing GitHub Pages source or publishing.
+
+## Worthwhile follow-up completion (2026-05-21)
+
+After theme review, the remaining low-risk publish-readiness improvements were completed locally:
+
+- Generated per-post markdown mirrors at `*.html.md` through `src/post-md.njk` and a `markdownish` Eleventy filter; `llms.txt` links to every mirror.
+- Added alternate `text/markdown` links on article pages.
+- Wrapped Utterances comment embeds with `data-pagefind-ignore` containers.
+- Added dark-mode CSS via `prefers-color-scheme: dark`.
+- Added print CSS.
+- Kept focus-visible and reduced-motion safeguards from the prior accessibility pass.
+- Removed non-essential link decoration styling after modern-browser compatibility audit flagged partial support.
+
+Final local verification:
+
+- `npm run verify`: Pagefind indexed 44 pages / 5022 words.
+- Internal link checker: 970 links, 0 broken; 44 sitemap locs, 0 broken.
+- Markdown mirrors: 44 generated; 44 linked from `llms.txt`; 0 missing.
+- Google verification meta still present exactly once.
+- RSS parity: 0 missing / 0 extra / 0 parsed field mismatches.
+- Sitemap parity: 0 missing / 0 extra / 0 parsed field mismatches.
+- Lighthouse local scores:
+  - home: performance 100, accessibility 100, best-practices 96, SEO 100, agentic-browsing 100
+  - post: performance 100, accessibility 100, best-practices 96, SEO 100, agentic-browsing 100
+  - search: performance 98, accessibility 100, best-practices 96, SEO 100, agentic-browsing 100
+- `doiuse` for last two Chrome/Firefox/Safari/Edge/iOS/Android versions returned no compatibility warnings after removing text-decoration styling.
+
+Still not done: no push, no GitHub Pages setting change, no publish, and no real Safari/Firefox visual run. Those remain pre-publish/review steps.

@@ -1,5 +1,30 @@
 const markdownIt = require('markdown-it');
 
+function htmlToMarkdownish(value) {
+  return String(value || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '\n# $1\n')
+    .replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '\n## $1\n')
+    .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '\n### $1\n')
+    .replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, '\n#### $1\n')
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '\n- $1')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(div|section|article|main|header|footer|table|tr|ul|ol|blockquote)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim();
+}
+
 module.exports = function(eleventyConfig) {
   eleventyConfig.setLibrary('md', markdownIt({ html: true, linkify: true, typographer: true }));
   eleventyConfig.addPassthroughCopy({ 'src/assets': 'assets', 'src/public': '.' });
@@ -24,6 +49,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addFilter('json', function(value) {
     return JSON.stringify(value, null, 2);
   });
+  eleventyConfig.addFilter('markdownish', htmlToMarkdownish);
   return {
     pathPrefix: '/jingxiao-cai-blog/',
     dir: { input: 'src', includes: '_includes', layouts: '_includes', output: 'dist', data: '_data' },
