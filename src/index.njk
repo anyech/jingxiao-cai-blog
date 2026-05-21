@@ -5,18 +5,43 @@ title: "Jingxiao Cai's Blog | ML Infrastructure, Distributed Systems, Self-Hoste
 description: "Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering."
 canonicalPath: ""
 ---
-<h1>Jingxiao Cai's Blog</h1>
-<p>Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.</p>
-<p class="search-box"><a href="{{ site.basePath }}search.html">Search this static archive</a> · <a href="{{ site.basePath }}feed.xml">RSS Feed</a></p>
-<p class="prototype-note">Eleventy prototype: Markdown posts generated from the current static HTML, Nunjucks layouts for shared metadata, fixed <code>.html</code> permalinks, and Pagefind indexing after build.</p>
-<h2>Blog Posts</h2>
-{% for post in collections.posts %}
-<div class="post">
-  <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title }}</a></h3>
-  <p class="date">{{ post.data.date | dateDisplay }}{% if post.data.updated %} · Updated {{ post.data.updated | dateDisplay }}{% endif %}</p>
-  {% if post.data.tags and post.data.tags.length %}<p class="categories">Categories: {{ post.data.tags | join(', ') }}</p>{% endif %}
-  <p>{{ post.data.summary or post.data.description }}</p>
-</div>
-{% endfor %}
-<hr>
-<p><a href="https://github.com/anyech/jingxiao-cai-blog">GitHub Repository</a></p>
+<section class="hero" aria-labelledby="site-title">
+  <p class="eyebrow">ML infrastructure · distributed systems · self-hosted AI agents</p>
+  <h1 id="site-title">Jingxiao Cai's Blog</h1>
+  <p class="hero__lede">Engineering notes on production ML infrastructure, agent ops, debugging, automation, and the sharp edges of self-hosted AI systems.</p>
+  <div class="hero__actions" data-pagefind-ignore>
+    <a class="button button--primary" href="{{ site.basePath }}search.html">Search the archive</a>
+    <a class="button" href="{{ site.basePath }}feed.xml">RSS feed</a>
+    <a class="button" href="{{ site.basePath }}llms.txt">Agent-readable index</a>
+  </div>
+</section>
+
+<section class="agent-note" aria-labelledby="agent-note-title">
+  <h2 id="agent-note-title">Agent-friendly by design</h2>
+  <p>Static HTML, stable <code>*.html</code> URLs, RSS, sitemap, Pagefind search, and a generated <code>llms.txt</code> index. No client-rendered content is required for crawlers or AI agents to read the posts.</p>
+</section>
+
+<section class="post-list" aria-labelledby="posts-title">
+  <div class="section-heading">
+    <p class="eyebrow">Archive</p>
+    <h2 id="posts-title">Latest posts</h2>
+  </div>
+  <div class="post-grid">
+  {% for post in collections.posts %}
+    <article class="post-card">
+      <p class="post-card__date"><time datetime="{{ post.data.updated or post.data.date }}">{{ post.data.date | dateDisplay }}{% if post.data.updated %} · Updated {{ post.data.updated | dateDisplay }}{% endif %}</time></p>
+      <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title | safe }}</a></h3>
+      <p>{{ post.data.summary or post.data.description }}</p>
+      {% if post.data.tags and post.data.tags.length %}
+      <ul class="tag-list" aria-label="Tags">
+        {% for tag in post.data.tags.slice(0, 5) %}<li>{{ tag }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </div>
+</section>
+
+<footer class="page-footer" data-pagefind-ignore>
+  <p><a href="https://github.com/anyech/jingxiao-cai-blog">GitHub Repository</a></p>
+</footer>

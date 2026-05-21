@@ -2,7 +2,14 @@
   "title": "Jingxiao Cai's Blog",
   "description": "Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.",
   "author": "Jingxiao Cai",
+  "authorUrl": "https://anyech.github.io/jingxiao-cai/",
   "url": "https://anyech.github.io",
   "basePath": "/jingxiao-cai-blog/",
-  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png"
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "googleSiteVerification": "ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8",
+  "sameAs": [
+    "https://www.linkedin.com/in/jingxiaocai/",
+    "https://github.com/anyech",
+    "https://scholar.google.com/citations?user=pyxQPtAAAAAJ&hl=en"
+  ]
 }

@@ -13,12 +13,15 @@ Current static blog backup before migration prototype work:
 
 - Eleventy build and Pagefind indexing pass.
 - Existing 44 post slugs are emitted as top-level `*.html` files.
-- Internal link checker: 674 HTML links checked, 95 external links skipped, 0 broken internal links; 44 sitemap locs, 0 broken.
+- Internal link checker: 905 HTML links checked after theme/nav/llms additions, 0 broken internal links; 44 sitemap locs, 0 broken.
 - `feed.xml` parity with current feed: same 42 item links and zero parsed field mismatches after importing current feed metadata.
 - `sitemap.xml` parity with current sitemap: same 44 loc entries and zero parsed field mismatches.
 - Pagefind query spot checks worked for representative queries including OpenClaw memory search, Moltbook, GitHub Pages, gateway restart, and OAuth token.
 - New-post smoke test (`eleventy-hardening-smoke-test.md`) generated index/feed/sitemap/search output correctly; test post was removed and `dist/` was clean-rebuilt.
-- Chromium screenshots plus image review found no raw-HTML escaping issue in the Eleventy output; styling remains intentionally minimal/prototype-level.
+- Chromium screenshots plus image review found no raw-HTML escaping issue in the Eleventy output.
+- Modern theme pass added a responsive header, hero, post-card grid, article typography, and styled search page.
+- Agent-friendly pass added `llms.txt`, RSS/sitemap links, semantic layout, stable `*.html` URLs, and server-rendered article content with Pagefind body scoping.
+- The original Google site verification meta tag is preserved from `main:index.html`: `ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8`.
 
 ## Important design decision
 
@@ -26,7 +29,7 @@ Legacy imported posts are `.html` inputs, not `.md`, because raw HTML bodies ins
 
 ## Known remaining work before publish
 
-- Improve visual styling from prototype-simple to modern/polished.
+- Further tune visual design if the owner wants a different aesthetic direction.
 - Add a GitHub Actions Pages deployment workflow only when ready to publish.
 - Update the blog publishing protocol/scripts so new posts generate the required frontmatter and keep Moltbook teaser copy separate.
 - Run a final live/staging verification before changing GitHub Pages source or publishing.

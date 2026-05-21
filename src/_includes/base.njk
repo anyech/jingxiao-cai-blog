@@ -6,8 +6,12 @@
     <meta name="author" content="{{ site.author }}">
     <meta name="description" content="{{ description or site.description }}">
     <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    {% if site.googleSiteVerification %}<meta name="google-site-verification" content="{{ site.googleSiteVerification }}">{% endif %}
     <link rel="canonical" href="{{ site.url }}{{ site.basePath }}{{ canonicalPath or (slug + '.html' if slug else '') }}">
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ site.url }}{{ site.basePath }}feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="{{ site.url }}{{ site.basePath }}llms.txt">
+    <link rel="sitemap" type="application/xml" href="{{ site.url }}{{ site.basePath }}sitemap.xml">
     <link rel="stylesheet" href="{{ site.basePath }}assets/site.css">
     <meta property="og:type" content="{{ ogType or ('article' if slug else 'website') }}">
     <meta property="og:title" content="{{ title or site.title }}">
@@ -25,12 +29,13 @@
       "@type": "Article",
       "headline": title,
       "description": description or summary,
-      "author": {"@type": "Person", "name": site.author},
-      "publisher": {"@type": "Person", "name": site.author},
+      "author": {"@type": "Person", "name": site.author, "url": site.authorUrl},
+      "publisher": {"@type": "Person", "name": site.author, "url": site.authorUrl},
       "datePublished": date,
       "dateModified": updated or date,
       "url": site.url + site.basePath + slug + '.html',
-      "image": site.image
+      "image": site.image,
+      "mainEntityOfPage": site.url + site.basePath + slug + '.html'
     } | json | safe }}</script>
     {% else %}
     <script type="application/ld+json">{{ {
@@ -40,18 +45,30 @@
       "url": site.url + site.basePath,
       "description": site.description,
       "inLanguage": "en-US",
-      "author": {"@type": "Person", "name": site.author, "url": "https://anyech.github.io/jingxiao-cai/"},
-      "publisher": {"@type": "Person", "name": site.author, "url": "https://anyech.github.io/jingxiao-cai/"}
+      "author": {"@type": "Person", "name": site.author, "url": site.authorUrl, "sameAs": site.sameAs},
+      "publisher": {"@type": "Person", "name": site.author, "url": site.authorUrl}
     } | json | safe }}</script>
     {% endif %}
     <title>{{ title or site.title }}</title>
   </head>
   <body>
-    <nav class="site-nav" aria-label="Site">
-      <a href="{{ site.basePath }}">Home</a>
-      <a href="{{ site.basePath }}search.html">Search</a>
-      <a href="{{ site.basePath }}feed.xml">RSS</a>
-    </nav>
-    {{ content | safe }}
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="{{ site.basePath }}" aria-label="{{ site.title }} home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="{{ site.basePath }}">Posts</a>
+          <a href="{{ site.basePath }}search.html">Search</a>
+          <a href="{{ site.basePath }}feed.xml">RSS</a>
+          <a href="{{ site.basePath }}llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      {{ content | safe }}
+    </main>
   </body>
 </html>
