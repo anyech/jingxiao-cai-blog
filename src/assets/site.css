@@ -16,9 +16,10 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 body {
   margin: 0;
+  overflow-x: hidden;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(36, 84, 214, 0.12), transparent 32rem),
@@ -43,13 +44,19 @@ img { max-width: 100%; height: auto; border-radius: 14px; }
   z-index: 20;
 }
 .skip-link:focus { left: 1rem; top: 1rem; }
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid rgba(36, 84, 214, 0.72);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 10;
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
-  background: rgba(248, 251, 255, 0.82);
+  background: rgba(248, 251, 255, 0.92);
   border-bottom: 1px solid rgba(219, 227, 239, 0.9);
 }
 .site-header__inner {
@@ -115,6 +122,8 @@ article h1 {
   font-size: clamp(2.3rem, 7vw, 5rem);
   line-height: .98;
   letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .hero__lede {
   max-width: 760px;
@@ -165,7 +174,12 @@ article h1 {
   border-radius: var(--radius);
   box-shadow: 0 12px 32px rgba(15, 23, 42, .05);
 }
-.post-card:hover { transform: translateY(-2px); box-shadow: 0 18px 44px rgba(15,23,42,.08); transition: .18s ease; }
+.post-card:hover { box-shadow: 0 18px 44px rgba(15,23,42,.08); }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  .post-card { transition: transform .18s ease, box-shadow .18s ease; }
+  .post-card:hover { transform: translateY(-2px); }
+}
 .post-card h3 { margin: 0; font-size: 1.22rem; line-height: 1.25; letter-spacing: -0.02em; }
 .post-card h3 a { color: #0f172a; text-decoration: none; }
 .post-card h3 a:hover { color: var(--brand); text-decoration: underline; }
@@ -234,9 +248,9 @@ article li + li { margin-top: .35rem; }
 .related-posts ul { margin-bottom: 0; }
 
 code { background: #eef2f7; color: #0f172a; padding: .14rem .38rem; border-radius: 7px; font-size: .92em; }
-pre { background: var(--code-bg); color: var(--code-text); padding: 1rem; border-radius: 16px; overflow-x: auto; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
-pre code { background: transparent; color: inherit; padding: 0; }
-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--border); }
+pre { max-width: 100%; background: var(--code-bg); color: var(--code-text); padding: 1rem; border-radius: 16px; overflow-x: auto; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+pre code { background: transparent; color: inherit; padding: 0; white-space: pre; }
+table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 1.5rem 0; border-radius: 14px; box-shadow: 0 0 0 1px var(--border); }
 th, td { padding: .75rem .85rem; border-bottom: 1px solid var(--border); vertical-align: top; text-align: left; }
 th { background: #eef4ff; color: #1e293b; }
 tr:nth-child(even) td { background: #fafcff; }
@@ -253,9 +267,19 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 @media (max-width: 720px) {
   body { font-size: 16px; }
   .site-header { position: static; }
-  .site-header__inner { align-items: flex-start; flex-direction: column; }
-  .site-nav { justify-content: flex-start; }
-  .site-main { width: min(100% - 1rem, 1120px); padding-top: 1rem; }
-  .hero { border-radius: 22px; }
-  article[data-pagefind-body] { padding: 1rem; border-radius: 18px; }
+  .site-header__inner { align-items: flex-start; flex-direction: column; padding-inline: .85rem; }
+  .brand__text { max-width: 14rem; }
+  .site-nav { justify-content: flex-start; gap: .15rem; }
+  .site-nav a { padding: .34rem .52rem; font-size: .86rem; }
+  .site-main { width: min(100% - .75rem, 1120px); padding-top: .8rem; }
+  .hero { border-radius: 22px; padding: 1.25rem; }
+  .hero h1 { font-size: clamp(2rem, 14vw, 3.1rem); letter-spacing: -0.045em; }
+  .hero__actions { gap: .5rem; }
+  .button { width: 100%; justify-content: center; }
+  .post-card { padding: 1rem; }
+  article[data-pagefind-body] { padding: .9rem; border-radius: 18px; }
+  article[data-pagefind-body] > header h1 { font-size: clamp(1.75rem, 10vw, 2.45rem); letter-spacing: -0.04em; }
+  article p, article li { overflow-wrap: anywhere; }
+  .search-panel { padding: 1rem; }
+  .search-hints ul { display: grid; grid-template-columns: 1fr; }
 }

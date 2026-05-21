@@ -13,7 +13,11 @@ canonicalPath: "search.html"
 
 <section class="search-panel" aria-label="Search form">
   <link href="{{ site.basePath }}pagefind/pagefind-ui.css" rel="stylesheet">
-  <div id="search"></div>
+  <div id="search">
+    <noscript>
+      <p class="search-noscript">Search needs JavaScript to run locally in your browser. You can still browse the <a href="{{ site.basePath }}llms.txt">agent-readable index</a>, <a href="{{ site.basePath }}sitemap.xml">sitemap</a>, or <a href="{{ site.basePath }}feed.xml">RSS feed</a>.</p>
+    </noscript>
+  </div>
   <div class="search-hints" data-pagefind-ignore>
     <p class="eyebrow">Try these queries</p>
     <ul>

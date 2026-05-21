@@ -22,6 +22,7 @@ Current static blog backup before migration prototype work:
 - Modern theme pass added a responsive header, hero, post-card grid, article typography, and styled search page.
 - Agent-friendly pass added `llms.txt`, RSS/sitemap links, semantic layout, stable `*.html` URLs, and server-rendered article content with Pagefind body scoping.
 - The original Google site verification meta tag is preserved from `main:index.html`: `ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8`.
+- Theme review panel follow-up added `404.html`, visible `:focus-visible` keyboard focus, `prefers-reduced-motion` guarded hover/smooth-scroll behavior, `-webkit-backdrop-filter` header fallback, and a no-JS fallback on the search page.
 
 ## Important design decision
 

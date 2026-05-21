@@ -1,0 +1,19 @@
+---
+layout: base.njk
+permalink: 404.html
+eleventyExcludeFromCollections: true
+title: "Page not found - Jingxiao Cai's Blog"
+description: "The requested page could not be found on Jingxiao Cai's Blog."
+canonicalPath: "404.html"
+robots: "noindex,follow"
+---
+<section class="hero hero--compact" aria-labelledby="not-found-title" data-pagefind-ignore>
+  <p class="eyebrow">404</p>
+  <h1 id="not-found-title">Page not found</h1>
+  <p class="hero__lede">That URL does not map to a current blog page. The archive keeps stable <code>*.html</code> post URLs, but drafts and old experiments may move.</p>
+  <div class="hero__actions">
+    <a class="button button--primary" href="{{ site.basePath }}">Back to posts</a>
+    <a class="button" href="{{ site.basePath }}search.html">Search the archive</a>
+    <a class="button" href="{{ site.basePath }}llms.txt">Agent-readable index</a>
+  </div>
+</section>
