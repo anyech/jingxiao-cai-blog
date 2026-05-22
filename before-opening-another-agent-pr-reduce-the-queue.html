@@ -1,93 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
     <meta name="description" content="A sanitized agent-ops pattern for PR hygiene: check upstream, consolidate overlapping fixes, close superseded work with pointers, and leave one review surface.">
-    <meta name="keywords" content="AI agents, PR hygiene, GitHub workflow, OpenClaw, automation reliability, agent operations, duplicate pull requests, code review">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="Before Opening Another Agent PR, Reduce the Queue First">
-    <meta property="og:description" content="Before adding another agent-generated fix, reduce the review queue: check upstream, consolidate overlap, and close superseded PRs with a pointer.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
+    <meta property="og:title" content="Before Opening Another Agent PR, Reduce the Queue First">
+    <meta property="og:description" content="A sanitized agent-ops pattern for PR hygiene: check upstream, consolidate overlapping fixes, close superseded work with pointers, and leave one review surface.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Before Opening Another Agent PR, Reduce the Queue First">
-    <meta name="twitter:description" content="The next agent PR may not need to exist. First check upstream, reuse or consolidate existing review surfaces, and close superseded work cleanly.">
+    <meta name="twitter:description" content="A sanitized agent-ops pattern for PR hygiene: check upstream, consolidate overlapping fixes, close superseded work with pointers, and leave one review surface.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
-    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "Before Opening Another Agent PR, Reduce the Queue First",
-      "description": "A sanitized agent-ops pattern for PR hygiene: check upstream, consolidate overlapping fixes, close superseded work with pointers, and leave one review surface.",
-      "author": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "datePublished": "2026-05-15",
-      "dateModified": "2026-05-15",
-      "url": "https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html",
-      "publisher": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "keywords": [
-        "AI agents",
-        "PR hygiene",
-        "GitHub workflow",
-        "OpenClaw",
-        "automation reliability",
-        "agent operations",
-        "code review"
-      ]
-    }
-    </script>
-
-    <title>Before Opening Another Agent PR, Reduce the Queue First | Jingxiao Cai</title>
-
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
-        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        header a { color: #0366d6; text-decoration: none; }
-        header a:hover { text-decoration: underline; }
-        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
-        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
-        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
-        .meta strong { color: #444; }
-        .tags { color: #0366d6; font-size: 0.9em; }
-        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-        .back-link { color: #2563eb; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
-        pre code { background: none; padding: 0; }
-        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
-        th { background: #f6f8fa; font-weight: 600; }
-        ul, ol { margin: 15px 0 15px 30px; }
-        li { margin: 8px 0; }
-        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
-        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
-        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
-        .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .related-posts a { color: #0366d6; text-decoration: none; }
-        .related-posts a:hover { text-decoration: underline; }
-        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-    </style>
-</head>
-<body>
-    <header>
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Before Opening Another Agent PR, Reduce the Queue First",
+  "description": "A sanitized agent-ops pattern for PR hygiene: check upstream, consolidate overlapping fixes, close superseded work with pointers, and leave one review surface.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-05-15",
+  "dateModified": "2026-05-15",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html"
+}</script>
+    
+    <title>Before Opening Another Agent PR, Reduce the Queue First</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Before Opening Another Agent PR, Reduce the Queue First</h1>
         <div class="meta">
@@ -303,11 +283,17 @@ publication decision:
         <p>Found this useful? Leave a comment below, or send it to someone whose agent just opened the third PR for the same policy seam.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
     <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

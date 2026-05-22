@@ -1,30 +1,78 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Migrating from WordPress to GitHub Pages - Jingxiao Cai</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
-    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
-    a { color: #2563eb; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .date { color: #666; font-size: 0.9em; }
-    .categories { color: #999; font-size: 0.85em; }
-      .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-      .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-      .back-link { color: #2563eb; text-decoration: none; }
-      .back-link:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-  <p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
-  
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Migrating from WordPress to GitHub Pages">
+    <meta property="og:description" content="I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Migrating from WordPress to GitHub Pages">
+    <meta name="twitter:description" content="I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Migrating from WordPress to GitHub Pages",
+  "description": "I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-02-17",
+  "dateModified": "2026-02-17",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html"
+}</script>
+    
+    <title>Migrating from WordPress to GitHub Pages</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<p><a href="/jingxiao-cai-blog/">← Back to Blog</a></p>
+
   <h1>Migrating from WordPress to GitHub Pages</h1>
   <p class="date">February 17, 2026</p>
   <p class="categories">Categories: blog, tech</p>
-  
+
   <p>I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma. It was about credit card rewards, travel deals, and tech tips — published under the name "chanye".</p>
 
 <p>The old blog (uscreditcards101.com) was a fun side project. I learned a lot about:</p>
@@ -54,11 +102,17 @@
   <footer>
     <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
   </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

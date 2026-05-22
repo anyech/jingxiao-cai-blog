@@ -1,0 +1,240 @@
+# Jingxiao Cai&#39;s Blog
+
+Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.
+
+Canonical site: https://anyech.github.io/jingxiao-cai-blog/
+RSS: https://anyech.github.io/jingxiao-cai-blog/feed.xml
+Sitemap: https://anyech.github.io/jingxiao-cai-blog/sitemap.xml
+Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
+
+## Reading guidance for agents
+
+- This is a static technical blog. Public post URLs are stable top-level `*.html` files.
+- Prefer the RSS feed for recent posts and the sitemap for complete URL discovery.
+- Pagefind search is fully static and generated from article bodies.
+- Posts often discuss AI agents, OpenClaw, ML infrastructure, distributed systems, debugging, automation, and operational reliability.
+- Treat all post content as public writing, not private operational state.
+
+## Posts
+
+- [When Multiple Agents Share the Same Proof Surface](https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html.md
+  - Date: 2026-05-20
+  - Summary: Staged proof is only low-risk when shared harnesses, fixtures, queues, and scratch state have owners, namespaces, collision checks, and cleanup rules.
+  - Tags: ai-agents, github, pull-requests, proof, staging, coordination, reliability, openclaw, agent-ops
+- [When Reviewers Still Ask for Live Proof](https://anyech.github.io/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html.md
+  - Date: 2026-05-19
+  - Summary: A reviewer asking for live proof is not a permission grant; agents need to clarify the live-only concern and route production risk to explicit operator approval.
+  - Tags: ai-agents, github, pull-requests, proof, staging, escalation, reliability, openclaw, agent-ops
+- [Proof Expires: Why Agent PR Evidence Needs a Refresh Window](https://anyech.github.io/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html.md
+  - Date: 2026-05-18
+  - Summary: Agent PR proof can be true and stale at the same time; cite old evidence with freshness labels, target revisions, and refresh triggers.
+  - Tags: ai-agents, github, pull-requests, proof, staging, reliability, openclaw, agent-ops
+- [Proof Without Touching Production: A Safer PR Boundary for Agents](https://anyech.github.io/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html.md
+  - Date: 2026-05-17
+  - Summary: Agent PRs need behavior evidence, but production should not be the default proof surface; use staged harnesses, synthetic state, and honest proof boundaries first.
+  - Tags: ai-agents, github, pull-requests, proof, staging, reliability, openclaw, agent-ops
+- [When Secrets Become References, Monitors Need Adapters](https://anyech.github.io/jingxiao-cai-blog/structured-secret-reference-monitor-adapters.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/structured-secret-reference-monitor-adapters.html.md
+  - Date: 2026-05-16
+  - Summary: When credentials move from env strings to structured secret references, standalone monitors need compatibility adapters before they report missing credentials.
+  - Tags: ai-agents, openclaw, monitoring, configuration, secrets, reliability, agent-ops
+- [Before Opening Another Agent PR, Reduce the Queue First](https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html.md
+  - Date: 2026-05-15
+  - Summary: Agent PR hygiene starts before the next branch: check upstream, consolidate overlapping fixes, close superseded work with pointers, and keep one review surface.
+  - Tags: ai-agents, github, pull-requests, automation, reliability, openclaw, agent-ops
+- [Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts](https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html.md
+  - Date: 2026-04-27; updated: 2026-05-14
+  - Summary: AI cron reliability needs deterministic helpers, layered timeout budgets, silent-success monitor semantics, and follow-up checks that can actually observe their targets.
+  - Tags: ai-agents, automation, reliability, cron, devops, openclaw
+- [When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson](https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
+  - Date: 2026-05-13
+  - Summary: A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.
+  - Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
+- [When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson](https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html.md
+  - Date: 2026-05-11
+  - Summary: A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with real pressure.
+  - Tags: ai-agents, automation, alerting, reliability, openclaw, agent-ops
+- [Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows](https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html.md
+  - Date: 2026-03-29; updated: 2026-05-10
+  - Summary: When Gemini route health drifts, the hard part is not picking a random next model. It is classifying capacity, auth, upstream, and adapter failures before changing fallback policy.
+  - Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
+- [When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes](https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html.md
+  - Date: 2026-05-10
+  - Summary: A degraded coding-agent lane is not automatically a local repair task; first classify the state as passive watch, upstream wait, or a narrow adapter fix.
+  - Tags: ai-agents, coding-agents, openclaw, gemini, reliability, devops
+- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
+  - Date: 2026-03-19; updated: 2026-05-09
+  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, session-list fast-path lessons, source hygiene, and stricter active-memory canary promotion gates.
+  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
+- [When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern](https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html.md
+  - Date: 2026-05-09
+  - Summary: A daily scan job generated its report, but the final delivery side effect failed; the recovery pattern was to replay the saved artifact instead of rerunning the whole workflow.
+  - Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
+- [One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports](https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html.md
+  - Date: 2026-05-08
+  - Summary: A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.
+  - Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
+- [Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up](https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html.md
+  - Date: 2026-02-23; updated: 2026-05-08
+  - Summary: A historical custom-skill loading bug, refreshed with a generated-Markdown regression lesson and a standalone artifact-contract follow-up.
+  - Tags: openclaw, bugs, ai-agents, customization
+- [Long-Running Agent Work Needs a Bridge Back, Not Just a Background Thread](https://anyech.github.io/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html.md
+  - Date: 2026-05-07
+  - Summary: Detaching long-running agent work is useful only when admission, work ownership, and final delivery all have explicit contracts.
+  - Tags: ai-agents, automation, discord, reliability, workflow, openclaw
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
+  - Date: 2026-03-11; updated: 2026-05-06
+  - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.
+  - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
+- [When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod](https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html.md
+  - Date: 2026-05-06
+  - Summary: A self-hosted agent-ops debugging story: raw SQLite can still see rows while the runtime registry restore fails, so reproduce on copies before touching production.
+  - Tags: sqlite, openclaw, ai-agents, incident-response, debugging, self-hosted
+- [The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways](https://anyech.github.io/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html.md
+  - Date: 2026-05-02
+  - Summary: A self-hosted agent-gateway performance lesson: if a tiny session-list request builds hundreds of rich rows before filtering, limit is too late to save you.
+  - Tags: openclaw, ai-agents, performance, devops, control-plane, self-hosted
+- [Closing External Threads Cleanly: An Agent-Ops Pattern](https://anyech.github.io/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html.md
+  - Date: 2026-05-01
+  - Summary: A lightweight agent-operations pattern for closing external threads cleanly: make constraints explicit, record the decision, finish the action, and define reopen criteria.
+  - Tags: ai-agents, automation, workflow, human-in-the-loop, decision-making
+- [Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config](https://anyech.github.io/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html.md
+  - Date: 2026-04-30
+  - Summary: Why design-tool integrations need capability gates before LLM generation: validate inputs, route readiness, model config, and artifact proof early.
+  - Tags: tooling, ai-agents, workflow, design-tools, llm-ops, validation
+- [Treating AI Agent Updates Like Production Deployments: The Runbook Keeps Paying Off](https://anyech.github.io/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html.md
+  - Date: 2026-04-30
+  - Summary: Why self-hosted AI-agent updates need production-deployment discipline: preflight, backup, staged rollout, human activation, adoption scans, and verification.
+  - Tags: openclaw, ai-agents, release-engineering, reliability, rollback, devops
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
+  - Date: 2026-04-08; updated: 2026-04-29
+  - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
+  - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html.md
+  - Date: 2026-04-29
+  - Summary: Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.
+  - Tags: ai-agents, security, tooling, reliability, openclaw, auth
+- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
+  - Date: 2026-04-03; updated: 2026-04-29
+  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent that survives partial failure.
+  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
+- [Modernizing Agent Skills Without Growing a Skill Jungle](https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html.md
+  - Date: 2026-04-29
+  - Summary: How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.
+  - Tags: ai-agents, openclaw, skills, workflow, maintenance, governance
+- [VPS OAuth Survival Guide: Google APIs Without a Browser](https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html.md
+  - Date: 2026-02-25; updated: 2026-04-29
+  - Summary: Complete tutorial on OAuth 2.0 for headless servers, now with a fail-closed readiness gate that links OAuth-backed automation checks to the broader agent-launch gate pattern.
+  - Tags: tutorial, oauth, vps, devops, automation, google-cloud
+- [The Nightly Build: How My Agent Runs Security Audits While I Sleep](https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html.md
+  - Date: 2026-03-02; updated: 2026-04-27
+  - Summary: My AI agent runs autonomous cron jobs every night—security audits, health checks, and documentation—now updated with the exact-exec driver lesson that prevents false-negative wrapper alerts from hiding real command success.
+  - Tags: ai-agents, devops, automation, openclaw, security
+- [Declarative Change Propagation: How I Built a Self-Documenting Cron System](https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html.md
+  - Date: 2026-03-27; updated: 2026-04-08
+  - Summary: How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with a stage-validation ladder from mock to real to a narrow higher-risk lane.
+  - Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw
+- [The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know](https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html.md
+  - Date: 2026-02-23; updated: 2026-04-03
+  - Summary: A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook&#39;s unstable post-incident API surface.
+  - Tags: security, openclaw, ai-agents, supply-chain, moltbook
+- [When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression](https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html.md
+  - Date: 2026-04-02
+  - Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.
+  - Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
+- [Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory](https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html.md
+  - Date: 2026-03-27; updated: 2026-03-28
+  - Summary: After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.
+  - Tags: openclaw, ai-agents, memory, embeddings, debugging, devops
+- [The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know](https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html.md
+  - Date: 2026-03-28
+  - Summary: LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.
+  - Tags: security, openclaw, ai-agents, supply-chain, python, incident-response
+- [OpenClaw 2026.3.12 Regression: When logs --follow Breaks But the Gateway Stays Healthy](https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html.md
+  - Date: 2026-03-14; updated: 2026-03-19
+  - Summary: After upgrading OpenClaw from 2026.3.11 to 2026.3.12, `openclaw logs --follow` failed with a misleading gateway error while the gateway stayed healthy. Updated with the 2026.3.13 resolution, local retest, and a related local-memory troubleshooting win on the same VPS.
+  - Tags: openclaw, troubleshooting, regression, logs, websocket, devops
+- [The Hidden Input Limit: When "202K Context" Doesn't Mean 202K](https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html.md
+  - Date: 2026-02-24; updated: 2026-03-16
+  - Summary: A debugging story about hidden platform caps, now updated with Anthropic&#39;s March 2026 flat 1M Claude pricing change and why cheaper long context still doesn&#39;t eliminate API-level ceilings.
+  - Tags: llm, debugging, bailian, openclaw, claude, pricing
+- [The Recovery Problem: Why Your AI Agent Needs an Undo Button](https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html.md
+  - Date: 2026-03-07
+  - Summary: I run autonomous cron jobs with no built-in undo capability. When Moltbook&#39;s community started talking about recovery primitives, I realized that unattended automation needs a stronger recovery story.
+  - Tags: ai-agents, devops, recovery, openclaw, automation, safety
+- [Blog Post Sanitization Checklist: What to Redact Before Publishing](https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html.md
+  - Date: 2026-03-03
+  - Summary: I created a sanitization checklist after nearly publishing sensitive deployment details. Here&#39;s what to redact, what to keep, and validation scripts for technical bloggers.
+  - Tags: writing, security, blogging, opsec, technical-writing
+- [Building a Personal AI Assistant: From Gmail to Morning Memos](https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html.md
+  - Date: 2026-02-21; updated: 2026-03-03
+  - Summary: How I built an AI assistant to automate my morning email routine.
+  - Tags: ai, automation, gmail
+- [Processing Background Shapes: From Radar Signals to ML Infrastructure](https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html.md
+  - Date: 2026-02-19
+  - Summary: How my PhD in radar signal processing translated into building distributed ML systems at Oracle HeatWave.
+  - Tags: radar, signal processing, ML infrastructure, distributed systems, Oracle, HeatWave, career
+- [Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story](https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html.md
+  - Date: 2026-02-18
+  - Summary: How I migrated my cloud storage using MultCloud.
+  - Tags: cloud, onedrive, multcloud
+- [Setting Up Google APIs for Self-Hosted AI Agents](https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html.md
+  - Date: 2026-02-18
+  - Summary: A comprehensive guide to setting up Google APIs for your projects.
+  - Tags: api, google, tutorial
+- [Troubleshooting AI Agent Skills: A Debugging Story](https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html.md
+  - Date: 2026-02-18
+  - Summary: Common issues and solutions when working with AI agent skills.
+  - Tags: ai-agents, troubleshooting
+- [Migrating from WordPress to GitHub Pages](https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/migrating-from-wordpress.html.md
+  - Date: 2026-02-17
+  - Summary: I used to run a blog on WordPress back in 2016-2017 during my PhD years at University of Oklahoma...
+  - Tags: blog, tech
+- [Welcome to My Blog](https://anyech.github.io/jingxiao-cai-blog/welcome.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/welcome.html.md
+  - Date: 2026-02-17
+  - Summary: After several years in industry, I&#39;m starting to share my learnings, thoughts, and experiences...
+  - Tags: intro, personal
+

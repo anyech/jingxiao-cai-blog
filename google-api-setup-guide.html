@@ -1,100 +1,87 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.">
-  <meta name="keywords" content="Google API, OAuth 2.0, OpenClaw, AI agent, Gmail API, Google Drive API, self-hosted AI, automation">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
-  <meta property="og:description" content="Give your AI agent access to Gmail, Calendar, and Drive with this complete OAuth 2.0 setup guide.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
-  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
-  <meta name="twitter:description" content="Give your AI agent access to Gmail, Calendar, and Drive with this complete OAuth 2.0 setup guide.">
-  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
-  
-  <!-- Sitemap -->
-  <link rel="alternate" type="application/xml" title="Sitemap" href="/jingxiao-cai-blog/sitemap.xml">
-  
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Setting Up Google APIs for Self-Hosted AI Agents",
-    "description": "Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw.",
-    "author": {
-      "@type": "Person",
-      "name": "Jingxiao Cai"
-    },
-    "datePublished": "2026-02-18",
-    "dateModified": "2026-02-18",
-    "url": "https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html",
-    "publisher": {
-      "@type": "Person",
-      "name": "Jingxiao Cai"
-    },
-    "articleSection": "Tutorial",
-    "keywords": ["Google API", "OAuth 2.0", "OpenClaw", "AI agent", "Gmail API", "Google Drive API"]
-  }
-  </script>
-  
-  <title>Setting Up Google APIs for Self-Hosted AI Agents - Jingxiao Cai's Blog</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
-    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
-    h2 { margin-top: 30px; }
-    h3 { margin-top: 25px; }
-    a { color: #2563eb; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
-    pre code { background: none; padding: 0; }
-    .post { margin-bottom: 30px; }
-    .date { color: #666; font-size: 0.9em; }
-    .categories { color: #999; font-size: 0.85em; }
-    .home-link { display: inline-block; margin-bottom: 20px; }
-    .note { background: #fff3cd; padding: 10px 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
-    .warning { background: #f8d7da; padding: 10px 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
-    .faq { background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
-    .faq h3 { margin-top: 0; }
-    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-    table { border-collapse: collapse; width: 100%; margin: 15px 0; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #f4f4f4; }
-      .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-      .back-link { color: #2563eb; text-decoration: none; }
-      .back-link:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
-  
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
+    <meta property="og:description" content="Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Setting Up Google APIs for Self-Hosted AI Agents">
+    <meta name="twitter:description" content="Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Setting Up Google APIs for Self-Hosted AI Agents",
+  "description": "Step-by-step guide to setting up Google APIs (Gmail, Calendar, Drive) for self-hosted AI agents like OpenClaw. Includes OAuth 2.0 setup and security tips.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-02-18",
+  "dateModified": "2026-02-18",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/google-api-setup-guide.html"
+}</script>
+    
+    <title>Setting Up Google APIs for Self-Hosted AI Agents</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+
   <div class="post">
     <h1>Setting Up Google APIs for Self-Hosted AI Agents</h1>
     <p class="date">February 18, 2026 | Last updated: February 25, 2026</p>
     <p class="categories">Categories: tutorial, google-cloud, openclaw, automation</p>
-    
+
     <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Yes, an AI wrote part of this blog post with a little help from me.</em></p>
-    
+
     <p>When running a self-hosted AI assistant like OpenClaw, giving it access to your Google Workspace (Gmail, Calendar, Drive) opens up powerful automation possibilities: reading emails, checking calendar events, accessing files, and even sending messages on your behalf.</p>
-    
+
     <p>In this guide, I'll walk you through setting up Google API access — the right way.</p>
 
     <h2>Why Google APIs?</h2>
-    
+
     <p>Most self-hosted AI agents need some way to interact with your digital life. Email and calendar are the most common use cases:</p>
     <ul>
       <li><strong>Summarize emails</strong> — Get a daily digest of important messages</li>
@@ -104,7 +91,7 @@
     </ul>
 
     <h2>Prerequisites</h2>
-    
+
     <ul>
       <li>A Google Workspace (formerly G Suite) account or personal Google account</li>
       <li>Access to Google Cloud Console (console.cloud.google.com)</li>
@@ -112,7 +99,7 @@
     </ul>
 
     <h2>Step 1: Create a Google Cloud Project</h2>
-    
+
     <ol>
       <li>Go to <a href="https://console.cloud.google.com/">Google Cloud Console</a></li>
       <li>Click <strong>Select a project</strong> → <strong>New Project</strong></li>
@@ -121,9 +108,9 @@
     </ol>
 
     <h2>Step 2: Enable Required APIs</h2>
-    
+
     <p>In your project, go to <strong>APIs & Services → Library</strong> and enable these APIs:</p>
-    
+
     <ul>
       <li><strong>Gmail API</strong> — For reading and sending emails</li>
       <li><strong>Google Calendar API</strong> — For reading/creating calendar events</li>
@@ -136,7 +123,7 @@
     </div>
 
     <h2>Step 3: Configure OAuth Consent Screen</h2>
-    
+
     <ol>
       <li>Go to <strong>APIs & Services → OAuth consent screen</strong></li>
       <li>Choose <strong>External</strong> (unless you have a Workspace organization with internal apps)</li>
@@ -165,7 +152,7 @@
     </div>
 
     <h2>Step 4: Create OAuth Credentials</h2>
-    
+
     <ol>
       <li>Go to <strong>APIs & Services → Credentials</strong></li>
       <li>Click <strong>Create Credentials</strong> → <strong>OAuth client ID</strong></li>
@@ -184,16 +171,16 @@
     </ol>
 
     <h2>Step 5: Connect to Your Agent</h2>
-    
+
     <p>Now you have:</p>
     <ul>
       <li>Client ID</li>
       <li>Client Secret</li>
       <li>Project ID</li>
     </ul>
-    
+
     <p>How you connect these to your agent depends on the framework. For OpenClaw, you typically:</p>
-    
+
     <ol>
       <li>Place the credentials JSON where your agent can read it</li>
       <li>Run the OAuth flow (your agent should provide a URL to visit)</li>
@@ -206,7 +193,7 @@
     </div>
 
     <h2>What Each Scope Means</h2>
-    
+
     <table>
       <tr><th>Scope</th><th>What it allows</th></tr>
       <tr><td><code>gmail.readonly</code></td><td>Read emails, labels, settings</td></tr>
@@ -219,16 +206,16 @@
     <p>Notice I only requested <strong>readonly</strong> scopes where possible, and <strong>gmail.send</strong> specifically (not full Gmail access). Follow the principle of least privilege — only ask for what you need.</p>
 
     <h2>Troubleshooting</h2>
-    
+
     <h3>"App not verified" warnings</h3>
     <p>Google shows scary warnings for unverified apps. Since you're the only user, you can ignore this by clicking <strong>Advanced → Go to (App Name) (unsafe)</strong>. This is normal during development.</p>
-    
+
     <h3>Token expired errors</h3>
     <p>Google access tokens expire (typically 1 hour). Your agent should handle refresh tokens automatically. If not, you may need to re-authenticate.</p>
-    
+
     <h3>Permission denied</h3>
     <p>Double-check that your email is added as a test user in the OAuth consent screen settings.</p>
-    
+
     <h3>VPS or headless server?</h3>
     <h4>Complete Headless OAuth Flow (Step-by-Step)</h4>
     <p>For VPS deployments without any browser access, use the <code>manual_oauth.py</code> script from the gmail-reader repo:</p>
@@ -275,27 +262,27 @@ python3 manual_oauth.py
     <!-- FAQ Section for SEO -->
     <div class="faq">
       <h3>❓ Frequently Asked Questions</h3>
-      
+
       <h4>What is Google OAuth 2.0?</h4>
       <p>OAuth 2.0 is Google's standard for authorization. It allows your AI agent to access your Google account without you sharing your password. You grant specific permissions (scopes) that can be revoked anytime.</p>
-      
+
       <h4>Is this secure?</h4>
       <p>Yes, when properly configured. Use the principle of least privilege — only request the scopes you need. Never share your client secret publicly, and store credentials securely.</p>
-      
+
       <h4>Do I need a Google Workspace account?</h4>
       <p>No! A personal Google account works fine. The setup is the same, though you'll need to add yourself as a test user since the app won't be verified by Google.</p>
-      
+
       <h4>How do I revoke access?</h4>
       <p>Go to your Google Account → Security → Third-party app access. There you can see and revoke all connected apps.</p>
-      
+
       <h4>Can I use this with other AI agents?</h4>
       <p>Yes! The OAuth 2.0 flow is standard. Any agent framework that supports OAuth can use these credentials.</p>
     </div>
 
     <h2>What's Next?</h2>
-    
+
     <p>In a follow-up post, I'll share the story of how I got OneDrive working with my AI agent — a much more painful journey that led me to use MultCloud as a workaround. Stay tuned!</p>
-    
+
     <div class="related-posts">
       <h3>Related Posts</h3>
       <ul>
@@ -313,11 +300,17 @@ python3 manual_oauth.py
   <footer>
     <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
   </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

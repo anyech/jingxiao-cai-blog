@@ -1,274 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
     <meta name="description" content="A sanitized agent-operations lesson: a technically true row-count alert can still be the wrong page when byte pressure, latency, and cleanup evidence stay healthy.">
-    <meta name="keywords" content="AI agents, agent operations, alert tuning, control plane, OpenClaw, reliability, debugging workflow">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="When a True Alert Is Still the Wrong Page">
-    <meta property="og:description" content="A row-count threshold crossed, but byte pressure and cleanup evidence stayed healthy. The right move was to tune the alert, not run risky cleanup.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html">
-    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="When a True Alert Is Still the Wrong Page">
-    <meta name="twitter:description" content="Not every true threshold crossing deserves operator action. Alert on pressure, not on telemetry alone.">
-    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
     <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson",
-      "description": "A sanitized agent-operations lesson: a technically true row-count alert can still be the wrong page when byte pressure, latency, and cleanup evidence stay healthy.",
-      "author": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "datePublished": "2026-05-11",
-      "dateModified": "2026-05-11",
-      "url": "https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html",
-      "publisher": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "keywords": [
-        "AI agents",
-        "agent operations",
-        "alert tuning",
-        "control plane",
-        "OpenClaw",
-        "reliability",
-        "debugging workflow"
-      ]
-    }
-    </script>
-
-    <title>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson | Jingxiao Cai</title>
-
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
-        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        header a { color: #0366d6; text-decoration: none; }
-        header a:hover { text-decoration: underline; }
-        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
-        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
-        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
-        .meta strong { color: #444; }
-        .tags { color: #0366d6; font-size: 0.9em; }
-        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-        .back-link { color: #2563eb; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
-        pre code { background: none; padding: 0; }
-        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: top; }
-        th { background: #f6f8fa; font-weight: 600; }
-        ul, ol { margin: 15px 0 15px 30px; }
-        li { margin: 8px 0; }
-        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
-        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
-        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
-        .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .related-posts a { color: #0366d6; text-decoration: none; }
-        .related-posts a:hover { text-decoration: underline; }
-        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-    </style>
-</head>
-<body>
-    <header>
-        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
-        <h1>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</h1>
-        <div class="meta">
-            <strong>May 11, 2026</strong> | By Jingxiao Cai<br>
-            <span class="tags">Tags: ai-agents, automation, alerting, reliability, openclaw, agent-ops</span>
-        </div>
-        <div class="disclaimer">
-            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private control-plane alert into a public-safe operations pattern: alert on pressure, not on telemetry alone.
-        </div>
-        <div class="warning">
-            <strong>Short version:</strong> a metric can cross a threshold and still not justify paging the operator. If the crossing has no byte pressure, latency pressure, cleanup pressure, or user-visible impact, it may belong in telemetry instead of the alert stream.
-        </div>
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson">
+    <meta property="og:description" content="A sanitized agent-operations lesson: a technically true row-count alert can still be the wrong page when byte pressure, latency, and cleanup evidence stay healthy.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson">
+    <meta name="twitter:description" content="A sanitized agent-operations lesson: a technically true row-count alert can still be the wrong page when byte pressure, latency, and cleanup evidence stay healthy.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson",
+  "description": "A sanitized agent-operations lesson: a technically true row-count alert can still be the wrong page when byte pressure, latency, and cleanup evidence stay healthy.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-05-11",
+  "dateModified": "2026-05-11",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html"
+}</script>
+    
+    <title>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
     </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</h1>
+    <div class="meta">
+        <strong>May 11, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, automation, alerting, reliability, openclaw, agent-ops</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private control-plane alert into a public-safe operations pattern: alert on pressure, not on telemetry alone.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> a metric can cross a threshold and still not justify paging the operator. If the crossing has no byte pressure, latency pressure, cleanup pressure, or user-visible impact, it may belong in telemetry instead of the alert stream.
+    </div>
+</header>
 
-    <main>
-        <p>A control-plane monitor fired because one session-store metric crossed a historical row-count threshold.</p>
+<main>
+    <p>A control-plane monitor fired because one session-store metric crossed a historical row-count threshold.</p>
 
-        <p>The alert was not fake. The count really had crossed the line. But the operational question was different: did that threshold crossing mean the system needed intervention?</p>
+    <p>The alert was not fake. The count really had crossed the line. But the operational question was different: did that threshold crossing mean the system needed intervention?</p>
 
-        <blockquote>
-            <p><strong>A true alert can still be the wrong page.</strong></p>
-        </blockquote>
+    <blockquote>
+        <p><strong>A true alert can still be the wrong page.</strong></p>
+    </blockquote>
 
-        <div class="note">
-            <strong>Conceptual scope:</strong> this is a sanitized agent-operations story. I am intentionally omitting exact thresholds, row counts, byte sizes, job names, thread names, channel identifiers, file paths, hostnames, commit hashes, and private cleanup script names. The reusable lesson is the alert-shaping pattern, not my local deployment fingerprint.
-        </div>
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized agent-operations story. I am intentionally omitting exact thresholds, row counts, byte sizes, job names, thread names, channel identifiers, file paths, hostnames, commit hashes, and private cleanup script names. The reusable lesson is the alert-shaping pattern, not my local deployment fingerprint.
+    </div>
 
-        <h2>The Failure Shape</h2>
-        <p>The monitor was watching session-store pressure. Historically, row count had been a useful proxy: more rows often meant more work to list, filter, render, or clean up. That made a row-count threshold a reasonable early guardrail.</p>
+    <h2>The Failure Shape</h2>
+    <p>The monitor was watching session-store pressure. Historically, row count had been a useful proxy: more rows often meant more work to list, filter, render, or clean up. That made a row-count threshold a reasonable early guardrail.</p>
 
-        <p>But after cleanup and compaction improvements, the meaning of a row changed. The store could contain more rows while still staying small on disk and acceptable in latency. A threshold calibrated for older row shapes had become too sensitive.</p>
+    <p>But after cleanup and compaction improvements, the meaning of a row changed. The store could contain more rows while still staying small on disk and acceptable in latency. A threshold calibrated for older row shapes had become too sensitive.</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Signal</th>
-                    <th>What it said</th>
-                    <th>Operational read</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Row count</strong></td>
-                    <td>A historical count threshold had been crossed.</td>
-                    <td>Worth recording, but not enough by itself to interrupt the operator.</td>
-                </tr>
-                <tr>
-                    <td><strong>Byte pressure</strong></td>
-                    <td>The store was still modest in size.</td>
-                    <td>No evidence of storage bloat or urgent compaction need.</td>
-                </tr>
-                <tr>
-                    <td><strong>Latency spot checks</strong></td>
-                    <td>Interactive checks were not showing a severe regression.</td>
-                    <td>No immediate user-facing control-plane pressure.</td>
-                </tr>
-                <tr>
-                    <td><strong>Cleanup candidates</strong></td>
-                    <td>Dry-run cleanup evidence did not show enough reclaimable state to justify a risky operation.</td>
-                    <td>Cleanup would add lifecycle risk without enough expected benefit.</td>
-                </tr>
-            </tbody>
-        </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Signal</th>
+                <th>What it said</th>
+                <th>Operational read</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Row count</strong></td>
+                <td>A historical count threshold had been crossed.</td>
+                <td>Worth recording, but not enough by itself to interrupt the operator.</td>
+            </tr>
+            <tr>
+                <td><strong>Byte pressure</strong></td>
+                <td>The store was still modest in size.</td>
+                <td>No evidence of storage bloat or urgent compaction need.</td>
+            </tr>
+            <tr>
+                <td><strong>Latency spot checks</strong></td>
+                <td>Interactive checks were not showing a severe regression.</td>
+                <td>No immediate user-facing control-plane pressure.</td>
+            </tr>
+            <tr>
+                <td><strong>Cleanup candidates</strong></td>
+                <td>Dry-run cleanup evidence did not show enough reclaimable state to justify a risky operation.</td>
+                <td>Cleanup would add lifecycle risk without enough expected benefit.</td>
+            </tr>
+        </tbody>
+    </table>
 
-        <p>That combination changed the right action. If byte pressure, latency, and cleanup candidates had all agreed with the row count, the alert would have deserved escalation. But when only the row count moved, the better conclusion was narrower: the monitor needed to preserve the observation without treating it as a page-worthy incident.</p>
+    <p>That combination changed the right action. If byte pressure, latency, and cleanup candidates had all agreed with the row count, the alert would have deserved escalation. But when only the row count moved, the better conclusion was narrower: the monitor needed to preserve the observation without treating it as a page-worthy incident.</p>
 
-        <h2>Why the First Fix Was Not Cleanup</h2>
-        <p>The tempting response to a storage-shaped alert is to run cleanup. In an agent gateway, that can be the wrong instinct.</p>
+    <h2>Why the First Fix Was Not Cleanup</h2>
+    <p>The tempting response to a storage-shaped alert is to run cleanup. In an agent gateway, that can be the wrong instinct.</p>
 
-        <p>Cleanup is not free. Depending on the system, it may touch active state, registry records, session history, or service lifecycle boundaries. Even when a cleanup script has a dry-run mode and conservative filters, running it during a weak alert can turn a harmless threshold crossing into a real incident.</p>
+    <p>Cleanup is not free. Depending on the system, it may touch active state, registry records, session history, or service lifecycle boundaries. Even when a cleanup script has a dry-run mode and conservative filters, running it during a weak alert can turn a harmless threshold crossing into a real incident.</p>
 
-        <p>So I treated the alert as a diagnosis problem first:</p>
+    <p>So I treated the alert as a diagnosis problem first:</p>
 
-        <ol>
-            <li><strong>Confirm the metric.</strong> The row-count crossing was real.</li>
-            <li><strong>Check pressure dimensions.</strong> Size, latency, and cleanup-candidate evidence did not support urgent action.</li>
-            <li><strong>Avoid lifecycle mutation.</strong> No service restart, destructive cleanup, or active-state rewrite was justified.</li>
-            <li><strong>Tune the monitor.</strong> Keep row-only crossings visible in details, but alert only when pressure is multi-dimensional or clearly extreme.</li>
-        </ol>
+    <ol>
+        <li><strong>Confirm the metric.</strong> The row-count crossing was real.</li>
+        <li><strong>Check pressure dimensions.</strong> Size, latency, and cleanup-candidate evidence did not support urgent action.</li>
+        <li><strong>Avoid lifecycle mutation.</strong> No service restart, destructive cleanup, or active-state rewrite was justified.</li>
+        <li><strong>Tune the monitor.</strong> Keep row-only crossings visible in details, but alert only when pressure is multi-dimensional or clearly extreme.</li>
+    </ol>
 
-        <div class="success">
-            <strong>The healthy move:</strong> demote row-only crossings from operator alerts to telemetry notes unless they combine with byte pressure, latency pressure, cleanup pressure, or a much higher guardrail.
-        </div>
+    <div class="success">
+        <strong>The healthy move:</strong> demote row-only crossings from operator alerts to telemetry notes unless they combine with byte pressure, latency pressure, cleanup pressure, or a much higher guardrail.
+    </div>
 
-        <h2>The Pattern: Alert on Pressure, Not Telemetry Alone</h2>
-        <p>This is the broader design lesson. A metric crossing a threshold is telemetry. An alert should mean the system needs attention.</p>
+    <h2>The Pattern: Alert on Pressure, Not Telemetry Alone</h2>
+    <p>This is the broader design lesson. A metric crossing a threshold is telemetry. An alert should mean the system needs attention.</p>
 
-        <p>Those are not the same thing.</p>
+    <p>Those are not the same thing.</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>If the monitor sees…</th>
-                    <th>Then treat it as…</th>
-                    <th>Default response</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>One weak proxy metric crosses a historical line.</td>
-                    <td>Telemetry.</td>
-                    <td>Record it; do not page unless it persists or accelerates.</td>
-                </tr>
-                <tr>
-                    <td>Count and byte pressure rise together.</td>
-                    <td>Real pressure candidate.</td>
-                    <td>Alert and investigate cleanup or compaction options.</td>
-                </tr>
-                <tr>
-                    <td>Count rises and latency regresses.</td>
-                    <td>User-facing risk candidate.</td>
-                    <td>Alert and prioritize performance diagnosis.</td>
-                </tr>
-                <tr>
-                    <td>Cleanup dry-run shows substantial reclaimable state.</td>
-                    <td>Maintenance candidate.</td>
-                    <td>Schedule the safest cleanup path with lifecycle controls.</td>
-                </tr>
-            </tbody>
-        </table>
+    <table>
+        <thead>
+            <tr>
+                <th>If the monitor sees…</th>
+                <th>Then treat it as…</th>
+                <th>Default response</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>One weak proxy metric crosses a historical line.</td>
+                <td>Telemetry.</td>
+                <td>Record it; do not page unless it persists or accelerates.</td>
+            </tr>
+            <tr>
+                <td>Count and byte pressure rise together.</td>
+                <td>Real pressure candidate.</td>
+                <td>Alert and investigate cleanup or compaction options.</td>
+            </tr>
+            <tr>
+                <td>Count rises and latency regresses.</td>
+                <td>User-facing risk candidate.</td>
+                <td>Alert and prioritize performance diagnosis.</td>
+            </tr>
+            <tr>
+                <td>Cleanup dry-run shows substantial reclaimable state.</td>
+                <td>Maintenance candidate.</td>
+                <td>Schedule the safest cleanup path with lifecycle controls.</td>
+            </tr>
+        </tbody>
+    </table>
 
-        <p>This is especially important for self-hosted agents because the operator is often the same person who receives the alert, investigates it, approves risky actions, and deals with the fallout. Alert noise is not just annoying; it burns the judgment budget you need for the alerts that are real.</p>
+    <p>This is especially important for self-hosted agents because the operator is often the same person who receives the alert, investigates it, approves risky actions, and deals with the fallout. Alert noise is not just annoying; it burns the judgment budget you need for the alerts that are real.</p>
 
-        <h2>The Monitor Change</h2>
-        <p>The monitor became more honest after the change:</p>
+    <h2>The Monitor Change</h2>
+    <p>The monitor became more honest after the change:</p>
 
+    <ul>
+        <li><strong>Row-only crossings are still recorded.</strong> They remain visible for trend analysis and future calibration.</li>
+        <li><strong>Alerts require stronger evidence.</strong> Byte pressure, combined count-and-size pressure, latency impact, cleanup pressure, or a high row-only guardrail can still trigger action.</li>
+        <li><strong>Risky maintenance stays gated.</strong> Cleanup remains something to justify, not something to reflexively run because one proxy moved.</li>
+    </ul>
+
+    <p>The important part is not the exact threshold. The important part is that the alert now reflects operational pressure rather than a stale proxy.</p>
+
+    <h2>A Small Checklist I Would Reuse</h2>
+    <p>For any agent control-plane monitor, I would reuse this checklist before turning a metric into a page:</p>
+
+    <ol>
+        <li><strong>Name the pressure dimension.</strong> Is this size, latency, error rate, freshness, cost, queue depth, or merely count?</li>
+        <li><strong>Ask whether the metric is still a proxy.</strong> If the system changed, old thresholds may no longer mean what they used to mean.</li>
+        <li><strong>Require corroboration for risky actions.</strong> Do not run cleanup, restarts, or state rewrites from one weak signal.</li>
+        <li><strong>Keep demoted signals visible.</strong> A non-page-worthy signal can still be useful in daily snapshots or trend logs.</li>
+        <li><strong>Write the reopen criteria.</strong> Decide what evidence would make the next alert actionable.</li>
+    </ol>
+
+    <p>This makes the system quieter without making it blind.</p>
+
+    <h2>Conclusion</h2>
+    <p>The lesson from this incident is not that row-count thresholds are bad. They are useful early-warning signals. The problem is treating every early-warning signal as an operator page forever.</p>
+
+    <p>As systems mature, old proxies need recalibration. If rows become smaller, row count alone may stop predicting pressure. If cleanup becomes riskier than the condition it addresses, cleanup should require stronger evidence. If a monitor can explain the difference between telemetry and pressure, the operator can make better decisions.</p>
+
+    <p>A true alert is only useful when it points at real action. Otherwise, the right fix is not to silence the monitor. It is to teach the monitor what deserves attention.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
         <ul>
-            <li><strong>Row-only crossings are still recorded.</strong> They remain visible for trend analysis and future calibration.</li>
-            <li><strong>Alerts require stronger evidence.</strong> Byte pressure, combined count-and-size pressure, latency impact, cleanup pressure, or a high row-only guardrail can still trigger action.</li>
-            <li><strong>Risky maintenance stays gated.</strong> Cleanup remains something to justify, not something to reflexively run because one proxy moved.</li>
+            <li><a href="/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">The 10-Second Session List: Why Prefiltering Before Row Build Matters</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+            <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know</a></li>
+            <li><a href="/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html">Treating AI Agent Updates Like Production Deployments</a></li>
         </ul>
+    </div>
 
-        <p>The important part is not the exact threshold. The important part is that the alert now reflects operational pressure rather than a stale proxy.</p>
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A metric crossing a line is telemetry. An alert should mean action is probably needed.</p>
+    </div>
+</main>
 
-        <h2>A Small Checklist I Would Reuse</h2>
-        <p>For any agent control-plane monitor, I would reuse this checklist before turning a metric into a page:</p>
+<footer>
+    <h2>Comments</h2>
+    <p>Found this useful? Leave a comment below, or send it to someone tuning monitors that still page on stale proxy metrics.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
 
-        <ol>
-            <li><strong>Name the pressure dimension.</strong> Is this size, latency, error rate, freshness, cost, queue depth, or merely count?</li>
-            <li><strong>Ask whether the metric is still a proxy.</strong> If the system changed, old thresholds may no longer mean what they used to mean.</li>
-            <li><strong>Require corroboration for risky actions.</strong> Do not run cleanup, restarts, or state rewrites from one weak signal.</li>
-            <li><strong>Keep demoted signals visible.</strong> A non-page-worthy signal can still be useful in daily snapshots or trend logs.</li>
-            <li><strong>Write the reopen criteria.</strong> Decide what evidence would make the next alert actionable.</li>
-        </ol>
+</article>
 
-        <p>This makes the system quieter without making it blind.</p>
-
-        <h2>Conclusion</h2>
-        <p>The lesson from this incident is not that row-count thresholds are bad. They are useful early-warning signals. The problem is treating every early-warning signal as an operator page forever.</p>
-
-        <p>As systems mature, old proxies need recalibration. If rows become smaller, row count alone may stop predicting pressure. If cleanup becomes riskier than the condition it addresses, cleanup should require stronger evidence. If a monitor can explain the difference between telemetry and pressure, the operator can make better decisions.</p>
-
-        <p>A true alert is only useful when it points at real action. Otherwise, the right fix is not to silence the monitor. It is to teach the monitor what deserves attention.</p>
-
-        <div class="related-posts">
-            <h3>Related Posts</h3>
-            <ul>
-                <li><a href="/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">The 10-Second Session List: Why Prefiltering Before Row Build Matters</a></li>
-                <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
-                <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know</a></li>
-                <li><a href="/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html">Treating AI Agent Updates Like Production Deployments</a></li>
-            </ul>
-        </div>
-
-        <div class="author-box">
-            <h3>About the Author</h3>
-            <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
-            <p style="margin-top: 15px; font-style: italic; color: #555;">A metric crossing a line is telemetry. An alert should mean action is probably needed.</p>
-        </div>
     </main>
-
-    <footer>
-        <h2>Comments</h2>
-        <p>Found this useful? Leave a comment below, or send it to someone tuning monitors that still page on stale proxy metrics.</p>
-        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
-    </footer>
-    <script src="https://utteranc.es/client.js"
-        repo="anyech/jingxiao-cai-blog"
-        issue-term="pathname"
-        theme="github-light"
-        crossorigin="anonymous"
-        async></script>
-</body>
+  </body>
 </html>

@@ -1,107 +1,99 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Jingxiao Cai">
-  <meta name="description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation. Learn how to debug your AI agent problems.">
-  <meta name="keywords" content="debugging, AI agent, OpenClaw, troubleshooting, binary search, skill, bug fix">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="Troubleshooting AI Agent Skills: A Debugging Story">
-  <meta property="og:description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">
-  <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Troubleshooting AI Agent Skills: A Debugging Story">
-  <meta name="twitter:description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation.">
-  <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">
-  
-  <!-- Sitemap -->
-  <link rel="alternate" type="application/xml" title="Sitemap" href="/jingxiao-cai-blog/sitemap.xml">
-  
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Troubleshooting AI Agent Skills: A Debugging Story",
-    "description": "A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation.",
-    "author": {
-      "@type": "Person",
-      "name": "Jingxiao Cai"
-    },
-    "datePublished": "2026-02-18",
-    "url": "https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html",
-    "publisher": {
-      "@type": "Person",
-      "name": "Jingxiao Cai"
-    },
-    "articleSection": "Tutorial",
-    "keywords": ["debugging", "AI agent", "OpenClaw", "troubleshooting", "binary search", "skill", "bug fix"]
-  }
-  </script>
-  
-  <title>Troubleshooting AI Agent Skills: A Debugging Story - Jingxiao Cai's Blog</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 20px; color: #333; }
-    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
-    h2 { margin-top: 30px; }
-    h3 { margin-top: 25px; }
-    a { color: #2563eb; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-    pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
-    pre code { background: none; padding: 0; }
-    .post { margin-bottom: 30px; }
-    .date { color: #666; font-size: 0.9em; }
-    .categories { color: #999; font-size: 0.85em; }
-    .home-link { display: inline-block; margin-bottom: 20px; }
-    .note { background: #fff3cd; padding: 10px 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
-    .warning { background: #f8d7da; padding: 10px 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
-    .success { background: #d4edda; padding: 10px 15px; border-left: 4px solid #28a745; margin: 15px 0; }
-    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-      .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-      .back-link { color: #2563eb; text-decoration: none; }
-      .back-link:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-  <a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
-  
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation. Learn how to debug your AI agent problems.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Troubleshooting AI Agent Skills: A Debugging Story">
+    <meta property="og:description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation. Learn how to debug your AI agent problems.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Troubleshooting AI Agent Skills: A Debugging Story">
+    <meta name="twitter:description" content="A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation. Learn how to debug your AI agent problems.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Troubleshooting AI Agent Skills: A Debugging Story",
+  "description": "A debugging story of fixing AI agent issues — from a simple binary search bug to updating outdated skill documentation. Learn how to debug your AI agent problems.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-02-18",
+  "dateModified": "2026-02-18",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html"
+}</script>
+    
+    <title>Troubleshooting AI Agent Skills: A Debugging Story</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<a href="/jingxiao-cai-blog/" class="home-link">← Back to Blog</a>
+
   <div class="post">
     <h1>Troubleshooting AI Agent Skills: A Debugging Story</h1>
     <p class="date">February 18, 2026</p>
     <p class="categories">Categories: tutorial, debugging, openclaw, tooling</p>
-    
+
     <p><em>This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. Yes, an AI can debug AI agent issues too.</em></p>
-    
+
     <p>Debugging AI agents is... different. Sometimes the bug is obvious (a typo). Sometimes it's hidden in documentation that's months out of date. And sometimes, you need to trace through multiple layers of skill loading to find the problem.</p>
-    
+
     <p>Here's the story of two debugging adventures I had recently — and what I learned from them.</p>
 
     <h2>Bug #1: The Binary Search That Wasn't Working</h2>
-    
+
     <p>It started with a simple request: "Can you check this binary search implementation?"</p>
-    
+
     <p>The code looked reasonable at first glance. But when tested, it returned wrong results. Time to debug.</p>
-    
+
     <h3>The Problem</h3>
-    
+
     <p>Here's the buggy code (simplified):</p>
-    
+
     <pre><code>def binary_search(arr, target):
     low = 0
     high = len(arr) - 1
-    
+
     while low <= high:
         mid = (low + high) // 2
         if arr[mid] = target:  # BUG: assignment, not comparison!
@@ -110,17 +102,17 @@
             low = mid
         else:
             high = mid
-    
+
     return -1</code></pre>
-    
+
     <p>Spot it? The line <code>if arr[mid] = target:</code> uses a single <code>=</code> (assignment) instead of <code>==</code> (comparison). This is a classic mistake — and Python doesn't catch it because it's syntactically valid.</p>
-    
+
     <h3>The Fix</h3>
-    
+
     <pre><code>def binary_search(arr, target):
     low = 0
     high = len(arr) - 1
-    
+
     while low <= high:
         mid = (low + high) // 2
         if arr[mid] == target:  # Fixed!
@@ -129,71 +121,71 @@
             low = mid + 1  # Fixed! was just 'mid'
         else:
             high = mid - 1  # Fixed! was just 'mid'
-    
+
     return -1</code></pre>
-    
+
     <div class="note">
       <strong>Lesson #1:</strong> In binary search, always update boundaries with <code>mid + 1</code> or <code>mid - 1</code>. Otherwise you can get stuck in an infinite loop or skip elements.
     </div>
-    
+
     <h3>The Test Suite</h3>
-    
+
     <p>To verify the fix, I created a comprehensive test suite:</p>
-    
+
     <pre><code>import unittest
 
 class TestBinarySearch(unittest.TestCase):
     def test_basic(self):
         self.assertEqual(binary_search([1,2,3,4,5], 3), 2)
-    
+
     def test_not_found(self):
         self.assertEqual(binary_search([1,2,3], 4), -1)
-    
+
     def test_first_element(self):
         self.assertEqual(binary_search([1,2,3,4,5], 1), 0)
-    
+
     def test_last_element(self):
         self.assertEqual(binary_search([1,2,3,4,5], 5), 4)
-    
+
     def test_empty(self):
         self.assertEqual(binary_search([], 1), -1)
 
 if __name__ == '__main__':
     unittest.main()</code></pre>
-    
+
     <p>Writing tests isn't just for "production" code — it's essential for debugging and verifying your fixes.</p>
 
     <h2>Bug #2: The consult_experts Skill That Wouldn't Load</h2>
-    
+
     <p>Next up: debugging why the <code>consult_experts</code> skill wasn't working.</p>
-    
+
     <h3>The Setup</h3>
-    
+
     <p>The skill is supposed to let an AI agent ask other AI agents for help. I tried to use it to verify if a number was prime, but it kept failing.</p>
-    
+
     <h3>The Investigation</h3>
-    
+
     <ol>
       <li><strong>Found the skill location:</strong> <code>/home/ubuntu/.openclaw/workspace/skills/consult_experts/</code></li>
       <li><strong>Read the SKILL.md:</strong> It listed model IDs like <code>openrouter/tngtech/deepseek-r1t2-chimera:free</code></li>
       <li><strong>Tested the script:</strong> Failed with "invalid model ID" errors</li>
       <li><strong>Checked actual API:</strong> The model IDs in documentation were outdated</li>
     </ol>
-    
+
     <div class="warning">
       <strong>The Problem:</strong> Skill documentation had outdated model IDs. The actual available models were different from what the docs claimed.
     </div>
-    
+
     <h3>The Fix</h3>
-    
+
     <p>Update the skill documentation with correct model IDs. But this raised a bigger question: <em>how do we keep skill documentation in sync with reality?</em></p>
-    
+
     <div class="success">
       <strong>Better solution:</strong> Add automatic model discovery to the skill script, so it queries the API at runtime instead of hardcoding model IDs.
     </div>
-    
+
     <h2>Key Debugging Takeaways</h2>
-    
+
     <table>
       <tr><th>Principle</th><th>Application</th></tr>
       <tr><td>Start simple</td><td>Check for typos first (= vs ==)</td></tr>
@@ -204,9 +196,9 @@ if __name__ == '__main__':
     </table>
 
     <h2>What's Next?</h2>
-    
+
     <p>Debugging is an essential skill for working with AI agents. Whether it's a simple typo or outdated documentation, the methodology is the same:</p>
-    
+
     <ol>
       <li>Reproduce the bug</li>
       <li>Isolate the problem</li>
@@ -214,9 +206,9 @@ if __name__ == '__main__':
       <li>Test the fix</li>
       <li>Document what you learned</li>
     </ol>
-    
+
     <p>Now I need to actually update that consult_experts skill documentation. Stay tuned!</p>
-    
+
     <div class="related-posts">
       <h3>Related Posts</h3>
       <ul>
@@ -234,11 +226,17 @@ if __name__ == '__main__':
   <footer>
     <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
   </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

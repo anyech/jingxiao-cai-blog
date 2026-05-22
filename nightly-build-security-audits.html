@@ -1,93 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
     <meta name="description" content="How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks while I sleep, now with an exact-exec reliability update for false-negative cron alerts.">
-    <meta name="keywords" content="autonomous agent cron, unsupervised AI operations, nightly security audit automation, OpenClaw, AI agent devops">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="The Nightly Build: How My Agent Runs Security Audits While I Sleep">
-    <meta property="og:description" content="My AI agent runs autonomous cron jobs every night—security audits, health checks, documentation—and the later exact-exec lesson that made the failure signals more honest.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
+    <meta property="og:title" content="The Nightly Build: How My Agent Runs Security Audits While I Sleep">
+    <meta property="og:description" content="How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks while I sleep, now with an exact-exec reliability update for false-negative cron alerts.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-    
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="The Nightly Build: How My Agent Runs Security Audits While I Sleep">
-    <meta name="twitter:description" content="My AI agent runs autonomous cron jobs every night—security audits, health checks, documentation—and the later exact-exec lesson that made the failure signals more honest.">
+    <meta name="twitter:description" content="How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks while I sleep, now with an exact-exec reliability update for false-negative cron alerts.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html">
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Nightly Build: How My Agent Runs Security Audits While I Sleep",
+  "description": "How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks while I sleep, now with an exact-exec reliability update for false-negative cron alerts.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-03-02",
+  "dateModified": "2026-04-27",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html"
+}</script>
     
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "The Nightly Build: How My Agent Runs Security Audits While I Sleep",
-      "description": "How I built an autonomous AI agent that runs security audits, health checks, and maintenance tasks while I sleep, now with an exact-exec reliability update for false-negative cron alerts.",
-      "author": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "datePublished": "2026-03-02",
-      "dateModified": "2026-04-27",
-      "url": "https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html",
-      "publisher": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      }
-    }
-    </script>
-    
-    <title>The Nightly Build: How My Agent Runs Security Audits While I Sleep | Jingxiao Cai</title>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
-        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        header a { color: #0366d6; text-decoration: none; }
-        header a:hover { text-decoration: underline; }
-        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
-        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
-        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
-        .meta strong { color: #444; }
-        .tags { color: #0366d6; font-size: 0.9em; }
-        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-    .back-link { color: #2563eb; text-decoration: none; }
-    .back-link:hover { text-decoration: underline; }
-        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
-        pre code { background: none; padding: 0; }
-        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background: #f6f8fa; font-weight: 600; }
-        ul, ol { margin: 15px 0 15px 30px; }
-        li { margin: 8px 0; }
-        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
-        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
-        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
-        .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
-    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .related-posts a { color: #0366d6; text-decoration: none; }
-        .related-posts a:hover { text-decoration: underline; }
-        .cron-table { background: #fff; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
-        .cron-table th { background: #0366d6; color: white; }
-        .highlight { background: #fffbdd; padding: 2px 6px; border-radius: 3px; }
-    </style>
-</head>
-<body>
-    <header>
+    <title>The Nightly Build: How My Agent Runs Security Audits While I Sleep</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>The Nightly Build: How My Agent Runs Security Audits While I Sleep</h1>
         <div class="meta">
@@ -134,7 +114,7 @@
         <div class="note">
             <strong>📋 Schedule note:</strong> The examples below describe the kinds of jobs in the system. Exact times, job names, channel identifiers, and run identifiers are intentionally omitted or generalized for security.
         </div>
-        
+
         <table class="cron-table">
             <thead>
                 <tr>
@@ -192,7 +172,7 @@
 
         <h2>Last Night's Security Audit: Real Results</h2>
         <p>In an overnight run, my agent ran a deep security audit. Here's what it found:</p>
-        
+
         <h3>Executive Summary</h3>
         <pre><code>Security Audit Report
 Audit Type: Deep security audit (--deep)
@@ -219,12 +199,12 @@ chmod 600 ~/.openclaw/openclaw.json</code></pre>
 
         <h3>Warning Findings (No Action Required)</h3>
         <p>Two warnings were flagged but deemed acceptable for my deployment:</p>
-        
+
         <p><strong>1. Reverse Proxy Headers Not Trusted</strong></p>
         <pre><code>Issue: gateway.trusted_proxies_missing
 Actual Risk: LOW (loopback-only binding, no reverse proxy)
 Action: Safe to ignore unless architecture changes</code></pre>
-        
+
         <p><strong>2. Multi-User Heuristic Detected</strong></p>
         <pre><code>Issue: security.trust_model.multi_user_heuristic
 Actual Risk: LOW (single-user deployment)
@@ -237,14 +217,14 @@ Action: Expected and safe for this deployment</code></pre>
 
         <h2>Architecture: Making Unsupervised Operation Safe</h2>
         <p>Running autonomous cron jobs with tool access (file system, commands, messaging) requires careful security boundaries. Here's my setup:</p>
-        
+
         <h3>1. Loopback-Only Gateway</h3>
         <pre><code>"gateway": {
   "bind": "127.0.0.1",
   "port": 8080
 }</code></pre>
         <p>The OpenClaw gateway only accepts connections from localhost. No external access, no network exposure.</p>
-        
+
         <h3>2. Outbound-Only Messaging</h3>
         <p>Cron jobs can send messages to my Telegram channel, but <strong>cannot receive inbound commands</strong> from the channel. The channel is for <em>reports</em>, not <em>control</em>.</p>
         <pre><code>"channels": {
@@ -253,12 +233,12 @@ Action: Expected and safe for this deployment</code></pre>
     "groupPolicy": "allowlist"
   }
 }</code></pre>
-        
+
         <h3>3. Workspace-Only File Access (Default)</h3>
         <p>By default, agents can only read/write within the workspace directory:</p>
         <pre><code>~/.openclaw/workspace/</code></pre>
         <p>System-wide access requires explicit elevation (which the healthcheck job has).</p>
-        
+
         <h3>4. Isolated Session Targets</h3>
         <p>All cron jobs run in isolated sessions, not the main session:</p>
         <pre><code>"sessionTarget": "isolated",
@@ -285,19 +265,19 @@ Action: Expected and safe for this deployment</code></pre>
         <p>I wrote the fuller version of this lesson in <a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a>. This update belongs here because the Nightly Build is only valuable if its failure signals are honest.</p>
 
         <h2>Lessons Learned: 30 Days of Autonomous Operation</h2>
-        
+
         <h3>1. Autonomy ≠ Intelligence</h3>
         <p>The most valuable thing my agent does at night isn't clever—it's <strong>repeatable</strong>. A dumb task done reliably every night is worth more than a brilliant task done once.</p>
-        
+
         <h3>2. Trust But Verify</h3>
         <p>I trust my agent to run these jobs, but I <strong>verify the results every morning</strong>. The security audit report, health check status, morning memo—I read them all. Autonomy doesn't mean abdication.</p>
-        
+
         <h3>3. Start Small, Expand Gradually</h3>
         <p>I didn't start with multiple cron jobs. I started with one (morning memo). Then added health checks. Then security audits. Each new job earned its place by proving value.</p>
-        
+
         <h3>4. Document Everything</h3>
         <p>Every cron job logs to memory files. Every audit result is saved. Every failure is documented. This creates an audit trail I can review months later.</p>
-        
+
         <h3>5. Failure is Inevitable—Design for It</h3>
         <p>Cron jobs fail. APIs rate limit. Networks partition. My agent handles this by:</p>
         <ul>
@@ -316,20 +296,20 @@ Action: Expected and safe for this deployment</code></pre>
 
         <h2>Getting Started: Your First Nightly Job</h2>
         <p>If you want to try this yourself, start with one simple job:</p>
-        
+
         <h3>Step 1: Install OpenClaw</h3>
         <pre><code>npm install -g openclaw
 openclaw init
 openclaw start</code></pre>
-        
+
         <h3>Step 2: Create a Simple Cron Job</h3>
         <pre><code>openclaw cron add \
   --schedule "0 2 * * *" \
   --message "Run a simple health check during a quiet overnight window"</code></pre>
-        
+
         <h3>Step 3: Review the Results</h3>
         <p>Check your Telegram (or configured channel) the next morning. You should see the health check report.</p>
-        
+
         <h3>Step 4: Expand Gradually</h3>
         <p>Once you're comfortable with one job, add another. Maybe a daily summary. Maybe a security audit. Build up slowly.</p>
 
@@ -347,18 +327,24 @@ openclaw start</code></pre>
             <p>Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He runs his personal AI agent, Clawsistant, on a cloud VM and keeps learning that autonomy is mostly about reliable boundaries.</p>
             <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post started as a celebration of unattended automation. The 2026 update made it more honest: a nightly job also needs to prove which layer actually failed.</p>
         </div>
-        
+
 </main>
 
     <footer>
         <p>Updated April 27, 2026 • Found this helpful? Share it with someone else building autonomous agents.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

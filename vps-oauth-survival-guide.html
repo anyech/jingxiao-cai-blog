@@ -1,88 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.">
-    <meta name="keywords" content="OAuth VPS headless, Google OAuth without browser, headless server OAuth, VPS automation, Google API tutorial, OAuth readiness gate, agent launch readiness, OAuth 2.0 Python">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
-    <meta property="og:description" content="A headless-server OAuth guide with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that generalizes to agent tool launches.">
+    <meta name="description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
+    <meta property="og:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
+    <meta property="og:description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="VPS OAuth Survival Guide: Google APIs Without a Browser">
-    <meta name="twitter:description" content="Headless OAuth on a VPS, plus the readiness checks that keep automated jobs and agent launches from failing open.">
+    <meta name="twitter:description" content="Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-
-    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "VPS OAuth Survival Guide: Google APIs Without a Browser",
-      "description": "Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.",
-      "author": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "datePublished": "2026-02-25",
-      "dateModified": "2026-04-29",
-      "url": "https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html",
-      "publisher": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      }
-    }
-    </script>
     
-    <title>VPS OAuth Survival Guide: Google APIs Without a Browser | Jingxiao Cai's Blog</title>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "VPS OAuth Survival Guide: Google APIs Without a Browser",
+  "description": "Complete tutorial on OAuth 2.0 for headless servers, with OAuth Playground setup, token lifecycle checks, and a fail-closed readiness gate that now links to the broader agent-launch pattern.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-02-25",
+  "dateModified": "2026-04-29",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html"
+}</script>
     
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
-        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        header a { color: #0366d6; text-decoration: none; }
-        header a:hover { text-decoration: underline; }
-        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
-        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
-        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
-        .meta strong { color: #444; }
-        .tags { color: #0366d6; font-size: 0.9em; }
-        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-    .back-link { color: #2563eb; text-decoration: none; }
-    .back-link:hover { text-decoration: underline; }
-        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
-        pre code { background: none; padding: 0; }
-        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background: #f6f8fa; font-weight: 600; }
-        ul, ol { margin: 15px 0 15px 30px; }
-        li { margin: 8px 0; }
-        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
-        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
-        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
-        .update-banner { background: #d1ecf1; border-left: 4px solid #0c5460; padding: 15px; margin: 20px 0; }
-    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .related-posts a { color: #0366d6; text-decoration: none; }
-        .related-posts a:hover { text-decoration: underline; }
-        .screenshot-placeholder { background: #f0f0f0; border: 2px dashed #ccc; padding: 40px; text-align: center; margin: 20px 0; border-radius: 6px; }
-        .screenshot-placeholder em { color: #666; }
-    </style>
-</head>
-<body>
-    <header>
+    <title>VPS OAuth Survival Guide: Google APIs Without a Browser</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>VPS OAuth Survival Guide: Google APIs Without a Browser</h1>
         <div class="meta">
@@ -164,7 +149,7 @@ https://accounts.google.com/o/oauth2/auth?client_id=...</code></pre>
             <li>Click <strong>Save</strong></li>
         </ol>
         <p><strong>Important:</strong> This is the official Google OAuth Playground URL. Do NOT use any other redirect URI for this workflow.</p>
-        
+
         <div class="screenshot-placeholder">
             <strong>📸 Screenshot: Google Cloud Console - OAuth Credentials</strong><br>
             <em>Shows "Authorized redirect URIs" section with https://developers.google.com/oauthplayground added</em><br>
@@ -181,7 +166,7 @@ pip install google-auth google-auth-oauthlib google-auth-httplib2 requests
 
 # Freeze dependencies (for reproducibility)
 pip freeze > requirements.txt</code></pre>
-        
+
         <div class="note">
             <strong>📦 Complete Scripts Available on GitHub</strong><br>
             Instead of copying code from this page, clone the complete repository with both scripts, README, and requirements.txt:<br>
@@ -190,7 +175,7 @@ pip freeze > requirements.txt</code></pre>
 
         <h2>Step 3: Create the OAuth URL Generator Script</h2>
         <p>The full script is available on <a href="https://github.com/anyech/openclaw-gmail-reader/tree/main/oauth" target="_blank">GitHub</a>. Here are the key parts:</p>
-        
+
         <pre><code># Key parameters for headless OAuth
 params = {
     'client_id': client_id,
@@ -204,12 +189,12 @@ params = {
 # Generate URL
 base_url = 'https://accounts.google.com/o/oauth2/auth'
 auth_url = f"{base_url}?{urlencode(params)}"</code></pre>
-        
+
         <p><strong>Full script:</strong> <a href="https://github.com/anyech/openclaw-gmail-reader/blob/main/oauth/generate_oauth_url.py" target="_blank">generate_oauth_url.py</a> on GitHub</p>
 
         <h2>Step 4: Create the Code Exchange Script</h2>
         <p>The full script is available on <a href="https://github.com/anyech/openclaw-gmail-reader/tree/main/oauth" target="_blank">GitHub</a>. Here are the key parts:</p>
-        
+
         <pre><code># Token exchange endpoint
 token_uri = 'https://oauth2.googleapis.com/token'
 
@@ -231,9 +216,9 @@ token_data = response.json()
 # Add metadata and save with secure permissions
 token_data['expiry'] = datetime.utcnow().timestamp() + token_data.get('expires_in', 3600)
 os.chmod(filename, 0o600)  # Owner read/write only</code></pre>
-        
+
         <p><strong>Full script:</strong> <a href="https://github.com/anyech/openclaw-gmail-reader/blob/main/oauth/exchange_code.py" target="_blank">exchange_code.py</a> on GitHub</p>
-        
+
         <div class="success">
             <strong>💡 Pro Tip:</strong> Clone the entire repository to get both scripts, README with full instructions, and requirements.txt:<br>
             <code>git clone https://github.com/anyech/openclaw-gmail-reader.git</code>
@@ -241,7 +226,7 @@ os.chmod(filename, 0o600)  # Owner read/write only</code></pre>
 
         <h2>Step 5: Run the OAuth Flow</h2>
         <p>Now let's put it all together. If you cloned the repository:</p>
-        
+
         <h3>5.1 Generate Authorization URL</h3>
         <pre><code class="language-bash">cd openclaw-gmail-reader/oauth
 source venv/bin/activate
@@ -254,7 +239,7 @@ python3 generate_oauth_url.py</code></pre>
             <li><strong>Click "Allow"</strong> on Google's consent screen</li>
             <li><strong>You'll be redirected</strong> to OAuth Playground</li>
         </ol>
-        
+
         <div class="screenshot-placeholder">
             <strong>📸 Screenshot: Google Consent Screen</strong><br>
             <em>Shows the Google OAuth consent screen with scopes listed and "Allow" button</em><br>
@@ -265,7 +250,7 @@ python3 generate_oauth_url.py</code></pre>
         <p>On the OAuth Playground page, you'll see:</p>
         <pre><code>Authorization code: 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
         <p><strong>Copy this code</strong> (the long string after <code>code=</code>).</p>
-        
+
         <div class="screenshot-placeholder">
             <strong>📸 Screenshot: OAuth Playground - Authorization Code</strong><br>
             <em>Shows OAuth Playground page with authorization code displayed in "Step 2" section</em><br>
@@ -274,13 +259,13 @@ python3 generate_oauth_url.py</code></pre>
 
         <h3>5.4 Exchange Code for Tokens</h3>
         <pre><code class="language-bash">python3 exchange_code.py 4/0AY0e-g7ZxKqL9vN8mP3rT6sU2wV5xY8zA1bC4dE7fG</code></pre>
-        
+
         <div class="success">
             <strong>✅ Success!</strong> Your <code>token.json</code> file is now ready to use with your AI agent or any Google API application.
         </div>
 
         <h2>Security Best Practices</h2>
-        
+
         <h3>1. Where to Store Credentials</h3>
         <table>
             <thead>
@@ -312,7 +297,7 @@ python3 generate_oauth_url.py</code></pre>
                 </tr>
             </tbody>
         </table>
-        
+
         <div class="warning">
             <strong>Never:</strong>
             <ul>
@@ -389,7 +374,7 @@ python3 generate_oauth_url.py</code></pre>
         <div class="warning">
             <strong>⚠️ Critical Issue Discovered:</strong> Calendar and Drive APIs returning 403 "insufficient scopes" even after re-authorization. <strong>Don't re-authorize immediately!</strong>
         </div>
-        
+
         <h3>Symptoms</h3>
         <p>Your morning memo or API scripts show:</p>
         <pre><code>📅 CALENDAR
@@ -400,7 +385,7 @@ python3 generate_oauth_url.py</code></pre>
 
         <h3>Root Cause: token.json Scope Staleness</h3>
         <p><strong>The OAuth refresh token may have all scopes, but <code>token.json</code> has stale scope metadata.</strong></p>
-        
+
         <p>When you re-authorize Google OAuth:</p>
         <ol>
             <li>✅ Refresh token is updated with <strong>all requested scopes</strong></li>
@@ -410,7 +395,7 @@ python3 generate_oauth_url.py</code></pre>
         </ol>
 
         <h3>The Fix (Without Re-authorizing!)</h3>
-        
+
         <h4>Step 1: Check Current Token Scopes</h4>
         <pre><code class="language-bash">cat ~/.openclaw/workspace/gmail-reader/credentials/token.json | \
   python3 -m json.tool | grep -A 10 "scopes"</code></pre>
@@ -502,18 +487,24 @@ print('Drive API: ✅ Working')
             <p>Jingxiao Cai is a Principal Architect specializing in ML infrastructure. PhD in Radar Signal Processing from University of Oklahoma. Previously at Oracle building HeatWave ML infrastructure.</p>
             <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This guide was born from pain. After spending 6 hours fighting OAuth on my VPS, I created these scripts so you don't have to. May your tokens never expire unexpectedly.</p>
         </div>
-        
+
 </main>
 
     <footer>
         <p>Updated April 29, 2026 • Found this helpful? Share it with someone else fighting headless OAuth.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>

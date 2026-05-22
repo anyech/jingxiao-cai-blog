@@ -1,94 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
     <meta name="description" content="A comprehensive checklist for sanitizing blog posts before publishing. Learn what to redact, what to keep, and how to validate your posts for operational security.">
-    <meta name="keywords" content="blog sanitization, technical writing security, redaction checklist, operational security, content publishing, PII protection">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Blog Post Sanitization Checklist: What to Redact Before Publishing">
-    <meta property="og:description" content="I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
+    <meta property="og:title" content="Blog Post Sanitization Checklist: What to Redact Before Publishing">
+    <meta property="og:description" content="A comprehensive checklist for sanitizing blog posts before publishing. Learn what to redact, what to keep, and how to validate your posts for operational security.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-    
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Blog Post Sanitization Checklist: What to Redact Before Publishing">
-    <meta name="twitter:description" content="I created a sanitization checklist after nearly publishing sensitive deployment details. Here's what to redact, what to keep, and validation scripts.">
+    <meta name="twitter:description" content="A comprehensive checklist for sanitizing blog posts before publishing. Learn what to redact, what to keep, and how to validate your posts for operational security.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html">
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Blog Post Sanitization Checklist: What to Redact Before Publishing",
+  "description": "A comprehensive checklist for sanitizing blog posts before publishing. Learn what to redact, what to keep, and how to validate your posts for operational security.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-03-03",
+  "dateModified": "2026-03-03",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html"
+}</script>
     
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "Blog Post Sanitization Checklist: What to Redact Before Publishing",
-      "description": "A comprehensive checklist for sanitizing blog posts before publishing.",
-      "author": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      },
-      "datePublished": "2026-03-03",
-      "url": "https://anyech.github.io/jingxiao-cai-blog/blog-sanitization-checklist.html",
-      "publisher": {
-        "@type": "Person",
-        "name": "Jingxiao Cai"
-      }
-    }
-    </script>
-    
-    <title>Blog Post Sanitization Checklist: What to Redact Before Publishing | Jingxiao Cai</title>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #fafafa; }
-        header { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        header a { color: #0366d6; text-decoration: none; }
-        header a:hover { text-decoration: underline; }
-        h1 { font-size: 2.2em; margin-bottom: 15px; color: #1a1a1a; }
-        h2 { font-size: 1.6em; margin: 35px 0 15px; color: #1a1a1a; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        h3 { font-size: 1.3em; margin: 25px 0 12px; color: #2a2a2a; }
-        .meta { color: #666; font-size: 0.95em; margin-bottom: 15px; }
-        .meta strong { color: #444; }
-        .tags { color: #0366d6; font-size: 0.9em; }
-        .disclaimer { font-style: italic; color: #555; background: #f0f7ff; padding: 12px 15px; border-left: 3px solid #0366d6; margin: 20px 0; }
-    .back-link { color: #2563eb; text-decoration: none; }
-    .back-link:hover { text-decoration: underline; }
-        hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; }
-        pre code { background: none; padding: 0; }
-        blockquote { border-left: 4px solid #0366d6; padding-left: 20px; margin: 20px 0; color: #555; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background: #f6f8fa; font-weight: 600; }
-        ul, ol { margin: 15px 0 15px 30px; }
-        li { margin: 8px 0; }
-        .note { background: #fff8e6; padding: 15px; border-left: 4px solid #f0b90b; margin: 20px 0; }
-        .warning { background: #ffeef0; padding: 15px; border-left: 4px solid #d73a49; margin: 20px 0; }
-        .success { background: #e6ffed; padding: 15px; border-left: 4px solid #28a745; margin: 20px 0; }
-    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #555; }
-    .author-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 30px; }
-    .related-posts { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .related-posts a { color: #0366d6; text-decoration: none; }
-        .related-posts a:hover { text-decoration: underline; }
-        .checklist { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin: 20px 0; }
-        .checklist-item { margin: 10px 0; padding-left: 25px; position: relative; }
-        .checklist-item:before { content: "☐"; position: absolute; left: 0; color: #0366d6; }
-        .example-box { background: #f6f8fa; border-left: 4px solid #0366d6; padding: 15px; margin: 20px 0; }
-        .example-box.bad { border-left-color: #d73a49; background: #ffeef0; }
-        .example-box.good { border-left-color: #28a745; background: #e6ffed; }
-    </style>
-</head>
-<body>
-    <header>
+    <title>Blog Post Sanitization Checklist: What to Redact Before Publishing</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Blog Post Sanitization Checklist: What to Redact Before Publishing</h1>
         <div class="meta">
@@ -131,9 +110,9 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
         <p>So what do you redact?</p>
 
         <h2>The Redaction Rules</h2>
-        
+
         <h3>🔴 ALWAYS REDACT</h3>
-        
+
         <table>
             <thead>
                 <tr>
@@ -202,7 +181,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
         </table>
 
         <h3>✅ SAFE TO KEEP</h3>
-        
+
         <table>
             <thead>
                 <tr>
@@ -251,18 +230,18 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
         </table>
 
         <h2>Before/After Examples</h2>
-        
+
         <div class="example-box bad">
             <strong>❌ Before (Unsanitized)</strong>
             <pre><code>My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54) 
 runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code></pre>
         </div>
-        
+
         <div class="example-box good">
             <strong>✅ After (Sanitized)</strong>
             <pre><code>My daily Moltbook scan job runs at noon PST and sends reports to my Telegram channel.</code></pre>
         </div>
-        
+
         <p><strong>What changed:</strong></p>
         <ul>
             <li>❌ Removed specific job name (<code>moltbook-lunch-scan</code>)</li>
@@ -275,23 +254,23 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
 
         <h2>Validation: Automated Checks</h2>
         <p>Before publishing, I run these grep commands:</p>
-        
+
         <h3>1. Check for UUIDs</h3>
         <pre><code>grep -E "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" draft.html</code></pre>
         <p><strong>Expected:</strong> No results ✅</p>
-        
+
         <h3>2. Check for Telegram Channel IDs</h3>
         <pre><code>grep -E "\-100[0-9]+" draft.html</code></pre>
         <p><strong>Expected:</strong> No results ✅</p>
-        
+
         <h3>3. Check for Specific Job Names</h3>
         <pre><code>grep -E "moltbook-|healthcheck-|morning-" draft.html</code></pre>
         <p><strong>Expected:</strong> Only in generic context (e.g., "Moltbook scan" not <code>moltbook-lunch-scan</code>)</p>
-        
+
         <h3>4. Check for Full Paths with Usernames</h3>
         <pre><code>grep -E "/home/[a-z]+" draft.html</code></pre>
         <p><strong>Expected:</strong> No results ✅ (use <code>~</code> instead)</p>
-        
+
         <h3>5. Manual Review</h3>
         <p>Read the entire post asking:</p>
         <blockquote>
@@ -301,7 +280,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
 
         <h2>Blog Posts ≠ GitHub Issues</h2>
         <p>I adapted this from my GitHub Issue Sanitization Checklist, but blog posts are different:</p>
-        
+
         <h3>More Lenient (It's Your Content)</h3>
         <ul>
             <li>✅ Use your name (it's your blog)</li>
@@ -309,7 +288,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
             <li>✅ Share your architecture patterns</li>
             <li>✅ Link to your GitHub and social profiles</li>
         </ul>
-        
+
         <h3>But Still Protect</h3>
         <ul>
             <li>❌ Operational security (cron schedules, job names)</li>
@@ -317,11 +296,11 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
             <li>❌ Family privacy (children's details, school info)</li>
             <li>❌ Financial privacy (exact compensation, account balances)</li>
         </ul>
-        
+
         <p><strong>Key principle:</strong> Protect <em>how your deployment works</em>, not <em>who you are</em>.</p>
 
         <h2>The Checklist I Use Now</h2>
-        
+
         <div class="checklist">
             <h3>Pre-Flight Check (Before Publishing)</h3>
             <div class="checklist-item">Drafted full post with all technical details</div>
@@ -330,24 +309,24 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
             <div class="checklist-item">Ran automated validation (grep commands)</div>
             <div class="checklist-item">Manual review: "Could someone identify my deployment?"</div>
             <div class="checklist-item">Saved sanitized version to git repo</div>
-            
+
             <h3>After Publishing</h3>
             <div class="checklist-item">Save post URL to memory</div>
             <div class="checklist-item">Document what was redacted</div>
             <div class="checklist-item">Note any feedback received</div>
         </div>
-        
+
         <p><strong>Location:</strong> I keep this checklist at <code>memory/categories/blog-sanitization-checklist.md</code> and review it before every post.</p>
 
         <h2>Lessons Learned</h2>
-        
+
         <h3>1. Operational Security > Anonymity</h3>
         <p>The goal isn't to hide who you are—it's to protect <strong>how your systems work</strong>.</p>
         <ul>
             <li>✅ "I run security audits" (general capability)</li>
             <li>❌ "My <code>healthcheck-nightly-audit</code> job runs at exactly 3:00 AM" (specific pattern)</li>
         </ul>
-        
+
         <h3>2. Consistency Matters</h3>
         <p>Use the same sanitization rules across:</p>
         <ul>
@@ -357,10 +336,10 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
             <li>Public discussions</li>
         </ul>
         <p>Inconsistency creates leaks.</p>
-        
+
         <h3>3. Automate What You Can</h3>
         <p>Don't rely on memory. Use grep commands, checklists, and validation scripts. Make it hard to forget.</p>
-        
+
         <h3>4. Think in Combinations</h3>
         <p>Individual details might be harmless, but together they can identify you:</p>
         <pre><code>❌ "Oracle PMTS" + "HeatWave ML" + "Fremont CA" + "36M" = Specific person
@@ -389,18 +368,24 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.</code
             <p>Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM.</p>
             <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post was sanitized using the checklist it describes. No deployment-specific identifiers were harmed in the making of this blog post.</p>
         </div>
-        
+
 </main>
 
     <footer>
         <p>Found this helpful? Share it with someone else writing about their infrastructure.</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-</body>
+  </div>
+
+</article>
+
+    </main>
+  </body>
 </html>
