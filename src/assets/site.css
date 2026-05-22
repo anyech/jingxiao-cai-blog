@@ -19,7 +19,6 @@
 html { scroll-behavior: auto; }
 body {
   margin: 0;
-  overflow-x: hidden;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(36, 84, 214, 0.12), transparent 32rem),
@@ -91,9 +90,9 @@ img { max-width: 100%; height: auto; border-radius: 14px; }
 .site-nav a:hover { background: #eaf0ff; color: var(--brand-dark); }
 
 .site-main {
-  width: min(100% - 2rem, 1120px);
+  width: min(100%, 1120px);
   margin: 0 auto;
-  padding: 3.2rem 0 5rem;
+  padding: 3.2rem 1rem 5rem;
 }
 .hero {
   padding: clamp(2.2rem, 6vw, 5.6rem);
@@ -122,7 +121,9 @@ article h1 {
   font-size: clamp(2.3rem, 7vw, 5rem);
   line-height: .98;
   letter-spacing: -0.055em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
   text-wrap: balance;
 }
 .hero__lede {
@@ -271,15 +272,15 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   .brand__text { max-width: 14rem; }
   .site-nav { justify-content: flex-start; gap: .15rem; }
   .site-nav a { padding: .34rem .52rem; font-size: .86rem; }
-  .site-main { width: min(100% - .75rem, 1120px); padding-top: .8rem; }
+  .site-main { width: 100%; padding: .8rem .5rem 4rem; }
   .hero { border-radius: 22px; padding: 1.25rem; }
-  .hero h1 { font-size: clamp(2rem, 14vw, 3.1rem); letter-spacing: -0.045em; }
+  .hero h1 { font-size: clamp(1.55rem, 9vw, 2.25rem); letter-spacing: -0.025em; line-height: 1.12; text-wrap: auto; overflow-wrap: anywhere; word-break: break-word; }
   .hero__actions { gap: .5rem; }
   .button { width: 100%; justify-content: center; }
   .post-card { padding: 1rem; }
-  article[data-pagefind-body] { padding: .9rem; border-radius: 18px; }
-  article[data-pagefind-body] > header h1 { font-size: clamp(1.75rem, 10vw, 2.45rem); letter-spacing: -0.04em; }
-  article p, article li { overflow-wrap: anywhere; }
+  article[data-pagefind-body] { padding: .85rem; border-radius: 18px; max-width: 100%; min-width: 0; }
+  article[data-pagefind-body] > header h1 { font-size: clamp(1.35rem, 7vw, 1.8rem); letter-spacing: -0.018em; line-height: 1.18; text-wrap: auto; overflow-wrap: anywhere; word-break: break-word; }
+  article p, article li, article h2, article h3, .post-card, .hero, .agent-note, .search-panel { overflow-wrap: anywhere; word-break: break-word; min-width: 0; max-width: 100%; }
   .search-panel { padding: 1rem; }
   .search-hints ul { display: grid; grid-template-columns: 1fr; }
 }
@@ -352,4 +353,181 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   article[data-pagefind-body] { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; border: 0; }
   a { color: black; text-decoration: underline; }
   pre, code { background: #f4f4f4; color: black; }
+}
+
+@media (max-width: 420px) {
+  .hero__lede { font-size: .98rem; }
+  .eyebrow { font-size: .7rem; letter-spacing: .08em; }
+  .site-main { padding-inline: .45rem; }
+  .hero, .post-card, .agent-note, .search-panel { padding: .9rem; }
+  .brand { max-width: 100%; }
+  .site-nav { width: 100%; }
+  .site-nav a { flex: 1 1 auto; text-align: center; }
+  article[data-pagefind-body] { padding: .75rem; }
+  article[data-pagefind-body] > header h1 { font-size: clamp(1.3rem, 6.8vw, 1.7rem); }
+}
+
+@media (max-width: 720px) {
+  article[data-pagefind-body] > header,
+  article[data-pagefind-body] > header * {
+    max-width: 100%;
+    min-width: 0;
+  }
+  article[data-pagefind-body] > header h1 {
+    display: block;
+    width: 100%;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  .meta,
+  .tags,
+  .date,
+  .post-meta,
+  .back-link {
+    display: block;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .disclaimer,
+  .note,
+  .update-banner,
+  .warning,
+  .success {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* Final mobile hardening: prefer conservative wrapping over oversized display type. */
+@media (max-width: 480px) {
+  article[data-pagefind-body],
+  article[data-pagefind-body] > header,
+  article[data-pagefind-body] main,
+  article[data-pagefind-body] footer {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+  article[data-pagefind-body] > header h1 {
+    max-width: 100%;
+    font-size: clamp(1.22rem, 5.8vw, 1.55rem);
+    line-height: 1.22;
+    letter-spacing: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .hero h1,
+  #search-title {
+    max-width: 100%;
+    font-size: clamp(1.55rem, 8.5vw, 2.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  article[data-pagefind-body] .meta,
+  article[data-pagefind-body] .tags,
+  article[data-pagefind-body] .disclaimer,
+  article[data-pagefind-body] .note,
+  article[data-pagefind-body] p,
+  article[data-pagefind-body] li {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* Inline code can contain long model names, paths, and commands; wrap it on phones instead of clipping. */
+:not(pre) > code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 720px) {
+  :not(pre) > code {
+    font-size: .88em;
+  }
+}
+
+@media (max-width: 720px) {
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+/* Mobile polish after visual review: add breathing room and trade display scale for reliable wrapping. */
+@media (max-width: 520px) {
+  .site-main { padding-inline: 1rem; }
+  .hero,
+  .post-card,
+  .agent-note,
+  .search-panel,
+  article[data-pagefind-body] {
+    padding-inline: 1rem;
+  }
+  .hero h1,
+  #search-title {
+    font-size: clamp(1.45rem, 7.4vw, 1.95rem);
+    line-height: 1.16;
+    letter-spacing: -0.015em;
+  }
+  article[data-pagefind-body] > header h1 {
+    font-size: clamp(1.18rem, 5.6vw, 1.45rem);
+    line-height: 1.24;
+  }
+  .hero__lede,
+  .post-card p,
+  article[data-pagefind-body] p,
+  article[data-pagefind-body] li,
+  .disclaimer,
+  .note,
+  .update-banner {
+    line-height: 1.62;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-main { padding-inline: .85rem; }
+  .hero,
+  .post-card,
+  .agent-note,
+  .search-panel,
+  article[data-pagefind-body] { padding-inline: .85rem; }
+  .site-nav a { font-size: .82rem; }
+}
+
+/* Stack legacy tables on narrow screens so table cells never visually clip mobile content. */
+@media (max-width: 720px) {
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+  tr { border-bottom: 1px solid var(--border); }
+  th,
+  td {
+    border-bottom: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
