@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When a Credential Drift Checker Mistakes a Placeholder for a Secret](https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html.md
+  - Date: 2026-05-24
+  - Summary: A credential drift check flagged an inert placeholder as if it were an active secret. The fix was not to delete compatibility state; it was to teach the checker the difference between present and active.
+  - Tags: ai-agents, automation, security, debugging, openclaw, agent-ops
 - [When Multiple Agents Share the Same Proof Surface](https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html.md
   - Date: 2026-05-20

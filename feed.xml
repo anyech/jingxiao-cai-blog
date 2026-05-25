@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>When a Credential Drift Checker Mistakes a Placeholder for a Secret</title>
+      <description>A credential drift check flagged an inert placeholder as if it were an active secret. The better fix was to model active-vs-inactive credential state.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html</guid>
+      <pubDate>Sun, 24 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When Multiple Agents Share the Same Proof Surface</title>
