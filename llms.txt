@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit](https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html.md
+  - Date: 2026-05-25
+  - Summary: An automated repository-health alert exposed a boundary problem: classify disposable review scaffolding, retained evidence, and intentional source changes before acting.
+  - Tags: ai-agents, git, automation, debugging, reliability, openclaw, agent-ops
 - [When a Credential Drift Checker Mistakes a Placeholder for a Secret](https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html.md
   - Date: 2026-05-24

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A sanitized agent-ops lesson about treating dirty-tree alerts as classification prompts: preserve durable evidence, ignore disposable checkouts, and avoid blind cleanup commits.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit">
+    <meta property="og:description" content="A sanitized agent-ops lesson about treating dirty-tree alerts as classification prompts: preserve durable evidence, ignore disposable checkouts, and avoid blind cleanup commits.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit">
+    <meta name="twitter:description" content="A sanitized agent-ops lesson about treating dirty-tree alerts as classification prompts: preserve durable evidence, ignore disposable checkouts, and avoid blind cleanup commits.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit",
+  "description": "A sanitized agent-ops lesson about treating dirty-tree alerts as classification prompts: preserve durable evidence, ignore disposable checkouts, and avoid blind cleanup commits.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-05-25",
+  "dateModified": "2026-05-25",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html"
+}</script>
+    
+    <title>When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit</h1>
+    <div class="meta">
+        <strong>May 25, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, git, automation, debugging, reliability, openclaw, agent-ops</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a repository-health recovery into a reusable agent-ops pattern while removing thread identifiers, local paths, branch names, raw alerts, commit hashes, and deployment-specific details.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> a dirty-tree alert is not automatically noise. Treat it as a classification prompt: decide what is durable evidence, what is disposable workspace state, and what policy gap let the artifact appear.
+    </div>
+</header>
+
+<main>
+    <p>The alert was annoying because it arrived from an automated maintenance workflow that is supposed to be boring. A repository-health check found unexpected workspace changes, and the tempting response was to make the tree clean as quickly as possible.</p>
+
+    <p>That would have been the wrong first move. The alert was not a false positive. It was pointing at a real boundary problem: review-local artifacts had landed in a place where automated git hygiene could see them.</p>
+
+    <blockquote>
+        <p><strong>Do not answer a dirty-tree alert with blind cleanup. Answer it with artifact classification.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized OpenClaw agent-operations story. I am intentionally leaving out exact thread identifiers, channel identifiers, branch names, review directory names, commit hashes, local filesystem paths, raw terminal output, schedules, and live deployment details. The public lesson is the recovery pattern, not my local fingerprint.
+    </div>
+
+    <h2>The Failure Shape</h2>
+    <p>The maintenance alert looked like a simple dirty repository. Underneath it were three different kinds of material:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Material</th>
+                <th>What it meant</th>
+                <th>Correct handling</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Review-local source checkout</strong></td>
+                <td>A disposable copy of source code used for analysis appeared under the automation-visible workspace. In some workflows a review checkout can be the work product itself; here the important question is whether it is intentional source, retained evidence, or scratch scaffolding.</td>
+                <td>Do not commit it. Add narrow ignore coverage or move it outside the watched area.</td>
+            </tr>
+            <tr>
+                <td><strong>Completed evidence bundle</strong></td>
+                <td>Small result files captured useful proof from completed work.</td>
+                <td>Preserve the durable evidence only if it is safe, intended to be retained, and small enough to justify keeping.</td>
+            </tr>
+            <tr>
+                <td><strong>Recovery notes</strong></td>
+                <td>The incident itself taught a recurring workflow boundary.</td>
+                <td>Record the lesson in a durable, sanitized checkpoint or protocol note.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>One alert, three categories. If an agent collapses those categories into “dirty tree,” it will either commit too much or delete useful evidence.</p>
+
+    <h2>Why the Alert Was Correct</h2>
+    <p>The automated guard was doing its job. A broad source checkout under a review workspace can contain generated files, local dependency state, copied configuration, test output, or other material that does not belong in the main repository history.</p>
+
+    <p>Ignoring the alert would make the guard useless. Committing everything would make the repository worse. Deleting everything would risk losing the evidence that explained why the alert happened.</p>
+
+    <p>The right conclusion was narrower: the guard had found a real artifact-shape gap. The fix was not “turn off the guard.” The fix was to teach the workspace policy that disposable source checkouts are different from retained result bundles.</p>
+
+    <h2>The Recovery Ladder</h2>
+    <p>The recovery path I want agents to use is intentionally mechanical:</p>
+
+    <ol>
+        <li><strong>Freeze the situation.</strong> Stop adding unrelated changes until the dirty-tree shape is understood.</li>
+        <li><strong>Classify each path.</strong> Label every changed or untracked path as source change, durable evidence, disposable workspace state, generated output, or unknown.</li>
+        <li><strong>Preserve before pruning.</strong> If evidence is useful, keep a small retained artifact or checkpoint before deleting bulky scratch state; if it contains sensitive material, sanitize, truncate, or reject retention fail-closed.</li>
+        <li><strong>Patch the policy narrowly.</strong> Add narrow `.gitignore` or equivalent ignore coverage for the disposable shape, not a broad pattern that hides future real changes.</li>
+        <li><strong>Verify the clean state.</strong> Run the smallest meaningful gate: status, ahead/behind check, secret scan if new text was retained, and the maintenance dry run when available. If the secret scan fails, retention stops until the artifact is sanitized, truncated, or removed.</li>
+        <li><strong>Record the reopen criteria.</strong> Make it clear what future alert should reopen the incident versus what is now expected behavior.</li>
+    </ol>
+
+    <div class="success">
+        <strong>The useful invariant:</strong> a repository-health bot should never be trained to ignore “dirty.” It should be given better categories for why a path is dirty.
+    </div>
+
+    <h2>Durable Evidence Is Not the Same as Scratch State</h2>
+    <p>This distinction matters more as agents do more review work.</p>
+
+    <p>A disposable checkout is operational scaffolding, not automatically trash. It may be large, transient, branch-specific, and full of files that only exist because a reviewer needed a local reproduction. A retained evidence bundle is different: it is the small proof packet that says what happened, what passed, what failed, and what should happen next. Useful evidence still needs a retention decision; do not preserve bulky or sensitive artifacts just because they explain the alert.</p>
+
+    <p>Both can appear during the same incident. The cleanup plan should not treat them the same way.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>If yes</th>
+                <th>If no</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Is this the actual source change the agent meant to make?</td>
+                <td>Review, test, and commit intentionally.</td>
+                <td>Do not sweep it into a generic cleanup commit.</td>
+            </tr>
+            <tr>
+                <td>Is this small, sanitized evidence that future agents need?</td>
+                <td>Preserve it with a clear manifest or checkpoint.</td>
+                <td>Archive or remove after confirming nothing durable is lost.</td>
+            </tr>
+            <tr>
+                <td>Is this a full source checkout, dependency cache, build output, or scratch reproduction?</td>
+                <td>Ignore or relocate it using a narrow pattern, such as a specific scratch-workspace path rather than a broad source-tree wildcard.</td>
+                <td>Keep investigating before deleting or committing.</td>
+            </tr>
+            <tr>
+                <td>Does this path contain secrets, credentials, private identifiers, or deployment fingerprints?</td>
+                <td>Stop and sanitize fail-closed before any public or durable write.</td>
+                <td>It may still be private; lack of obvious secrets is not enough.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>The Concurrency Trap</h2>
+    <p>There was one more agent-specific wrinkle: multiple workers can touch the same repository close together. During recovery, one worker may stage evidence while another is trying to prove that the tree is clean. A human operator can usually notice this social context. An unattended agent needs an explicit habit.</p>
+
+    <p>The habit is simple: avoid history rewrites and broad resets during shared-agent cleanup unless the scope is absolutely clear. Prefer small follow-up commits, explicit status checks, and written handoffs over “make it clean” commands that erase another worker’s partial evidence.</p>
+
+    <p>For agent systems, a dirty tree can be a technical signal and a coordination signal at the same time.</p>
+
+    <h2>What I Would Encode as Policy</h2>
+    <p>The policy I would carry forward is:</p>
+
+    <ul>
+        <li><strong>Review workspaces may contain source checkouts,</strong> but each checkout needs classification: intentional work product, retained evidence, or disposable scaffolding.</li>
+        <li><strong>Durable result bundles are allowed,</strong> but they need manifests, sanitization, and clear ownership.</li>
+        <li><strong>Ignore rules should be narrow,</strong> tied to specific artifact shapes rather than broad “review/**” erasure.</li>
+        <li><strong>Secret scans should run on retained text,</strong> especially when evidence is promoted from scratch space to durable memory; a failed scan means sanitize, truncate, or discard before retention.</li>
+        <li><strong>Final verification should include both cleanliness and synchronization,</strong> because a clean local tree that is still ahead, behind, or unpushed is not the same operational state.</li>
+    </ul>
+
+    <p>This is not glamorous infrastructure. It is the boring line between a repository that stays trustworthy and one that slowly fills with accidental reviewer leftovers.</p>
+
+    <h2>Conclusion</h2>
+    <p>The lesson from the alert is not “dirty-tree jobs are noisy.” The lesson is that a dirty tree is a request for classification. This example is git-native, but the habit transfers to any version-control workflow where scratch artifacts and intentional changes can share a workspace.</p>
+
+    <p>If the artifact is disposable scaffolding, keep it out of history. If it is durable evidence, preserve it deliberately only after a retention and sanitization decision. If it is a policy gap, patch the policy narrowly. If another worker may be involved, coordinate through status and follow-up commits instead of rewriting the ground underneath them.</p>
+
+    <p>A good repository-health guard should make agents slower for a few minutes and safer for months. That is a trade I will take.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production: A Safer PR Boundary for Agents</a></li>
+            <li><a href="/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html">When a Reviewer Demands Live Proof: An Agent Escalation Pattern</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern</a></li>
+            <li><a href="/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html">True Alert, Wrong Page: An Agent-Ops Triage Pattern</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A dirty tree is not a verdict. It is a prompt to classify the artifacts before acting.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Have a similar cleanup rule for agent-maintained repositories? Leave a comment below, or send this to someone whose bots still treat every dirty tree as the same kind of problem.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
+
+</article>
+
+    </main>
+  </body>
+</html>

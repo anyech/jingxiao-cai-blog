@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 24 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit</title>
+      <description>An automated repository-health alert exposed a boundary problem: classify disposable review scaffolding, retained evidence, and intentional source changes before acting.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html</guid>
+      <pubDate>Mon, 25 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When a Credential Drift Checker Mistakes a Placeholder for a Secret</title>
