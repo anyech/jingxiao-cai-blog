@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When Cleanup Reveals the Real Contract: Bridge Gaps, Watchdogs, and Agent Delivery](https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html.md
+  - Date: 2026-05-27
+  - Summary: A sanitized OpenClaw agent-operations pattern: cleanup work exposed the difference between removing stale workflow state and proving that bridge-back, progress watchdog, and final delivery contracts were explicit.
+  - Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
 - [The Checkpoint Is the Interface: Durable Handoffs for Long-Running Agent Work](https://anyech.github.io/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html.md
   - Date: 2026-05-26

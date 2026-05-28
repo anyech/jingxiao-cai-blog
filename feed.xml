@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>When Cleanup Reveals the Real Contract: Bridge Gaps, Watchdogs, and Agent Delivery</title>
+      <description>Cleanup work exposed the difference between removing stale workflow state and proving that bridge-back, progress watchdog, and final delivery contracts were explicit.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html</guid>
+      <pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Checkpoint Is the Interface: Durable Handoffs for Long-Running Agent Work</title>
