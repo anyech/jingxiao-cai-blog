@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents](https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html.md
+  - Date: 2026-05-28
+  - Summary: Progress monitors are useful, but they are not the contract. A sanitized agent-operations lesson on why long-running work needs durable handoff artifacts, explicit delivery targets, and a final bridge-back gate.
+  - Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
 - [When Cleanup Reveals the Real Contract: Bridge Gaps, Watchdogs, and Agent Delivery](https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html.md
   - Date: 2026-05-27

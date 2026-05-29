@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents</title>
+      <description>Progress monitors help, but durable handoff artifacts are what make long-running agent work safe to detach, resume, review, and deliver.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html</guid>
+      <pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When Cleanup Reveals the Real Contract: Bridge Gaps, Watchdogs, and Agent Delivery</title>
