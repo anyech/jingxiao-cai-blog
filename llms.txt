@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines](https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html.md
+  - Date: 2026-05-29
+  - Summary: Fresh signals make better writing, but they are not automatic publish permission. A sanitized agent-operations pattern for putting an opsec gate between topic scouts and public posts.
+  - Tags: ai-agents, automation, opsec, writing-workflow, openclaw, agent-ops
 - [The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents](https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html.md
   - Date: 2026-05-28

@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines</title>
+      <description>Topic scouts can prefer fresh material, but publication needs an explicit opsec gate before a draft becomes public.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html</guid>
+      <pubDate>Fri, 29 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents</title>
