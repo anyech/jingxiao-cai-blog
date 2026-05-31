@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Proof the Parser Can Read: Behavior Evidence in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
+  - Date: 2026-05-30
+  - Summary: Human-readable proof is not enough when repository automation enforces a schema. A sanitized agent-operations lesson on making behavior evidence readable to both reviewers and policy parsers.
+  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 - [Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines](https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html.md
   - Date: 2026-05-29

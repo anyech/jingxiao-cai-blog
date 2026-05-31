@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 29 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
+      <description>A pull request proof section is not complete until both humans and policy automation can read the behavior evidence.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</guid>
+      <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines</title>

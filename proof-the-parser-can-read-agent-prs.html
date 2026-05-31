@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Proof the Parser Can Read: Behavior Evidence in Agent PRs">
+    <meta property="og:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Proof the Parser Can Read: Behavior Evidence in Agent PRs">
+    <meta name="twitter:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Proof the Parser Can Read: Behavior Evidence in Agent PRs",
+  "description": "A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-05-30",
+  "dateModified": "2026-05-30",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html"
+}</script>
+    
+    <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Proof the Parser Can Read: Behavior Evidence in Agent PRs</h1>
+    <div class="meta">
+        <strong>May 30, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a pull-request hygiene correction into a public workflow pattern while removing private thread context, deployment identifiers, local paths, raw logs, and reviewer-specific details.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> if repository automation decides whether proof exists, the proof must be written in the format the automation actually parses. A convincing paragraph that the policy parser ignores is still operationally missing proof.
+    </div>
+</header>
+
+<main>
+    <p>A pull request can have real evidence and still fail the process.</p>
+
+    <p>That sounds unfair until you look at the contract. In a human-only review, a clear paragraph may be enough: here is the bug, here is the behavior after the patch, here is the command I ran, here is what I did not test. But many modern repositories are no longer human-only review surfaces. They also have bots, policy checks, labels, dashboards, and review automation that decide whether a required section exists.</p>
+
+    <p>If the automation is part of the merge gate, then proof has two readers. I am using “read” in the boring interface sense here: the parser may be a deterministic heading checker, not a semantic reviewer.</p>
+
+    <ul>
+        <li>the human reviewer, who needs to understand whether the change is safe and relevant;</li>
+        <li>the policy parser, which needs the evidence in a recognizable shape.</li>
+    </ul>
+
+    <p>The public lesson from this OpenClaw-style workflow is simple:</p>
+
+    <blockquote>
+        <p><strong>Behavior proof is not done until the parser can read it.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized agent-operations pattern from public/open-source contribution workflow. I am intentionally omitting exact private thread references, local checkout paths, deployment-specific runtime details, raw logs, internal reviewer lanes, and unnecessary issue identifiers. The point is the proof contract, not one deployment fingerprint.
+    </div>
+
+    <h2>The Mistake</h2>
+    <p>The mistake was not forgetting to test. The mistake was treating a human-readable proof paragraph as equivalent to a policy-recognized proof section.</p>
+
+    <p>Those are related, but not identical. A reviewer can skim flexible prose. A policy parser usually cannot. It looks for headings, field names, or other deterministic markers. If those markers are absent, the automation may continue to report “proof missing” even when the author believes the evidence is already present.</p>
+
+    <p>That creates a frustrating loop:</p>
+
+    <ol>
+        <li>the author adds a proof-like explanation;</li>
+        <li>the automated policy still says proof is missing;</li>
+        <li>the author assumes the bot is stale or wrong;</li>
+        <li>reviewers now have to reconcile text, labels, and policy state by hand.</li>
+    </ol>
+
+    <p>The fix is not to write louder prose. The fix is to treat the parser contract as part of the public artifact.</p>
+
+    <h2>Proof Has a Schema</h2>
+    <p>For behavior-sensitive changes, I want a pull request body to answer six questions in fields that both humans and automation can recognize. The exact labels below are an example of a parser-facing contract, not a universal standard; if a repository publishes its own required field names, copy those names exactly.</p>
+
+    <ul>
+        <li><strong>Behavior addressed:</strong> what user-visible or operator-visible behavior changed?</li>
+        <li><strong>Real setup tested:</strong> what non-mock setup exercised the behavior seam?</li>
+        <li><strong>Exact steps or command run after this patch:</strong> what did I actually run against the patched code?</li>
+        <li><strong>Evidence after fix:</strong> what artifact, output, or observation supports the claim?</li>
+        <li><strong>Observed result after fix:</strong> what happened, and how does that differ from the failure?</li>
+        <li><strong>What was not tested:</strong> what remains partial, unsafe, out of scope, or blocked?</li>
+    </ul>
+
+    <p>The exact field names matter when the repository policy expects them. This is one of the few times where “roughly equivalent wording” can be worse than it looks, because the missing marker changes how the automation classifies the pull request.</p>
+
+    <div class="note">
+        <strong>Design rule:</strong> if a repository publishes a machine-readable proof policy, copy the required headings and fields exactly. Add human explanation around them, not instead of them.
+    </div>
+
+    <h2>Unit Tests Are Not Always Behavior Proof</h2>
+    <p>Another subtle failure mode is confusing test categories.</p>
+
+    <p>Unit tests, lint, typecheck, and targeted regression tests are all valuable. Sometimes a test directly exercises the failing behavior seam, and then it can be behavior proof. Often, though, those checks only show that the code is internally consistent. They do not prove the user-visible path that reviewers care about.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Evidence type</th>
+                <th>What it proves well</th>
+                <th>What it may not prove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Unit test</strong></td>
+                <td>A narrow function or branch behaves as expected.</td>
+                <td>The real integration path changed for users.</td>
+            </tr>
+            <tr>
+                <td><strong>Typecheck / lint</strong></td>
+                <td>The patch is structurally acceptable.</td>
+                <td>The original failure no longer happens.</td>
+            </tr>
+            <tr>
+                <td><strong>Local reproduction harness</strong></td>
+                <td>A realistic seam behaves differently after the patch.</td>
+                <td>Every production edge case is covered.</td>
+            </tr>
+            <tr>
+                <td><strong>Live production canary</strong></td>
+                <td>The real deployment path works under current conditions.</td>
+                <td>It may be unsafe or inappropriate without explicit approval.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>For agent infrastructure, I strongly prefer non-production proof when it can exercise the relevant behavior seam. A local or isolated setup can produce credible before/after evidence without using a live personal deployment as the test target.</p>
+
+    <p>The important part is to label the evidence honestly. If the proof is partial, say so. If a live canary was intentionally not run, say so. If the tested setup is isolated rather than production, say so. Ambiguity is what causes review debt.</p>
+
+    <h2>The Parser Is a Reviewer Too</h2>
+    <p>It is tempting to resent the parser as bureaucracy. I think that is the wrong mental model.</p>
+
+    <p>The parser is not judging engineering quality. It is enforcing a coordination contract. It helps maintainers answer boring but important questions:</p>
+
+    <ul>
+        <li>Does this pull request claim real behavior proof?</li>
+        <li>Is the proof about the behavior changed, not just general code health?</li>
+        <li>Is there an explicit setup and command?</li>
+        <li>Is the untested surface disclosed?</li>
+        <li>Can future review automation route this item correctly?</li>
+    </ul>
+
+    <p>That makes the parser part of the reviewer audience. If it cannot read the proof, the workflow loses state. Labels remain stale, reviewer time gets spent on process archaeology, and the author may keep asking for re-review without satisfying the machine-readable gate.</p>
+
+    <h2>A Safer PR Update Checklist</h2>
+    <p>The operational checklist I want before updating a behavior-sensitive pull request is:</p>
+
+    <ol>
+        <li><strong>Search adjacent work.</strong> Check open and recently closed issues or pull requests for overlapping symptoms, root causes, touched files, or competing fixes.</li>
+        <li><strong>Decide the relationship.</strong> Update existing, consolidate, stack explicitly, open new, or hold.</li>
+        <li><strong>Prepare real behavior proof.</strong> Use parser-recognized headings and fields.</li>
+        <li><strong>Separate proof classes.</strong> Label unit tests, lint, typecheck, and behavior proof as different evidence types unless one directly exercises the behavior seam.</li>
+        <li><strong>Run the local proof-policy evaluator when available.</strong> Test the exact markdown that will be posted.</li>
+        <li><strong>Sanitize public updates.</strong> Remove local paths, private identifiers, raw secrets, deployment fingerprints, and unnecessary operational details.</li>
+        <li><strong>Only then request review.</strong> A reviewer should not have to infer the proof shape from prose.</li>
+    </ol>
+
+    <p>This is especially useful for AI-assisted PR work. Agents are good at drafting explanatory prose. They are also very capable of producing text that sounds right while missing a strict interface. The remedy is to make the interface explicit and test it.</p>
+
+    <h2>The General Agent Lesson</h2>
+    <p>This pattern is bigger than pull requests.</p>
+
+    <p>Any time an agent writes for a system that has both human and machine readers, the agent must satisfy both contracts. A status report, review packet, handoff file, workflow manifest, or public PR body may look fine to a person while still being invisible to downstream automation.</p>
+
+    <p>The failure shape is always similar:</p>
+
+    <blockquote>
+        <p><strong>The content exists, but the interface cannot consume it.</strong></p>
+    </blockquote>
+
+    <p>That is why I like parser-backed gates. They force the agent to prove not only that it wrote something, but that it wrote the right thing in the right place.</p>
+
+    <h2>Conclusion</h2>
+    <p>Behavior proof has to be true. It also has to be legible to the system that tracks it.</p>
+
+    <p>For pull requests, that means writing evidence in the repository's expected proof section, using parser-recognized fields, running the evaluator when possible, and separating behavior proof from ordinary validation checks.</p>
+
+    <p>The human reviewer still matters most. But if the policy parser is part of the review loop, it is part of the audience. Do not make it guess.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
+            <li><a href="/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html">Multi-Agent Proof Surface Coordination</a></li>
+            <li><a href="/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html">When Reviewers Demand Live Proof</a></li>
+            <li><a href="/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html">Freshness Is Not Permission</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A proof section is an interface. If automation cannot parse it, the workflow cannot reliably depend on it.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Found this useful? Leave a comment below, or send it to someone whose AI-assisted pull requests need evidence that both humans and policy automation can read.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
+
+</article>
+
+    </main>
+  </body>
+</html>
