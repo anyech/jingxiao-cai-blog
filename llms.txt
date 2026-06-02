@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
+  - Date: 2026-03-11; updated: 2026-06-01
+  - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
+  - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
+- [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
+  - Date: 2026-06-01
+  - Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation.
+  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
 - [Proof the Parser Can Read: Behavior Evidence in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
   - Date: 2026-05-30
@@ -132,11 +142,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-07
   - Summary: Detaching long-running agent work is useful only when admission, work ownership, and final delivery all have explicit contracts.
   - Tags: ai-agents, automation, discord, reliability, workflow, openclaw
-- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
-  - Date: 2026-03-11; updated: 2026-05-06
-  - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.
-  - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
 - [When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod](https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html.md
   - Date: 2026-05-06

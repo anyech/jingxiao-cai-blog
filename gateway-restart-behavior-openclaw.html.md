@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
 Date: 2026-03-11
-Updated: 2026-05-06
+Updated: 2026-06-01
 Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
 
-Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.
+Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 # Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
 
  
- March 11, 2026 | By Jingxiao Cai | Updated May 6, 2026
+ March 11, 2026 | By Jingxiao Cai | Updated June 1, 2026
 
  Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
  
@@ -24,7 +24,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
  This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
  
 
- Follow-up (March–May 2026): I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, and a task-registry restore-gap lesson covering copy-first evidence, isolated repair validation, and explicit offline control.
+ Follow-up (March–May 2026): I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.
 
  
 
@@ -378,6 +378,19 @@ Let's do it after this turn finishes.
  I wrote the database side of that lesson separately in When SQLite Looks Empty but Isn’t. The restart-side takeaway for this post is shorter: state-store repair is a deployment event, even when the SQL command looks small.
 
  
+## Case Study: When a Watchdog Alert Is True but Misleading
+
+ A restart-adjacent lesson showed up in tunnel monitoring: a watchdog can report a real failure signature and still mislead the operator about what action is needed.
+
+ The useful distinction was between two separate facts. First, a burst-shaped connectivity probe could produce a transient connection-close signature that cleared on immediate focused recheck. Second, the wrapper around the watchdog treated alert text as a command failure, which made the alert surface look more severe than the underlying lane state.
+
+ 
+ Watchdog lesson: do not hide real alerts, but do separate transport noise from wrapper-contract bugs. A monitor should be able to say “degraded condition observed and reported” without also implying that the monitor itself crashed.
+ 
+
+ The fix pattern was not “silence the watchdog.” It was to make the contract honest: degraded output should be visible, healthy follow-up probes should clear stale state, and the wrapper exit behavior should match the meaning of the report. That keeps humans from chasing phantom infrastructure failures while preserving the real warning signal.
+
+ 
 ## One More Important Distinction
 
  OpenClaw has two very different mental models that are easy to blur:
@@ -428,6 +441,8 @@ Let's do it after this turn finishes.
  
 - If this touches state-store repair, have I preserved copy-first evidence and proven the repair outside production?
  
+- If a watchdog fired, have I separated the monitored system state from wrapper/alert-surface behavior?
+ 
 - Have I checked for legacy plugin configuration that may no longer match the target version?
  
 - Do I need config.patch rather than config.apply?
@@ -437,7 +452,7 @@ Let's do it after this turn finishes.
 - Do I know what I'll verify after the gateway comes back?
  
 
- If you can answer those eight questions first, gateway restarts stop feeling mysterious and start feeling manageable.
+ If you can answer those questions first, gateway restarts stop feeling mysterious and start feeling manageable.
 
  
  

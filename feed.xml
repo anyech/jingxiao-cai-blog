@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 11 Mar 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
+      <description>Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
+      <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</title>
+      <description>A durable checkpoint is the compact interface that lets long-running agent work resume safely without replaying an entire thread.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</guid>
+      <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
@@ -190,14 +206,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html</guid>
       <pubDate>Thu, 07 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
-      <description>Some OpenClaw config changes apply live. Others trigger gateway restarts. Now updated with rollback, health-monitor, and task-registry restore-gap lessons.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
-      <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
