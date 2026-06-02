@@ -6,7 +6,7 @@ slug: 'gateway-restart-behavior-openclaw'
 description: 'OpenClaw config changes do not all behave the same. Some apply live, some restart the gateway, and later case studies show why rollback, health-monitor restarts, and state-store repair need explicit downtime control.'
 summary: 'Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.'
 date: '2026-03-11'
-updated: '2026-06-01'
+updated: '2026-06-02'
 tags: ['openclaw', 'devops', 'ai-agents', 'configuration', 'gateway', 'reliability']
 keywords: ['OpenClaw gateway restart', 'OpenClaw config change behavior', 'config patch restart', 'OpenClaw auth profiles', 'OpenClaw plugins']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html'
@@ -16,19 +16,19 @@ feedTitle: 'Gateway Restart Behavior: What OpenClaw Users Need to Know About Con
 feedDescription: 'Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.'
 feedPubDate: 'Wed, 11 Mar 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-01'
+sitemapLastmod: '2026-06-02'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated June 1, 2026</strong><br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated June 2, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
-        <div class="note"><strong>Follow-up (March–May 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.</div>
+        <div class="note"><strong>Follow-up (March–June 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.</div>
     </header>
 
     <main>
@@ -297,6 +297,8 @@ Let's do it after this turn finishes.</code></pre>
         </div>
 
         <p>The fix pattern was not “silence the watchdog.” It was to make the contract honest: degraded output should be visible, healthy follow-up probes should clear stale state, and the wrapper exit behavior should match the meaning of the report. That keeps humans from chasing phantom infrastructure failures while preserving the real warning signal.</p>
+
+        <p>I expanded that watchdog-specific lesson in <a href="/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html">When Your Tunnel Watchdog Lies</a>. The restart-side takeaway is narrower: alert-surface repair is still lifecycle-sensitive work when it changes how operators decide whether to touch the gateway, tunnel, or wrapper.</p>
 
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>
