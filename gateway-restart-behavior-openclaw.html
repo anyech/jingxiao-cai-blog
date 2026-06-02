@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-03-11",
-  "dateModified": "2026-06-01",
+  "dateModified": "2026-06-02",
   "url": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html"
@@ -71,13 +71,13 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</h1>
         <div class="meta">
-            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated June 1, 2026</strong><br>
+            <strong>March 11, 2026</strong> | By Jingxiao Cai | <strong>Updated June 2, 2026</strong><br>
             <span class="tags">Tags: openclaw, devops, ai-agents, configuration, gateway, reliability</span>
         </div>
         <div class="disclaimer">
             This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
         </div>
-        <div class="note"><strong>Follow-up (March–May 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.</div>
+        <div class="note"><strong>Follow-up (March–June 2026):</strong> I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.</div>
     </header>
 
     <main>
@@ -346,6 +346,8 @@ Let's do it after this turn finishes.</code></pre>
         </div>
 
         <p>The fix pattern was not “silence the watchdog.” It was to make the contract honest: degraded output should be visible, healthy follow-up probes should clear stale state, and the wrapper exit behavior should match the meaning of the report. That keeps humans from chasing phantom infrastructure failures while preserving the real warning signal.</p>
+
+        <p>I expanded that watchdog-specific lesson in <a href="/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html">When Your Tunnel Watchdog Lies</a>. The restart-side takeaway is narrower: alert-surface repair is still lifecycle-sensitive work when it changes how operators decide whether to touch the gateway, tunnel, or wrapper.</p>
 
         <h2>One More Important Distinction</h2>
         <p>OpenClaw has two very different mental models that are easy to blur:</p>

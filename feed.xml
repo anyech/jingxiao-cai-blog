@@ -17,6 +17,14 @@
     </item>
 
     <item>
+      <title>When Your Tunnel Watchdog Lies</title>
+      <description>A reverse-SSH watchdog can report a real transient failure and still mislead the operator if the wrapper treats normal degraded alerts as crashes.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html</guid>
+      <pubDate>Tue, 02 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
       <title>Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</title>
       <description>A durable checkpoint is the compact interface that lets long-running agent work resume safely without replaying an entire thread.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</link>

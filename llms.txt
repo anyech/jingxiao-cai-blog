@@ -19,9 +19,14 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 - [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
-  - Date: 2026-03-11; updated: 2026-06-01
+  - Date: 2026-03-11; updated: 2026-06-02
   - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
   - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
+- [When Your Tunnel Watchdog Lies: Fixing False SSH Alarms Without Hiding Real Failures](https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html.md
+  - Date: 2026-06-02
+  - Summary: A real transient SSH failure plus a wrapper contract bug turned one tunnel watchdog alert into a lesson: keep degraded alerts visible, but do not label them as monitor crashes.
+  - Tags: devops, networking, monitoring, ai-agents, openclaw, reliability
 - [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
   - Date: 2026-06-01
