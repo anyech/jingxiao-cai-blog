@@ -24,7 +24,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 
 
 
- Short version: when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Rebase or update the branch before patching around every red check.
+ Short version: when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
 
 
  Some pull request failures are not bugs in your patch. They are symptoms of time passing.
@@ -72,7 +72,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
  My updated rule is simple:
 
 
- Rebase or update the pull request branch onto the current base before treating stale-check failures as patch bugs.
+ Refresh the pull request branch through the safe path for that branch ownership model before treating stale-check failures as patch bugs.
 
 
  In practice, that means:
@@ -138,7 +138,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 
  Is the branch current enough for CI to mean what it says?
  Patch around each new workflow error.
- Rebase/update first, then validate the intended diff.
+ Refresh safely first, then validate the intended diff.
 
 
 
@@ -175,7 +175,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 
 - Would a safe branch refresh make the failure surface more trustworthy?
 
-- After rebase, are the remaining checks fresh, relevant, and tied to the actual patch?
+- After a safe branch refresh, are the remaining checks fresh, relevant, and tied to the actual patch?
 
 - Does the proof satisfy the repository's parser-facing contract and the human review contract?
 

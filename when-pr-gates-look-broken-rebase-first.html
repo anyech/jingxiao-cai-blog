@@ -78,7 +78,7 @@
         This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy pull-request maintenance loop into a sanitized public workflow lesson while removing private thread context, local paths, raw logs, branch-specific operational details, and unnecessary identifiers.
     </div>
     <div class="warning">
-        <strong>Short version:</strong> when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Rebase or update the branch before patching around every red check.
+        <strong>Short version:</strong> when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
     </div>
 </header>
 
@@ -118,7 +118,7 @@
     <p>My updated rule is simple:</p>
 
     <div class="warning">
-        <strong>Rebase or update the pull request branch onto the current base before treating stale-check failures as patch bugs.</strong>
+        <strong>Refresh the pull request branch through the safe path for that branch ownership model before treating stale-check failures as patch bugs.</strong>
     </div>
 
     <p>In practice, that means:</p>
@@ -167,7 +167,7 @@
             <tr>
                 <td>Is the branch current enough for CI to mean what it says?</td>
                 <td>Patch around each new workflow error.</td>
-                <td>Rebase/update first, then validate the intended diff.</td>
+                <td>Refresh safely first, then validate the intended diff.</td>
             </tr>
             <tr>
                 <td>Can the policy parser read the proof?</td>
@@ -193,7 +193,7 @@
         <li><strong>Is a current-base workflow expecting files or state missing from the PR branch?</strong></li>
         <li><strong>Does a dependency or policy gate report broad unrelated churn?</strong></li>
         <li><strong>Would a safe branch refresh make the failure surface more trustworthy?</strong></li>
-        <li><strong>After rebase, are the remaining checks fresh, relevant, and tied to the actual patch?</strong></li>
+        <li><strong>After a safe branch refresh, are the remaining checks fresh, relevant, and tied to the actual patch?</strong></li>
         <li><strong>Does the proof satisfy the repository's parser-facing contract and the human review contract?</strong></li>
     </ol>
 
