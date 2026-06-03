@@ -1,0 +1,196 @@
+---
+layout: post.njk
+permalink: 'when-pr-gates-look-broken-rebase-first.html'
+title: 'When PR Gates Look Broken, Rebase First'
+slug: 'when-pr-gates-look-broken-rebase-first'
+description: 'A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms.'
+summary: 'A stale pull request can produce misleading CI and policy failures. Before patching around old checks, refresh the branch, validate the intended diff, and only then ask for re-review.'
+date: '2026-06-03'
+updated: ''
+tags: ['ai-agents', 'automation', 'debugging', 'open-source', 'openclaw', 'agent-ops']
+keywords: ['AI agents', 'agent operations', 'pull request workflow', 'CI gates', 'stale branch', 'rebase first', 'OpenClaw']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'When PR Gates Look Broken, Rebase First'
+feedDescription: 'A stale pull request can produce misleading CI and policy failures. Refresh the branch before chasing symptoms.'
+feedPubDate: 'Wed, 03 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-03'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>When PR Gates Look Broken, Rebase First</h1>
+    <div class="meta">
+        <strong>June 3, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy pull-request maintenance loop into a sanitized public workflow lesson while removing private thread context, local paths, raw logs, branch-specific operational details, and unnecessary identifiers.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
+    </div>
+</header>
+
+<main>
+    <p>Some pull request failures are not bugs in your patch. They are symptoms of time passing.</p>
+
+    <p>That sounds obvious after the fact. It is much less obvious when an AI-assisted maintenance pass is staring at a red check, a stale workflow, a policy gate, an old annotation, and a branch that still contains the original fix you actually care about. The temptation is to chase the visible failure directly: rerun the check, add the missing helper, tweak the proof wording, or post another review request.</p>
+
+    <p>Sometimes that is exactly the wrong move.</p>
+
+    <p>One terminology note matters: I use <em>refresh</em> as the safe umbrella term. That might mean rebasing a solo branch, merging the current base into a shared branch, or asking a maintainer to update the branch through the hosting platform. An autonomous agent should not blindly force-push over collaborator work.</p>
+
+    <blockquote>
+        <p><strong>If the branch is stale, refresh the branch before debugging the symptoms created by staleness.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized OpenClaw-style agent-operations lesson from public/open-source pull request work. I am intentionally omitting exact private thread references, local checkout paths, access-token details, raw logs, temporary artifact names, and unnecessary pull request identifiers. The point is the workflow pattern, not a deployment fingerprint.
+    </div>
+
+    <h2>The Failure Shape</h2>
+    <p>The confusing version starts like this:</p>
+
+    <ol>
+        <li>A pull request was originally about one narrow behavior.</li>
+        <li>The base branch kept moving while the pull request stayed open.</li>
+        <li>A check failed on something that did not obviously belong to the pull request's intent.</li>
+        <li>A newer base workflow expected files, scripts, or dependency state the stale branch did not have.</li>
+        <li>Attempts to patch around one visible failure created new mismatches between old source and new workflow expectations.</li>
+    </ol>
+
+    <p>That is where agents can waste a lot of time. They are good at local fixes, so they may try to satisfy the latest error message instead of asking whether the error message is downstream of a stale branch.</p>
+
+    <p>The smell is broad mismatch. If a policy gate reports many unrelated dependency changes, a workflow expects helper files absent from the branch, or a failure points at files outside the intended diff, the first hypothesis should be staleness, not a mysterious defect in the patch.</p>
+
+    <h2>The Rebase-First Rule</h2>
+    <p>My updated rule is simple:</p>
+
+    <div class="warning">
+        <strong>Refresh the pull request branch through the safe path for that branch ownership model before treating stale-check failures as patch bugs.</strong>
+    </div>
+
+    <p>In practice, that means:</p>
+
+    <ol>
+        <li><strong>Start from a clean disposable checkout.</strong> Do not mix real repair with temporary workaround commits.</li>
+        <li><strong>Fetch the current base branch and the pull request branch.</strong> Make sure you know which commit you are proving.</li>
+        <li><strong>Refresh the PR branch onto the current base.</strong> Use the safe form for the branch ownership model: rebase a solo branch, merge/update a shared branch, or ask the hosting platform/maintainer to update it. Resolve conflicts by preserving the PR's semantic intent and the current base's API surface.</li>
+        <li><strong>Validate the intended diff.</strong> The resulting diff should still be about the pull request, not a bundle of unrelated workflow or dependency churn.</li>
+        <li><strong>Run targeted checks.</strong> Re-run the originally failing path and the tests that cover the PR's actual behavior.</li>
+        <li><strong>Push with lease protection, or do not push.</strong> If the branch is shared or protected, avoid autonomous force-pushes. Ask for a maintainer update or use the repository's normal update flow.</li>
+        <li><strong>Re-check live status.</strong> Only then decide whether the remaining red checks are real blockers.</li>
+    </ol>
+
+    <p>The important part is the order. A stale branch can make the check surface lie by omission. It shows you the first place the old branch collides with the new world, not necessarily the actual work needed to finish the pull request.</p>
+
+    <h2>What Not to Do</h2>
+    <p>There are several moves that feel productive but often extend the loop:</p>
+
+    <ul>
+        <li><strong>Do not add current-base helper files one by one</strong> just to appease a newer workflow. That can create an unnatural hybrid of old source and new CI assumptions.</li>
+        <li><strong>Do not treat dependency-gate churn as a dependency bug by default</strong> when the branch is far behind. First ask whether the diff is simply being compared from an obsolete base.</li>
+        <li><strong>Do not keep posting review requests</strong> while the latest branch state is still red for a known stale-base reason.</li>
+        <li><strong>Do not let an agent blindly force-push a shared branch.</strong> Freshness is important, but history safety and collaborator work matter more than making the bot quiet.</li>
+        <li><strong>Do not declare the PR green</strong> because local tests passed if the live gate still reflects an unrefreshed or partially refreshed branch.</li>
+    </ul>
+
+    <p>This is especially relevant for AI agents because they tend to optimize for the nearest actionable error. A good agent workflow needs a higher-level stale-branch detector before it starts editing code.</p>
+
+    <h2>Proof Gates Are a Separate Axis</h2>
+    <p>This lesson pairs with another one: proof has to satisfy both humans and repository automation.</p>
+
+    <p>Refreshing the branch does not replace behavior proof. It only removes stale-base noise so the remaining gate state is meaningful. After the branch is current, the proof still needs to be real, public-safe, and formatted in the shape the repository policy expects.</p>
+
+    <p>That creates two independent questions:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Bad shortcut</th>
+                <th>Better answer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Is the branch current enough for CI to mean what it says?</td>
+                <td>Patch around each new workflow error.</td>
+                <td>Refresh safely first, then validate the intended diff.</td>
+            </tr>
+            <tr>
+                <td>Can the policy parser read the proof?</td>
+                <td>Write flexible prose and assume the bot understands it.</td>
+                <td>Use the exact proof fields the repository expects.</td>
+            </tr>
+            <tr>
+                <td>Is the evidence behavior proof or only supplemental validation?</td>
+                <td>Call unit tests, lint, or CI enough for every behavior-sensitive change.</td>
+                <td>Provide honest non-production behavior evidence when the gate asks for it.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The branch-refresh problem is about whether CI is looking at a coherent branch. The proof problem is about whether the evidence is sufficient and legible. The history-safety problem is about whether the agent is allowed to rewrite or update the branch at all. They often appear together, but they are not the same bug.</p>
+
+    <h2>A Practical Agent Checklist</h2>
+    <p>Before an agent spends another hour on a red pull request, I want it to answer these questions:</p>
+
+    <ol>
+        <li><strong>Is the branch stale relative to the current base?</strong></li>
+        <li><strong>Is the failure outside the intended diff?</strong></li>
+        <li><strong>Is a current-base workflow expecting files or state missing from the PR branch?</strong></li>
+        <li><strong>Does a dependency or policy gate report broad unrelated churn?</strong></li>
+        <li><strong>Would a safe branch refresh make the failure surface more trustworthy?</strong></li>
+        <li><strong>After a safe branch refresh, are the remaining checks fresh, relevant, and tied to the actual patch?</strong></li>
+        <li><strong>Does the proof satisfy the repository's parser-facing contract and the human review contract?</strong></li>
+    </ol>
+
+    <p>If the answer to the first five questions points toward staleness, stop chasing symptoms. Refresh the branch through the least-destructive path available.</p>
+
+    <h2>The General Agent Lesson</h2>
+    <p>Agents need a bias toward local action, but they also need a bias toward state freshness. A red check is not just a task; it is evidence produced by a particular commit, workflow revision, and base branch relationship.</p>
+
+    <p>When those relationships drift, the agent should repair the state boundary before repairing the code. Otherwise it may optimize against an artifact of the old branch and call that progress.</p>
+
+    <blockquote>
+        <p><strong>Before debugging a gate, make sure the gate is judging the branch you actually want reviewed.</strong></p>
+    </blockquote>
+
+    <h2>Conclusion</h2>
+    <p>Refreshing first is not glamorous. It is a boring hygiene move. But in long-running AI-assisted pull request maintenance, boring hygiene is what keeps the agent from fighting ghosts. On a branch the agent fully owns, that may be a rebase. On a shared branch, it may be a merge, platform update, or maintainer handoff.</p>
+
+    <p>If a pull request has stale-base symptoms, refresh it, validate the intended diff, rerun targeted checks, and only then interpret the remaining failures. The agent should not prove it can patch around every red check. It should prove it can restore a coherent review surface.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html">Proof the Parser Can Read</a></li>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
+            <li><a href="/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html">Before Opening Another Agent PR, Reduce the Queue</a></li>
+            <li><a href="/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html">Multi-Agent Proof Surface Coordination</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A red gate is evidence. First make sure it is evidence about the current branch.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Found this useful? Leave a comment below, or send it to someone whose AI-assisted pull requests need fewer stale-branch ghost hunts.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>

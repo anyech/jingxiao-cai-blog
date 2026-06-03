@@ -50,6 +50,12 @@ module.exports = function(eleventyConfig) {
     return JSON.stringify(value, null, 2);
   });
   eleventyConfig.addFilter('markdownish', htmlToMarkdownish);
+  eleventyConfig.addTransform('stripTrailingWhitespace', function(content, outputPath) {
+    if (outputPath && /\.(html|md|xml|txt|json)$/.test(outputPath)) {
+      return String(content).split('\n').map(line => line.replace(/[ \t]+$/g, '')).join('\n');
+    }
+    return content;
+  });
   return {
     pathPrefix: '/jingxiao-cai-blog/',
     dir: { input: 'src', includes: '_includes', layouts: '_includes', output: 'dist', data: '_data' },
