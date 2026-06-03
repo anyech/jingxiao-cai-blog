@@ -11,14 +11,14 @@ Summary: After several years in industry, I&#39;m starting to share my learnings
 
 ← Back to Blog
 
- 
+
 # Welcome to My Blog
 
  February 17, 2026
 
  Categories: intro, personal
 
- Welcome to my new blog! 
+ Welcome to my new blog!
 
 After several years in industry, I'm starting to share my learnings, thoughts, and experiences.
 
@@ -34,5 +34,5 @@ After several years in industry, I'm starting to share my learnings, thoughts, a
 
 Stay tuned for more!
 
- 
+
  ← Back to Blog

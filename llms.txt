@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Proof the Parser Can Read: Behavior Evidence in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
+  - Date: 2026-05-30; updated: 2026-06-03
+  - Summary: Human-readable proof is not enough when repository automation enforces a schema. Updated with the boundary that proof override requests are not completion when the real behavior gate is still red.
+  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
+- [When PR Gates Look Broken, Rebase First](https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html.md
+  - Date: 2026-06-03
+  - Summary: A stale pull request can produce misleading CI and policy failures. Before patching around old checks, refresh the branch, validate the intended diff, and only then ask for re-review.
+  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 - [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
   - Date: 2026-03-11; updated: 2026-06-02
@@ -32,11 +42,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-06-01
   - Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation.
   - Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
-- [Proof the Parser Can Read: Behavior Evidence in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
-  - Date: 2026-05-30
-  - Summary: Human-readable proof is not enough when repository automation enforces a schema. A sanitized agent-operations lesson on making behavior evidence readable to both reviewers and policy parsers.
-  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 - [Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines](https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html.md
   - Date: 2026-05-29

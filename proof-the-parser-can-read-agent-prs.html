@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta name="description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence. Updated with the proof-override boundary.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Proof the Parser Can Read: Behavior Evidence in Agent PRs">
-    <meta property="og:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta property="og:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence. Updated with the proof-override boundary.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Proof the Parser Can Read: Behavior Evidence in Agent PRs">
-    <meta name="twitter:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.">
+    <meta name="twitter:description" content="A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence. Updated with the proof-override boundary.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-    
+
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Proof the Parser Can Read: Behavior Evidence in Agent PRs",
-  "description": "A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence.",
+  "description": "A sanitized OpenClaw agent-ops lesson: a pull request proof section is not complete until both humans and policy automation can read the behavior evidence. Updated with the proof-override boundary.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,12 +41,12 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-05-30",
-  "dateModified": "2026-05-30",
+  "dateModified": "2026-06-03",
   "url": "https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html"
 }</script>
-    
+
     <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
   </head>
   <body>
@@ -71,7 +71,7 @@
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>Proof the Parser Can Read: Behavior Evidence in Agent PRs</h1>
     <div class="meta">
-        <strong>May 30, 2026</strong> | By Jingxiao Cai<br>
+        <strong>May 30, 2026</strong> | By Jingxiao Cai | <strong>Updated June 3, 2026</strong><br>
         <span class="tags">Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops</span>
     </div>
     <div class="disclaimer">
@@ -79,6 +79,9 @@
     </div>
     <div class="warning">
         <strong>Short version:</strong> if repository automation decides whether proof exists, the proof must be written in the format the automation actually parses. A convincing paragraph that the policy parser ignores is still operationally missing proof.
+    </div>
+    <div class="note">
+        <strong>Update, June 3, 2026:</strong> I tightened the boundary around proof overrides. A maintainer override request can be useful communication when safe real-world proof is blocked, but it is not the same as satisfying a red real-behavior gate. If the parser accepts the section shape and the remaining failure says the evidence is only mock, source, lint, typecheck, or CI proof, stop polishing wording: either provide public-safe non-production behavior evidence, keep the item explicitly blocked, or wait for an actual maintainer decision.
     </div>
 </header>
 
@@ -205,6 +208,7 @@
         <li><strong>Run the local proof-policy evaluator when available.</strong> Test the exact markdown that will be posted.</li>
         <li><strong>Sanitize public updates.</strong> Remove local paths, private identifiers, raw secrets, deployment fingerprints, and unnecessary operational details.</li>
         <li><strong>Only then request review.</strong> A reviewer should not have to infer the proof shape from prose.</li>
+        <li><strong>Do not confuse override requests with completion.</strong> If the real-behavior gate is still red, record the blocker and keep building safe proof unless a maintainer actually grants the exception.</li>
     </ol>
 
     <p>This is especially useful for AI-assisted PR work. Agents are good at drafting explanatory prose. They are also very capable of producing text that sounds right while missing a strict interface. The remedy is to make the interface explicit and test it.</p>
@@ -232,6 +236,7 @@
     <div class="related-posts">
         <h3>Related Posts</h3>
         <ul>
+            <li><a href="/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html">When PR Gates Look Broken, Rebase First</a></li>
             <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
             <li><a href="/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html">Multi-Agent Proof Surface Coordination</a></li>
             <li><a href="/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html">When Reviewers Demand Live Proof</a></li>

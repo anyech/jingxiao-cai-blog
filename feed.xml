@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2026 00:00:00 +0000</lastBuildDate>
+
+    <item>
+      <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
+      <description>A pull request proof section is not complete until both humans and policy automation can read the behavior evidence. Updated with the proof-override boundary.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</guid>
+      <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>When PR Gates Look Broken, Rebase First</title>
+      <description>A stale pull request can produce misleading CI and policy failures. Refresh the branch before chasing symptoms.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</guid>
+      <pubDate>Wed, 03 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
@@ -30,14 +46,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</guid>
       <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
-      <description>A pull request proof section is not complete until both humans and policy automation can read the behavior evidence.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</guid>
-      <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

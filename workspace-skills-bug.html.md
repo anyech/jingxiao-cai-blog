@@ -28,11 +28,11 @@ I've been building my AI assistant setup with OpenClaw, and recently tried to cr
 
 OpenClaw's skill system allows you to extend your agent with custom skills. According to the docs, you can place custom skills in:
 
- 
+
 - ~/.openclaw/workspace/skills/ (highest priority)
- 
+
 - ~/.openclaw/skills/ (shared across agents)
- 
+
 - Extra directories via skills.load.extraDirs in config
 
 But when I placed my custom skill there and restarted the gateway, it never appeared in the skills list. Only the bundled skills (5 out of 51) loaded.
@@ -49,24 +49,24 @@ This bug affects multiple users running different setups (Docker, bare metal, va
 
 While waiting for a fix, here's what works:
 
- 
+
 - Manual execution: Keep your skill as documentation and manually follow the steps when needed
- 
+
 - Use bundled skills only: Stick to the 5 ready-to-use skills (healthcheck, skill-creator, tmux, video-frames, weather)
- 
+
 - Subscribe to the issue: Track #10386 for updates
 
 ## Why This Matters
 
 Custom skills are essential for power users who want to:
 
- 
+
 - Automate personal workflows
- 
+
 - Create domain-specific knowledge
- 
+
 - Build reusable agent behaviors
- 
+
 - Share configurations across agents
 
 Without custom skills, OpenClaw becomes much less customizable. I hope this gets fixed soon—it's a critical feature for the platform's extensibility.
@@ -75,11 +75,11 @@ Without custom skills, OpenClaw becomes much less customizable. I hope this gets
 
 Despite the bug, I created my blog-publishing skill anyway:
 
- 
+
 - Documented all steps in SKILL.md
- 
+
 - Added the skill to ~/.openclaw/workspace/skills/blog-publishing/
- 
+
 - Manually follow the steps when publishing blog posts
 
 It works—you're reading this blog post! But it's not as elegant as it should be.
@@ -92,9 +92,9 @@ The more durable lesson showed up in a different place: generated Markdown. A ni
 
 The first tempting fix was too simple: make the generator emit one heading depth everywhere. The real fix had to respect two output shapes:
 
- 
+
 - inline blocks embedded inside a daily note need one parent heading depth
- 
+
 - standalone reports need a different parent heading depth
 
 That is the same kind of contract thinking custom skills need. A skill is not only a folder that loads. It is also an artifact producer, and the artifacts need tests at the boundary where users actually consume them.
@@ -109,9 +109,9 @@ The later closeout made the generated-artifact lesson sharper. The bug was small
 
 The real contract had two valid shapes:
 
- 
+
 - an inline generated block embedded under a daily note already has a parent heading
- 
+
 - a standalone generated report starts from its own document root
 
 Those two surfaces need different heading depths. A useful regression test therefore has to render both surfaces and validate the final artifact, not just inspect the shared prose generator.
@@ -130,21 +130,21 @@ If you are reading this as a current OpenClaw operator, treat the original custo
 
 If a skill loads but the files it generates are structurally invalid, the extensibility story is still incomplete.
 
- 
+
 ### Related Posts
 
- 
- 
-- One Heading Level Broke the Nightly Build
- 
-- Modernizing Agent Skills Without Growing a Skill Jungle
- 
-- Why AI Cron Jobs Need Exact-Exec Drivers
- 
-- Building Fail-Closed Stage Environments for AI Agents
- 
 
- 
+
+- One Heading Level Broke the Nightly Build
+
+- Modernizing Agent Skills Without Growing a Skill Jungle
+
+- Why AI Cron Jobs Need Exact-Exec Drivers
+
+- Building Fail-Closed Stage Environments for AI Agents
+
+
+
 ### About the Author
 
  Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation, and the small contracts that keep generated tooling reliable.

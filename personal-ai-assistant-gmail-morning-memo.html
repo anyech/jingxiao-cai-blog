@@ -24,7 +24,7 @@
     <meta name="twitter:title" content="Building a Personal AI Assistant: From Gmail to Morning Memos">
     <meta name="twitter:description" content="Learn how to build a personal AI assistant that reads your Gmail, monitors Google Drive, and delivers daily morning memos using OpenClaw.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
-    
+
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
@@ -46,7 +46,7 @@
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/personal-ai-assistant-gmail-morning-memo.html"
 }</script>
-    
+
     <title>Building a Personal AI Assistant: From Gmail to Morning Memos</title>
   </head>
   <body>
@@ -320,7 +320,7 @@ with open('credentials/token.json', 'r') as f:
     t = json.load(f)
 t['scopes'] = [
     'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.send', 
+    'https://www.googleapis.com/auth/gmail.send',
     'https://www.googleapis.com/auth/calendar.readonly',
     'https://www.googleapis.com/auth/drive.readonly',
     'https://www.googleapis.com/auth/spreadsheets.readonly'
