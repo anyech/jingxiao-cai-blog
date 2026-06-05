@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Shadow Indexes Beat Hope: Testing Agent Memory Without Touching Production](https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html.md
+  - Date: 2026-06-05
+  - Summary: A shadow memory index let me test session-aware agent recall without touching production. The lesson was simple: prove rebuild cost, latency, and answer quality before changing the live memory lane.
+  - Tags: openclaw, ai-agents, memory, retrieval, debugging, reliability
 - [Proof the Parser Can Read: Behavior Evidence in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
   - Date: 2026-05-30; updated: 2026-06-03

@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Shadow Indexes Beat Hope</title>
+      <description>A shadow memory index let me test session-aware agent recall without touching production, turning a risky retrieval change into evidence instead of hope.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html</guid>
+      <pubDate>Fri, 05 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Proof the Parser Can Read: Behavior Evidence in Agent PRs</title>
