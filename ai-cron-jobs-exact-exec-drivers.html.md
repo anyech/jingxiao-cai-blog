@@ -440,7 +440,7 @@ return exact_text_between(
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations, with a recurring bias toward boring contracts, explicit rollback paths, and automation that can prove what actually happened.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations, with a recurring bias toward boring contracts, explicit rollback paths, and automation that can prove what actually happened.
 
  If the command succeeded but the wrapper hid the evidence, the fix is not a more poetic prompt. The fix is a sharper boundary.
 

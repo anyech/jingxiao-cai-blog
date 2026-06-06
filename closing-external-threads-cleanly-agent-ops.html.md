@@ -310,7 +310,7 @@ Next check: none unless reopen criteria are met
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation, and operational discipline. He is interested in small operating rules that make AI assistants more honest about state, constraints, and when not to keep bothering the human.
+ Jingxiao Cai works on distributed ML runtime systems and writes about self-hosted agents, automation, and operational discipline. He is interested in small operating rules that make AI assistants more honest about state, constraints, and when not to keep bothering the human.
 
  Closed is not forgotten. Closed is a reasoned state with a reopen condition.
 

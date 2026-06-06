@@ -263,7 +263,7 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the small operational boundaries that keep complex toolchains understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the small operational boundaries that keep complex toolchains understandable.
 
  A degraded lane is a signal. A patch is only one possible response.
 

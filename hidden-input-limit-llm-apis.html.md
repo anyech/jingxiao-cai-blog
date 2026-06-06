@@ -301,7 +301,7 @@ print(f"Input tokens: {len(tokens)}")
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and spends an unhealthy amount of time turning vague model-platform mismatches into concrete operational lessons. This one started as a simple "why is my prompt failing?" question and ended with a much lower opinion of marketing context numbers.
+ Jingxiao Cai works on distributed ML runtime systems and spends an unhealthy amount of time turning vague model-platform mismatches into concrete operational lessons. This one started as a simple "why is my prompt failing?" question and ended with a much lower opinion of marketing context numbers.
 
 
 

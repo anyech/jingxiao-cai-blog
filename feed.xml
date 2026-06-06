@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jingxiao Cai's Blog</title>
-    <description>Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.</description>
+    <description>Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering.</description>
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>

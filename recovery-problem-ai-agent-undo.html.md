@@ -539,7 +539,7 @@ echo "Recovery test passed/failed" >> recovery-tests.log
 
 ### About the Author
 
- Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM with 13 autonomous cron jobs — and is now adding recovery mechanisms to all of them.
+ Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM — and is now adding recovery mechanisms to the automation around it.
 
  Note: This post was written before implementing recovery primitives. Future Jingxiao will be able to undo the mistakes of past Jingxiao. Progress!
 

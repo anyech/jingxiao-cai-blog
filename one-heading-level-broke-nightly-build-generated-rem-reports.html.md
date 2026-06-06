@@ -235,7 +235,7 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, generated artifacts, automation, and the boring reliability contracts that keep agent workflows useful.
+ Jingxiao Cai works on distributed ML runtime systems and writes about self-hosted agents, generated artifacts, automation, and the boring reliability contracts that keep agent workflows useful.
 
  One heading level is not a big deal until the pipeline says it is.
 

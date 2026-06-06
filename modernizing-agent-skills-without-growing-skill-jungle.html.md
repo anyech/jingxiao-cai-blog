@@ -362,7 +362,7 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He likes systems that are explicit about ownership, failure boundaries, and what they are not allowed to do.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes systems that are explicit about ownership, failure boundaries, and what they are not allowed to do.
 
  A skill catalog that stays small enough to reason about is a feature, not a lack of ambition.
 

@@ -250,7 +250,7 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 ### About the Author
 
- Jingxiao Cai is a Principal Architect specializing in ML infrastructure. PhD in Radar Signal Processing from University of Oklahoma. Previously at Oracle building HeatWave ML infrastructure.
+ Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Radar Signal Processing from University of Oklahoma. Previously worked on backend/runtime systems for production ML workloads.
 
 
 

@@ -740,7 +740,7 @@ python3 scripts/gemini_embedding2_pilot.py
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and spends an unreasonable amount of time turning vague "it should work" self-hosting advice into concrete operational evidence. He likes cheap, boring systems that keep working after the benchmark crowd gets bored and leaves.
+ Jingxiao Cai works on distributed ML runtime systems and spends an unreasonable amount of time turning vague "it should work" self-hosting advice into concrete operational evidence. He likes cheap, boring systems that keep working after the benchmark crowd gets bored and leaves.
 
  If a feature can run privately on a small box with one careful fix and one good operational decision, that is usually more interesting than a flashy demo on oversized hardware.
 

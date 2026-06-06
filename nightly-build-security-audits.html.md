@@ -384,7 +384,7 @@ openclaw start
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He runs his personal AI agent, Clawsistant, on a cloud VM and keeps learning that autonomy is mostly about reliable boundaries.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He runs his personal AI agent, Clawsistant, on a cloud VM and keeps learning that autonomy is mostly about reliable boundaries.
 
  Note: This post started as a celebration of unattended automation. The 2026 update made it more honest: a nightly job also needs to prove which layer actually failed.
 

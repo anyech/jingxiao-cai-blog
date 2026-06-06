@@ -401,7 +401,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
  Individual details might be harmless, but together they can identify you:
 
  ❌ "Oracle PMTS" + "HeatWave ML" + "Fremont CA" + "36M" = Specific person
-✅ "Principal Architect" + "ML Infrastructure" + "Bay Area" = Many people
+✅ "senior engineer" + "distributed systems" + "Bay Area" = Many people
 
 
 ## Why I'm Publishing This
@@ -438,7 +438,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 ### About the Author
 
- Jingxiao Cai is a Principal Architect at Oracle, working on MySQL HeatWave ML Infrastructure. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM.
+ Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM.
 
  Note: This post was sanitized using the checklist it describes. No deployment-specific identifiers were harmed in the making of this blog post.
 

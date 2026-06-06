@@ -216,7 +216,7 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  A dirty tree is not a verdict. It is a prompt to classify the artifacts before acting.
 

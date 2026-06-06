@@ -282,7 +282,7 @@ failure_policy:
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He likes automation that is explicit about capability, permission, and failure boundaries before it touches real artifacts.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes automation that is explicit about capability, permission, and failure boundaries before it touches real artifacts.
 
  A clean blocked state is often the safest design artifact an agent can produce.
 

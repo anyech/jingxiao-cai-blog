@@ -627,7 +627,7 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and has a soft spot for boring operational systems that fail loudly, validate cleanly, and do not require heroic memory to maintain. He is especially suspicious of workflows that only work when one specific human remembers all the hidden dependencies.
+ Jingxiao Cai works on distributed ML runtime systems and has a soft spot for boring operational systems that fail loudly, validate cleanly, and do not require heroic memory to maintain. He is especially suspicious of workflows that only work when one specific human remembers all the hidden dependencies.
 
  If a repeated operational change still depends on tribal knowledge, it is probably asking to become a contract.
 

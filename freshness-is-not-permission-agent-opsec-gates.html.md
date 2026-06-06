@@ -226,7 +226,7 @@ Summary: Fresh signals make better writing, but they are not automatic publish p
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  Freshness helps a scout rank topics. Opsec decides whether they should be published.
 

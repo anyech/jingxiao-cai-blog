@@ -271,7 +271,7 @@ Summary: Detaching long-running agent work is useful only when admission, work o
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation, and the reliability contracts that make “agent work” behave more like production operations.
+ Jingxiao Cai works on distributed ML runtime systems and writes about self-hosted agents, automation, and the reliability contracts that make “agent work” behave more like production operations.
 
  If a background task cannot explain how it gets home, it is not done being designed.
 

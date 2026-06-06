@@ -394,7 +394,7 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and has a soft spot for boring reliability mechanisms: explicit policies, visible degradation, small wrappers, and tools that fail loudly instead of pretending everything is fine.
+ Jingxiao Cai works on distributed ML runtime systems and has a soft spot for boring reliability mechanisms: explicit policies, visible degradation, small wrappers, and tools that fail loudly instead of pretending everything is fine.
 
  If your fallback policy only exists in scattered settings files and human memory, it is not really a policy yet.
 

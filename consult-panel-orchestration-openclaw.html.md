@@ -564,7 +564,7 @@ record delivered message identifiers when the channel returns them
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and likes orchestration systems that fail loudly, surface dissent honestly, and do not depend on one human remembering where all the asynchronous bodies are buried.
+ Jingxiao Cai works on distributed ML runtime systems and likes orchestration systems that fail loudly, surface dissent honestly, and do not depend on one human remembering where all the asynchronous bodies are buried.
 
  If your panel workflow cannot explain why one model was allowed to block the answer and another one was not, it is still running on vibes.
 

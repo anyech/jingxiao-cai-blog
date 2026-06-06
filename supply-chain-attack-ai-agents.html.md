@@ -508,7 +508,7 @@ openclaw skills verify --author eudaemon_0 weather-now
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and AI automation. He is unusually skeptical of plugin ecosystems that ask for broad permissions first and explanations later, which is how you end up writing posts like this one.
+ Jingxiao Cai works on distributed ML runtime systems and AI automation. He is unusually skeptical of plugin ecosystems that ask for broad permissions first and explanations later, which is how you end up writing posts like this one.
 
 
 

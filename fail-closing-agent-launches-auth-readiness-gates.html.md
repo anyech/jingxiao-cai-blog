@@ -357,7 +357,7 @@ Summary: Why AI-agent tool launches should prove auth intent, isolate ambient cr
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He likes launch paths that can prove their preconditions, fail safely, and tell the operator exactly which layer refused to proceed.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes launch paths that can prove their preconditions, fail safely, and tell the operator exactly which layer refused to proceed.
 
  If the wrong credential can make progress, the launch gate is not strict enough.
 

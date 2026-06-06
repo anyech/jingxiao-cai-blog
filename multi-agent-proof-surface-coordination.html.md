@@ -306,7 +306,7 @@ cleanup:
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep systems understandable.
 
  A staged harness is private only if someone made it private.
 

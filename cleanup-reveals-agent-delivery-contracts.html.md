@@ -271,7 +271,7 @@ Summary: A sanitized OpenClaw agent-operations pattern: cleanup work exposed the
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  Cleanup is not just removal. It is a test of whether the lifecycle contract is explicit.
 

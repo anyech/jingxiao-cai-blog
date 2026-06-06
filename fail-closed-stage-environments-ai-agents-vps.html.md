@@ -386,7 +386,7 @@ Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed test
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and has a soft spot for self-hosted systems that prove their boundaries honestly instead of borrowing trust from wishful thinking.
+ Jingxiao Cai works on distributed ML runtime systems and has a soft spot for self-hosted systems that prove their boundaries honestly instead of borrowing trust from wishful thinking.
 
  A cheap stage environment is still worth building—if it is disciplined enough to fail closed before it tries to feel realistic.
 

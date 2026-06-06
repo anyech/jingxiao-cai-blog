@@ -285,7 +285,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 ### About the Author
 
- Jingxiao Cai is a Principal Architect at Oracle working on distributed AI/ML infrastructure. He uses OpenClaw as a personal automation and investigation platform, which means he gets to enjoy both the convenience of agent workflows and the occasional reminder that release engineering is still a very human discipline.
+ Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems and backend execution reliability. He uses OpenClaw as a personal automation and investigation platform, which means he gets to enjoy both the convenience of agent workflows and the occasional reminder that release engineering is still a very human discipline.
 
  This post intentionally keeps deployment-specific identifiers, host-local paths, and internal run metadata out of the public write-up. The useful lesson is the release pattern, not the fingerprint of one machine.
 

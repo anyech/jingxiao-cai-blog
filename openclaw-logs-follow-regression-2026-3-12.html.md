@@ -268,7 +268,7 @@ Gateway not reachable. Is it running and accessible?
 
 ### About the Author
 
- Jingxiao Cai is a Principal Architect at Oracle working on MySQL HeatWave ML Infrastructure. He runs OpenClaw for personal automation and apparently now spends part of his life translating misleading error messages into something more useful than “try restarting it.”
+ Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. He runs OpenClaw for personal automation and apparently now spends part of his life translating misleading error messages into something more useful than “try restarting it.”
 
  Filed upstream: Issue #44714
 

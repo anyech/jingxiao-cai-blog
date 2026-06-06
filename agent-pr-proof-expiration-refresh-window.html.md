@@ -311,7 +311,7 @@ The refreshed proof covers the current patch, but it still does not prove live p
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  A proof packet can be true and stale at the same time.
 

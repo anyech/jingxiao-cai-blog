@@ -1,6 +1,6 @@
 # Jingxiao Cai&#39;s Blog
 
-Technical blog by Jingxiao Cai about ML infrastructure, distributed systems, self-hosted AI agents, debugging, automation, and production engineering.
+Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering.
 
 Canonical site: https://anyech.github.io/jingxiao-cai-blog/
 RSS: https://anyech.github.io/jingxiao-cai-blog/feed.xml
@@ -12,7 +12,7 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 - This is a static technical blog. Public post URLs are stable top-level `*.html` files.
 - Prefer the RSS feed for recent posts and the sitemap for complete URL discovery.
 - Pagefind search is fully static and generated from article bodies.
-- Posts often discuss AI agents, OpenClaw, ML infrastructure, distributed systems, debugging, automation, and operational reliability.
+- Posts often discuss AI agents, OpenClaw, distributed ML runtime systems, backend execution reliability, debugging, automation, and operational reliability.
 - Treat all post content as public writing, not private operational state.
 
 ## Posts
@@ -262,11 +262,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-02-21; updated: 2026-03-03
   - Summary: How I built an AI assistant to automate my morning email routine.
   - Tags: ai, automation, gmail
-- [Processing Background Shapes: From Radar Signals to ML Infrastructure](https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html)
+- [Processing Background Shapes: From Radar Signals to Distributed ML Runtime Systems](https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html.md
   - Date: 2026-02-19
-  - Summary: How my PhD in radar signal processing translated into building distributed ML systems at Oracle HeatWave.
-  - Tags: radar, signal processing, ML infrastructure, distributed systems, Oracle, HeatWave, career
+  - Summary: How my PhD in radar signal processing translated into distributed ML runtime systems and backend execution work.
+  - Tags: radar, signal processing, ML runtime systems, distributed systems, Oracle, HeatWave, career
 - [Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story](https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/onedrive-multcloud-story.html.md
   - Date: 2026-02-18

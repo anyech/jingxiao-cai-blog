@@ -319,7 +319,7 @@ adopt:
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI-agent operations. He likes agents that make production changes boring: explicit, reversible, observable, and honest about where human approval is required.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes agents that make production changes boring: explicit, reversible, observable, and honest about where human approval is required.
 
  If the assistant is part of the recovery path, the assistant's own updates deserve a runbook.
 

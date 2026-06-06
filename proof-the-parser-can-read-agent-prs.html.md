@@ -248,7 +248,7 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  A proof section is an interface. If automation cannot parse it, the workflow cannot reliably depend on it.
 

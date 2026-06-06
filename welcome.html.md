@@ -24,9 +24,9 @@ After several years in industry, I'm starting to share my learnings, thoughts, a
 
 ## What to Expect
 
-- ML Infrastructure — Building distributed systems at scale
+- Distributed ML Runtime Systems — Backend execution, distributed workloads, and reliability at scale
 
-- Career Journey — From PhD to Principal Architect at Oracle
+- Career Journey — From radar PhD to distributed ML runtime systems
 
 - Tech Deep Dives — Signal processing to ML
 

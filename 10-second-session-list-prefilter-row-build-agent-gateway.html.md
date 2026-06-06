@@ -353,7 +353,7 @@ return rows
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, debugging, and operational discipline. He likes performance fixes that turn scary symptoms into boring counters.
+ Jingxiao Cai works on distributed ML runtime systems and writes about self-hosted agents, debugging, and operational discipline. He likes performance fixes that turn scary symptoms into boring counters.
 
  If a tiny query builds the whole world before answering, the bug is usually not the tiny query.
 

@@ -286,7 +286,7 @@ so maybe I can repair this in place.
 
 ### About the Author
 
- Jingxiao Cai works on distributed systems, ML infrastructure, and self-hosted AI-agent operations. He writes about the debugging and reliability lessons that are easier to learn on copies than in production.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He writes about the debugging and reliability lessons that are easier to learn on copies than in production.
 
  This post intentionally avoids deployment-specific IDs, private paths, hostnames, exact schedules, and live registry counts. The repair pattern is the point.
 

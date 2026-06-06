@@ -260,7 +260,7 @@ Summary: A chat-agent visibility lesson: when final answers stay private, comple
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  A reply is only finished when it reaches the side of the boundary where the human can see it.
 

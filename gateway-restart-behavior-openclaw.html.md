@@ -475,7 +475,7 @@ Let's do it after this turn finishes.
 
 ### About the Author
 
- Jingxiao Cai works on distributed systems, ML infrastructure, and self-hosted AI-agent operations. He runs OpenClaw for personal automation and has developed a healthy respect for changes that look small and behave large.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He runs OpenClaw for personal automation and has developed a healthy respect for changes that look small and behave large.
 
  This post intentionally avoids deployment-specific IDs, private paths, hostnames, exact schedules, and other sensitive details. The behavior is the point; the exact wiring is not.
 

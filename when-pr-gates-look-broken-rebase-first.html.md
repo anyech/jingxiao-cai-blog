@@ -222,7 +222,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
+ Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.
 
  A red gate is evidence. First make sure it is evidence about the current branch.
 

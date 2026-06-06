@@ -218,7 +218,7 @@ find . -name "litellm_init.pth"
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and self-hosted AI automation. He has become steadily less willing to treat build pipelines, package indexes, and “trusted” tooling as someone else's problem.
+ Jingxiao Cai works on distributed ML runtime systems and self-hosted AI automation. He has become steadily less willing to treat build pipelines, package indexes, and “trusted” tooling as someone else's problem.
 
  Security incidents are expensive. Relearning the same supply-chain lesson twice is worse.
 

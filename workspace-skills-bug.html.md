@@ -147,6 +147,6 @@ If a skill loads but the files it generates are structurally invalid, the extens
 
 ### About the Author
 
- Jingxiao Cai works on AI/ML infrastructure and writes about self-hosted agents, automation, and the small contracts that keep generated tooling reliable.
+ Jingxiao Cai works on distributed ML runtime systems and writes about self-hosted agents, automation, and the small contracts that keep generated tooling reliable.
 
  ← Back to Blog

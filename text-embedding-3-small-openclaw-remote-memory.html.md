@@ -272,7 +272,7 @@ Summary: After proving local memory search worked, I stabilized a remote memory-
 
 ### About the Author
 
- Jingxiao Cai works on ML infrastructure and has become deeply suspicious of any tooling decision process that stops at "the benchmark said it was better." He prefers boring systems that rebuild cleanly, validate honestly, and fail in ways a human can still reason about.
+ Jingxiao Cai works on distributed ML runtime systems and has become deeply suspicious of any tooling decision process that stops at "the benchmark said it was better." He prefers boring systems that rebuild cleanly, validate honestly, and fail in ways a human can still reason about.
 
  If your retrieval system only looks smart when you ignore the rebuild path, it is probably not as smart as it looks.
 

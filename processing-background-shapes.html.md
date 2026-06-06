@@ -1,29 +1,29 @@
-# Processing Background Shapes: From Radar Signals to ML Infrastructure
+# Processing Background Shapes: From Radar Signals to Distributed ML Runtime Systems
 
 URL: https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/processing-background-shapes.html.md
 Date: 2026-02-19
-Tags: radar, signal processing, ML infrastructure, distributed systems, Oracle, HeatWave, career
+Tags: radar, signal processing, ML runtime systems, distributed systems, Oracle, HeatWave, career
 
-Summary: How my PhD in radar signal processing translated into building distributed ML systems at Oracle HeatWave.
+Summary: How my PhD in radar signal processing translated into distributed ML runtime systems and backend execution work.
 
 ---
 
 ← Back to Blog
 
 
-# Processing Background Shapes: From Radar Signals to ML Infrastructure
+# Processing Background Shapes: From Radar Signals to Distributed ML Runtime Systems
 
  February 19, 2026
 
- Categories: ml, infrastructure, career, radar, signal-processing
+ Categories: ml, runtime-systems, career, radar, signal-processing
 
  This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.
 
 
 ## The Unexpected Bridge
 
- When I tell people I have a PhD in radar signal processing and now work on ML infrastructure, they often see it as a career pivot. But internally, it feels like a direct continuation—the mathematics of extracting signals from noise is remarkably similar whether you're processing radar returns or training distributed machine learning models.
+ When I tell people I have a PhD in radar signal processing and now work on distributed ML runtime systems, they often see it as a career pivot. But internally, it feels like a direct continuation—the mathematics of extracting signals from noise is remarkably similar whether you're processing radar returns or training distributed machine learning models.
 
  My dissertation at the University of Oklahoma focused on adaptive sampling for radar systems, specifically detecting turbulence in atmospheric conditions. The core problem: how do you extract meaningful patterns from overwhelmingly noisy data streams, in real-time, with limited computational resources?
 
@@ -45,7 +45,7 @@ Summary: How my PhD in radar signal processing translated into building distribu
 
  The art is separating the signal (an aircraft, a storm cell) from all this noise. This requires sophisticated filtering, adaptive algorithms, and understanding of signal statistics.
 
- In ML infrastructure, we face a parallel problem: distinguishing meaningful gradient updates from noise in distributed training, identifying real performance bottlenecks versus false positives in profiling, and efficiently allocating compute across thousands of nodes.
+ In distributed ML runtime systems, we face a parallel problem: distinguishing meaningful gradient updates from noise in distributed training, identifying real performance bottlenecks versus false positives in profiling, and efficiently allocating compute across thousands of nodes.
 
 
 ## From Adaptive Sampling to Adaptive Computation
@@ -102,7 +102,7 @@ Summary: How my PhD in radar signal processing translated into building distribu
 
 ## What's Next
 
- After building HeatWave ML infrastructure at Oracle, I'm now exploring the next frontier: how to make distributed ML training even more efficient, particularly for the emerging class of large models that push the boundaries of memory and communication.
+ After working on HeatWave ML backend/runtime systems, I'm now exploring the next frontier: how to make distributed ML training even more efficient, particularly for the emerging class of large models that push the boundaries of memory and communication.
 
  The radar background taught me that constraints drive innovation. When you can't simply "throw more compute" at a problem (whether due to real-time requirements or hardware limitations), you develop creative solutions that often outperform brute-force approaches.
 
@@ -127,7 +127,7 @@ Summary: How my PhD in radar signal processing translated into building distribu
 
 ### About the Author
 
- Dr. JCai is a Principal Member of Technical Staff at Oracle, where he works on HeatWave ML infrastructure. He holds a PhD in Electrical Engineering from the University of Oklahoma, focusing on radar signal processing and adaptive sampling. Previously, he built distributed ML systems handling 200+ node Dask clusters and implemented zero-copy protocols for ML training data transfer. When not optimizing ML infrastructure, he's likely thinking about cars, playing WoW, or finding better ways to extract signals from noise.
+ Dr. JCai is a Principal Member of Technical Staff at Oracle, where his work focuses on distributed ML runtime systems. He holds a PhD in Electrical Engineering from the University of Oklahoma, focusing on radar signal processing and adaptive sampling. Previously, he built distributed ML systems handling 200+ node Dask clusters and implemented zero-copy protocols for ML training data transfer. When not thinking about runtime reliability, he's likely thinking about cars, playing WoW, or finding better ways to extract signals from noise.
 
 
 
