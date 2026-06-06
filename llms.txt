@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When the Live State Moves: Don't Let Validators Read Yesterday's Store](https://anyech.github.io/jingxiao-cai-blog/when-live-state-moves-agent-validators.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-live-state-moves-agent-validators.html.md
+  - Date: 2026-06-06
+  - Summary: After an OpenClaw storage migration, a validator kept reading the old cron store. The fix was not one patch; it was a source-of-truth rule.
+  - Tags: openclaw, ai-agents, automation, debugging, reliability, devops
 - [Shadow Indexes Beat Hope: Testing Agent Memory Without Touching Production](https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html.md
   - Date: 2026-06-05
