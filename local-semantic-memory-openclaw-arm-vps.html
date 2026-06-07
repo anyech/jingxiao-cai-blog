@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.">
+    <meta property="og:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.">
+    <meta name="twitter:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-  "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.",
+  "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-03-19",
-  "dateModified": "2026-05-09",
+  "dateModified": "2026-06-07",
   "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html"
@@ -71,7 +71,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated May 9, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 7, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -80,6 +80,7 @@
         <div class="note"><strong>April 8 follow-up:</strong> I added a public limitations section covering rebuild-safety limits in the indexing path, the safer shadow-index workaround, more conservative live sync behavior, and the diagnostic split between timeout-style failures and request-path instability.</div>
         <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
         <div class="note"><strong>May 9 follow-up:</strong> I added the active-memory canary trade-off explicitly: a helper that works only under a long budget may be a valuable diagnostic ceiling, but it is not ready for the normal reply path until scope, query shape, or delivery mode makes it feel boring.</div>
+        <div class="note"><strong>June 7 follow-up:</strong> I added a sharper reply-path distinction: fast embeddings and a working search wrapper do not automatically mean the active-memory helper is production-comfortable inside the synchronous response path.</div>
     </header>
 
     <main>
@@ -370,7 +371,7 @@
         <pre><code>sources: ["memory", "sessions"]
 model: perplexity/pplx-embed-v1-0.6b
 vector dims: 1024
-dbPath: ~/.openclaw/memory/{agentId}-sessions-shadow-pplx06b.sqlite</code></pre>
+dbPath: agent-scoped shadow SQLite path</code></pre>
 
         <p>More importantly, the live checks return real <code>source: "sessions"</code> hits. That is the proof I actually care about. The point was never to win an embedding beauty pageant. The point was to add session recall without lying to myself about what changed.</p>
 
@@ -413,10 +414,10 @@ dbPath: ~/.openclaw/memory/{agentId}-sessions-shadow-pplx06b.sqlite</code></pre>
 
         <p>The operational pattern mattered as much as the numbers. I did <strong>not</strong> change the live gateway memory configuration. I created a dedicated local virtual environment and called Gemini Embedding 2 directly from small task-specific scripts, while keeping the vectors and review artifacts local.</p>
 
-        <pre><code>python3 -m venv ~/.openclaw/workspace/.venvs/photo-semantic
-source ~/.openclaw/workspace/.venvs/photo-semantic/bin/activate
-python3 scripts/gemini_embedding2_probe.py
-python3 scripts/gemini_embedding2_pilot.py</code></pre>
+        <pre><code>python3 -m venv .venv/photo-semantic
+source .venv/photo-semantic/bin/activate
+python3 task-specific-embedding-probe.py
+python3 task-specific-embedding-pilot.py</code></pre>
 
         <div class="note">
             <strong>Why this matters:</strong> the honest architecture is hybrid. Use local <code>embeddinggemma</code> when the problem is <strong>text memory on your own notes</strong>. Use a separate remote multimodal lane when the problem is <strong>image/GIF semantics</strong> or another feature space the text-memory lane was never meant to solve.
@@ -578,6 +579,46 @@ python3 scripts/gemini_embedding2_pilot.py</code></pre>
                 </tr>
             </tbody>
         </table>
+
+        <h2>June 2026 Follow-Up: Fast Search Is Not the Whole Reply Path</h2>
+        <p>The June follow-up made the active-memory lesson more concrete. The raw embedding lane was fast. Short direct embedding probes finished in milliseconds, and ordinary memory-search wrapper calls were in the several-second range rather than the tens-of-seconds range.</p>
+
+        <p>But the active-memory helper still sometimes made the normal reply path feel slow because the expensive part was not only vector search. The embedded helper had to set up, choose a query, call tools, judge relevance, and return a usable memory summary while the host itself was under pressure.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Layer</th>
+                    <th>Observed shape</th>
+                    <th>What it means</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Embedding call</strong></td>
+                    <td>Millisecond-level in direct probes.</td>
+                    <td>The embedding endpoint was not the main bottleneck.</td>
+                </tr>
+                <tr>
+                    <td><strong>Search wrapper</strong></td>
+                    <td>Several seconds in ordinary memory-search probes.</td>
+                    <td>Real cost, but not enough by itself to explain long pre-reply stalls.</td>
+                </tr>
+                <tr>
+                    <td><strong>Active-memory helper</strong></td>
+                    <td>Useful when it completed, but vulnerable to tail latency and host pressure.</td>
+                    <td>The production question is the whole helper budget, not just embedding speed.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The practical tuning moved in a conservative direction: keep the feature on, but reduce the worst-case blocking budget and let future evidence decide whether the helper needs narrower scope, asynchronous delivery, or deeper instrumentation.</p>
+
+        <blockquote>
+            <p><strong>Fast embeddings prove the retrieval substrate can work. They do not prove an embedded pre-reply helper is cheap enough for every turn.</strong></p>
+        </blockquote>
+
+        <p>That is the sharper version of the canary rule: measure the end-to-end user-visible path. If the memory feature is useful but becomes the dominant latency, the fix is not to pretend the embedding benchmark answered the product question.</p>
 
         <h2>May 2026 Follow-Up: Session Lists Have a Memory-Search Lesson Too</h2>
         <p>The session-list latency work looked separate at first, but it rhymed with the memory story. The gateway was doing expensive derived-row work before cheap filters had narrowed the candidate set.</p>

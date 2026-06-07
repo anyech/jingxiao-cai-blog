@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A sanitized agent-operations lesson: append-only memory updates, shrink guards, and recovery discipline keep assistants from deleting their own history.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Append, Don&#39;t Rewrite: The Guardrail That Saved My Agent&#39;s Memory">
+    <meta property="og:description" content="A sanitized agent-operations lesson: append-only memory updates, shrink guards, and recovery discipline keep assistants from deleting their own history.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Append, Don&#39;t Rewrite: The Guardrail That Saved My Agent&#39;s Memory">
+    <meta name="twitter:description" content="A sanitized agent-operations lesson: append-only memory updates, shrink guards, and recovery discipline keep assistants from deleting their own history.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory",
+  "description": "A sanitized agent-operations lesson: append-only memory updates, shrink guards, and recovery discipline keep assistants from deleting their own history.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-06-07",
+  "dateModified": "2026-06-07",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html"
+}</script>
+
+    <title>Append, Don&#39;t Rewrite: The Guardrail That Saved My Agent&#39;s Memory</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory</h1>
+    <div class="meta">
+        <strong>June 7, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: openclaw, ai-agents, automation, debugging, memory, reliability</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the incident, separate the tool mistake from the guardrail that worked, and remove private paths, thread identifiers, commit details, and deployment-specific workflow names before publication.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> if an agent writes durable memory with whole-file replacement, one normal note-taking turn can become a silent history deletion. Treat daily memory as append-only unless recovery explicitly says otherwise.
+    </div>
+</header>
+
+<main>
+    <p>The scary part was not that the publish gate stopped. The scary part was why it stopped.</p>
+
+    <p>A routine agent-memory update had accidentally replaced an existing daily note instead of appending a new section. A file that should have preserved the day's accumulated context collapsed from a full note into only a handful of lines.</p>
+
+    <p>The good news: a shrink guard caught it before the change was committed and pushed.</p>
+
+    <blockquote>
+        <p><strong>The failure was an agent write mistake. The save was a boring guardrail that refused to publish a suspicious shrink.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Sanitized scope:</strong> this is a public agent-operations pattern, not a dump of my private automation. I am intentionally omitting exact local paths, thread IDs, message IDs, commit hashes, private cron names, raw logs, and deployment-specific topology. The reusable lesson is append-only memory discipline and recovery-before-bypass behavior.
+    </div>
+
+    <h2>What Actually Happened</h2>
+    <p>A self-hosted agent can use continuity notes as compact operational history: incident summaries, decisions, handoff pointers, and the few facts worth carrying into future work. Those files are not scratchpads. They are continuity.</p>
+
+    <p>During a previous recovery task, the assistant needed to add a small note. Instead of using the append helper, it used a whole-file write against an existing daily file. That replaced the previous content with only the new note.</p>
+
+    <p>Nothing about that mistake required exotic model behavior. It was a mundane write-mode bug:</p>
+
+    <ul>
+        <li>the target file already existed;</li>
+        <li>the new content was meant to be a section, not the whole file;</li>
+        <li>the write path overwrote instead of appending;</li>
+        <li>the result looked syntactically valid but semantically destructive.</li>
+    </ul>
+
+    <p>That last point is the trap. A valid Markdown file can still be a bad state transition.</p>
+
+    <h2>The Guardrail Did Its Job</h2>
+    <p>The automated publish flow included a memory-shrink guard. It compared the pending continuity file against the previous tracked version and noticed that the file had collapsed dramatically. Instead of accepting the change, it blocked the publish path.</p>
+
+    <p>That is exactly the kind of failure I want automation to catch:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Signal</th>
+                <th>Why it mattered</th>
+                <th>What the guard did</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Large shrink in a daily memory file</td>
+                <td>Daily notes should usually grow or be compacted deliberately, not collapse by accident.</td>
+                <td>Blocked the commit before the bad state became remote history.</td>
+            </tr>
+            <tr>
+                <td>File remained syntactically valid</td>
+                <td>Markdown validity would not catch semantic deletion.</td>
+                <td>Treated size/content regression as a policy problem, not a parser problem.</td>
+            </tr>
+            <tr>
+                <td>There was a recoverable new note</td>
+                <td>The new work was not wrong; only the write mode was wrong.</td>
+                <td>Forced recovery: restore previous content, then re-append safely.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>This is the important design point: the guard did not need to know the whole story. It only needed to know that an ordinary daily-memory file should not suddenly become tiny without an explicit compaction trail.</p>
+
+    <h2>The Correct Recovery Pattern</h2>
+    <p>The recovery path was not “just bypass the hook.” That would have turned the guard from a safety system into decorative theater.</p>
+
+    <p>The safe sequence was:</p>
+
+    <ol>
+        <li><strong>Preserve the new note.</strong> Extract the small section that the assistant was trying to add.</li>
+        <li><strong>Restore the previous memory file.</strong> Bring back the previously tracked content before reapplying the new section.</li>
+        <li><strong>Append through the helper.</strong> Re-add the saved note using the append-only path instead of another whole-file write.</li>
+        <li><strong>Compact deliberately if needed.</strong> If the daily file is too large, preserve the full content elsewhere first, then replace it with a pointer summary intentionally.</li>
+        <li><strong>Promote the rule.</strong> Add a durable invariant: existing daily memory files are append-only by default.</li>
+        <li><strong>Run the original commit flow again.</strong> Let the same guard that blocked the bad state verify the repaired state.</li>
+    </ol>
+
+    <div class="success">
+        <strong>Recovery rule:</strong> when a shrink guard fires, restore first and re-append. Do not teach the system that bypassing safety checks is a valid way to finish a task.
+    </div>
+
+    <h2>Why Append-Only Matters for Agent Memory</h2>
+    <p>Human operators can usually tell when they are replacing a document. Agents are more prone to treating “write this file” as an atomic success condition unless the workflow makes the desired mutation type explicit.</p>
+
+    <p>For durable memory, the mutation type matters more than the prose:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Mutation type</th>
+                <th>Good for</th>
+                <th>Risk if misused</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Append</strong></td>
+                <td>Daily notes, incident checkpoints, incremental handoffs.</td>
+                <td>Can grow noisy if never compacted.</td>
+            </tr>
+            <tr>
+                <td><strong>Targeted edit</strong></td>
+                <td>Correcting one known section or replacing a unique block.</td>
+                <td>Can drift if the match is not unique or the section boundary is wrong.</td>
+            </tr>
+            <tr>
+                <td><strong>Whole-file rewrite</strong></td>
+                <td>Generated artifacts, fresh drafts, deliberate compacted summaries.</td>
+                <td>Can silently delete history when used on existing continuity files.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Continuity memory belongs in the first category most of the time. If it needs to become the third category, that should be called a compaction, not disguised as a routine note update.</p>
+
+    <h2>The Bigger Agent-Ops Lesson</h2>
+    <p>This incident is a useful reminder that agent safety is not only about model policy or external permissions. It is also about file mutation contracts.</p>
+
+    <p>An assistant with filesystem access can do damage by being almost right:</p>
+
+    <ul>
+        <li>writing valid syntax to the wrong scope;</li>
+        <li>summarizing a file by replacing instead of appending;</li>
+        <li>treating a daily continuity note like a generated scratch artifact;</li>
+        <li>optimizing for task completion instead of preserving history;</li>
+        <li>bypassing the hook that was built to catch exactly this class of mistake.</li>
+    </ul>
+
+    <p>The fix is not to ban writing. The fix is to make write intent explicit.</p>
+
+    <blockquote>
+        <p><strong>Before an agent writes a durable file, it should know whether the operation is append, targeted replacement, compaction, or full regeneration.</strong></p>
+    </blockquote>
+
+    <h2>A Reusable Checklist</h2>
+    <ol>
+        <li><strong>Classify the file.</strong> Is this continuity memory, source code, generated output, scratch, or config?</li>
+        <li><strong>Choose the mutation type.</strong> Append, targeted edit, or rewrite should be a deliberate decision.</li>
+        <li><strong>Prefer append helpers for daily notes.</strong> Do not rely on generic whole-file writers for continuity files.</li>
+        <li><strong>Use shrink guards on durable memory.</strong> Syntax checks are not enough; deletion is often valid syntax.</li>
+        <li><strong>Treat guard failures as evidence.</strong> Preserve the new work, restore the old state, then reapply safely.</li>
+        <li><strong>Compact with provenance.</strong> If a daily file must shrink, archive the full version and leave a pointer trail.</li>
+        <li><strong>Re-run the same gate after repair.</strong> The guard that caught the problem should be part of the proof that it is fixed.</li>
+    </ol>
+
+    <h2>My Take</h2>
+    <p>I am glad the guard failed closed. A blocked publish path is annoying for a few minutes. A silently deleted memory note can poison future recall, erase context, and teach the next assistant the wrong history.</p>
+
+    <p>The practical rule I am keeping is simple:</p>
+
+    <div class="success">
+        <strong>Append by default. Rewrite only by explicit design. Restore before bypass.</strong>
+    </div>
+
+    <p>That is not glamorous agent architecture. It is better: a boring invariant that turns one bad write into a recoverable incident instead of a permanent loss of memory.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why AI Agents Need Undo</a></li>
+            <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build That Caught My Mistakes</a></li>
+            <li><a href="/jingxiao-cai-blog/when-live-state-moves-agent-validators.html">When the Live State Moves</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on backend systems and reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">If an automation guard catches a real mistake, the right response is not to bypass it. The right response is to make the mistake harder to repeat.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Have you seen an automation system almost delete its own history? Leave a comment below.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
+
+</article>
+
+    </main>
+  </body>
+</html>

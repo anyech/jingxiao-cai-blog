@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 06 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Append, Don't Rewrite</title>
+      <description>A shrink guard caught an accidental daily-memory overwrite before publish. The reusable fix was append-only discipline plus recovery before bypass.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html</guid>
+      <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, source hygiene, session-list fast paths, and active-memory reply-path latency evidence.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When the Live State Moves</title>
@@ -198,14 +214,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html</guid>
       <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, stricter active-memory canary gates, session-list fast paths, and source hygiene.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
-      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

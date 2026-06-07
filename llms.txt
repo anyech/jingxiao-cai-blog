@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory](https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html.md
+  - Date: 2026-06-07
+  - Summary: An assistant accidentally replaced a daily memory note instead of appending to it. A shrink guard caught the damage before publish, and the fix became an append-only rule.
+  - Tags: openclaw, ai-agents, automation, debugging, memory, reliability
+- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
+  - Date: 2026-03-19; updated: 2026-06-07
+  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, source hygiene, session-list fast paths, and active-memory reply-path latency evidence.
+  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [When the Live State Moves: Don't Let Validators Read Yesterday's Store](https://anyech.github.io/jingxiao-cai-blog/when-live-state-moves-agent-validators.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-live-state-moves-agent-validators.html.md
   - Date: 2026-06-06
@@ -137,11 +147,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-10
   - Summary: A degraded coding-agent lane is not automatically a local repair task; first classify the state as passive watch, upstream wait, or a narrow adapter fix.
   - Tags: ai-agents, coding-agents, openclaw, gemini, reliability, devops
-- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-05-09
-  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, session-list fast-path lessons, source hygiene, and stricter active-memory canary promotion gates.
-  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern](https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html.md
   - Date: 2026-05-09

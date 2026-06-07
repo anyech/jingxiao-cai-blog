@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-05-09
+Updated: 2026-06-07
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
-Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, session-list fast-path lessons, source hygiene, and stricter active-memory canary promotion gates.
+Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, source hygiene, session-list fast paths, and active-memory reply-path latency evidence.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated May 9, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 7, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -29,6 +29,8 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
  April 29 follow-up: I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.
 
  May 9 follow-up: I added the active-memory canary trade-off explicitly: a helper that works only under a long budget may be a valuable diagnostic ceiling, but it is not ready for the normal reply path until scope, query shape, or delivery mode makes it feel boring.
+
+ June 7 follow-up: I added a sharper reply-path distinction: fast embeddings and a working search wrapper do not automatically mean the active-memory helper is production-comfortable inside the synchronous response path.
 
 
 
@@ -425,7 +427,7 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
  sources: ["memory", "sessions"]
 model: perplexity/pplx-embed-v1-0.6b
 vector dims: 1024
-dbPath: ~/.openclaw/memory/{agentId}-sessions-shadow-pplx06b.sqlite
+dbPath: agent-scoped shadow SQLite path
 
  More importantly, the live checks return real source: "sessions" hits. That is the proof I actually care about. The point was never to win an embedding beauty pageant. The point was to add session recall without lying to myself about what changed.
 
@@ -475,10 +477,10 @@ dbPath: ~/.openclaw/memory/{agentId}-sessions-shadow-pplx06b.sqlite
 
  The operational pattern mattered as much as the numbers. I did not change the live gateway memory configuration. I created a dedicated local virtual environment and called Gemini Embedding 2 directly from small task-specific scripts, while keeping the vectors and review artifacts local.
 
- python3 -m venv ~/.openclaw/workspace/.venvs/photo-semantic
-source ~/.openclaw/workspace/.venvs/photo-semantic/bin/activate
-python3 scripts/gemini_embedding2_probe.py
-python3 scripts/gemini_embedding2_pilot.py
+ python3 -m venv .venv/photo-semantic
+source .venv/photo-semantic/bin/activate
+python3 task-specific-embedding-probe.py
+python3 task-specific-embedding-pilot.py
 
 
  Why this matters: the honest architecture is hybrid. Use local embeddinggemma when the problem is text memory on your own notes. Use a separate remote multimodal lane when the problem is image/GIF semantics or another feature space the text-memory lane was never meant to solve.
@@ -670,6 +672,53 @@ python3 scripts/gemini_embedding2_pilot.py
 
 
 
+
+
+## June 2026 Follow-Up: Fast Search Is Not the Whole Reply Path
+
+ The June follow-up made the active-memory lesson more concrete. The raw embedding lane was fast. Short direct embedding probes finished in milliseconds, and ordinary memory-search wrapper calls were in the several-second range rather than the tens-of-seconds range.
+
+ But the active-memory helper still sometimes made the normal reply path feel slow because the expensive part was not only vector search. The embedded helper had to set up, choose a query, call tools, judge relevance, and return a usable memory summary while the host itself was under pressure.
+
+
+
+
+ Layer
+ Observed shape
+ What it means
+
+
+
+
+
+ Embedding call
+ Millisecond-level in direct probes.
+ The embedding endpoint was not the main bottleneck.
+
+
+
+ Search wrapper
+ Several seconds in ordinary memory-search probes.
+ Real cost, but not enough by itself to explain long pre-reply stalls.
+
+
+
+ Active-memory helper
+ Useful when it completed, but vulnerable to tail latency and host pressure.
+ The production question is the whole helper budget, not just embedding speed.
+
+
+
+
+
+ The practical tuning moved in a conservative direction: keep the feature on, but reduce the worst-case blocking budget and let future evidence decide whether the helper needs narrower scope, asynchronous delivery, or deeper instrumentation.
+
+
+ Fast embeddings prove the retrieval substrate can work. They do not prove an embedded pre-reply helper is cheap enough for every turn.
+
+
+
+ That is the sharper version of the canary rule: measure the end-to-end user-visible path. If the memory feature is useful but becomes the dominant latency, the fix is not to pretend the embedding benchmark answered the product question.
 
 
 ## May 2026 Follow-Up: Session Lists Have a Memory-Search Lesson Too
