@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 08 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>Local OpenClaw memory search on a small ARM VPS, now with safer rollout, host-pressure caveats, and active-memory latency evidence.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Reachable Is Not Ready</title>
+      <description>Read-only probes can prove remote lanes are alive without proving they are ready for queues. Capability matrices and dry-run contracts should come first.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html</guid>
+      <pubDate>Mon, 08 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Append, Don't Rewrite</title>
@@ -14,14 +30,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html</guid>
       <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, source hygiene, session-list fast paths, and active-memory reply-path latency evidence.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
-      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

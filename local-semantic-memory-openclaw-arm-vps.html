@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
+    <meta name="description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added safer rollout, host-pressure caveats, and active-memory latency evidence.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta property="og:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
+    <meta property="og:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added safer rollout, host-pressure caveats, and active-memory latency evidence.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs">
-    <meta name="twitter:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.">
+    <meta name="twitter:description" content="How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added safer rollout, host-pressure caveats, and active-memory latency evidence.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs",
-  "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then extended it with safer rollout, active-memory latency evidence, session-list fast paths, and source hygiene.",
+  "description": "How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added safer rollout, host-pressure caveats, and active-memory latency evidence.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-03-19",
-  "dateModified": "2026-06-07",
+  "dateModified": "2026-06-08",
   "url": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html"
@@ -71,7 +71,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 7, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 8, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -81,6 +81,7 @@
         <div class="note"><strong>April 29 follow-up:</strong> I added a source-hygiene section about anti-echo retrieval: generated scout reports can suggest candidates, but direct evidence and fresh operator friction should remain the primary sources.</div>
         <div class="note"><strong>May 9 follow-up:</strong> I added the active-memory canary trade-off explicitly: a helper that works only under a long budget may be a valuable diagnostic ceiling, but it is not ready for the normal reply path until scope, query shape, or delivery mode makes it feel boring.</div>
         <div class="note"><strong>June 7 follow-up:</strong> I added a sharper reply-path distinction: fast embeddings and a working search wrapper do not automatically mean the active-memory helper is production-comfortable inside the synchronous response path.</div>
+        <div class="note"><strong>June 8 follow-up:</strong> I added the host-pressure version of the same rule: even when ordinary search looks healthy, a pre-reply memory helper still has to survive the full setup, tool, judgment, and delivery budget under host pressure.</div>
     </header>
 
     <main>
@@ -613,6 +614,8 @@ python3 task-specific-embedding-pilot.py</code></pre>
         </table>
 
         <p>The practical tuning moved in a conservative direction: keep the feature on, but reduce the worst-case blocking budget and let future evidence decide whether the helper needs narrower scope, asynchronous delivery, or deeper instrumentation.</p>
+
+        <p>The next pressure check made that distinction less theoretical. Ordinary memory-search probes could still look healthy while the full pre-reply helper remained sensitive to host pressure and long-tail orchestration cost. That is the version of the lesson I trust most: do not promote a memory helper because one layer is fast. Promote it only when the whole user-visible path stays boring under host pressure.</p>
 
         <blockquote>
             <p><strong>Fast embeddings prove the retrieval substrate can work. They do not prove an embedded pre-reply helper is cheap enough for every turn.</strong></p>
