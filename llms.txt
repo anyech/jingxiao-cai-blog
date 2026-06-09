@@ -17,10 +17,15 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Do Not Teach the App About the Worker: Status Facades for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html.md
+  - Date: 2026-06-09
+  - Summary: A dry-run offload checkpoint showed why the application layer should see a stable status contract, not worker routes, transport details, or live execution mechanics.
+  - Tags: openclaw, ai-agents, automation, runtime, debugging, reliability
 - [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-08
-  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and active-memory reply-path latency evidence.
+  - Date: 2026-03-19; updated: 2026-06-09
+  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and a stricter active-memory promotion gate.
   - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Reachable Is Not Ready: Capability Matrices for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html.md

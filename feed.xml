@@ -6,11 +6,19 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 08 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 09 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Do Not Teach the App About the Worker</title>
+      <description>Agent offload needs status previews and app-facing facades before live worker mechanics become routing authority.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html</guid>
+      <pubDate>Tue, 09 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>Local OpenClaw memory search on a small ARM VPS, now with safer rollout, host-pressure caveats, and active-memory latency evidence.</description>
+      <description>Local OpenClaw memory search on a small ARM VPS, now with safer rollout, host-pressure caveats, and a stricter active-memory promotion gate.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>

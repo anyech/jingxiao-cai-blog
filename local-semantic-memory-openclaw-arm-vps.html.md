@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-06-08
+Updated: 2026-06-09
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
-Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and active-memory reply-path latency evidence.
+Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and a stricter active-memory promotion gate.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated June 8, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 9, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -33,6 +33,8 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
  June 7 follow-up: I added a sharper reply-path distinction: fast embeddings and a working search wrapper do not automatically mean the active-memory helper is production-comfortable inside the synchronous response path.
 
  June 8 follow-up: I added the host-pressure version of the same rule: even when ordinary search looks healthy, a pre-reply memory helper still has to survive the full setup, tool, judgment, and delivery budget under host pressure.
+
+ June 9 follow-up: I tightened the promotion gate again: a helper that works at a long canary budget is operational evidence, not reply-path production readiness, until the whole user-visible path stays boring.
 
 
 
@@ -723,6 +725,39 @@ python3 task-specific-embedding-pilot.py
 
 
  That is the sharper version of the canary rule: measure the end-to-end user-visible path. If the memory feature is useful but becomes the dominant latency, the fix is not to pretend the embedding benchmark answered the product question.
+
+ The June 9 promotion rule is deliberately stricter: working at a long canary budget is evidence, not readiness. I would only call the helper production-comfortable when normal replies stay responsive with the helper enabled, the query contract is narrow enough to avoid broad archaeology, and the system has a fallback delivery shape when recall is useful but slow.
+
+
+
+
+ Evidence
+ Good conclusion
+ Bad conclusion
+
+
+
+
+
+ Long-budget canary completes
+ The path can work when given room.
+ The normal reply path should always wait for it.
+
+
+
+ Recall is useful when returned
+ The feature is worth preserving and tuning.
+ Every turn deserves a broad memory scan.
+
+
+
+ Search substrate is fast
+ The bottleneck is likely orchestration, query scope, or host pressure.
+ The end-to-end helper is automatically cheap.
+
+
+
+
 
 
 ## May 2026 Follow-Up: Session Lists Have a Memory-Search Lesson Too
