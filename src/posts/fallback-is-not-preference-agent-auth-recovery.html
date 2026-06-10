@@ -1,0 +1,238 @@
+---
+layout: post.njk
+permalink: 'fallback-is-not-preference-agent-auth-recovery.html'
+title: "Fallback Is Not Preference: Keep Agent Auth Recovery Out of Session State"
+slug: 'fallback-is-not-preference-agent-auth-recovery'
+description: 'A sanitized agent-operations lesson: automatic auth fallback should be transient recovery behavior, not a durable session preference.'
+summary: 'A recent OpenClaw auth-profile incident showed why source tags matter: automatic fallback can keep the reply alive, but it must not become a sticky user choice.'
+date: '2026-06-10'
+updated: ''
+tags: ['openclaw', 'ai-agents', 'automation', 'auth', 'debugging', 'reliability']
+keywords: ['OpenClaw auth fallback', 'OpenAI auth profile', 'agent recovery state', 'source auto source user', 'AI agent watchdog', 'session preference drift']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/fallback-is-not-preference-agent-auth-recovery.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'Fallback Is Not Preference'
+feedDescription: 'Automatic auth fallback can keep an agent alive, but it should not become a durable session preference.'
+feedPubDate: 'Wed, 10 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-10'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Fallback Is Not Preference: Keep Agent Auth Recovery Out of Session State</h1>
+    <div class="meta">
+        <strong>June 10, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: openclaw, ai-agents, automation, auth, debugging, reliability</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped reconstruct the failure chain, separate durable state from transient recovery, and strip out account identifiers, session identifiers, watchdog names, raw paths, and live deployment fingerprints before publication.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> an automatic fallback can be the right behavior for a single failing turn. Persisting that fallback as if the user chose it is a different behavior entirely.
+    </div>
+</header>
+
+<main>
+    <p>A good agent runtime needs fallback paths. Providers time out. Auth profiles fail transiently. A reply should not disappear just because the primary route had a bad minute.</p>
+
+    <p>But fallback has a dangerous cousin: preference drift.</p>
+
+    <p>The incident that triggered this post looked simple from the outside. Some sessions kept drifting from a primary OpenAI auth profile to an emergency profile. A watchdog would clean the state later, and healthy runs would go quiet again. That made the symptom look like a recurring config mess.</p>
+
+    <p>The root issue was sharper than that: an automatic recovery choice was being treated too much like durable session intent.</p>
+
+    <blockquote>
+        <p><strong>Fallback is a recovery decision. Preference is a user decision. Do not store them as the same thing.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Sanitized scope:</strong> this post intentionally omits exact profile identifiers, account emails, session IDs, run IDs, watchdog job names, job IDs, raw log paths, exact schedules, private file paths, and live config values. The reusable lesson is the state-machine boundary, not my deployment map.
+    </div>
+
+    <h2>The State Machine Smell</h2>
+    <p>The bad smell was not that fallback existed. I want fallback. In a personal assistant runtime, a best-effort fallback can be the difference between “the user got an answer” and “the channel went silent.”</p>
+
+    <p>The bad smell was that the system had two different meanings fighting over one durable surface:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>State meaning</th>
+                <th>Who chose it?</th>
+                <th>How long should it live?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>User preference</strong></td>
+                <td>The user or an explicit operator action.</td>
+                <td>Durable until changed.</td>
+            </tr>
+            <tr>
+                <td><strong>Automatic fallback</strong></td>
+                <td>The runtime, during a failure or timeout.</td>
+                <td>Transient; scoped to the failed turn or a narrow recovery window.</td>
+            </tr>
+            <tr>
+                <td><strong>Emergency break-glass route</strong></td>
+                <td>Policy, under constrained conditions.</td>
+                <td>Available as a candidate, but not sticky by accident.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Once those meanings blur, the runtime starts asking the wrong question. Instead of “what route should this failing turn use so the user still gets a reply?” it starts behaving like “what auth profile should this session prefer next time?”</p>
+
+    <p>Those are not the same question.</p>
+
+    <h2>The Critical Distinction: <code>auto</code> Versus <code>user</code></h2>
+    <p>The simplest way to express the boundary is with a source tag.</p>
+
+    <ul>
+        <li><code>source=user</code> means the user or operator explicitly selected the profile.</li>
+        <li><code>source=auto</code> means the runtime selected the profile as part of recovery.</li>
+    </ul>
+
+    <p>Only the first one should behave like a durable preference.</p>
+
+    <p>That sounds obvious, but it is easy to lose in a real runtime. A live turn has a selected profile. A session record has a persisted profile field. A retry planner has candidate profiles. A cleanup job sees stale state after the fact. If the implementation copies a live automatic selection into the same durable field used for explicit preference, the system has encoded the wrong contract.</p>
+
+    <div class="success">
+        <strong>Rule:</strong> a user-locked auth profile can be durable. An auto-selected emergency profile should be recoverable, explainable, and short-lived.
+    </div>
+
+    <h2>Why a Watchdog Was Helpful but Not Sufficient</h2>
+    <p>A cleanup watchdog is a useful mitigation. It can scan session state, find automatic emergency selections, and clear the stale ones after they are old enough to be safe.</p>
+
+    <p>That buys back a lot of reliability. It prevents a temporary fallback from silently becoming permanent across many future turns.</p>
+
+    <p>But a watchdog is still downstream of the bug class:</p>
+
+    <ul>
+        <li>it cannot retarget an already-running turn;</li>
+        <li>it only acts after state has already been written;</li>
+        <li>it may stay silent when there is nothing to clean, so users mostly notice the mutation runs;</li>
+        <li>it adds another operational surface that now has to be monitored;</li>
+        <li>it can mitigate sticky fallback, but it does not define the runtime semantics.</li>
+    </ul>
+
+    <p>That last point is the important one. A watchdog can keep the yard tidy. It should not be the thing that makes the house structurally sound.</p>
+
+    <h2>The Better Contract</h2>
+    <p>The contract I want is boring:</p>
+
+    <ol>
+        <li><strong>User-selected profiles are durable.</strong> If the user pins a profile, respect it until they change it.</li>
+        <li><strong>Automatic fallback is turn-scoped or narrowly window-scoped.</strong> It can save the current reply, but it should not become the session's remembered preference.</li>
+        <li><strong>Emergency profiles remain candidates, not defaults.</strong> They are allowed to rescue failure, not quietly take over normal routing.</li>
+        <li><strong>Recovery state is observable.</strong> Operators should be able to tell whether a fallback happened, why it happened, and whether it was later cleared.</li>
+        <li><strong>Cleanup is a backstop.</strong> The primary fix belongs in the persistence boundary, not only in the janitor.</li>
+    </ol>
+
+    <p>In pseudocode, the rule is roughly:</p>
+
+    <pre><code>if selection.source == "user":
+    persist_as_session_preference(selection.profile)
+elif selection.source == "auto":
+    use_for_this_recovery_path(selection.profile)
+    do_not_persist_as_user_intent(selection.profile)</code></pre>
+
+    <p>The actual implementation is more complicated, and this pseudocode is a public design invariant rather than a literal code excerpt.</p>
+
+    <h2>Why This Matters for Agent Reliability</h2>
+    <p>Agent systems have more “recovery” decisions than ordinary apps. They retry models, rotate auth profiles, compact context, fall back to alternate transports, switch tools, queue background work, and sometimes move work to other runtimes.</p>
+
+    <p>Each recovery decision has a temptation: because the fallback worked once, remember it.</p>
+
+    <p>Sometimes that is right. If a route is permanently disabled, remove it from the pool. If the user explicitly says “use this profile,” store it. If a provider has a long outage, policy may intentionally move traffic.</p>
+
+    <p>But transient recovery is different. The fact that a fallback saved one reply does not mean it should become the new identity of the session.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Recovery event</th>
+                <th>Safe memory</th>
+                <th>Unsafe memory</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Primary route timed out once.</td>
+                <td>Record health evidence and maybe cool down briefly.</td>
+                <td>Persist the emergency route as the session preference.</td>
+            </tr>
+            <tr>
+                <td>Fallback route produced a reply.</td>
+                <td>Record that the fallback path works.</td>
+                <td>Assume it should be the default next time.</td>
+            </tr>
+            <tr>
+                <td>Watchdog cleaned stale auto state.</td>
+                <td>Keep the cleanup as audit evidence.</td>
+                <td>Treat the watchdog as the permanent semantic fix.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>The Debugging Lesson</h2>
+    <p>The most useful debugging move was separating three timelines:</p>
+
+    <ul>
+        <li><strong>live turn selection:</strong> which route the current failing turn actually used;</li>
+        <li><strong>persistent session state:</strong> what the next turn might inherit;</li>
+        <li><strong>watchdog cleanup:</strong> what state was cleared after the fact.</li>
+    </ul>
+
+    <p>If you look only at the final session state, everything may appear clean. If you look only at user-visible replies, it may look like the system “randomly” chose a different profile. If you look only at watchdog output, it may look like the watchdog is the main actor.</p>
+
+    <p>The bug class appears when those three timelines are overlaid. The runtime can make a valid emergency choice during a transient failure, persist that choice too broadly, and then let a watchdog clean it later. Every individual step may look defensible. The composition is still wrong.</p>
+
+    <blockquote>
+        <p><strong>When debugging agent recovery, inspect the live decision, the persisted state, and the cleanup path as separate timelines.</strong></p>
+    </blockquote>
+
+    <h2>My Take</h2>
+    <p>I do not want a brittle agent that refuses fallback because purity is easier than recovery. A personal assistant that goes silent during transient provider trouble is not reliable.</p>
+
+    <p>But I also do not want fallback to rewrite intent.</p>
+
+    <p>The right boundary is not “never use emergency profiles.” It is “never confuse an emergency profile with a durable preference unless the user explicitly made it one.” That preserves the operational benefit of fallback without letting transient failures slowly reshape session state.</p>
+
+    <div class="success">
+        <strong>Design rule:</strong> make recovery state observable, but make user intent the only durable preference authority.
+    </div>
+
+    <p>Fallback should keep the conversation alive. It should not quietly become the conversation's memory.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches on Auth-Readiness Gates</a></li>
+            <li><a href="/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html">Credential Drift Is a Placeholder Problem</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+            <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior in OpenClaw</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on backend systems and reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">Recovery should be automatic. Preference should be intentional.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>How do you keep fallback paths from becoming sticky state in agent systems? Leave a comment below.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
