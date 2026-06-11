@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-06-10
+Updated: 2026-06-11
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
-Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and a stricter active-memory promotion gate.
+Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, delivery-shape caveats, and a stricter active-memory promotion gate.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated June 10, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 11, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -37,6 +37,8 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
  June 9 follow-up: I tightened the promotion gate again: a helper that works at a long canary budget is operational evidence, not reply-path production readiness, until the whole user-visible path stays boring.
 
  June 10 follow-up: I added the operational-test version of the same rule: a canary must prove both completion and placement. If it only proves completion, the next step is scope reduction or async delivery, not promotion.
+
+ June 11 follow-up: I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.
 
 
 
@@ -731,6 +733,8 @@ python3 task-specific-embedding-pilot.py
  The June 9 promotion rule is deliberately stricter: working at a long canary budget is evidence, not readiness. I would only call the helper production-comfortable when normal replies stay responsive with the helper enabled, the query contract is narrow enough to avoid broad archaeology, and the system has a fallback delivery shape when recall is useful but slow.
 
  The June 10 refinement turns that into a two-part promotion test: completion and placement. Completion asks whether the helper can return useful memory at all. Placement asks whether that work belongs in the synchronous reply path, a narrower pre-reply hook, an async follow-up, or a manual retrieval lane. A canary that answers only the first question is still valuable, but it is not enough to promote the feature into every normal turn.
+
+ The June 11 version adds one more practical check: name the delivery shape before calling the canary promoted. A slow-but-useful recall path might be a great on-demand retrieval lane, a background follow-up, or a narrower pre-reply trigger. It should not automatically become a blocking step for every normal reply just because it can eventually return something useful.
 
 
  Canary rule: if the helper succeeds only by consuming the user-visible latency budget, the feature is not failed, but its placement is wrong. Shrink the query, narrow the trigger, or move the work out of the blocking path.

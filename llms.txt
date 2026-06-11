@@ -17,16 +17,21 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
+  - Date: 2026-03-19; updated: 2026-06-11
+  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, delivery-shape caveats, and a stricter active-memory promotion gate.
+  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
+- [Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html.md
+  - Date: 2026-06-11
+  - Summary: A post-restart offload smoke passed because the runtime loaded, the safe facades answered, and every unsafe execution path stayed deliberately blocked.
+  - Tags: openclaw, ai-agents, automation, runtime, testing, reliability
 - [Fallback Is Not Preference: Keep Agent Auth Recovery Out of Session State](https://anyech.github.io/jingxiao-cai-blog/fallback-is-not-preference-agent-auth-recovery.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fallback-is-not-preference-agent-auth-recovery.html.md
   - Date: 2026-06-10
   - Summary: A recent OpenClaw auth-profile incident showed why source tags matter: automatic fallback can keep the reply alive, but it must not become a sticky user choice.
   - Tags: openclaw, ai-agents, automation, auth, debugging, reliability
-- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-10
-  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, session-list fast paths, and a stricter active-memory promotion gate.
-  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Do Not Teach the App About the Worker: Status Facades for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html.md
   - Date: 2026-06-09
