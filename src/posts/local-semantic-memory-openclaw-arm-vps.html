@@ -3,26 +3,26 @@ layout: post.njk
 permalink: 'local-semantic-memory-openclaw-arm-vps.html'
 title: 'Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
 slug: 'local-semantic-memory-openclaw-arm-vps'
-description: 'How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added safer rollout, host-pressure caveats, delivery-shape caveats, and active-memory promotion gates.'
-summary: 'How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, delivery-shape caveats, and a stricter active-memory promotion gate.'
+description: 'How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added source-hygiene, anti-echo, and active-memory promotion gates.'
+summary: 'How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.'
 date: '2026-03-19'
-updated: '2026-06-11'
+updated: '2026-06-12'
 tags: ['openclaw', 'ai-agents', 'self-hosted', 'memory', 'embeddings', 'devops']
 keywords: ['OpenClaw local memory search', 'self-hosted semantic memory', 'VPS LLM embeddings', 'node-llama-cpp', 'embeddinggemma', 'Gemini Embedding 2', 'active memory canaries', 'sessions list performance']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html'
 inFeed: true
 inSitemap: true
 feedTitle: 'Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
-feedDescription: 'Local OpenClaw memory search on a small ARM VPS, now with safer rollout, host-pressure and delivery-shape caveats, and stricter active-memory canary rules.'
+feedDescription: 'Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, and stricter active-memory placement rules.'
 feedPubDate: 'Thu, 19 Mar 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-11'
+sitemapLastmod: '2026-06-12'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 11, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 12, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -36,6 +36,7 @@ sitemapLastmod: '2026-06-11'
         <div class="note"><strong>June 9 follow-up:</strong> I tightened the promotion gate again: a helper that works at a long canary budget is operational evidence, not reply-path production readiness, until the whole user-visible path stays boring.</div>
         <div class="note"><strong>June 10 follow-up:</strong> I added the operational-test version of the same rule: a canary must prove both completion and placement. If it only proves completion, the next step is scope reduction or async delivery, not promotion.</div>
         <div class="note"><strong>June 11 follow-up:</strong> I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.</div>
+        <div class="note"><strong>June 12 follow-up:</strong> I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.</div>
     </header>
 
     <main>
@@ -462,7 +463,11 @@ python3 task-specific-embedding-pilot.py</code></pre>
             <strong>Connection to skill governance:</strong> the same anti-echo rule applies to agent skills. A skill radar should not create new skills merely because prior skill-radar prose kept mentioning them. See <a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a> for the catalog-governance version of this lesson.
         </div>
 
+        <p>The June 12 version makes the same rule more operational for pattern scouting: a generated scout can suggest a title, but it cannot be the only proof that the title is new. Older scout reports now belong mostly in the suppression layer: useful for duplicate detection, weak as freshness evidence.</p>
 
+        <div class="success">
+            <strong>Anti-echo rule:</strong> let generated summaries point at possible work, then require a fresher direct source before publishing or promoting the pattern.
+        </div>
 
         <h2>May 2026 Follow-Up: Active Memory Canaries Need a Latency Budget</h2>
         <p>The next memory lesson was not about whether a helper could finish. It was about whether it could finish inside the reply path without making the whole assistant feel stuck.</p>
