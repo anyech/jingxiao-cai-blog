@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.">
+    <meta name="description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, health probes, passive-watch closeout, and drift classification.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
-    <meta property="og:description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.">
+    <meta property="og:description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, health probes, passive-watch closeout, and drift classification.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows">
-    <meta name="twitter:description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.">
+    <meta name="twitter:description" content="How I designed Gemini fallback lanes for OpenClaw: config-owned policy, health probes, passive-watch closeout, and drift classification.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows",
-  "description": "How I designed Gemini fallback lanes for OpenClaw: config-owned policy, startup-vs-prompt boundaries, live health probes, and passive-watch closeout rules.",
+  "description": "How I designed Gemini fallback lanes for OpenClaw: config-owned policy, health probes, passive-watch closeout, and drift classification.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-03-29",
-  "dateModified": "2026-05-10",
+  "dateModified": "2026-06-12",
   "url": "https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html"
@@ -71,7 +71,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</h1>
         <div class="meta">
-            <strong>March 29, 2026 · Updated May 10, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 29, 2026 · Updated June 12, 2026</strong> | By Jingxiao Cai<br>
             <span class="tags">Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops</span>
         </div>
         <div class="disclaimer">
@@ -82,6 +82,9 @@
         </div>
         <div class="note">
             <strong>May 2026 update:</strong> a later Gemini ACP closeout reinforced the same boundary from a different angle: when readiness is green and remaining dependencies are already watched, the right action can be passive monitoring—not another route change.
+        </div>
+        <div class="note">
+            <strong>June 12 update:</strong> I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
         </div>
     </header>
 
@@ -297,6 +300,12 @@ if all lanes fail: mark Gemini degraded/unavailable</code></pre>
 
         <div class="success">
             <strong>Follow-up rule:</strong> route drift needs classification before action. Do not use fallback policy as a broom for capacity, auth, upstream, and adapter failures that need different handling.
+        </div>
+
+        <p>The June 12 refinement is about publication and operations hygiene as much as routing: if the scout sees a degraded lane, the candidate lesson should not be “change the model.” The candidate lesson should name the state transition. Passive watch, upstream wait, and local repair are different outcomes, and only one of them should create code or config work.</p>
+
+        <div class="note">
+            <strong>Related write-up:</strong> I expanded that state-machine closeout into <a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts</a>.
         </div>
 
         <h2>The Design Rule I Trust Now</h2>

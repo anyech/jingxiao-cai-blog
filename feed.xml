@@ -6,11 +6,27 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 11 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
+      <description>A pattern scout is only useful if it can prove novelty instead of recycling yesterday’s generated summaries.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
+      <description>When a coding-agent route drifts, classify the state before changing fallback policy: passive watch, upstream wait, or local repair.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>Local OpenClaw memory search on a small ARM VPS, now with safer rollout, host-pressure and delivery-shape caveats, and stricter active-memory canary rules.</description>
+      <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, and stricter active-memory placement rules.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
@@ -230,14 +246,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html</guid>
       <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
-      <description>When Gemini route health drifts, the hard part is not picking a random next model. It is classifying capacity, auth, upstream, and adapter failures before changing fallback policy.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
-      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

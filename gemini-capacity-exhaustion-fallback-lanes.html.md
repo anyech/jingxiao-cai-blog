@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html.md
 Date: 2026-03-29
-Updated: 2026-05-10
+Updated: 2026-06-12
 Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 
-Summary: When Gemini route health drifts, the hard part is not picking a random next model. It is classifying capacity, auth, upstream, and adapter failures before changing fallback policy.
+Summary: When a coding-agent route drifts, classify the state first: capacity, auth, upstream wait, passive watch, or local adapter repair.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: When Gemini route health drifts, the hard part is not picking a random 
 # Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows
 
 
- March 29, 2026 · Updated May 10, 2026 | By Jingxiao Cai
+ March 29, 2026 · Updated June 12, 2026 | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 
@@ -30,6 +30,10 @@ Summary: When Gemini route health drifts, the hard part is not picking a random 
 
 
  May 2026 update: a later Gemini ACP closeout reinforced the same boundary from a different angle: when readiness is green and remaining dependencies are already watched, the right action can be passive monitoring—not another route change.
+
+
+
+ June 12 update: I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
 
 
 
@@ -316,6 +320,12 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
  Follow-up rule: route drift needs classification before action. Do not use fallback policy as a broom for capacity, auth, upstream, and adapter failures that need different handling.
+
+
+ The June 12 refinement is about publication and operations hygiene as much as routing: if the scout sees a degraded lane, the candidate lesson should not be “change the model.” The candidate lesson should name the state transition. Passive watch, upstream wait, and local repair are different outcomes, and only one of them should create code or config work.
+
+
+ Related write-up: I expanded that state-machine closeout into When a Coding-Agent Route Drifts.
 
 
 

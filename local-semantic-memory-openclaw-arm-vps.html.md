@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-06-11
+Updated: 2026-06-12
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
-Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, delivery-shape caveats, and a stricter active-memory promotion gate.
+Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated June 11, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 12, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -39,6 +39,8 @@ Summary: How I got OpenClaw local memory search working on a small ARM VPS, now 
  June 10 follow-up: I added the operational-test version of the same rule: a canary must prove both completion and placement. If it only proves completion, the next step is scope reduction or async delivery, not promotion.
 
  June 11 follow-up: I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.
+
+ June 12 follow-up: I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.
 
 
 
@@ -597,6 +599,12 @@ python3 task-specific-embedding-pilot.py
 
 
  Connection to skill governance: the same anti-echo rule applies to agent skills. A skill radar should not create new skills merely because prior skill-radar prose kept mentioning them. See Modernizing Agent Skills Without Growing a Skill Jungle for the catalog-governance version of this lesson.
+
+
+ The June 12 version makes the same rule more operational for pattern scouting: a generated scout can suggest a title, but it cannot be the only proof that the title is new. Older scout reports now belong mostly in the suppression layer: useful for duplicate detection, weak as freshness evidence.
+
+
+ Anti-echo rule: let generated summaries point at possible work, then require a fresher direct source before publishing or promoting the pattern.
 
 
 

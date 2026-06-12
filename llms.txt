@@ -17,10 +17,20 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
+  - Date: 2026-06-12
+  - Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
+  - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
+- [Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows](https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html.md
+  - Date: 2026-03-29; updated: 2026-06-12
+  - Summary: When a coding-agent route drifts, classify the state first: capacity, auth, upstream wait, passive watch, or local adapter repair.
+  - Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 - [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-11
-  - Summary: How I got OpenClaw local memory search working on a small ARM VPS, now with safer rollout, host-pressure caveats, delivery-shape caveats, and a stricter active-memory promotion gate.
+  - Date: 2026-03-19; updated: 2026-06-12
+  - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
   - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html.md
@@ -157,11 +167,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-11
   - Summary: A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with real pressure.
   - Tags: ai-agents, automation, alerting, reliability, openclaw, agent-ops
-- [Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows](https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html.md
-  - Date: 2026-03-29; updated: 2026-05-10
-  - Summary: When Gemini route health drifts, the hard part is not picking a random next model. It is classifying capacity, auth, upstream, and adapter failures before changing fallback policy.
-  - Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 - [When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes](https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html.md
   - Date: 2026-05-10
