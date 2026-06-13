@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Upgrade Preflight as a Product Habit: Why Target Refreshes Should Be Boring](https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html.md
+  - Date: 2026-06-13
+  - Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes: refresh the target, preserve the activation boundary, and make upgrades boring before they are allowed to be exciting.
+  - Tags: openclaw, devops, ai-agents, release-engineering, self-hosted
+- [When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression](https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html.md
+  - Date: 2026-04-02; updated: 2026-06-13
+  - Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, verifier false alarm, target-refresh follow-up, and upgrade guardrails I kept.
+  - Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
 - [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
   - Date: 2026-06-12
@@ -257,11 +267,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-02-23; updated: 2026-04-03
   - Summary: A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook&#39;s unstable post-incident API surface.
   - Tags: security, openclaw, ai-agents, supply-chain, moltbook
-- [When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression](https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html.md
-  - Date: 2026-04-02
-  - Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.
-  - Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
 - [Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory](https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html.md
   - Date: 2026-03-27; updated: 2026-03-28

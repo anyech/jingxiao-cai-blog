@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html.md
 Date: 2026-04-02
+Updated: 2026-06-13
 Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
 
-Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.
+Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, verifier false alarm, target-refresh follow-up, and upgrade guardrails I kept.
 
 ---
 
@@ -25,6 +26,10 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
  Short version: the upgrade to 2026.4.1 installed cleanly, restarted cleanly, and passed immediate health checks. It still regressed under real use. The rollback to 2026.3.28 was the right call, and the durable lesson was to deepen verification—not to panic about the entire upgrade process.
+
+
+
+ Update, June 13, 2026: this rollback later hardened into a broader target-refresh habit: if the candidate release, routing surface, backup posture, or restart boundary changes after the first review, refresh the upgrade packet before activation. I expanded that practice in Upgrade Preflight as a Product Habit.
 
 
 
@@ -60,12 +65,12 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
  In practice, "representative use" here meant exactly the work I actually cared about protecting: a normal reply path plus a compact multi-model review flow. The system looked healthy at restart time, but it did not stay healthy once those real paths were exercised.
 
- The smoking-gun signature was GPT-5.4 / Codex embedded-profile timeout and failover behavior in the live gateway journal, not just a vague feeling that replies were getting weird.
+ The smoking-gun signature was repeated embedded-model timeout and failover behavior in the live gateway journal, not just a vague feeling that replies were getting weird.
 
  The most useful signature in the live gateway journal looked like this:
 
- [agent/embedded] Profile openai-codex:<profile> timed out. Trying next account...
-[agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=openai-codex/gpt-5.4
+ [agent/embedded] Profile <model-route>:<profile> timed out. Trying next account...
+[agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=<redacted-provider>
 
  The important point was not the exact wording. The important point was the pattern:
 
@@ -190,6 +195,19 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
 
+
+
+## June 2026 Update: Target Refreshes Belong in the Procedure
+
+ The rollback lesson kept paying off after this incident. The next useful refinement was not a bigger ceremony; it was a stricter rule for stale upgrade reviews.
+
+ If the target release changes after the first review, the preflight packet gets refreshed. If routing defaults or runtime assumptions changed since the last pass, they get rechecked. If the backup story is weaker than expected, it becomes an explicit go/no-go item instead of a quiet footnote. If the restart touches the live agent surface, the activation boundary stays user-owned.
+
+
+ Target-refresh rule: do not treat a reviewed target and the latest available target as interchangeable. Re-lock the candidate, re-check the risky surfaces, and only then decide whether to activate.
+
+
+ That is the same pattern as the rollback itself: the procedure should make the next decision boring before the runtime forces the decision to become urgent.
 
 
 ## The New Guardrails I Kept

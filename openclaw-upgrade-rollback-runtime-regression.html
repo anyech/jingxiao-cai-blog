@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.">
+    <meta name="description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, verifier false alarm, target-refresh follow-up, and guardrails I kept.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression">
-    <meta property="og:description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.">
+    <meta property="og:description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, verifier false alarm, target-refresh follow-up, and guardrails I kept.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression">
-    <meta name="twitter:description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.">
+    <meta name="twitter:description" content="A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, verifier false alarm, target-refresh follow-up, and guardrails I kept.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression",
-  "description": "A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, the verifier false alarm, and the guardrails I kept.",
+  "description": "A clean OpenClaw upgrade passed startup checks but regressed under real use. This postmortem covers the rollback, verifier false alarm, target-refresh follow-up, and guardrails I kept.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-02",
-  "dateModified": "2026-04-02",
+  "dateModified": "2026-06-13",
   "url": "https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html"
@@ -80,6 +80,9 @@
         <div class="warning">
             <strong>Short version:</strong> the upgrade to <code>2026.4.1</code> installed cleanly, restarted cleanly, and passed immediate health checks. It still regressed under real use. The rollback to <code>2026.3.28</code> was the right call, and the durable lesson was to deepen verification—not to panic about the entire upgrade process.
         </div>
+        <div class="note">
+            <strong>Update, June 13, 2026:</strong> this rollback later hardened into a broader target-refresh habit: if the candidate release, routing surface, backup posture, or restart boundary changes after the first review, refresh the upgrade packet before activation. I expanded that practice in <a href="/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html">Upgrade Preflight as a Product Habit</a>.
+        </div>
     </header>
 
     <main>
@@ -103,11 +106,11 @@
 
         <p>In practice, "representative use" here meant exactly the work I actually cared about protecting: a normal reply path plus a compact multi-model review flow. The system looked healthy at restart time, but it did not stay healthy once those real paths were exercised.</p>
 
-        <p>The smoking-gun signature was GPT-5.4 / Codex embedded-profile timeout and failover behavior in the live gateway journal, not just a vague feeling that replies were getting weird.</p>
+        <p>The smoking-gun signature was repeated embedded-model timeout and failover behavior in the live gateway journal, not just a vague feeling that replies were getting weird.</p>
 
         <p>The most useful signature in the live gateway journal looked like this:</p>
-        <pre><code>[agent/embedded] Profile openai-codex:&lt;profile&gt; timed out. Trying next account...
-[agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=openai-codex/gpt-5.4</code></pre>
+        <pre><code>[agent/embedded] Profile &lt;model-route&gt;:&lt;profile&gt; timed out. Trying next account...
+[agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=&lt;redacted-provider&gt;</code></pre>
 
         <p>The important point was not the exact wording. The important point was the pattern:</p>
         <ul>
@@ -198,6 +201,14 @@
                 </tr>
             </tbody>
         </table>
+
+        <h2>June 2026 Update: Target Refreshes Belong in the Procedure</h2>
+        <p>The rollback lesson kept paying off after this incident. The next useful refinement was not a bigger ceremony; it was a stricter rule for stale upgrade reviews.</p>
+        <p>If the target release changes after the first review, the preflight packet gets refreshed. If routing defaults or runtime assumptions changed since the last pass, they get rechecked. If the backup story is weaker than expected, it becomes an explicit go/no-go item instead of a quiet footnote. If the restart touches the live agent surface, the activation boundary stays user-owned.</p>
+        <div class="success">
+            <strong>Target-refresh rule:</strong> do not treat a reviewed target and the latest available target as interchangeable. Re-lock the candidate, re-check the risky surfaces, and only then decide whether to activate.
+        </div>
+        <p>That is the same pattern as the rollback itself: the procedure should make the next decision boring before the runtime forces the decision to become urgent.</p>
 
         <h2>The New Guardrails I Kept</h2>
         <p>The durable changes were intentionally small. I did not want one bad release to turn into a giant ritual.</p>

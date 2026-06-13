@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 12 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Upgrade Preflight as a Product Habit: Why Target Refreshes Should Be Boring</title>
+      <description>A practical upgrade preflight pattern for self-hosted AI agent runtimes: refresh the target, preserve the activation boundary, and make upgrades boring before they are allowed to be exciting.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html</guid>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</title>
+      <description>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, verifier false alarm, target-refresh follow-up, and upgrade guardrails I kept.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</guid>
+      <pubDate>Thu, 02 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
@@ -390,14 +406,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/supply-chain-attack-ai-agents.html</guid>
       <pubDate>Mon, 23 Feb 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</title>
-      <description>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, the verifier false alarm, and the upgrade guardrails I kept.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</guid>
-      <pubDate>Thu, 02 Apr 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
