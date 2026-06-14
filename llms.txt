@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Ready Is Not a Label: PR Readiness Is a Vector](https://anyech.github.io/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html.md
+  - Date: 2026-06-14
+  - Summary: A pull request is not ready because one surface says so. Treat readiness as a vector across code head, CI, mergeability, parser-visible proof, review labels, and maintainer scope appetite.
+  - Tags: ai-agents, automation, open-source, pull-requests, openclaw, agent-ops
+- [When PR Gates Look Broken, Rebase First](https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html.md
+  - Date: 2026-06-03; updated: 2026-06-14
+  - Summary: A stale pull request can produce misleading CI and policy failures. Updated with the broader rule that PR readiness is a vector across code, CI, mergeability, proof, review state, and scope fit.
+  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 - [Upgrade Preflight as a Product Habit: Why Target Refreshes Should Be Boring](https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html.md
   - Date: 2026-06-13
@@ -81,11 +91,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html.md
   - Date: 2026-05-30; updated: 2026-06-03
   - Summary: Human-readable proof is not enough when repository automation enforces a schema. Updated with the boundary that proof override requests are not completion when the real behavior gate is still red.
-  - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
-- [When PR Gates Look Broken, Rebase First](https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html.md
-  - Date: 2026-06-03
-  - Summary: A stale pull request can produce misleading CI and policy failures. Before patching around old checks, refresh the branch, validate the intended diff, and only then ask for re-review.
   - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 - [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md

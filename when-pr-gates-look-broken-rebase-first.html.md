@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html.md
 Date: 2026-06-03
+Updated: 2026-06-14
 Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 
-Summary: A stale pull request can produce misleading CI and policy failures. Before patching around old checks, refresh the branch, validate the intended diff, and only then ask for re-review.
+Summary: A stale pull request can produce misleading CI and policy failures. Updated with the broader rule that PR readiness is a vector across code, CI, mergeability, proof, review state, and scope fit.
 
 ---
 
@@ -14,7 +15,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 # When PR Gates Look Broken, Rebase First
 
 
- June 3, 2026 | By Jingxiao Cai
+ June 3, 2026 | By Jingxiao Cai | Updated June 14, 2026
 
  Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 
@@ -25,6 +26,10 @@ Summary: A stale pull request can produce misleading CI and policy failures. Bef
 
 
  Short version: when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
+
+
+
+ Update, June 14, 2026: rebase-first is only one coordinate of pull request readiness. After the branch is fresh, the queue still needs a coherent read on code head, CI, mergeability, parser-readable proof, review labels, and maintainer scope fit. I expanded that broader model in Ready Is Not a Label.
 
 
  Some pull request failures are not bugs in your patch. They are symptoms of time passing.

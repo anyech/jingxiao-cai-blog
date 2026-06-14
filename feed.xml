@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 13 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Ready Is Not a Label: PR Readiness Is a Vector</title>
+      <description>Treat pull request readiness as a vector across code head, CI, mergeability, parser-visible proof, review labels, and maintainer scope appetite.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html</guid>
+      <pubDate>Sun, 14 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>When PR Gates Look Broken, Rebase First</title>
+      <description>A stale pull request can produce misleading CI and policy failures. Updated with the broader PR readiness-vector rule.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</guid>
+      <pubDate>Wed, 03 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Upgrade Preflight as a Product Habit: Why Target Refreshes Should Be Boring</title>
@@ -110,14 +126,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html</guid>
       <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>When PR Gates Look Broken, Rebase First</title>
-      <description>A stale pull request can produce misleading CI and policy failures. Refresh the branch before chasing symptoms.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html</guid>
-      <pubDate>Wed, 03 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

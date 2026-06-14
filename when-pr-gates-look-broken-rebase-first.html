@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms.">
+    <meta name="description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms. Updated with a PR readiness-vector follow-up.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="When PR Gates Look Broken, Rebase First">
-    <meta property="og:description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms.">
+    <meta property="og:description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms. Updated with a PR readiness-vector follow-up.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="When PR Gates Look Broken, Rebase First">
-    <meta name="twitter:description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms.">
+    <meta name="twitter:description" content="A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms. Updated with a PR readiness-vector follow-up.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "When PR Gates Look Broken, Rebase First",
-  "description": "A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms.",
+  "description": "A sanitized OpenClaw agent-ops lesson: stale pull request branches can make CI and policy gates look mysterious, but the first fix is often to refresh the branch before chasing symptoms. Updated with a PR readiness-vector follow-up.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-06-03",
-  "dateModified": "2026-06-03",
+  "dateModified": "2026-06-14",
   "url": "https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html"
@@ -71,7 +71,7 @@
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>When PR Gates Look Broken, Rebase First</h1>
     <div class="meta">
-        <strong>June 3, 2026</strong> | By Jingxiao Cai<br>
+        <strong>June 3, 2026</strong> | By Jingxiao Cai | <strong>Updated June 14, 2026</strong><br>
         <span class="tags">Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops</span>
     </div>
     <div class="disclaimer">
@@ -79,6 +79,9 @@
     </div>
     <div class="warning">
         <strong>Short version:</strong> when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
+    </div>
+    <div class="note">
+        <strong>Update, June 14, 2026:</strong> rebase-first is only one coordinate of pull request readiness. After the branch is fresh, the queue still needs a coherent read on code head, CI, mergeability, parser-readable proof, review labels, and maintainer scope fit. I expanded that broader model in <a href="/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html">Ready Is Not a Label</a>.
     </div>
 </header>
 
