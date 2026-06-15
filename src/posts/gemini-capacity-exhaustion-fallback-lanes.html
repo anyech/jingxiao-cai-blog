@@ -6,7 +6,7 @@ slug: 'gemini-capacity-exhaustion-fallback-lanes'
 description: 'How I designed Gemini fallback lanes for OpenClaw: config-owned policy, health probes, passive-watch closeout, and drift classification.'
 summary: 'When a coding-agent route drifts, classify the state first: capacity, auth, upstream wait, passive watch, or local adapter repair.'
 date: '2026-03-29'
-updated: '2026-06-12'
+updated: '2026-06-15'
 tags: ['openclaw', 'ai-agents', 'gemini', 'reliability', 'devops', 'llm-ops']
 keywords: ['Gemini CLI fallback', 'AI agent reliability', 'model capacity exhaustion handling', 'OpenClaw', 'Gemini', 'LLM ops', 'fallback policy']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html'
@@ -16,17 +16,17 @@ feedTitle: 'Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Age
 feedDescription: 'When a coding-agent route drifts, classify the state before changing fallback policy: passive watch, upstream wait, or local repair.'
 feedPubDate: 'Sun, 29 Mar 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-12'
+sitemapLastmod: '2026-06-15'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</h1>
         <div class="meta">
-            <strong>March 29, 2026 · Updated June 12, 2026</strong> | By Jingxiao Cai<br>
+            <strong>March 29, 2026 · Updated June 15, 2026</strong> | By Jingxiao Cai<br>
             <span class="tags">Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops</span>
         </div>
         <div class="disclaimer">
-            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal panel review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with current live behavior.
+            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with operational defaults.
         </div>
         <div class="warning">
             <strong>Important boundary up front:</strong> the wrapper described here improves <em>startup-layer</em> fallback. It does <strong>not</strong> yet solve prompt-time ACP failures after a Gemini session has already started. That is still the real engineering gap.
@@ -36,6 +36,9 @@ sitemapLastmod: '2026-06-12'
         </div>
         <div class="note">
             <strong>June 12 update:</strong> I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
+        </div>
+        <div class="note">
+            <strong>June 15 update:</strong> I now treat fallback lanes as one example of a broader boundary rule: classify the failing layer before changing architecture. The same rule showed up again in a container-first distributed-serving prototype.
         </div>
     </header>
 
@@ -65,7 +68,7 @@ sitemapLastmod: '2026-06-12'
         <p>That remains true until the failure mode turns out not to be preview capacity, or until someone else touches the system, or until yesterday’s outage shape stops matching today’s reality.</p>
 
         <h2>The Design That Survived the Internal Panel Review</h2>
-        <p>The design that survived an <strong>internal five-model panel review</strong> was simple:</p>
+        <p>The design that survived an <strong>internal multi-model review</strong> was simple:</p>
         <ul>
             <li>define <strong>semantic lanes</strong></li>
             <li>keep lane order and failure triggers in <strong>OpenClaw-owned config</strong></li>
@@ -104,7 +107,7 @@ sitemapLastmod: '2026-06-12'
         </ul>
 
         <div class="success">
-            <strong>Current live route:</strong> the original conceptual design prioritized <code>preview-primary -&gt; stable-primary -&gt; fast-fallback</code>. The <strong>current live deployment</strong> now runs <code>stable-primary -&gt; preview-primary</code> as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
+            <strong>Operational default, not production-service guidance:</strong> the original conceptual design prioritized <code>preview-primary -&gt; stable-primary -&gt; fast-fallback</code>. In my personal automation setup, the implemented default uses <code>stable-primary -&gt; preview-primary</code> as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
         </div>
 
         <h2>Why “Quality-Preserving Degradation” Was the Right Mental Model</h2>
@@ -259,6 +262,15 @@ if all lanes fail: mark Gemini degraded/unavailable</code></pre>
             <strong>Related write-up:</strong> I expanded that state-machine closeout into <a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts</a>.
         </div>
 
+        <h2>June 15 Follow-Up: Fallback Is One Boundary, Not the Whole System</h2>
+        <p>The same classification habit showed up again in a separate distributed-serving prototype. A remote worker image could be packaged, but one candidate environment failed at container-runtime start. That was not a model-quality problem, not a gateway-routing problem, and not a reason to mutate the host by hand. It was a remote-runtime substrate problem.</p>
+
+        <p>That is the same principle as Gemini fallback in a different costume: do not let one generic symptom choose the response. Startup fallback, prompt-time fallback, passive watch, upstream wait, local adapter repair, and remote-worker substrate failure all deserve different actions.</p>
+
+        <div class="success">
+            <strong>June 15 rule:</strong> fallback policy should classify where the failure lives before it changes lane order, architecture, or host state. I wrote the container-first version of that lesson in <a href="/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html">Container-First Distributed Model Serving</a>.
+        </div>
+
         <h2>The Design Rule I Trust Now</h2>
         <p>The most durable lesson was not Gemini-specific. It was this:</p>
 
@@ -302,6 +314,7 @@ if all lanes fail: mark Gemini degraded/unavailable</code></pre>
             <h3>Related Posts</h3>
             <ul>
                 <li><a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes</a></li>
+                <li><a href="/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html">Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs</a></li>
                 <li><a href="/jingxiao-cai-blog/declarative-change-propagation-cron-system.html">Declarative Change Propagation: How I Built a Self-Documenting Cron System</a></li>
                 <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></li>
             </ul>
