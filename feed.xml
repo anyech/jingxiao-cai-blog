@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs</title>
+      <description>Keep distributed model-serving experiments safe by using a small client-facing API, disposable remote containers, contract tests, and explicit production gates.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html</guid>
+      <pubDate>Mon, 15 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
+      <description>When a coding-agent route drifts, classify the state before changing fallback policy: passive watch, upstream wait, or local repair.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Ready Is Not a Label: PR Readiness Is a Vector</title>
@@ -46,14 +62,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</title>
-      <description>When a coding-agent route drifts, classify the state before changing fallback policy: passive watch, upstream wait, or local repair.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html</guid>
-      <pubDate>Sun, 29 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

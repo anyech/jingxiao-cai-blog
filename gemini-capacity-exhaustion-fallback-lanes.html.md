@@ -3,7 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html.md
 Date: 2026-03-29
-Updated: 2026-06-12
+Updated: 2026-06-15
 Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 
 Summary: When a coding-agent route drifts, classify the state first: capacity, auth, upstream wait, passive watch, or local adapter repair.
@@ -15,13 +15,13 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 # Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows
 
 
- March 29, 2026 · Updated June 12, 2026 | By Jingxiao Cai
+ March 29, 2026 · Updated June 15, 2026 | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal panel review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with current live behavior.
+ This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with operational defaults.
 
 
 
@@ -34,6 +34,10 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 
  June 12 update: I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
+
+
+
+ June 15 update: I now treat fallback lanes as one example of a broader boundary rule: classify the failing layer before changing architecture. The same rule showed up again in a container-first distributed-serving prototype.
 
 
 
@@ -82,7 +86,7 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 ## The Design That Survived the Internal Panel Review
 
- The design that survived an internal five-model panel review was simple:
+ The design that survived an internal multi-model review was simple:
 
 
 
@@ -133,7 +137,7 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 
 
- Current live route: the original conceptual design prioritized preview-primary -> stable-primary -> fast-fallback. The current live deployment now runs stable-primary -> preview-primary as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
+ Operational default, not production-service guidance: the original conceptual design prioritized preview-primary -> stable-primary -> fast-fallback. In my personal automation setup, the implemented default uses stable-primary -> preview-primary as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
 
 
 
@@ -329,6 +333,17 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
+## June 15 Follow-Up: Fallback Is One Boundary, Not the Whole System
+
+ The same classification habit showed up again in a separate distributed-serving prototype. A remote worker image could be packaged, but one candidate environment failed at container-runtime start. That was not a model-quality problem, not a gateway-routing problem, and not a reason to mutate the host by hand. It was a remote-runtime substrate problem.
+
+ That is the same principle as Gemini fallback in a different costume: do not let one generic symptom choose the response. Startup fallback, prompt-time fallback, passive watch, upstream wait, local adapter repair, and remote-worker substrate failure all deserve different actions.
+
+
+ June 15 rule: fallback policy should classify where the failure lives before it changes lane order, architecture, or host state. I wrote the container-first version of that lesson in Container-First Distributed Model Serving.
+
+
+
 ## The Design Rule I Trust Now
 
  The most durable lesson was not Gemini-specific. It was this:
@@ -392,6 +407,8 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 - When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes
+
+- Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs
 
 - Declarative Change Propagation: How I Built a Self-Documenting Cron System
 
