@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - eleventy-migration-hardening-20260520
   workflow_dispatch:
 
 permissions:
