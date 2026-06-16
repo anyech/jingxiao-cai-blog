@@ -6,7 +6,7 @@ slug: 'fail-closing-agent-launches-auth-readiness-gates'
 description: 'Why AI-agent tool launches should fail closed when auth, route readiness, or capability gates are unhealthy instead of drifting into unsafe fallback behavior.'
 summary: 'Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.'
 date: '2026-04-29'
-updated: ''
+updated: '2026-06-16'
 tags: ['ai-agents', 'security', 'tooling', 'reliability', 'openclaw', 'auth']
 keywords: ['agent readiness gate', 'fail closed auth checks', 'AI agent security', 'tool launch reliability', 'OpenClaw operations', 'auth fallback', 'readiness probes']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html'
@@ -16,7 +16,7 @@ feedTitle: 'Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Blo
 feedDescription: 'Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.'
 feedPubDate: 'Wed, 29 Apr 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-04-29'
+sitemapLastmod: '2026-06-16'
 ---
 <header>
       <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
@@ -210,6 +210,10 @@ sitemapLastmod: '2026-04-29'
       </ul>
 
       <p>Only the combination means “ready to launch.” Anything less should stay a bounded diagnostic state.</p>
+
+      <div class="note">
+          <strong>Update, June 16, 2026:</strong> I now treat worker dispatch as another launch-gate layer, not a separate automation trick. A router may classify a request and a runner may prepare an exact-scope dispatch contract, but the parent workflow should still own launch authority, artifact verification, and user-visible closeout. I expanded that pattern in <a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a>.
+      </div>
 
       <h2>Where This Fits With OAuth Automation</h2>
       <p>This launch-gate pattern is the broader version of the fail-closed OAuth readiness gate I added to my <a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html#oauth-readiness-gate">VPS OAuth guide</a>.</p>

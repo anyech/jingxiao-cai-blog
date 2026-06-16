@@ -29,7 +29,7 @@ canonicalPath: ""
   <div class="post-grid">
   {% for post in collections.posts %}
     <article class="post-card">
-      <p class="post-card__date"><time datetime="{{ post.data.updated or post.data.date }}">{{ post.data.date | dateDisplay }}{% if post.data.updated %} · Updated {{ post.data.updated | dateDisplay }}{% endif %}</time></p>
+      <p class="post-card__date"><time datetime="{{ post.data.date }}">{{ post.data.date | dateDisplay }}</time>{% if post.data.updated %} · Updated <time datetime="{{ post.data.updated }}">{{ post.data.updated | dateDisplay }}</time>{% endif %}</p>
       <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title | safe }}</a></h3>
       <p>{{ post.data.summary or post.data.description }}</p>
       {% if post.data.tags and post.data.tags.length %}
