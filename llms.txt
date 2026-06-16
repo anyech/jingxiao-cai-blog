@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects](https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html.md
+  - Date: 2026-06-16
+  - Summary: Routers can make agent work safer by producing exact-scope dispatch contracts instead of launching workers themselves. The parent workflow should own launch authority, evidence checks, and closeout.
+  - Tags: ai-agents, agent-ops, routing, workflow-design, openclaw, reliability
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html.md
+  - Date: 2026-04-29; updated: 2026-06-16
+  - Summary: Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.
+  - Tags: ai-agents, security, tooling, reliability, openclaw, auth
 - [Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs](https://anyech.github.io/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html.md
   - Date: 2026-06-15
@@ -242,11 +252,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-08; updated: 2026-04-29
   - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
   - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
-- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html.md
-  - Date: 2026-04-29
-  - Summary: Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.
-  - Tags: ai-agents, security, tooling, reliability, openclaw, auth
 - [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
   - Date: 2026-04-03; updated: 2026-04-29

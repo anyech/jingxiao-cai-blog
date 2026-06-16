@@ -3,6 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html.md
 Date: 2026-04-29
+Updated: 2026-06-16
 Tags: ai-agents, security, tooling, reliability, openclaw, auth
 
 Summary: Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.
@@ -254,6 +255,10 @@ Summary: Why AI-agent tool launches should prove auth intent, isolate ambient cr
 
 
  Only the combination means “ready to launch.” Anything less should stay a bounded diagnostic state.
+
+
+ Update, June 16, 2026: I now treat worker dispatch as another launch-gate layer, not a separate automation trick. A router may classify a request and a runner may prepare an exact-scope dispatch contract, but the parent workflow should still own launch authority, artifact verification, and user-visible closeout. I expanded that pattern in Agent Dispatch Should Be Parent-Owned.
+
 
 
 ## Where This Fits With OAuth Automation

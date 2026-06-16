@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 16 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects</title>
+      <description>Routers should classify and prepare exact-scope dispatch contracts; parent workflows should own side effects, worker launches, verification, and closeout.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html</guid>
+      <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</title>
+      <description>Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs</title>
@@ -366,14 +382,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
       <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</title>
-      <description>Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</guid>
-      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

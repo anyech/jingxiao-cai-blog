@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-29",
-  "dateModified": "2026-04-29",
+  "dateModified": "2026-06-16",
   "url": "https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html"
@@ -259,6 +259,10 @@
       </ul>
 
       <p>Only the combination means “ready to launch.” Anything less should stay a bounded diagnostic state.</p>
+
+      <div class="note">
+          <strong>Update, June 16, 2026:</strong> I now treat worker dispatch as another launch-gate layer, not a separate automation trick. A router may classify a request and a runner may prepare an exact-scope dispatch contract, but the parent workflow should still own launch authority, artifact verification, and user-visible closeout. I expanded that pattern in <a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a>.
+      </div>
 
       <h2>Where This Fits With OAuth Automation</h2>
       <p>This launch-gate pattern is the broader version of the fail-closed OAuth readiness gate I added to my <a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html#oauth-readiness-gate">VPS OAuth guide</a>.</p>
