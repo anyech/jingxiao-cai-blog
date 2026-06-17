@@ -1,0 +1,257 @@
+---
+layout: post.njk
+permalink: 'mock-first-live-when-proven-agent-demos.html'
+title: 'Mock First, Live When Proven: How to Keep Agent Demos Honest'
+slug: 'mock-first-live-when-proven-agent-demos'
+description: 'A practical agent-operations pattern for search and tool demos: mock paths are useful, but live paths need explicit labels, cheap probes, and fail-closed gates before they are shown as real.'
+summary: 'Mock paths make agent demos safe to build, but they should never pretend to be live. Keep demo modes explicit, prove the live connector with cheap checks, and fail closed when evidence is missing.'
+date: '2026-06-17'
+updated: ''
+tags: ['ai-agents', 'agent-ops', 'tooling', 'demo-safety', 'reliability', 'openclaw']
+keywords: ['agent demo safety', 'mock mode', 'live connector', 'AI agent operations', 'search API demo', 'tool readiness', 'fail closed demo']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'Mock First, Live When Proven: How to Keep Agent Demos Honest'
+feedDescription: 'Mock paths make agent demos safe to build, but they should never pretend to be live. Keep modes explicit, prove the live connector with cheap checks, and fail closed when evidence is missing.'
+feedPubDate: 'Wed, 17 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-17'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Mock First, Live When Proven: How to Keep Agent Demos Honest</h1>
+    <div class="meta">
+        <strong>June 17, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, tooling, demo-safety, reliability, openclaw</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a search-demo hardening pass into a generalized public pattern and remove deployment-specific names, identifiers, paths, prompts, and logs.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a demo-safety pattern, not a transcript of a live system. The examples below are intentionally generic so the useful lesson survives without exposing deployment fingerprints that are not needed for the lesson.
+    </div>
+</header>
+
+<main>
+    <p>A mock-backed demo is not dishonest by itself. It is often the safest way to build a user interface, exercise error states, and keep a prototype moving while the real connector is still unstable.</p>
+
+    <p>The dishonesty starts when the demo stops saying which lane it is using.</p>
+
+    <p>That distinction matters even more for AI-agent systems. A normal application can usually label a feature as “demo data.” An agent demo has more moving parts: model output, tool calls, cached examples, retrieval snippets, retry behavior, timeouts, and final natural-language synthesis. If those layers are not labeled clearly, a mock can accidentally inherit the credibility of a live run.</p>
+
+    <blockquote>
+        <p><strong>Mock mode is a valid engineering tool. Unlabeled mock mode is a product risk.</strong></p>
+    </blockquote>
+
+    <h2>The Pattern: Mock First, Live When Proven</h2>
+
+    <p>The pattern I now prefer is simple:</p>
+
+    <ol>
+        <li>Build the demo around a deterministic mock path first.</li>
+        <li>Label the mode visibly in the UI, logs, and final report.</li>
+        <li>Add a live connector behind an explicit gate.</li>
+        <li>Probe the live path with a cheap, non-destructive request before showing it as real.</li>
+        <li>If the live proof is missing, fall back to mock only when the result is still labeled as mock.</li>
+    </ol>
+
+    <p>That flow is less flashy than “just wire the API and hope.” It also prevents a much worse failure: a user seeing a beautiful answer and assuming the system actually queried the live source when it only replayed canned data.</p>
+
+    <div class="note">
+        <strong>Conceptual example:</strong> imagine a search-backed assistant demo with two lanes: a mock lane that returns fixed examples, and a live lane that calls a real search service. The public lesson is the control boundary between those lanes, not any specific service, endpoint, account, or deployment.
+    </div>
+
+    <h2>Why This Gets Tricky in Agent Demos</h2>
+
+    <p>Agent demos blur boundaries because the final answer is a story. A model can summarize mock results with the same confidence and polish it uses for live results. If the surrounding system does not preserve provenance, the final text will not save you.</p>
+
+    <p>The common failure modes are predictable:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Failure</th>
+                <th>What it looks like</th>
+                <th>Safer behavior</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Mode ambiguity</strong></td>
+                <td>The UI says “search result” without saying mock or live.</td>
+                <td>Show a mode badge and include the mode in exported reports.</td>
+            </tr>
+            <tr>
+                <td><strong>Cached proof drift</strong></td>
+                <td>A stale successful live response keeps making the demo look healthy.</td>
+                <td>Attach timestamps and freshness windows to live evidence.</td>
+            </tr>
+            <tr>
+                <td><strong>Timeout laundering</strong></td>
+                <td>The live path times out, then the demo silently uses mock data.</td>
+                <td>Return “live unavailable; showing mock example” instead of pretending success.</td>
+            </tr>
+            <tr>
+                <td><strong>Prompt-level overclaim</strong></td>
+                <td>The model says “I found” even though the tool did not run.</td>
+                <td>Pass provenance into synthesis and forbid unsupported live claims.</td>
+            </tr>
+            <tr>
+                <td><strong>Operator blind spot</strong></td>
+                <td>The demo works on-screen, but logs cannot explain which lane ran.</td>
+                <td>Record mode, probe result, freshness, and fallback reason as first-class fields.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>A Good Demo Has a Mode Ledger</h2>
+
+    <p>I like a tiny mode ledger because it makes the demo state hard to hand-wave:</p>
+
+    <pre><code class="language-json">{
+  "mode": "live",
+  "live_probe": "passed",
+  "probe_checked_at": "recent",
+  "source_freshness": "within_window",
+  "fallback_used": false,
+  "user_visible_label": "Live data"
+}</code></pre>
+
+    <p>When live proof is missing, the ledger should look different:</p>
+
+    <pre><code class="language-json">{
+  "mode": "mock",
+  "live_probe": "timeout",
+  "source_freshness": "not_proven",
+  "fallback_used": true,
+  "user_visible_label": "Mock example; live source unavailable"
+}</code></pre>
+
+    <p>The exact field names do not matter. The invariant does: the final experience should not be able to claim more liveness than the system proved.</p>
+
+    <h2>Mock Is for Product Shape; Live Is for Trust</h2>
+
+    <p>Mock paths are excellent for product work:</p>
+
+    <ul>
+        <li>the page loads reliably during design reviews,</li>
+        <li>edge cases can be forced without breaking real accounts,</li>
+        <li>screenshots and docs stay deterministic,</li>
+        <li>front-end and agent-synthesis work can proceed before the live backend is ready, and</li>
+        <li>public demos can avoid exposing private or sensitive data.</li>
+    </ul>
+
+    <p>But mock paths cannot prove that the real integration works. Only a live path can do that, and only if the proof is recent enough, narrow enough, and visible enough.</p>
+
+    <p>This is why I do not like a single “demo mode” toggle that hides everything behind one boolean. The better design separates three states:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Meaning</th>
+                <th>User-visible claim</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Mock</strong></td>
+                <td>Deterministic sample data; no live source proof.</td>
+                <td>“Example response.”</td>
+            </tr>
+            <tr>
+                <td><strong>Live-proven</strong></td>
+                <td>Recent cheap probe passed and the request used the live connector.</td>
+                <td>“Live response.”</td>
+            </tr>
+            <tr>
+                <td><strong>Degraded</strong></td>
+                <td>Live source was attempted or expected but proof failed.</td>
+                <td>“Live unavailable; showing mock or cached example.”</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Feature-Flag Lessons Apply Here</h2>
+
+    <p>This is basically feature-flag discipline applied to agent demos. LaunchDarkly's testing guidance notes that feature flags can target test contexts, expose functionality to narrow audiences, and use fallback values when a flag cannot be evaluated. That same shape maps well to demos: target the risky live behavior deliberately, keep fallback behavior explicit, and do not pretend a fallback is the primary path.</p>
+
+    <p>Google's SRE book also draws a useful monitoring distinction between internal metrics and externally visible behavior. A live agent demo needs both: internal evidence that the connector was healthy, and external behavior that tells the viewer what they are actually seeing.</p>
+
+    <p>A green internal probe without a visible label is not enough. A visible label without a real probe is not enough either.</p>
+
+    <h2>The Fail-Closed Rule</h2>
+
+    <p>For demos that influence decisions, I prefer this rule:</p>
+
+    <blockquote>
+        <p><strong>If the system cannot prove live mode, it must not describe the result as live.</strong></p>
+    </blockquote>
+
+    <p>That does not mean the demo has to stop. It means the claim changes. A degraded demo can still be useful if it says what happened:</p>
+
+    <ul>
+        <li>“Live search timed out; showing a mock example.”</li>
+        <li>“Live connector is disabled for this public demo.”</li>
+        <li>“Cached example from a previous successful run; freshness not guaranteed.”</li>
+        <li>“Tool call was not executed; this is a UI-only preview.”</li>
+    </ul>
+
+    <p>Those labels are not embarrassing. They are trust-preserving.</p>
+
+    <h2>The Checklist I Use</h2>
+
+    <p>Before I treat an agent demo as live, I want answers to these questions:</p>
+
+    <ul>
+        <li><strong>Mode:</strong> is the current run mock, live, cached, or degraded?</li>
+        <li><strong>Label:</strong> does the user-facing screen say that plainly?</li>
+        <li><strong>Probe:</strong> did the live connector pass a cheap, non-destructive check recently?</li>
+        <li><strong>Freshness:</strong> is the live proof inside a documented freshness window?</li>
+        <li><strong>Fallback:</strong> if fallback occurred, is it visible in the UI and final report?</li>
+        <li><strong>Synthesis:</strong> does the model receive the mode/provenance fields before writing the answer?</li>
+        <li><strong>Audit:</strong> can logs reconstruct which lane ran without exposing private details?</li>
+        <li><strong>Public safety:</strong> can the mock path demonstrate the idea without leaking real data, accounts, paths, or identifiers?</li>
+    </ul>
+
+    <p>If the answer to any of those is fuzzy, the demo can still be shown as a mock. It should not be sold as live.</p>
+
+    <h2>My Final Read</h2>
+
+    <p>The safest agent demos are not the ones that avoid mocks. They are the ones that make mocks boringly obvious and make live claims earn their label.</p>
+
+    <p>Mock first so you can design safely. Go live only when the connector proves itself. If the proof disappears, fail closed on the claim, not necessarily on the whole demo.</p>
+
+    <blockquote>
+        <p><strong>A good demo does not need to be live all the time. It needs to be honest every time.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></li>
+            <li><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects</a></li>
+            <li><a href="/jingxiao-cai-blog/when-live-state-moves-agent-validators.html">When Live State Moves, Agent Validators Need to Follow</a></li>
+            <li><a href="/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html">When a Reviewer Demands Live Proof: Escalation Paths for Agent PRs</a></li>
+        </ul>
+    </div>
+
+    <div class="related-posts">
+        <h3>References</h3>
+        <ul>
+            <li><a href="https://launchdarkly.com/docs/guides/flags/testing-code">LaunchDarkly: Testing code that uses feature flags</a></li>
+            <li><a href="https://sre.google/sre-book/monitoring-distributed-systems/">Google SRE Book: Monitoring Distributed Systems</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p><strong>Jingxiao Cai</strong> works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or war stories about mock/live demo boundaries? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or reach out through the linked channels.</p>
+    </div>
+</main>
