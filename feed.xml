@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Mock First, Live When Proven: How to Keep Agent Demos Honest</title>
+      <description>Mock paths make agent demos safe to build, but they should never pretend to be live. Keep modes explicit, prove the live connector with cheap checks, and fail closed when evidence is missing.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html</guid>
+      <pubDate>Wed, 17 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects</title>

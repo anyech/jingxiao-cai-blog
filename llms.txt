@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Mock First, Live When Proven: How to Keep Agent Demos Honest](https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html.md
+  - Date: 2026-06-17
+  - Summary: Mock paths make agent demos safe to build, but they should never pretend to be live. Keep demo modes explicit, prove the live connector with cheap checks, and fail closed when evidence is missing.
+  - Tags: ai-agents, agent-ops, tooling, demo-safety, reliability, openclaw
 - [Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects](https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html.md
   - Date: 2026-06-16
