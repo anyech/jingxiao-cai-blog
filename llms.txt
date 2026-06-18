@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Patch the Thing You Changed: Why Config Validators Should Stay Narrow](https://anyech.github.io/jingxiao-cai-blog/patch-the-thing-you-changed-narrow-config-validation.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/patch-the-thing-you-changed-narrow-config-validation.html.md
+  - Date: 2026-06-18
+  - Summary: Config patch tools should not turn a tiny, reversible edit into a full-system interrogation. Validate the touched path, report unrelated drift separately, and keep dry-run evidence distinct from live activation.
+  - Tags: ai-agents, agent-ops, configuration, reliability, tooling, openclaw
 - [Mock First, Live When Proven: How to Keep Agent Demos Honest](https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html.md
   - Date: 2026-06-17
