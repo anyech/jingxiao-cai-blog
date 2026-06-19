@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 18 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes</title>
+      <description>A bounded synthetic fanout can prove that an agent can coordinate a worker plane. It does not prove data approval, production readiness, or service integration. Keep those gates separate.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html</guid>
+      <pubDate>Fri, 19 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Patch the Thing You Changed: Why Config Validators Should Stay Narrow</title>
