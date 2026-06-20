@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 19 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>The Screenshot Was Green. The Page Was Wrong</title>
+      <description>A screenshot can have the right size, path, and timestamp while showing the wrong page. Agent artifact checks need semantic validation, not just file existence or image dimensions.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html</guid>
+      <pubDate>Sat, 20 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes</title>

@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts](https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html.md
+  - Date: 2026-06-20
+  - Summary: A screenshot can have the right size, path, and timestamp while showing the wrong page. Agent artifact checks need semantic validation, not just existence checks.
+  - Tags: ai-agents, agent-ops, debugging, automation, reliability, tooling
 - [Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes](https://anyech.github.io/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html.md
   - Date: 2026-06-19
