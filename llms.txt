@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
+  - Date: 2026-03-19; updated: 2026-06-21
+  - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
+  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
+- [Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html.md
+  - Date: 2026-06-21
+  - Summary: When an agent hits a real production-flavored failure, the useful upstream contribution is not a raw log dump. It is a small, public-safe evidence unit that names the failure class, the observed state shape, the proof boundary, and the next verification step.
+  - Tags: ai-agents, agent-ops, open-source, debugging, opsec, automation
 - [The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts](https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html.md
   - Date: 2026-06-20
@@ -82,11 +92,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-06-12
   - Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
   - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
-- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-12
-  - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
-  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html.md
   - Date: 2026-06-11

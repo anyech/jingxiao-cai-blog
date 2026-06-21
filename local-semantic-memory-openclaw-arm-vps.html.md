@@ -3,7 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-06-12
+Updated: 2026-06-21
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
 Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
@@ -15,7 +15,7 @@ Summary: How local memory search became a broader source-hygiene lesson: direct 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated June 12, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 21, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -41,6 +41,8 @@ Summary: How local memory search became a broader source-hygiene lesson: direct 
  June 11 follow-up: I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.
 
  June 12 follow-up: I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.
+
+ June 21 follow-up: I made the active-memory canary rule even more explicit: 45-53 second success is a useful diagnostic ceiling, not a product-ready reply-path budget.
 
 
 
@@ -743,6 +745,10 @@ python3 task-specific-embedding-pilot.py
  The June 10 refinement turns that into a two-part promotion test: completion and placement. Completion asks whether the helper can return useful memory at all. Placement asks whether that work belongs in the synchronous reply path, a narrower pre-reply hook, an async follow-up, or a manual retrieval lane. A canary that answers only the first question is still valuable, but it is not enough to promote the feature into every normal turn.
 
  The June 11 version adds one more practical check: name the delivery shape before calling the canary promoted. A slow-but-useful recall path might be a great on-demand retrieval lane, a background follow-up, or a narrower pre-reply trigger. It should not automatically become a blocking step for every normal reply just because it can eventually return something useful.
+
+ The June 21 version is the blunt one: 45-53 second success is a ceiling, not a comfort target. It proves the active-memory path can survive when given enough room, which is valuable diagnostic evidence. It does not prove the path belongs in the synchronous pre-reply budget for ordinary chat turns.
+
+ That distinction prevents a subtle product mistake. If the only way to make recall reliable is to spend most of the user-visible latency budget, the feature is not ready to be promoted as a default blocking helper. The honest next step is to narrow the query, add stronger trigger conditions, return a smaller memory packet, or move the expensive recall into an async follow-up lane.
 
 
  Canary rule: if the helper succeeds only by consuming the user-visible latency budget, the feature is not failed, but its placement is wrong. Shrink the query, narrow the trigger, or move the work out of the blocking path.

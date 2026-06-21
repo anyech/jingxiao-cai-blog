@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs</title>
+      <description>How to convert a private agent-runtime failure into a useful public-safe upstream PR comment without leaking logs, paths, IDs, or operator context.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html</guid>
+      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Screenshot Was Green. The Page Was Wrong</title>
@@ -110,14 +126,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, and stricter active-memory placement rules.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
-      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
