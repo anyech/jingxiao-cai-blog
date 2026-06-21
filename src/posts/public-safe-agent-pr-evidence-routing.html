@@ -1,0 +1,209 @@
+---
+layout: post.njk
+permalink: 'public-safe-agent-pr-evidence-routing.html'
+title: 'Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs'
+slug: 'public-safe-agent-pr-evidence-routing'
+description: 'A practical agent-operations pattern for turning private runtime failures into public-safe, useful evidence for upstream pull requests.'
+summary: 'When an agent hits a real production-flavored failure, the useful upstream contribution is not a raw log dump. It is a small, public-safe evidence unit that names the failure class, the observed state shape, the proof boundary, and the next verification step.'
+date: '2026-06-21'
+updated: ''
+tags: ['ai-agents', 'agent-ops', 'open-source', 'debugging', 'opsec', 'automation']
+keywords: ['AI agent operations', 'public safe evidence', 'GitHub PR evidence', 'agent debugging', 'OpenClaw auth profiles', 'upstream bug reports', 'opsec for agents']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs'
+feedDescription: 'How to convert a private agent-runtime failure into a useful public-safe upstream PR comment without leaking logs, paths, IDs, or operator context.'
+feedPubDate: 'Sun, 21 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-21'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs</h1>
+    <div class="meta">
+        <strong>June 21, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, open-source, debugging, opsec, automation</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private auth/session debugging episode into a generalized public pattern and remove emails, session IDs, channel IDs, hostnames, local paths, tokens, private logs, and deployment-specific context.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is an agent-operations pattern, not a raw incident report. The upstream thread was public, but the private runtime context behind the observation is intentionally generalized.
+    </div>
+</header>
+
+<main>
+    <p>The easiest way to make an upstream bug report useless is to remove all evidence.</p>
+
+    <p>The easiest way to make it dangerous is to paste the whole private debugging session.</p>
+
+    <p>Agent systems make this trade-off sharper because the raw evidence is often full of things that should not become public: auth profile names, session identifiers, channel context, local file paths, hostnames, provider fallbacks, command transcripts, and operational habits. But upstream maintainers still need something concrete. They do not need vibes. They need a small, reproducible-looking signal that explains the failure class without leaking the operator.</p>
+
+    <blockquote>
+        <p><strong>The useful unit is not the log dump. The useful unit is a public-safe evidence slice: observed state shape, failure class, proof boundary, and next verification step.</strong></p>
+    </blockquote>
+
+    <h2>The Situation</h2>
+
+    <p>A public OpenClaw pull request was repairing a stale runtime auth-selection class. The short version: transient fallback state can get persisted in a place where future runs treat it as if it were still the intended selection.</p>
+
+    <p>I had a matching current-release failure signal from a real agent deployment. That signal was useful to the PR because it showed the bug class was not only a synthetic fixture and not only a cross-provider fallback corner. It also appeared in a same-provider auth-profile shape where an automatic emergency profile had become sticky after the primary profile was healthy again.</p>
+
+    <p>That evidence was relevant. It was also not publishable raw.</p>
+
+    <p>The raw local context included the usual private mess: exact auth profile identities, session-store entries, channel surfaces, timestamps, local recovery scripts, and deployment shape. None of that belonged in a public GitHub comment.</p>
+
+    <h2>The Evidence Slice That Was Safe to Share</h2>
+
+    <p>The public-safe comment kept the parts maintainers could reason about:</p>
+
+    <ul>
+        <li>the failure was seen on the current release, not on the PR branch</li>
+        <li>the setup shape involved same-provider auth profiles, with one configured primary and fallback/emergency profiles</li>
+        <li>the affected sessions did not have a user-auth-profile lock</li>
+        <li>the persisted state was marked as <code>auto</code>, not as a deliberate user override</li>
+        <li>the primary profile was available at scan time</li>
+        <li>a dry-run recovery would clear older automatic fallback pins while skipping very recent ones</li>
+        <li>the comment explicitly said it was failing evidence, not after-fix proof for the PR branch</li>
+    </ul>
+
+    <p>That is enough for an upstream maintainer to evaluate relevance without receiving a private transcript.</p>
+
+    <div class="note">
+        <strong>Public reference:</strong> the sanitized evidence comment is on OpenClaw PR <a href="https://github.com/openclaw/openclaw/pull/87893#issuecomment-4665323033">#87893</a>. The blog post you are reading deliberately keeps the lesson more general than the comment itself.
+    </div>
+
+    <h2>The Pattern</h2>
+
+    <p>When an agent produces upstream evidence from private runtime state, I now use this translation table.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Private raw evidence</th>
+                <th>Public-safe replacement</th>
+                <th>Why it is better</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Exact account, profile, or email values</td>
+                <td>Role-level shape: primary profile, fallback profile, emergency profile, user override, automatic override</td>
+                <td>Preserves the state-machine meaning without exposing identity.</td>
+            </tr>
+            <tr>
+                <td>Session IDs, channel IDs, and local store paths</td>
+                <td>Counted observations and affected surface class</td>
+                <td>Gives maintainers scale and scope without leaking routing metadata.</td>
+            </tr>
+            <tr>
+                <td>Full logs or transcripts</td>
+                <td>Minimal state predicates and sanitized counters</td>
+                <td>Turns noisy logs into a checkable bug shape.</td>
+            </tr>
+            <tr>
+                <td>Private recovery command output</td>
+                <td>Dry-run recovery behavior: what would be cleared, skipped, or left untouched</td>
+                <td>Shows operational consequence without publishing local tools.</td>
+            </tr>
+            <tr>
+                <td>“This PR probably fixes it”</td>
+                <td>Explicit proof boundary: current-release failing evidence, not after-fix proof</td>
+                <td>Prevents evidence inflation. The maintainer knows exactly what claim is being made.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Route Evidence to the Right Upstream Surface</h2>
+
+    <p>Another easy mistake is posting good evidence in the wrong place.</p>
+
+    <p>In this case there were multiple related upstream threads: stale issues, adjacent fixes, broader architecture trackers, and an active maintainer PR. The evidence belonged on the active PR because it matched the precise stale-auto-runtime-auth class being repaired. Posting it on an older general issue would have created more triage work and less signal.</p>
+
+    <p>That routing decision matters. A good evidence slice in the wrong thread becomes archaeology. A good evidence slice in the active repair thread becomes maintainer leverage.</p>
+
+    <div class="success">
+        <strong>Rule of thumb:</strong> route evidence to the narrowest active upstream surface where it can change a maintainer decision. If the evidence is only background, say that. If it is not after-fix proof, say that too.
+    </div>
+
+    <h2>Name the Proof Boundary</h2>
+
+    <p>The most important sentence in the public comment was the caveat: this was current-release failing evidence, not verified after-fix proof for the PR branch.</p>
+
+    <p>That caveat is not weakness. It is what keeps the evidence honest.</p>
+
+    <p>Agent systems are especially prone to proof inflation because they can produce confident summaries from partial evidence. A real production-flavored failure signal is valuable, but it does not automatically prove that a proposed branch fixes the problem. Those are different claims:</p>
+
+    <ul>
+        <li><strong>Failure-class evidence:</strong> this bug shape is real outside the test fixture.</li>
+        <li><strong>Patch relevance evidence:</strong> the proposed change appears to target the right state transition.</li>
+        <li><strong>After-fix proof:</strong> the patched branch was run against a representative before/after scenario and the failure disappeared.</li>
+    </ul>
+
+    <p>It is fine to contribute the first one. Just do not label it as the third.</p>
+
+    <h2>Why This Is an Agent-Operations Habit</h2>
+
+    <p>This is not only a GitHub etiquette point. It is an operations habit for agentic systems.</p>
+
+    <p>As agents read private state, run local validators, summarize incidents, and talk to public systems, they need a default evidence discipline:</p>
+
+    <ul>
+        <li>sanitize before publication</li>
+        <li>separate raw observation from public claim</li>
+        <li>preserve the bug-shape predicates maintainers need</li>
+        <li>remove identities, paths, IDs, tokens, and local topology</li>
+        <li>state the proof boundary instead of upgrading weak evidence into strong evidence</li>
+    </ul>
+
+    <p>The agent should be helpful enough to produce a useful upstream signal and paranoid enough not to export the user’s life as a debugging artifact.</p>
+
+    <div class="warning">
+        <strong>Public-posting check:</strong> if the post needs exact private identifiers to be convincing, it is not ready to post. First convert identifiers into roles, counters, state predicates, or a reproducible minimal case.
+    </div>
+
+    <h2>The Reusable Checklist</h2>
+
+    <p>Before posting private-runtime evidence to a public PR or issue, I want this checklist to pass:</p>
+
+    <ul>
+        <li><strong>Target:</strong> is this the narrow active thread where the evidence can help?</li>
+        <li><strong>Claim:</strong> what exactly does the evidence prove, and what does it not prove?</li>
+        <li><strong>Shape:</strong> did I preserve the state predicates maintainers need?</li>
+        <li><strong>Privacy:</strong> did I remove exact people, emails, IDs, paths, hostnames, secrets, channels, and raw logs?</li>
+        <li><strong>Boundary:</strong> did I distinguish failing evidence from after-fix proof?</li>
+        <li><strong>Next step:</strong> did I say what would turn this into stronger proof?</li>
+    </ul>
+
+    <p>That is the difference between an agent that merely has access and an agent that can participate safely in an open-source maintenance loop.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html">The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but the User Never Sees It</a></li>
+            <li><a href="/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html">Troubleshooting AI Agent Skills: Why “Installed” Is Not the Same as “Usable”</a></li>
+            <li><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and uses OpenClaw as a personal agent operations lab. He is interested in the boring habits that let autonomous tools touch real systems without turning every useful observation into an accidental leak.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">The best debugging artifact is small enough to share, specific enough to help, and boring enough not to leak anything exciting.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Found this useful? Send it to someone whose “evidence” folder is one unsanitized log dump away from becoming a security incident.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</div>
