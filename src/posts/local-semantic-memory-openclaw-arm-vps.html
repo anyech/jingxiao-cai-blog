@@ -6,7 +6,7 @@ slug: 'local-semantic-memory-openclaw-arm-vps'
 description: 'How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added source-hygiene, anti-echo, and active-memory promotion gates.'
 summary: 'How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.'
 date: '2026-03-19'
-updated: '2026-06-21'
+updated: '2026-06-22'
 tags: ['openclaw', 'ai-agents', 'self-hosted', 'memory', 'embeddings', 'devops']
 keywords: ['OpenClaw local memory search', 'self-hosted semantic memory', 'VPS LLM embeddings', 'node-llama-cpp', 'embeddinggemma', 'Gemini Embedding 2', 'active memory canaries', 'sessions list performance', 'active memory latency ceiling']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html'
@@ -14,15 +14,15 @@ inFeed: true
 inSitemap: true
 feedTitle: 'Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
 feedDescription: 'Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.'
-feedPubDate: 'Sun, 21 Jun 2026 00:00:00 +0000'
+feedPubDate: 'Mon, 22 Jun 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-21'
+sitemapLastmod: '2026-06-22'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 21, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 22, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -38,6 +38,7 @@ sitemapLastmod: '2026-06-21'
         <div class="note"><strong>June 11 follow-up:</strong> I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.</div>
         <div class="note"><strong>June 12 follow-up:</strong> I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.</div>
         <div class="note"><strong>June 21 follow-up:</strong> I made the active-memory canary rule even more explicit: 45-53 second success is a useful diagnostic ceiling, not a product-ready reply-path budget.</div>
+        <div class="note"><strong>June 22 follow-up:</strong> I added the context-pressure corollary: a slow memory helper can also amplify transcript-compaction and delivery risk, so placement matters as much as raw recall quality.</div>
     </header>
 
     <main>
@@ -590,6 +591,8 @@ python3 task-specific-embedding-pilot.py</code></pre>
         <p>The June 11 version adds one more practical check: name the delivery shape before calling the canary promoted. A slow-but-useful recall path might be a great on-demand retrieval lane, a background follow-up, or a narrower pre-reply trigger. It should not automatically become a blocking step for every normal reply just because it can eventually return something useful.</p>
 
         <p>The June 21 version is the blunt one: <strong>45-53 second success is a ceiling, not a comfort target.</strong> It proves the active-memory path can survive when given enough room, which is valuable diagnostic evidence. It does not prove the path belongs in the synchronous pre-reply budget for ordinary chat turns.</p>
+
+        <p>The June 22 version adds a context-pressure corollary. A slow pre-reply helper does not only spend latency; it also increases the amount of coordination state that the active transcript has to carry while other work is still pending. That can make compaction, checkpointing, and final-delivery paths more fragile. In other words, memory-helper placement is not just a performance decision. It is part of the reliability boundary for the whole agent turn.</p>
 
         <p>That distinction prevents a subtle product mistake. If the only way to make recall reliable is to spend most of the user-visible latency budget, the feature is not ready to be promoted as a default blocking helper. The honest next step is to narrow the query, add stronger trigger conditions, return a smaller memory packet, or move the expensive recall into an async follow-up lane.</p>
 
