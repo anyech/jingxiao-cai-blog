@@ -32,7 +32,9 @@ module.exports = function(eleventyConfig) {
     return collectionApi.getFilteredByGlob(['src/posts/*.md', 'src/posts/*.html']).sort((a, b) => {
       const da = String(a.data.updated || a.data.date || '');
       const db = String(b.data.updated || b.data.date || '');
-      return db.localeCompare(da) || String(a.data.title).localeCompare(String(b.data.title));
+      const ua = Boolean(a.data.updated && a.data.updated !== a.data.date);
+      const ub = Boolean(b.data.updated && b.data.updated !== b.data.date);
+      return db.localeCompare(da) || Number(ua) - Number(ub) || String(a.data.title).localeCompare(String(b.data.title));
     });
   });
   eleventyConfig.addFilter('dateDisplay', function(value) {
