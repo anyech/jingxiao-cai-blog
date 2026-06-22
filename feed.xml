@@ -6,14 +6,30 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 21 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary</title>
+      <description>Long-running AI agent threads need more than bigger context windows: they need checkpoints, scoped continuation, and explicit delivery contracts.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html</guid>
+      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
+      <description>How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery contracts, and honest dissent safely.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
+      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
       <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
-      <pubDate>Sun, 21 Jun 2026 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -193,19 +209,19 @@
     </item>
 
     <item>
-      <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
-      <description>Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
-      <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
       <title>When Your Tunnel Watchdog Lies</title>
       <description>A reverse-SSH watchdog can report a real transient failure and still mislead the operator if the wrapper treats normal degraded alerts as crashes.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html</guid>
       <pubDate>Tue, 02 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</title>
+      <description>Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
+      <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -417,27 +433,19 @@
     </item>
 
     <item>
-      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
-      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
-      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
-      <description>How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
-      <pubDate>Fri, 03 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
       <title>Modernizing Agent Skills Without Growing a Skill Jungle</title>
       <description>How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
+      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -473,19 +481,19 @@
     </item>
 
     <item>
-      <title>Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory</title>
-      <description>After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</guid>
-      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
       <title>The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</title>
       <description>LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html</guid>
       <pubDate>Sat, 28 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory</title>
+      <description>After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html</guid>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

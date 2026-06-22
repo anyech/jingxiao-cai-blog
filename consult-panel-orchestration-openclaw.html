@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
+    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.">
+    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
-  "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, watchdog-backed waits, bridge-back delivery contracts, and honest dissent safely.",
+  "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-03",
-  "dateModified": "2026-04-29",
+  "dateModified": "2026-06-22",
   "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html"
@@ -71,7 +71,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated April 29, 2026</strong><br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated June 22, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
@@ -82,6 +82,9 @@
         </div>
         <div class="note">
             <strong>April 29 follow-up:</strong> I added the final-delivery bridge-back lesson from long-running Discord work: detaching the work is only half the reliability story; the final answer still needs a contract-derived route back to the right conversation.
+        </div>
+        <div class="note">
+            <strong>June 22 follow-up:</strong> I added the context-pressure version of the pattern: panel results need artifact-backed completion and a finalizer ledger because a parent thread can be under context, compaction, or write-lock pressure even when the panelists themselves finished correctly.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -361,6 +364,25 @@ split oversized finals deterministically instead of truncating them
 record delivered message identifiers when the channel returns them</code></pre>
 
         <p>That is deliberately boring distributed-systems hygiene: stable identity, explicit target selection, idempotent side effects, and observable delivery state. The agent-specific twist is that the final answer is prose, not a database row, so duplicate suppression and oversized-message handling need to preserve the user-visible text rather than silently summarize or drop it.</p>
+
+        <h2>June 2026 Follow-Up: Artifact-Backed Completion Beats Transcript Luck</h2>
+        <p>The later failure mode was subtler: panelists could finish and write useful results, but the parent thread was not always the healthiest place to notice, validate, synthesize, and deliver them. The failure was not “the panel had no answer.” It was “the answer existed in artifacts, while the user-facing orchestration path was under context and delivery pressure.”</p>
+
+        <p>That pushed the design one step past status-line completion. A child saying “ready” is now provisional. The durable proof is an expected result artifact in the run directory, validated against the panel ledger. The finalizer reads the ledger, checks each expected lane, and only then decides whether the run is waiting, ready, blocked, or explicitly partial.</p>
+
+        <pre><code>resolve expected panel lanes
+write a panel-run ledger
+record result paths before launch
+accept compact child status lines as hints
+validate authoritative result artifacts
+finalize from the ledger, not from transcript vibes
+deliver once through the recorded target</code></pre>
+
+        <p>This matters most when the parent conversation is already large. A huge thread can be slow, compacting, or temporarily write-locked. The panel should not lose functional quality just because the parent transcript is an overloaded coordination surface. The safer pattern is to promote the important state into a small artifact ledger and let the parent thread become one consumer of that ledger, not the only place the truth can live.</p>
+
+        <blockquote>
+            <p><strong>If a panel result is important, make it recoverable from artifacts before trusting the chat transcript to remember it.</strong></p>
+        </blockquote>
 
         <div class="warning">
             <strong>Important boundary:</strong> this is a helper-level bridge-back pattern, not yet a native runtime event dispatcher. It is strong enough for local use because delivery targets come from a validated contract and retries are ledger-backed. A true Gateway/runtime event dispatcher would be a different risk class and deserves its own reviewed design.

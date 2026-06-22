@@ -3,7 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
 Date: 2026-03-19
-Updated: 2026-06-21
+Updated: 2026-06-22
 Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
 Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
@@ -15,7 +15,7 @@ Summary: How local memory search became a broader source-hygiene lesson: direct 
 # Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs
 
 
- March 19, 2026 | By Jingxiao Cai | Updated June 21, 2026
+ March 19, 2026 | By Jingxiao Cai | Updated June 22, 2026
 
  Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 
@@ -43,6 +43,8 @@ Summary: How local memory search became a broader source-hygiene lesson: direct 
  June 12 follow-up: I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.
 
  June 21 follow-up: I made the active-memory canary rule even more explicit: 45-53 second success is a useful diagnostic ceiling, not a product-ready reply-path budget.
+
+ June 22 follow-up: I added the context-pressure corollary: a slow memory helper can also amplify transcript-compaction and delivery risk, so placement matters as much as raw recall quality.
 
 
 
@@ -747,6 +749,8 @@ python3 task-specific-embedding-pilot.py
  The June 11 version adds one more practical check: name the delivery shape before calling the canary promoted. A slow-but-useful recall path might be a great on-demand retrieval lane, a background follow-up, or a narrower pre-reply trigger. It should not automatically become a blocking step for every normal reply just because it can eventually return something useful.
 
  The June 21 version is the blunt one: 45-53 second success is a ceiling, not a comfort target. It proves the active-memory path can survive when given enough room, which is valuable diagnostic evidence. It does not prove the path belongs in the synchronous pre-reply budget for ordinary chat turns.
+
+ The June 22 version adds a context-pressure corollary. A slow pre-reply helper does not only spend latency; it also increases the amount of coordination state that the active transcript has to carry while other work is still pending. That can make compaction, checkpointing, and final-delivery paths more fragile. In other words, memory-helper placement is not just a performance decision. It is part of the reliability boundary for the whole agent turn.
 
  That distinction prevents a subtle product mistake. If the only way to make recall reliable is to spend most of the user-visible latency budget, the feature is not ready to be promoted as a default blocking helper. The honest next step is to narrow the query, add stronger trigger conditions, return a smaller memory packet, or move the expensive recall into an async follow-up lane.
 

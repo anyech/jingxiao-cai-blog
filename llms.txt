@@ -17,9 +17,19 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary](https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html.md
+  - Date: 2026-06-22
+  - Summary: Context compaction is not just token housekeeping. For long-running agent work, it is a reliability boundary that needs durable checkpoints, scoped continuations, and explicit final-delivery contracts.
+  - Tags: openclaw, ai-agents, reliability, workflow, context-engineering
+- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
+  - Date: 2026-04-03; updated: 2026-06-22
+  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.
+  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-21
+  - Date: 2026-03-19; updated: 2026-06-22
   - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
   - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html)
@@ -132,16 +142,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-30; updated: 2026-06-03
   - Summary: Human-readable proof is not enough when repository automation enforces a schema. Updated with the boundary that proof override requests are not completion when the real behavior gate is still red.
   - Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
-- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
-  - Date: 2026-03-11; updated: 2026-06-02
-  - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
-  - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
 - [When Your Tunnel Watchdog Lies: Fixing False SSH Alarms Without Hiding Real Failures](https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html.md
   - Date: 2026-06-02
   - Summary: A real transient SSH failure plus a wrapper contract bug turned one tunnel watchdog alert into a lesson: keep degraded alerts visible, but do not label them as monitor crashes.
   - Tags: devops, networking, monitoring, ai-agents, openclaw, reliability
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html.md
+  - Date: 2026-03-11; updated: 2026-06-02
+  - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
+  - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
 - [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
   - Date: 2026-06-01
@@ -272,21 +282,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-30
   - Summary: Why self-hosted AI-agent updates need production-deployment discipline: preflight, backup, staged rollout, human activation, adoption scans, and verification.
   - Tags: openclaw, ai-agents, release-engineering, reliability, rollback, devops
-- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
-  - Date: 2026-04-08; updated: 2026-04-29
-  - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
-  - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
-- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
-  - Date: 2026-04-03; updated: 2026-04-29
-  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent that survives partial failure.
-  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Modernizing Agent Skills Without Growing a Skill Jungle](https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html.md
   - Date: 2026-04-29
   - Summary: How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.
   - Tags: ai-agents, openclaw, skills, workflow, maintenance, governance
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
+  - Date: 2026-04-08; updated: 2026-04-29
+  - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
+  - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
 - [VPS OAuth Survival Guide: Google APIs Without a Browser](https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html.md
   - Date: 2026-02-25; updated: 2026-04-29
@@ -307,16 +312,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-02-23; updated: 2026-04-03
   - Summary: A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook&#39;s unstable post-incident API surface.
   - Tags: security, openclaw, ai-agents, supply-chain, moltbook
-- [Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory](https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html.md
-  - Date: 2026-03-27; updated: 2026-03-28
-  - Summary: After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.
-  - Tags: openclaw, ai-agents, memory, embeddings, debugging, devops
 - [The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know](https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html.md
   - Date: 2026-03-28
   - Summary: LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.
   - Tags: security, openclaw, ai-agents, supply-chain, python, incident-response
+- [Bigger Embeddings ≠ Better Memory: Why I Chose text-embedding-3-small for OpenClaw Remote Memory](https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html.md
+  - Date: 2026-03-27; updated: 2026-03-28
+  - Summary: After proving local memory search worked, I stabilized a remote memory-only lane in OpenClaw. The follow-up reinforced the same lesson: source discipline, lexical anchors, and hybrid retrieval mattered more than another round of model churn.
+  - Tags: openclaw, ai-agents, memory, embeddings, debugging, devops
 - [OpenClaw 2026.3.12 Regression: When logs --follow Breaks But the Gateway Stays Healthy](https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html.md
   - Date: 2026-03-14; updated: 2026-03-19

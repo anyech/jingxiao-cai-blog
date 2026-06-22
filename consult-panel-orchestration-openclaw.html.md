@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
 Date: 2026-04-03
-Updated: 2026-04-29
+Updated: 2026-06-22
 Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 
-Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent that survives partial failure.
+Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I turned multi-model consultation into a config-backed OpenClaw wor
 # LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos
 
 
- April 3, 2026 | By Jingxiao Cai | Updated April 29, 2026
+ April 3, 2026 | By Jingxiao Cai | Updated June 22, 2026
 
  Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 
@@ -30,6 +30,10 @@ Summary: How I turned multi-model consultation into a config-backed OpenClaw wor
 
 
  April 29 follow-up: I added the final-delivery bridge-back lesson from long-running Discord work: detaching the work is only half the reliability story; the final answer still needs a contract-derived route back to the right conversation.
+
+
+
+ June 22 follow-up: I added the context-pressure version of the pattern: panel results need artifact-backed completion and a finalizer ledger because a parent thread can be under context, compaction, or write-lock pressure even when the panelists themselves finished correctly.
 
 
 
@@ -396,6 +400,28 @@ split oversized finals deterministically instead of truncating them
 record delivered message identifiers when the channel returns them
 
  That is deliberately boring distributed-systems hygiene: stable identity, explicit target selection, idempotent side effects, and observable delivery state. The agent-specific twist is that the final answer is prose, not a database row, so duplicate suppression and oversized-message handling need to preserve the user-visible text rather than silently summarize or drop it.
+
+
+## June 2026 Follow-Up: Artifact-Backed Completion Beats Transcript Luck
+
+ The later failure mode was subtler: panelists could finish and write useful results, but the parent thread was not always the healthiest place to notice, validate, synthesize, and deliver them. The failure was not “the panel had no answer.” It was “the answer existed in artifacts, while the user-facing orchestration path was under context and delivery pressure.”
+
+ That pushed the design one step past status-line completion. A child saying “ready” is now provisional. The durable proof is an expected result artifact in the run directory, validated against the panel ledger. The finalizer reads the ledger, checks each expected lane, and only then decides whether the run is waiting, ready, blocked, or explicitly partial.
+
+ resolve expected panel lanes
+write a panel-run ledger
+record result paths before launch
+accept compact child status lines as hints
+validate authoritative result artifacts
+finalize from the ledger, not from transcript vibes
+deliver once through the recorded target
+
+ This matters most when the parent conversation is already large. A huge thread can be slow, compacting, or temporarily write-locked. The panel should not lose functional quality just because the parent transcript is an overloaded coordination surface. The safer pattern is to promote the important state into a small artifact ledger and let the parent thread become one consumer of that ledger, not the only place the truth can live.
+
+
+ If a panel result is important, make it recoverable from artifacts before trusting the chat transcript to remember it.
+
+
 
 
  Important boundary: this is a helper-level bridge-back pattern, not yet a native runtime event dispatcher. It is strong enough for local use because delivery targets come from a validated contract and retries are ledger-backed. A true Gateway/runtime event dispatcher would be a different risk class and deserves its own reviewed design.
