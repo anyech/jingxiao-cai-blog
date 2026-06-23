@@ -1,28 +1,28 @@
 ---
 layout: post.njk
 permalink: 'local-semantic-memory-openclaw-arm-vps.html'
-title: 'Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
+title: 'Local Semantic Memory on a Small ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
 slug: 'local-semantic-memory-openclaw-arm-vps'
-description: 'How I enabled OpenClaw local memory search on a 4-core ARM VPS, then added source-hygiene, anti-echo, and active-memory promotion gates.'
+description: 'How I enabled OpenClaw local memory search on a small ARM VPS, then added source-hygiene, anti-echo, and active-memory promotion gates.'
 summary: 'How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.'
 date: '2026-03-19'
-updated: '2026-06-22'
+updated: '2026-06-23'
 tags: ['openclaw', 'ai-agents', 'self-hosted', 'memory', 'embeddings', 'devops']
 keywords: ['OpenClaw local memory search', 'self-hosted semantic memory', 'VPS LLM embeddings', 'node-llama-cpp', 'embeddinggemma', 'Gemini Embedding 2', 'active memory canaries', 'sessions list performance', 'active memory latency ceiling']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html'
 inFeed: true
 inSitemap: true
-feedTitle: 'Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
+feedTitle: 'Local Semantic Memory on a Small ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs'
 feedDescription: 'Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.'
-feedPubDate: 'Mon, 22 Jun 2026 00:00:00 +0000'
+feedPubDate: 'Tue, 23 Jun 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-22'
+sitemapLastmod: '2026-06-23'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
-        <h1>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
+        <h1>Local Semantic Memory on a Small ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</h1>
         <div class="meta">
-            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 22, 2026</strong><br>
+            <strong>March 19, 2026</strong> | By Jingxiao Cai | <strong>Updated June 23, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops</span>
         </div>
         <div class="disclaimer">
@@ -37,14 +37,15 @@ sitemapLastmod: '2026-06-22'
         <div class="note"><strong>June 10 follow-up:</strong> I added the operational-test version of the same rule: a canary must prove both completion and placement. If it only proves completion, the next step is scope reduction or async delivery, not promotion.</div>
         <div class="note"><strong>June 11 follow-up:</strong> I added the delivery-shape version of the rule: if recall is valuable but slow, promotion may mean narrowing it or moving it out of the blocking reply path, not making every reply wait.</div>
         <div class="note"><strong>June 12 follow-up:</strong> I tightened the pattern-scout version of source hygiene: generated scout reports can nominate ideas, but direct evidence must carry novelty and truth claims.</div>
-        <div class="note"><strong>June 21 follow-up:</strong> I made the active-memory canary rule even more explicit: 45-53 second success is a useful diagnostic ceiling, not a product-ready reply-path budget.</div>
+        <div class="note"><strong>June 21 follow-up:</strong> I made the active-memory canary rule even more explicit: long-budget success is a useful diagnostic ceiling, not a product-ready reply-path budget.</div>
         <div class="note"><strong>June 22 follow-up:</strong> I added the context-pressure corollary: a slow memory helper can also amplify transcript-compaction and delivery risk, so placement matters as much as raw recall quality.</div>
+        <div class="note"><strong>June 23 follow-up:</strong> I tightened the canary interpretation: a long-budget active-memory canary can prove viability, but default reply-path authority still needs a separate latency, rollback, and trigger-scope gate.</div>
     </header>
 
     <main>
         <h2>The Goal</h2>
         <p>I wanted <strong>semantic memory search in OpenClaw without paying an external embedding provider</strong> and without shipping my memory corpus out to somebody else's API.</p>
-        <p>The target environment was not glamorous: a <strong>4-core ARM VPS</strong> running my personal OpenClaw deployment. In other words, exactly the kind of box where people assume local embeddings are going to be too slow, too fragile, or too annoying to be worth it.</p>
+        <p>The target environment was not glamorous: a <strong>small ARM VPS</strong> running my personal OpenClaw deployment. In other words, exactly the kind of box where people assume local embeddings are going to be too slow, too fragile, or too annoying to be worth it.</p>
         <p>That assumption turned out to be wrong.</p>
 
         <div class="success">
@@ -220,7 +221,7 @@ sitemapLastmod: '2026-06-22'
         <p>This post is specifically about the <strong>local-memory win</strong>. Later on I also tested remote embedding providers for different operational reasons. That later work eventually stabilized on a separate <strong>memory-only remote lane with <code>text-embedding-3-small</code></strong> after larger or more ambitious candidates kept tripping timeout and indexing-path problems.</p>
         <p>I am deliberately not turning that into the main story here, because it answers a different question. The local result already stood on its own: once the dependency and indexing model were fixed, local semantic memory worked on the small ARM VPS.</p>
         <div class="success">
-            <strong>OpenClaw local semantic memory absolutely worked on this 4-core ARM VPS once the dependency and indexing strategy were corrected.</strong>
+            <strong>OpenClaw local semantic memory absolutely worked on this small ARM VPS once the dependency and indexing strategy were corrected.</strong>
         </div>
 
         <h2>Retrieval Audit Results (March 2026)</h2>
@@ -474,7 +475,7 @@ python3 task-specific-embedding-pilot.py</code></pre>
         <h2>May 2026 Follow-Up: Active Memory Canaries Need a Latency Budget</h2>
         <p>The next memory lesson was not about whether a helper could finish. It was about whether it could finish inside the reply path without making the whole assistant feel stuck.</p>
 
-        <p>A 60-second active-memory canary found a working setting in the narrow sense: the helper stopped immediately failing under the previous shorter timeout pattern, and early real runs produced non-empty summaries instead of timing out. But the observed pre-reply latency was still roughly <strong>45-53 seconds</strong>.</p>
+        <p>A long-budget active-memory canary found a working setting in the narrow sense: the helper stopped immediately failing under the previous shorter timeout pattern, and early real runs produced non-empty summaries instead of timing out. But the observed pre-reply latency was still roughly <strong>tens of seconds</strong>.</p>
 
         <table>
             <thead>
@@ -590,9 +591,11 @@ python3 task-specific-embedding-pilot.py</code></pre>
 
         <p>The June 11 version adds one more practical check: name the delivery shape before calling the canary promoted. A slow-but-useful recall path might be a great on-demand retrieval lane, a background follow-up, or a narrower pre-reply trigger. It should not automatically become a blocking step for every normal reply just because it can eventually return something useful.</p>
 
-        <p>The June 21 version is the blunt one: <strong>45-53 second success is a ceiling, not a comfort target.</strong> It proves the active-memory path can survive when given enough room, which is valuable diagnostic evidence. It does not prove the path belongs in the synchronous pre-reply budget for ordinary chat turns.</p>
+        <p>The June 21 version is the blunt one: <strong>long-budget success is a ceiling, not a comfort target.</strong> It proves the active-memory path can survive when given enough room, which is valuable diagnostic evidence. It does not prove the path belongs in the synchronous pre-reply budget for ordinary chat turns.</p>
 
         <p>The June 22 version adds a context-pressure corollary. A slow pre-reply helper does not only spend latency; it also increases the amount of coordination state that the active transcript has to carry while other work is still pending. That can make compaction, checkpointing, and final-delivery paths more fragile. In other words, memory-helper placement is not just a performance decision. It is part of the reliability boundary for the whole agent turn.</p>
+
+        <p>The June 23 version adds one more operational guardrail: even a successful long-budget active-memory canary should be recorded as <strong>viability evidence</strong>, not as default reply-path authority. Before making the helper synchronous by default, I would want a separate gate for trigger scope, timeout behavior, rollback, and end-to-end user-visible latency.</p>
 
         <p>That distinction prevents a subtle product mistake. If the only way to make recall reliable is to spend most of the user-visible latency budget, the feature is not ready to be promoted as a default blocking helper. The honest next step is to narrow the query, add stronger trigger conditions, return a smaller memory packet, or move the expensive recall into an async follow-up lane.</p>
 
