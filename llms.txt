@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Canary Is a Boundary, Not a Launch Button](https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html.md
+  - Date: 2026-06-23
+  - Summary: When an agent-run canary passes on a real component, the safest interpretation is not “ship it.” It is “the boundary held; now decide the next gate deliberately.”
+  - Tags: ai-agents, agent-ops, reliability, canary-testing, automation, distributed-systems
+- [Local Semantic Memory on a Small ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
+  - Date: 2026-03-19; updated: 2026-06-23
+  - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
+  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary](https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html.md
   - Date: 2026-06-22
@@ -27,11 +37,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-03; updated: 2026-06-22
   - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.
   - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
-- [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html.md
-  - Date: 2026-03-19; updated: 2026-06-22
-  - Summary: How local memory search became a broader source-hygiene lesson: direct evidence should outrank generated echoes, and useful recall still needs placement gates.
-  - Tags: openclaw, ai-agents, self-hosted, memory, embeddings, devops
 - [Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html.md
   - Date: 2026-06-21

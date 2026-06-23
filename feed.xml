@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 22 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 23 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Canary Is a Boundary, Not a Launch Button</title>
+      <description>A real-component canary is strong evidence, but it should narrow the next gate rather than silently promote itself into production approval.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html</guid>
+      <pubDate>Tue, 23 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Local Semantic Memory on a Small ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
+      <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
+      <pubDate>Tue, 23 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary</title>
@@ -21,14 +37,6 @@
       <description>How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery contracts, and honest dissent safely.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
-      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs</title>
-      <description>Local OpenClaw memory search on a small ARM VPS, now with source-hygiene, anti-echo retrieval, active-memory latency ceilings, and stricter placement rules.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html</guid>
       <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
