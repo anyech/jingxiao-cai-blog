@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Thread Affinity Is a Safety Boundary for Agent Work](https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
+  - Date: 2026-06-24
+  - Summary: When an agent sees “continue,” the safest answer is not always to pick the most recent task. Thread affinity turns ambiguous continuation into an explicit routing decision.
+  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 - [A Canary Is a Boundary, Not a Launch Button](https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html.md
   - Date: 2026-06-23

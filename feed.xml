@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Thread Affinity Is a Safety Boundary for Agent Work</title>
+      <description>Vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</guid>
+      <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Canary Is a Boundary, Not a Launch Button</title>
