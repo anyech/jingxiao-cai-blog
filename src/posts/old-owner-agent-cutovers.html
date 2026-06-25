@@ -1,0 +1,190 @@
+---
+layout: post.njk
+permalink: 'old-owner-agent-cutovers.html'
+title: 'The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof'
+slug: 'old-owner-agent-cutovers'
+description: 'A sanitized agent-ops lesson: a cutover is not done until the old owner cannot silently reclaim the endpoint.'
+summary: 'A backend restart exposed an obsolete tunnel that could still reclaim the endpoint. The fix was not just a better restart; it was proving ownership, then putting a stable handoff layer in front of replaceable backends.'
+date: '2026-06-25'
+updated: ''
+tags: ['ai-agents', 'automation', 'debugging', 'reliability', 'self-hosted-agents']
+keywords: ['agent operations', 'cutover ownership proof', 'zero downtime handoff', 'legacy tunnel cleanup', 'self hosted agents', 'automation reliability']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'The Old Owner Was Still There'
+feedDescription: 'A sanitized agent-ops lesson: a cutover is not done until the old owner cannot silently reclaim the endpoint.'
+feedPubDate: 'Thu, 25 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-25'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof</h1>
+    <div class="meta">
+        <strong>June 25, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, automation, debugging, reliability, self-hosted-agents</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private infrastructure incident into a public-safe operations lesson about endpoint ownership, restart testing, and handoff design.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> a cutover is not complete when the new path works. It is complete when the old path can no longer reclaim the thing users call.
+    </div>
+</header>
+
+<main>
+    <p>I recently hit a failure mode that looks obvious in hindsight: a new agent-serving path worked, health checks passed, and the old path seemed retired. Then a controlled backend restart exposed the truth. An obsolete tunnel still had enough lifecycle authority to come back and reclaim the public endpoint.</p>
+
+    <p>That is the kind of bug that hides between “it works now” and “it will keep working after replacement.” The first statement is a steady-state claim. The second is an ownership claim.</p>
+
+    <div class="note">
+        <strong>Sanitized scope:</strong> this is an agent-operations pattern, not a topology dump. I am intentionally omitting private hostnames, paths, port numbers, thread IDs, service names, schedules, cloud details, and raw logs. The reusable lesson is the cutover contract.
+    </div>
+
+    <h2>The Trap: Passing Health Checks Are Not Ownership Proof</h2>
+    <p>The setup had a stable local endpoint used by an agent runtime. Behind it, the implementation had been moving from a legacy tunnel shape toward a more controlled service path. The new path passed normal smoke tests. The fallback path was still available. A quick read of the live system suggested the migration was basically done.</p>
+
+    <p>But normal smoke tests only answer one question:</p>
+
+    <blockquote>
+        <p><strong>Can the endpoint serve a request right now?</strong></p>
+    </blockquote>
+
+    <p>They do not automatically answer the more important cutover question:</p>
+
+    <blockquote>
+        <p><strong>Who is allowed to own this endpoint after a restart, replacement, or supervisor recovery?</strong></p>
+    </blockquote>
+
+    <p>Those are different contracts. The incident happened because the second contract had not been proven yet.</p>
+
+    <h2>The Failure Shape</h2>
+    <p>The useful test was a controlled backend replacement. Instead of rebooting the whole host or declaring victory from steady-state metrics, I replaced the backend component that was supposed to be restart-tolerant.</p>
+
+    <p>That restart flushed out a hidden owner: an obsolete tunnel supervisor was still enabled. When the old backend disappeared, the tunnel restarted and grabbed the endpoint before the intended replacement could bind it. The replacement then failed with a familiar class of error: the address was already in use.</p>
+
+    <p>The important part was not the exact error string. It was the ownership surprise:</p>
+
+    <ul>
+        <li>The new path was healthy in steady state.</li>
+        <li>The old path was not truly gone.</li>
+        <li>A restart changed the race.</li>
+        <li>The obsolete owner won the race because its supervisor still had restart authority.</li>
+    </ul>
+
+    <p>This is why “remove the old thing later” can be dangerous in agent infrastructure. If the old thing still has a supervisor, a timer, a watchdog, a socket unit, or a restart policy, it is not just old code. It is an active candidate owner.</p>
+
+    <h2>The First Fix: Remove the Wrong Owner</h2>
+    <p>The immediate fix was narrow: disable and stop the obsolete owner that conflicted with the new endpoint. That made the endpoint owner unambiguous again.</p>
+
+    <p>After that, the same controlled replacement recovered cleanly. But it still had a short client-visible error window. That result was useful because it prevented a second overclaim. The system was now self-recovering, but it was not yet zero-client-failure.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Claim</th>
+                <th>Evidence needed</th>
+                <th>What the restart test showed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Steady-state healthy</td>
+                <td>Normal request smoke passes</td>
+                <td>True, but incomplete</td>
+            </tr>
+            <tr>
+                <td>Old owner retired</td>
+                <td>Old supervisor cannot restart and reclaim the endpoint</td>
+                <td>Initially false</td>
+            </tr>
+            <tr>
+                <td>Self-recovering replacement</td>
+                <td>Backend replacement returns to healthy service without manual rollback</td>
+                <td>True after removing the obsolete owner</td>
+            </tr>
+            <tr>
+                <td>Zero-client-failure replacement</td>
+                <td>Continuous polling sees no client-visible failures during replacement</td>
+                <td>False for direct ownership</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>That table is the safe proof unit I would reuse. It keeps the operational claims separate. “Healthy,” “retired,” “self-recovering,” and “zero-client-failure” are not synonyms.</p>
+
+    <h2>The Better Fix: Put a Stable Handoff Layer in Front</h2>
+    <p>The second fix changed the design. Instead of letting replaceable backends directly own the endpoint users call, a stable local proxy owned the endpoint. Replaceable backend instances sat behind it.</p>
+
+    <p>That changed the restart contract:</p>
+
+    <ul>
+        <li>If one backend is replaced, another backend can keep serving.</li>
+        <li>The public endpoint owner stays stable during backend churn.</li>
+        <li>The obsolete tunnel remains disabled, because re-enabling it would reintroduce ownership conflict.</li>
+    </ul>
+
+    <p>With that handoff layer in place, controlled backend replacements produced no client-visible failures in continuous polling. That is the point where the claim changed from “self-recovering” to “backend replacement is zero-client-failure through the stable handoff layer.”</p>
+
+    <p>Notice the narrower wording. The proxy process itself was still a single local owner. Restarting that owner is a separate claim. Host reboot persistence is another separate claim. Treating all of those as one big “persistent” label would hide the actual risk surface.</p>
+
+    <div class="success">
+        <strong>Reusable rule:</strong> put the stable name in front of replaceable things. Then test the replaceable things while continuously exercising the stable name.
+    </div>
+
+    <h2>What I Would Check Next Time</h2>
+    <p>For future agent cutovers, I would not stop at “new path responds.” I would run a small ownership checklist:</p>
+
+    <ol>
+        <li><strong>List every possible owner.</strong> Include old tunnels, socket activators, service managers, watchdogs, cron jobs, rollback units, and manual scripts.</li>
+        <li><strong>Prove old owners are inert.</strong> Disabled is better than “currently not running.” Removed is better than disabled when rollback no longer needs it.</li>
+        <li><strong>Test replacement, not only steady state.</strong> Delete or restart the replaceable component while polling the stable endpoint.</li>
+        <li><strong>Name claims precisely.</strong> Self-recovering, zero-client-failure, reboot-persistent, and rollback-ready should each require different evidence.</li>
+        <li><strong>Keep rollback compatible with ownership.</strong> A rollback that reclaims the same endpoint may be unsafe once the new owner is live.</li>
+    </ol>
+
+    <h2>When Not to Add a Proxy</h2>
+    <p>The handoff layer was the right move here because backend replacement mattered and the stable endpoint was part of a live agent path. It is not free.</p>
+
+    <p>A proxy adds another process, another health model, another config surface, and another place where stale assumptions can live. For a low-value internal tool, a short self-recovery gap may be acceptable. For a path where users or agents continuously depend on the endpoint, the extra handoff layer can be worth it.</p>
+
+    <p>The decision should follow the claim you need. If you only need “recovers without manual intervention,” direct ownership may be fine. If you need “backend replacement does not produce client-visible failures,” the endpoint owner should probably be stable while the backends churn behind it.</p>
+
+    <h2>Conclusion</h2>
+    <p>The bug was not that an old tunnel existed. The bug was that it still had the authority to become the owner again.</p>
+
+    <p>That is the lesson I am keeping: after an agent infrastructure cutover, do not just ask whether the new path works. Ask who owns the endpoint, who can reclaim it, and what happens when the replaceable part is actually replaced.</p>
+
+    <p>A cutover is not done when the happy path is green. It is done when the ownership contract survives the unhappy path.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html">When Your Tunnel Watchdog Lies</a></li>
+            <li><a href="/jingxiao-cai-blog/when-live-state-moves-agent-validators.html">When Live State Moves, Agent Validators Must Move With It</a></li>
+            <li><a href="/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html">Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes</a></li>
+            <li><a href="/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">Fail-Closed Stage Environments for AI Agents</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted AI-agent operations, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A cutover is an ownership contract, not just a green health check.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Found this useful? Leave a comment below, or send it to someone who has ever retired a service by only checking that the replacement worked.</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+  <div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+  </div>
