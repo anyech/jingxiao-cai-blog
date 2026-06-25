@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>The Old Owner Was Still There</title>
+      <description>A sanitized agent-ops lesson: a cutover is not done until the old owner cannot silently reclaim the endpoint.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html</guid>
+      <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Thread Affinity Is a Safety Boundary for Agent Work</title>

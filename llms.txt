@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof](https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html.md
+  - Date: 2026-06-25
+  - Summary: A backend restart exposed an obsolete tunnel that could still reclaim the endpoint. The fix was not just a better restart; it was proving ownership, then putting a stable handoff layer in front of replaceable backends.
+  - Tags: ai-agents, automation, debugging, reliability, self-hosted-agents
 - [Thread Affinity Is a Safety Boundary for Agent Work](https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
   - Date: 2026-06-24
