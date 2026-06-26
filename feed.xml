@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization</title>
+      <description>A good agent closeout records what passed, what did not change, and where the next approval gate begins.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html</guid>
+      <pubDate>Fri, 26 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Old Owner Was Still There</title>

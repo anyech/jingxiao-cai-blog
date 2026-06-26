@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization](https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html.md
+  - Date: 2026-06-26
+  - Summary: A good agent closeout does more than say “done.” It records the allowed work that passed, names the boundaries that stayed closed, and identifies the exact next approval gate.
+  - Tags: ai-agents, agent-ops, automation, reliability, security, tooling
 - [The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof](https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html.md
   - Date: 2026-06-25
