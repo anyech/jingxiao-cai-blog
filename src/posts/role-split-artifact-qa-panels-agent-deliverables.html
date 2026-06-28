@@ -1,0 +1,210 @@
+---
+layout: post.njk
+permalink: 'role-split-artifact-qa-panels-agent-deliverables.html'
+title: 'Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables'
+slug: 'role-split-artifact-qa-panels-agent-deliverables'
+description: 'A practical agent-operations pattern for reviewing concrete deliverables with same-model role lenses without pretending the result is a multi-model jury.'
+summary: 'Artifact QA panels are useful when reviewers hold different jobs: first-time reader, skeptic, acceptance gate, cleanup editor. That is role diversity, not model diversity.'
+date: '2026-06-27'
+updated: ''
+tags: ['ai-agents', 'agent-ops', 'automation', 'debugging', 'reliability', 'tooling']
+keywords: ['artifact QA panel', 'AI agent operations', 'agent deliverables', 'review workflow', 'role split review', 'agent artifact validation', 'automation reliability']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'Role Split Is Not Model Diversity'
+feedDescription: 'Artifact QA panels are useful when reviewers hold different jobs: first-time reader, skeptic, acceptance gate, cleanup editor. That is role diversity, not model diversity.'
+feedPubDate: 'Sat, 27 Jun 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-06-27'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables</h1>
+    <div class="meta">
+        <strong>June 27, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private artifact-review workflow into a public pattern while removing operational fingerprints and private implementation details.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is an agent-operations pattern for reviewing concrete deliverables. It is not a claim that same-model reviewers create independent model consensus, and it is not a transcript of any private review.
+    </div>
+</header>
+
+<main>
+    <p>There is a useful review pattern hiding inside a very easy overclaim.</p>
+
+    <p>An agent can ask several reviewers to inspect the same artifact. One reviewer reads it like a first-time audience member. Another looks for correctness gaps. Another checks whether it satisfies the requested output. Another edits for clarity. The result can be much better than a single generic “review this” pass.</p>
+
+    <p>But that does not make it a multi-model jury.</p>
+
+    <blockquote>
+        <p><strong>Different review jobs are role diversity. Different independent systems are model diversity. They are both useful, but they are not the same proof.</strong></p>
+    </blockquote>
+
+    <p>That distinction matters for agent operations because review labels often become evidence labels. If the artifact says “panel approved,” the reader may infer independent judgment, model disagreement, or consensus. If all the reviewers were really same-stack role lenses, the honest label is narrower: this artifact passed a structured role-split QA pass.</p>
+
+    <h2>The Useful Part: Concrete Artifacts Need More Than One Lens</h2>
+
+    <p>The pattern is most valuable when the output is a real deliverable:</p>
+
+    <ul>
+        <li>a slide deck, screenshot, report, demo packet, or handoff document</li>
+        <li>a public post or sanitized external update</li>
+        <li>a pull-request proof bundle or reviewer-response packet</li>
+        <li>a generated table, chart, PDF, or result bundle someone else must understand</li>
+    </ul>
+
+    <p>Those artifacts fail in different ways. A technically correct packet can confuse a first-time reader. A polished deck can hide a missing acceptance criterion. A good-looking screenshot can show the wrong page. A result bundle can answer the local task while leaving the final stakeholder question unresolved.</p>
+
+    <p>A single reviewer prompt tends to blur those failures together. A role-split panel forces each reviewer to hold a smaller job.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Reviewer role</th>
+                <th>Primary question</th>
+                <th>Typical catch</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>First-time reader</strong></td>
+                <td>Can someone understand this without private context?</td>
+                <td>missing setup, unexplained jargon, unclear conclusion</td>
+            </tr>
+            <tr>
+                <td><strong>Acceptance gate</strong></td>
+                <td>Does the artifact satisfy the original request?</td>
+                <td>beautiful but incomplete deliverables</td>
+            </tr>
+            <tr>
+                <td><strong>Skeptic</strong></td>
+                <td>What claim is under-proved or too broad?</td>
+                <td>overclaiming, stale evidence, weak proof boundaries</td>
+            </tr>
+            <tr>
+                <td><strong>Operator</strong></td>
+                <td>Can someone act on this safely?</td>
+                <td>missing stop rule, unclear rollback, unsafe next step</td>
+            </tr>
+            <tr>
+                <td><strong>Editor</strong></td>
+                <td>Can the artifact be shorter, sharper, and less ambiguous?</td>
+                <td>buried decision, duplicated prose, muddy wording</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>That is a genuinely useful shape. It produces better artifacts because the review objectives are separated instead of averaged into one vague “looks good.”</p>
+
+    <h2>The Dangerous Part: Calling It Consensus</h2>
+
+    <p>The risk appears when the review summary borrows stronger language than the process earned.</p>
+
+    <p>If five role lenses use the same underlying model, same prompt family, same context, and same hidden assumptions, they are not five independent judges. They are five structured passes through a similar reasoning system. That can still be valuable. It just should not be sold as independent consensus.</p>
+
+    <div class="warning">
+        <strong>Labeling rule:</strong> call it an <em>artifact QA panel</em>, <em>role-split review</em>, or <em>structured deliverable review</em>. Do not call it a model-diverse jury unless the lanes are actually independent enough to support that claim.
+    </div>
+
+    <p>This may sound pedantic, but it prevents a real operational bug: laundering a formatting improvement into a confidence claim. The panel may have made the artifact easier to read. It may have caught missing acceptance criteria. It may have improved the handoff. None of those facts automatically prove that the underlying technical conclusion is correct.</p>
+
+    <h2>When I Would Use This Pattern</h2>
+
+    <p>I would use a role-split artifact QA panel when the object of review is concrete and the main risk is handoff quality:</p>
+
+    <ul>
+        <li>a user will read or copy the artifact directly</li>
+        <li>the artifact needs to stand alone without private chat context</li>
+        <li>a bad explanation could cause the next person to act incorrectly</li>
+        <li>the deliverable contains screenshots, tables, charts, or generated files</li>
+        <li>the final answer needs to be both technically accurate and audience-readable</li>
+    </ul>
+
+    <p>I would not use it as a substitute for true independent review when the hard question is architectural correctness, security posture, public-risk judgment, legal/compliance exposure, or a deep technical unknown. For those cases, I want genuinely different sources of judgment: different models, different tools, different evidence paths, or human review.</p>
+
+    <h2>A Minimal Artifact QA Packet</h2>
+
+    <p>The review packet does not need to be elaborate. The useful minimum is:</p>
+
+    <ol>
+        <li><strong>Artifact:</strong> the exact file, screenshot, post, deck, report, or bundle being reviewed.</li>
+        <li><strong>Audience:</strong> who will read it and what they need to do after reading it.</li>
+        <li><strong>Success criteria:</strong> what must be true for the artifact to pass.</li>
+        <li><strong>Evidence boundary:</strong> what the artifact proves and what it does not prove.</li>
+        <li><strong>Role assignments:</strong> the specific lenses reviewers should hold.</li>
+        <li><strong>Verdict format:</strong> publish as-is, revise, block, or needs-human-decision.</li>
+    </ol>
+
+    <p>The key is to keep each role narrow enough that it catches a class of failure rather than rewriting the whole artifact from its own taste.</p>
+
+    <h2>The First-Time-Reader Lens Is Not Optional</h2>
+
+    <p>The role I care about most is the first-time reader.</p>
+
+    <p>Agents often write artifacts with too much invisible context. They know the history, the failed attempts, the filenames, the actors, the target channel, and the reason a detail matters. The future reader often knows none of that. A first-time-reader role catches the classic agent handoff bug:</p>
+
+    <blockquote>
+        <p><strong>The answer is locally true but globally unreadable.</strong></p>
+    </blockquote>
+
+    <p>That role should ask blunt questions:</p>
+
+    <ul>
+        <li>What is the conclusion?</li>
+        <li>What should I do next?</li>
+        <li>What evidence supports this?</li>
+        <li>What is intentionally out of scope?</li>
+        <li>What would confuse someone who did not watch the work happen?</li>
+    </ul>
+
+    <p>For concrete deliverables, those questions are often more important than another pass of stylistic polish.</p>
+
+    <h2>The Practical Rule</h2>
+
+    <p>My current rule is:</p>
+
+    <blockquote>
+        <p><strong>Use role-split panels to improve artifacts. Use model-diverse or evidence-diverse panels to improve confidence claims. Do not mix the labels.</strong></p>
+    </blockquote>
+
+    <p>That gives the workflow room to be useful without inflating what it proved. A role-split artifact QA pass can make a deliverable much better. It can reduce confusion, catch missing acceptance criteria, and force proof boundaries into the final text.</p>
+
+    <p>It just needs to be named honestly.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html">The Screenshot Was Green. The Page Was Wrong</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+            <li><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Parent-Owned Agent Dispatch and Router Contracts</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p><strong>Jingxiao Cai</strong> works on distributed ML runtime systems and writes about the operational edges of self-hosted AI-agent workflows.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or examples of artifact QA patterns? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or reach out through the linked channels.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on June 27, 2026 • Part of my ongoing agent operations and self-hosted AI workflow series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+</body>
