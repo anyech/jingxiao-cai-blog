@@ -3,7 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
 Date: 2026-04-08
-Updated: 2026-04-29
+Updated: 2026-06-27
 Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
 
 Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
@@ -15,7 +15,7 @@ Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed test
 # Building Fail-Closed Stage Environments for AI Agents on a Small VPS
 
 
- April 8, 2026 | By Jingxiao Cai | Updated April 29, 2026
+ April 8, 2026 | By Jingxiao Cai | Updated June 27, 2026
 
  Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
 
@@ -29,7 +29,7 @@ Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed test
 
 
 
- 📝 Updates (April 2026): Added benchmark/readiness context from later cron reliability work and a detect-only catalog-refresh lesson: stage coverage should be allowed to recommend changes without mutating canonical docs on weak or degraded evidence.
+ 📝 Updates (June 2026): Added a stage-only reproduction lesson: the most useful repros prove failure shape, cache/freshness behavior, and rollback boundaries without touching production state. Earlier April notes on benchmark/readiness and detect-only catalog refresh still apply.
 
 
 
@@ -182,6 +182,37 @@ Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed test
 
 
  The watchdog's first job is to preserve truth, not to make the catalog look freshly maintained.
+
+
+
+
+## June 2026 Follow-Up: Stage Is a Reproduction Boundary, Not a Shortcut to Prod
+
+ A later debugging pass reinforced a sharper version of the same rule: the best reproduction is not the one that pokes production most convincingly. It is the one that proves the failure shape while making production mutation impossible or unnecessary.
+
+ The public-safe pattern looked like this:
+
+
+
+- Prove the source data or input contract separately. Before changing code, show whether the raw source already contains the missing field, marker, or behavior.
+
+- Run the fix in an isolated stage lane. Use a separate runtime boundary so the live service is not silently modified.
+
+- Measure cold and warm behavior. A fix that only works after cache luck is not the same as a fix with a defined freshness story.
+
+- Keep rollback boring. The safest stage override is one that can be removed without guessing which production file, service, or config was touched.
+
+- Name the proof boundary. Stage success means “the bug shape and fix path were reproduced under controlled conditions,” not “production has been changed.”
+
+
+
+ The reusable lesson: stage is most valuable when it gives you better evidence and fewer side effects at the same time. If the reproduction requires editing the live runtime to learn anything, the stage boundary has already failed its most important job.
+
+
+ This also changed how I think about cache claims. For runtime fixes, it is not enough to say “the endpoint returned the right answer once.” The useful packet distinguishes cold-path behavior, warm-cache behavior, cache lifetime, and how a stale result is invalidated or bounded.
+
+
+ A good stage repro should make the next production step smaller, not emotionally easier.
 
 
 
@@ -393,6 +424,6 @@ Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed test
 
 
 
- Published on April 8, 2026 • Updated April 29, 2026 • Part of my ongoing OpenClaw operations and self-hosting series
+ Published on April 8, 2026 • Updated June 27, 2026 • Part of my ongoing OpenClaw operations and self-hosting series
 
  ← Back to Blog

@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Role Split Is Not Model Diversity</title>
+      <description>Artifact QA panels are useful when reviewers hold different jobs: first-time reader, skeptic, acceptance gate, cleanup editor. That is role diversity, not model diversity.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html</guid>
+      <pubDate>Sat, 27 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
+      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization</title>
@@ -470,14 +486,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Building Fail-Closed Stage Environments for AI Agents on a Small VPS</title>
-      <description>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html</guid>
-      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

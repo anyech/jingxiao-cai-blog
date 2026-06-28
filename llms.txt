@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables](https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html.md
+  - Date: 2026-06-27
+  - Summary: Artifact QA panels are useful when reviewers hold different jobs: first-time reader, skeptic, acceptance gate, cleanup editor. That is role diversity, not model diversity.
+  - Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
+  - Date: 2026-04-08; updated: 2026-06-27
+  - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
+  - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
 - [Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization](https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html.md
   - Date: 2026-06-26
@@ -307,11 +317,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-29
   - Summary: How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.
   - Tags: ai-agents, openclaw, skills, workflow, maintenance, governance
-- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html.md
-  - Date: 2026-04-08; updated: 2026-04-29
-  - Summary: An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.
-  - Tags: openclaw, devops, ai-agents, staging, release-engineering, self-hosted
 - [VPS OAuth Survival Guide: Google APIs Without a Browser](https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/vps-oauth-survival-guide.html.md
   - Date: 2026-02-25; updated: 2026-04-29
