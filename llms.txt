@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Panel Results Are Not Finished Until You Grade the Panelists](https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html.md
+  - Date: 2026-06-29
+  - Summary: A panel result is not complete when the reviewers answer. It is complete when the parent workflow evaluates coverage, dissent, degraded lanes, and whether each panelist actually judged the target.
+  - Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
 - [Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables](https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html.md
   - Date: 2026-06-27

@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jun 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Panel Results Need Panelist Evaluation</title>
+      <description>A panel result is not complete when the reviewers answer. It is complete when the parent workflow evaluates coverage, dissent, degraded lanes, and whether each panelist actually judged the target.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html</guid>
+      <pubDate>Mon, 29 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Role Split Is Not Model Diversity</title>
