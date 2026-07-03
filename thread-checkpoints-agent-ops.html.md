@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
 Date: 2026-06-01
+Updated: 2026-07-02
 Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
 
-Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation.
+Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation or inheriting residual obligations from the wrong lane.
 
 ---
 
@@ -14,7 +15,7 @@ Summary: A thread checkpoint is not a diary entry. For long-running agent work, 
 # Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely
 
 
- June 1, 2026 | By Jingxiao Cai
+ June 1, 2026 | By Jingxiao Cai | Updated July 2, 2026
 
  Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
 
@@ -25,6 +26,10 @@ Summary: A thread checkpoint is not a diary entry. For long-running agent work, 
 
 
  Short version: a checkpoint is not a recap. It is a resume interface. If the next agent cannot answer “what is done, what is blocked, what evidence exists, and what exactly happens next,” the checkpoint is still incomplete.
+
+
+
+ Update, July 2026: Added a closeability follow-up: a checkpoint should also say which blockers remain local, which residual obligations have accepted owners, and which conditions are only factual reopen triggers.
 
 
  Long-running agent work rarely fails because nobody wrote anything down.
@@ -72,6 +77,48 @@ Summary: A thread checkpoint is not a diary entry. For long-running agent work, 
 ## Why Summaries Are Not Enough
 
  A summary optimizes for narrative. A checkpoint optimizes for safe continuation.
+
+
+## July 2026 Follow-Up: Record Which Blockers Are Still Local
+
+ Recent closeout work made one missing field more obvious: a checkpoint should not only list blockers. It should say whether each blocker is still local to the thread.
+
+ A thread can be legitimately done even when adjacent risk remains. A transient monitor failure may have recovered while a broader capacity concern moved to an accepted follow-up lane. A cleanup thread may have completed its validation while future live activation still requires a fresh human approval gate. A delivery issue may be fixed locally while a recurring workflow pattern becomes a durable protocol task.
+
+ If the checkpoint does not record that ownership boundary, the next agent sees “remaining risk” and may reopen the wrong workstream. The better checkpoint separates three states:
+
+
+
+
+ Blocker state
+ Checkpoint wording
+ Safe next behavior
+
+
+
+
+
+ Thread-local
+ The original objective still depends on this item.
+ Keep the thread open or mark it blocked.
+
+
+
+ Transferred obligation
+ The concern now has an accepted owner, handoff record, or approval gate.
+ Close the current thread and resume only through that owner or gate.
+
+
+
+ Reopen trigger
+ The issue is closed unless a factual condition recurs.
+ Do nothing until the trigger appears.
+
+
+
+
+
+ That small distinction prevents two bad outcomes: closing with hidden debt, and keeping every thread open because it discovered something nearby. The companion closeability rule is simple: do not close while a thread-local blocker remains.
 
 
 
@@ -249,6 +296,8 @@ dedupe:
 
 - The Checkpoint Is the Interface
 
+- A Thread Is Closable When No Local Blocker Remains
+
 - Long-Running Agent Work Needs a Bridge Back
 
 - A Monitor Is Not a Contract
@@ -269,8 +318,11 @@ dedupe:
 
 
 
-## Comments
+
+### Feedback
 
  Found this useful? Leave a comment below, or send it to someone whose agent summaries need to become real handoff checkpoints.
+
+
 
  ← Back to Blog

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, next step, and reopen rules, not just summarize activity.">
+    <meta name="description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, owners, next step, and reopen rules, not just summarize activity.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely">
-    <meta property="og:description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, next step, and reopen rules, not just summarize activity.">
+    <meta property="og:description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, owners, next step, and reopen rules, not just summarize activity.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely">
-    <meta name="twitter:description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, next step, and reopen rules, not just summarize activity.">
+    <meta name="twitter:description" content="A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, owners, next step, and reopen rules, not just summarize activity.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely",
-  "description": "A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, next step, and reopen rules, not just summarize activity.",
+  "description": "A sanitized OpenClaw agent-operations lesson: durable thread checkpoints should preserve objective, evidence, blockers, owners, next step, and reopen rules, not just summarize activity.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-06-01",
-  "dateModified": "2026-06-01",
+  "dateModified": "2026-07-02",
   "url": "https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html"
@@ -71,7 +71,7 @@
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</h1>
     <div class="meta">
-        <strong>June 1, 2026</strong> | By Jingxiao Cai<br>
+        <strong>June 1, 2026</strong> | By Jingxiao Cai | <strong>Updated July 2, 2026</strong><br>
         <span class="tags">Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation</span>
     </div>
     <div class="disclaimer">
@@ -79,6 +79,9 @@
     </div>
     <div class="warning">
         <strong>Short version:</strong> a checkpoint is not a recap. It is a resume interface. If the next agent cannot answer “what is done, what is blocked, what evidence exists, and what exactly happens next,” the checkpoint is still incomplete.
+    </div>
+    <div class="update-banner">
+        <strong>Update, July 2026:</strong> Added a closeability follow-up: a checkpoint should also say which blockers remain local, which residual obligations have accepted owners, and which conditions are only factual reopen triggers.
     </div>
 </header>
 
@@ -117,6 +120,43 @@
 
     <h2>Why Summaries Are Not Enough</h2>
     <p>A summary optimizes for narrative. A checkpoint optimizes for safe continuation.</p>
+
+    <h2>July 2026 Follow-Up: Record Which Blockers Are Still Local</h2>
+
+    <p>Recent closeout work made one missing field more obvious: a checkpoint should not only list blockers. It should say whether each blocker is still local to the thread.</p>
+
+    <p>A thread can be legitimately done even when adjacent risk remains. A transient monitor failure may have recovered while a broader capacity concern moved to an accepted follow-up lane. A cleanup thread may have completed its validation while future live activation still requires a fresh human approval gate. A delivery issue may be fixed locally while a recurring workflow pattern becomes a durable protocol task.</p>
+
+    <p>If the checkpoint does not record that ownership boundary, the next agent sees “remaining risk” and may reopen the wrong workstream. The better checkpoint separates three states:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Blocker state</th>
+                <th>Checkpoint wording</th>
+                <th>Safe next behavior</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Thread-local</strong></td>
+                <td>The original objective still depends on this item.</td>
+                <td>Keep the thread open or mark it blocked.</td>
+            </tr>
+            <tr>
+                <td><strong>Transferred obligation</strong></td>
+                <td>The concern now has an accepted owner, handoff record, or approval gate.</td>
+                <td>Close the current thread and resume only through that owner or gate.</td>
+            </tr>
+            <tr>
+                <td><strong>Reopen trigger</strong></td>
+                <td>The issue is closed unless a factual condition recurs.</td>
+                <td>Do nothing until the trigger appears.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>That small distinction prevents two bad outcomes: closing with hidden debt, and keeping every thread open because it discovered something nearby. The companion closeability rule is simple: do not close while a thread-local blocker remains.</p>
 
     <table>
         <thead>
@@ -255,6 +295,7 @@ dedupe:
         <h3>Related Posts</h3>
         <ul>
             <li><a href="/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html">The Checkpoint Is the Interface</a></li>
+            <li><a href="/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html">A Thread Is Closable When No Local Blocker Remains</a></li>
             <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
             <li><a href="/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html">A Monitor Is Not a Contract</a></li>
             <li><a href="/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html">Freshness Is Not Permission</a></li>
@@ -266,11 +307,14 @@ dedupe:
         <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
         <p style="margin-top: 15px; font-style: italic; color: #555;">A checkpoint is the smallest artifact that lets the next worker continue without guessing.</p>
     </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Found this useful? Leave a comment below, or send it to someone whose agent summaries need to become real handoff checkpoints.</p>
+    </div>
 </main>
 
 <footer>
-    <h2>Comments</h2>
-    <p>Found this useful? Leave a comment below, or send it to someone whose agent summaries need to become real handoff checkpoints.</p>
     <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
 </footer>
   <div class="utterances-wrapper" data-pagefind-ignore>

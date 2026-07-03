@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Thread Is Closable When No Local Blocker Remains](https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html.md
+  - Date: 2026-07-02
+  - Summary: A thread is not closable because it feels quiet. It is closable when the objective and delivery are complete, evidence is checked, no local blocker remains, and residual obligations have accepted owners or factual reopen triggers.
+  - Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
+- [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
+  - Date: 2026-06-01; updated: 2026-07-02
+  - Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation or inheriting residual obligations from the wrong lane.
+  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
 - [Panel Results Are Not Finished Until You Grade the Panelists](https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html.md
   - Date: 2026-06-29
@@ -187,11 +197,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-03-11; updated: 2026-06-02
   - Summary: Some OpenClaw config changes apply live. Others trigger gateway restarts. Updated with rollback, health-monitor, task-registry, and watchdog false-alarm lessons.
   - Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
-- [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html.md
-  - Date: 2026-06-01
-  - Summary: A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation.
-  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, documentation
 - [Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines](https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html.md
   - Date: 2026-05-29

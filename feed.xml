@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Thread Is Closable When No Local Blocker Remains</title>
+      <description>A thread is closable when the objective and delivery are complete, evidence is checked, no local blocker remains, and residual obligations have accepted owners or factual reopen triggers.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html</guid>
+      <pubDate>Thu, 02 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</title>
+      <description>A durable checkpoint is the compact interface that lets long-running agent work resume safely without replaying an entire thread or inheriting residual obligations from the wrong lane.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</guid>
+      <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Panel Results Need Panelist Evaluation</title>
@@ -278,14 +294,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html</guid>
       <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</title>
-      <description>A durable checkpoint is the compact interface that lets long-running agent work resume safely without replaying an entire thread.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-checkpoints-agent-ops.html</guid>
-      <pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
