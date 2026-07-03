@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Before Raising Reindex Concurrency, Prove the Memory Lane](https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html.md
+  - Date: 2026-07-03
+  - Summary: Raising embedding reindex concurrency is not just a performance tweak. It becomes eligible only after endpoint identity, index shape, concurrency path, capacity limits, and final behavioral smoke all line up.
+  - Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
 - [A Thread Is Closable When No Local Blocker Remains](https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html.md
   - Date: 2026-07-02

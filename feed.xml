@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Before Raising Reindex Concurrency, Prove the Memory Lane</title>
+      <description>Raising embedding reindex concurrency becomes eligible only after endpoint identity, index shape, inline request path, capacity limits, and behavioral smoke all line up.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html</guid>
+      <pubDate>Fri, 03 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Thread Is Closable When No Local Blocker Remains</title>
