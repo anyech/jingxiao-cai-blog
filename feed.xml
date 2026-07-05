@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Local LLM Router Is Not a Panel Lane Yet</title>
+      <description>Private local LLM endpoints need routing, auth, failover, soak, and policy proof before they become default panel lanes.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</guid>
+      <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
+      <description>Config-backed OpenClaw panel orchestration with launch guards, artifact-backed completion, local-lane promotion gates, bridge-back delivery, and honest dissent.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
+      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Before Raising Reindex Concurrency, Prove the Memory Lane</title>
@@ -101,14 +117,6 @@
       <description>Long-running AI agent threads need more than bigger context windows: they need checkpoints, scoped continuation, and explicit delivery contracts.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html</guid>
-      <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</title>
-      <description>How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery contracts, and honest dissent safely.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
       <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 

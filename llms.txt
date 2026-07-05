@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
+  - Date: 2026-07-04
+  - Summary: A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.
+  - Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
+- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
+  - Date: 2026-04-03; updated: 2026-07-04
+  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, local-lane promotion gates, bridge-back delivery contracts, and user-visible dissent.
+  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Before Raising Reindex Concurrency, Prove the Memory Lane](https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html.md
   - Date: 2026-07-03
@@ -77,11 +87,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-06-22
   - Summary: Context compaction is not just token housekeeping. For long-running agent work, it is a reliability boundary that needs durable checkpoints, scoped continuations, and explicit final-delivery contracts.
   - Tags: openclaw, ai-agents, reliability, workflow, context-engineering
-- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
-  - Date: 2026-04-03; updated: 2026-06-22
-  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.
-  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs](https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html.md
   - Date: 2026-06-21

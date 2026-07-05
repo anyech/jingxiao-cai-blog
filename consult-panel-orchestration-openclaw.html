@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,20 +16,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
+    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.">
+    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
-  "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.",
+  "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-03",
-  "dateModified": "2026-06-22",
+  "dateModified": "2026-07-04",
   "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html"
@@ -71,7 +71,7 @@
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated June 22, 2026</strong><br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated July 4, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
@@ -85,6 +85,9 @@
         </div>
         <div class="note">
             <strong>June 22 follow-up:</strong> I added the context-pressure version of the pattern: panel results need artifact-backed completion and a finalizer ledger because a parent thread can be under context, compaction, or write-lock pressure even when the panelists themselves finished correctly.
+        </div>
+        <div class="note">
+            <strong>July 4 follow-up:</strong> a private local-model router can be available before it is eligible for the default panel. Local lanes still need soak, role assignment, timeout and weighting policy, and explicit config/Gateway approval before promotion. I expanded that boundary in <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">A Local LLM Router Is Not a Panel Lane Yet</a>.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -215,6 +218,10 @@
         <pre><code>resolve_panel_shape(mode="jury")</code></pre>
 
         <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
+
+        <div class="note">
+            <strong>Local-lane promotion note:</strong> the same rule now applies to private local model routes. A local router can pass auth, model-list, chat, streaming, failover, and short-soak checks and still remain a candidate lane rather than a default panel voice. Promotion needs an explicit role, timeout class, weighting policy, rollback plan, and a reviewed config/Gateway activation step; the standalone follow-up is <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">here</a>.
+        </div>
 
         <h2>The Schema That Matters More Than the Prompt</h2>
         <p>The routing config now carries three layers of truth:</p>

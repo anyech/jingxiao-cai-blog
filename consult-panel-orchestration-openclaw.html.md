@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
 Date: 2026-04-03
-Updated: 2026-06-22
+Updated: 2026-07-04
 Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 
-Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.
+Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, local-lane promotion gates, bridge-back delivery contracts, and user-visible dissent.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I turned multi-model consultation into a config-backed OpenClaw wor
 # LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos
 
 
- April 3, 2026 | By Jingxiao Cai | Updated June 22, 2026
+ April 3, 2026 | By Jingxiao Cai | Updated July 4, 2026
 
  Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 
@@ -34,6 +34,10 @@ Summary: How I turned multi-model consultation into a config-backed OpenClaw wor
 
 
  June 22 follow-up: I added the context-pressure version of the pattern: panel results need artifact-backed completion and a finalizer ledger because a parent thread can be under context, compaction, or write-lock pressure even when the panelists themselves finished correctly.
+
+
+
+ July 4 follow-up: a private local-model router can be available before it is eligible for the default panel. Local lanes still need soak, role assignment, timeout and weighting policy, and explicit config/Gateway approval before promotion. I expanded that boundary in A Local LLM Router Is Not a Panel Lane Yet.
 
 
 
@@ -209,6 +213,10 @@ Summary: How I turned multi-model consultation into a config-backed OpenClaw wor
  resolve_panel_shape(mode="jury")
 
  If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.
+
+
+ Local-lane promotion note: the same rule now applies to private local model routes. A local router can pass auth, model-list, chat, streaming, failover, and short-soak checks and still remain a candidate lane rather than a default panel voice. Promotion needs an explicit role, timeout class, weighting policy, rollback plan, and a reviewed config/Gateway activation step; the standalone follow-up is here.
+
 
 
 ## The Schema That Matters More Than the Prompt
