@@ -3,26 +3,26 @@ layout: post.njk
 permalink: 'consult-panel-orchestration-openclaw.html'
 title: 'LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos'
 slug: 'consult-panel-orchestration-openclaw'
-description: 'How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery, and honest dissent safely.'
-summary: 'How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, watchdog-backed waiting states, bridge-back final delivery contracts, and user-visible dissent.'
+description: 'How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.'
+summary: 'How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, local-lane promotion gates, bridge-back delivery contracts, and user-visible dissent.'
 date: '2026-04-03'
-updated: '2026-06-22'
+updated: '2026-07-04'
 tags: ['openclaw', 'ai-agents', 'llm', 'orchestration', 'devops', 'multi-model-review']
 keywords: ['multi-LLM consultation', 'LLM panel orchestration', 'OpenClaw consult-panel', 'AI agent orchestration', 'multi-model review', 'jury mode', 'consult-panel skill', 'artifact-backed completion', 'agent delivery ledger']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html'
 inFeed: true
 inSitemap: true
 feedTitle: 'LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos'
-feedDescription: 'How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, watchdog waits, bridge-back delivery contracts, and honest dissent safely.'
+feedDescription: 'Config-backed OpenClaw panel orchestration with launch guards, artifact-backed completion, local-lane promotion gates, bridge-back delivery, and honest dissent.'
 feedPubDate: 'Mon, 22 Jun 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-06-22'
+sitemapLastmod: '2026-07-04'
 ---
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated June 22, 2026</strong><br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated July 4, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
@@ -36,6 +36,9 @@ sitemapLastmod: '2026-06-22'
         </div>
         <div class="note">
             <strong>June 22 follow-up:</strong> I added the context-pressure version of the pattern: panel results need artifact-backed completion and a finalizer ledger because a parent thread can be under context, compaction, or write-lock pressure even when the panelists themselves finished correctly.
+        </div>
+        <div class="note">
+            <strong>July 4 follow-up:</strong> a private local-model router can be available before it is eligible for the default panel. Local lanes still need soak, role assignment, timeout and weighting policy, and explicit config/Gateway approval before promotion. I expanded that boundary in <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">A Local LLM Router Is Not a Panel Lane Yet</a>.
         </div>
         <div class="note">
             <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
@@ -166,6 +169,10 @@ sitemapLastmod: '2026-06-22'
         <pre><code>resolve_panel_shape(mode="jury")</code></pre>
 
         <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
+
+        <div class="note">
+            <strong>Local-lane promotion note:</strong> the same rule now applies to private local model routes. A local router can pass auth, model-list, chat, streaming, failover, and short-soak checks and still remain a candidate lane rather than a default panel voice. Promotion needs an explicit role, timeout class, weighting policy, rollback plan, and a reviewed config/Gateway activation step; the standalone follow-up is <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">here</a>.
+        </div>
 
         <h2>The Schema That Matters More Than the Prompt</h2>
         <p>The routing config now carries three layers of truth:</p>
