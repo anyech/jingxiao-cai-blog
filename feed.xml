@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>An Executor Contract Is Not Production Activation</title>
+      <description>Executor contracts are useful offline evidence units, but they are not approval to wire live runners or cross production activation gates.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html</guid>
+      <pubDate>Sun, 05 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Local LLM Router Is Not a Panel Lane Yet</title>

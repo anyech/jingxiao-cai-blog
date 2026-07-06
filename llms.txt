@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [An Executor Contract Is Not Production Activation](https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html.md
+  - Date: 2026-07-05
+  - Summary: A dependency-injected executor contract can document shape, policy, and failure behavior offline. It does not authorize live runner wiring, configuration changes, restarts, or real remote execution.
+  - Tags: ai-agents, agent-ops, automation, reliability, security, tooling
 - [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
   - Date: 2026-07-04
