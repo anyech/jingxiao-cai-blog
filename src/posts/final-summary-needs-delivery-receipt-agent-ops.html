@@ -1,0 +1,282 @@
+---
+layout: post.njk
+permalink: 'final-summary-needs-delivery-receipt-agent-ops.html'
+title: 'A Final Summary Needs a Delivery Receipt'
+slug: 'final-summary-needs-delivery-receipt-agent-ops'
+description: 'A sanitized agent-operations pattern: a final summary in session history is not enough; user-visible work needs delivery receipts, read-back, and duplicate guards.'
+summary: 'A final summary can exist internally while the user-facing thread still lacks proof of delivery. Treat visible closeout as a receipt-backed side effect, not an implied result of the agent producing text.'
+date: '2026-07-06'
+updated: ''
+tags: ['ai-agents', 'agent-ops', 'automation', 'reliability', 'delivery', 'openclaw']
+keywords: ['AI agents', 'agent operations', 'visible delivery', 'delivery receipt', 'automation reliability', 'OpenClaw', 'debugging workflow']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'A Final Summary Needs a Delivery Receipt'
+feedDescription: 'A chat-agent closeout lesson: a final summary in session history is not enough unless the user-facing surface has a delivery receipt.'
+feedPubDate: 'Mon, 06 Jul 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-07-06'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>A Final Summary Needs a Delivery Receipt</h1>
+    <div class="meta">
+        <strong>July 6, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, automation, reliability, delivery, openclaw</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private delivery-gap RCA into a public checklist and remove thread identifiers, raw logs, helper names, paths, project labels, and deployment-specific details.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> a final summary that exists only inside an agent transcript is not enough. User-facing closeout needs a delivery receipt: explicit target, send result, read-back proof, and duplicate suppression.
+    </div>
+</header>
+
+<main>
+    <p>The failure mode was small, but it was the kind of small that matters.</p>
+
+    <p>A long-running agent task had real work behind it: review artifacts existed, the reasoning was complete, and the internal final summary had been generated. But the user-facing thread did not have the closeout the human was waiting for.</p>
+
+    <p>That distinction is easy to blur when an agent framework treats internal completion, child-session completion, and visible chat delivery as nearby events. They are not the same event.</p>
+
+    <p>I have written nearby lessons about a report that existed but was not delivered, and about a reply that existed while a thread stayed silent. This post is the contract-level follow-up: what evidence should exist before a user-waiting workflow is allowed to call the closeout delivered?</p>
+
+    <blockquote>
+        <p><strong>Done is not done until the expected surface has delivery proof.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> this is a sanitized agent-operations lesson from a self-hosted chat workflow. I am intentionally leaving out private project names, thread and message identifiers, exact artifacts, helper filenames, paths, model routes, raw logs, and deployment topology. The useful public lesson is the closeout contract.
+    </div>
+
+    <h2>The Failure Shape</h2>
+
+    <p>The root problem was not that the agent had no answer. It was that the system had no durable proof that the answer crossed the user-visible boundary.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Looks like progress?</th>
+                <th>Counts as closeout?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Worker completed</strong></td>
+                <td>Yes. A background lane finished its assigned work.</td>
+                <td>No. Worker completion says nothing about where the result was delivered.</td>
+            </tr>
+            <tr>
+                <td><strong>Final summary generated</strong></td>
+                <td>Yes. The substantive answer exists inside the orchestration transcript.</td>
+                <td>No. Internal text is not the same as user-visible text.</td>
+            </tr>
+            <tr>
+                <td><strong>Visible send attempted</strong></td>
+                <td>Usually. A message was submitted to the chat surface.</td>
+                <td>Not by itself. Send attempts can fail, target the wrong place, or be duplicated.</td>
+            </tr>
+            <tr>
+                <td><strong>Read-back verified</strong></td>
+                <td>Yes. The destination shows the expected closeout.</td>
+                <td>Yes. This is the receipt the workflow can rely on.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The missing piece was the last row. Without it, a transcript can look complete while the person in the source thread sees silence.</p>
+
+    <h2>The Safe Proof Unit</h2>
+
+    <p>The public-safe proof unit for this class of incident is a delivery-receipt card. It does not need private identifiers to be useful.</p>
+
+    <pre><code>delivery_receipt:
+  origin:
+    request_surface: recorded
+    expected_final_surface: recorded
+    visible_delivery_required: yes
+  payload:
+    closeout_artifact: preserved
+    payload_hash_or_marker: recorded
+    public_safe_for_destination: checked
+  send:
+    attempted: yes
+    target_matches_origin: yes
+    platform_message_id: recorded_if_available
+  read_back:
+    expected_marker_visible: yes
+    timestamp_after_send: yes
+  dedupe:
+    request_scoped_key: recorded
+    duplicate_send_suppressed: yes
+  final_state:
+    delivered: yes</code></pre>
+
+    <p>The exact storage format is not the point. The point is that closeout should have evidence at the same layer where the human experiences it.</p>
+
+    <p>Here, a delivery receipt means destination-visible closeout at verification time. It does not prove that a human read the message, and it is not an exactly-once delivery guarantee.</p>
+
+    <h2>Why Prompt Text Is Not Enough</h2>
+
+    <p>The first instinct after a missed closeout is often to add stronger prompt instructions: “always report back,” “do not forget to bridge,” “say the result in the original thread.” That helps, but it is not a durable fix by itself.</p>
+
+    <p>Prompt text is a behavioral nudge. A delivery receipt is a runtime contract.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Control</th>
+                <th>What it improves</th>
+                <th>What it cannot prove alone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Prompt reminder</strong></td>
+                <td>The agent is more likely to remember the desired behavior.</td>
+                <td>That the platform accepted the message or that the right thread shows it.</td>
+            </tr>
+            <tr>
+                <td><strong>Skill/process text</strong></td>
+                <td>The workflow has a documented expectation.</td>
+                <td>That every runtime path obeyed the expectation after handoff or interruption.</td>
+            </tr>
+            <tr>
+                <td><strong>Delivery ledger</strong></td>
+                <td>The system records origin, payload, attempts, receipt, and dedupe state.</td>
+                <td>Nothing magical; it still needs careful target selection and failure handling.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The practical fix is layered: keep the instruction, but add mechanical state so the workflow can audit itself.</p>
+
+    <h2>The Outbox Pattern</h2>
+
+    <p>A small outbox is enough for many agent workflows. Before a long-running task is considered complete, it records a pending closeout item:</p>
+
+    <ul>
+        <li><strong>origin target:</strong> where the human made the request;</li>
+        <li><strong>expected delivery target:</strong> where the final result should appear;</li>
+        <li><strong>payload marker:</strong> a hash, title, or stable marker for the closeout content;</li>
+        <li><strong>delivery state:</strong> pending, attempted, read-back verified, failed, or intentionally suppressed;</li>
+        <li><strong>platform receipt:</strong> message id or equivalent proof when the platform exposes one;</li>
+        <li><strong>dedupe key:</strong> a request-scoped key so retries do not double-post.</li>
+    </ul>
+
+    <p>That outbox does not have to be heavyweight. It just has to survive the exact boundary where agents most often get confused: child finished, parent resumed, chat surface changed, final answer generated, but visible delivery still pending.</p>
+
+    <div class="success">
+        <strong>Practical rule:</strong> a user-waiting task should not move from <code>ready_for_delivery</code> to <code>complete</code> without either read-back proof or an explicit blocked-delivery state.
+    </div>
+
+    <h2>What Not To Do</h2>
+
+    <p>The bad recovery moves are all tempting because they make the workflow look active again:</p>
+
+    <ul>
+        <li>do not rerun the whole investigation when the final summary already exists;</li>
+        <li>do not assume a child-session completion message reached the original user;</li>
+        <li>do not post a second summary blindly if the first send may have succeeded but proof is missing;</li>
+        <li>do not let a default channel or “current thread” guess replace the recorded origin target;</li>
+        <li>do not call a workflow complete merely because the agent produced a good answer.</li>
+    </ul>
+
+    <p>The better recovery path is slower by a few seconds and safer by a lot: find the already-produced closeout, verify the expected destination, send or reconcile exactly once, then record the receipt.</p>
+
+    <h2>Where This Generalizes</h2>
+
+    <p>This pattern is bigger than one chat platform. Any agent workflow that produces work in one place and reports it in another can hit the same gap.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Workflow</th>
+                <th>Generated artifact</th>
+                <th>Delivery receipt</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Background research task</td>
+                <td>Report or synthesis file</td>
+                <td>Final message visible in the requesting thread</td>
+            </tr>
+            <tr>
+                <td>Review panel</td>
+                <td>Panelist outputs and synthesis</td>
+                <td>Parent-owned closeout with coverage and degraded-lane notes</td>
+            </tr>
+            <tr>
+                <td>Scheduled digest</td>
+                <td>Saved digest artifact</td>
+                <td>Message posted to the configured destination</td>
+            </tr>
+            <tr>
+                <td>External publication</td>
+                <td>Draft, build, or API response</td>
+                <td>Live page/readback verification and canonical URL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The repeated lesson is that artifacts and side effects need separate proof. An artifact can be complete while delivery failed. A delivery attempt can happen while read-back is missing. A visible message can land in the wrong place. A duplicate can be worse than a delay.</p>
+
+    <h2>A Closeout Checklist</h2>
+
+    <p>For user-waiting agent work, I would use this checklist before saying “done”:</p>
+
+    <ol>
+        <li><strong>Name the expected final surface.</strong> Do not infer it from whatever context the worker happens to be in.</li>
+        <li><strong>Preserve the final payload.</strong> Keep the summary or artifact separate from the delivery attempt.</li>
+        <li><strong>Send with an explicit target.</strong> Use the recorded destination, not a default.</li>
+        <li><strong>Read back or verify the result.</strong> Confirm the expected marker appears where the human will look.</li>
+        <li><strong>Record the receipt.</strong> Store the platform receipt, timestamp, payload marker, and final state.</li>
+        <li><strong>Suppress duplicates.</strong> If the final state is uncertain, reconcile before retrying.</li>
+        <li><strong>Report blocked delivery honestly.</strong> If the destination is inaccessible or verification fails, say that rather than pretending completion.</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The uncomfortable part of this bug is that the language model can do its job and the workflow can still fail the human.</p>
+
+    <p>That is why final delivery needs to be a first-class operation. It should have an origin, a target, a payload marker, a send attempt, a read-back receipt, a dedupe key, and a state that can say “blocked” without shame.</p>
+
+    <p>A final summary in session history is useful evidence. It is not a delivery receipt. If the human was waiting in a thread, the thread needs proof.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html">When the Reply Exists but the Thread Stayed Silent</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+            <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
+            <li><a href="/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html">A Thread Is Closable When No Local Blocker Remains</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the operational boundaries that keep small systems understandable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A final answer is a payload. A visible closeout is a receipt.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or examples of missed closeouts in agent workflows? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 6, 2026 &bull; Part of my ongoing agent operations and self-hosted AI workflow series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
