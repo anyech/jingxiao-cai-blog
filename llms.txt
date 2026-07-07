@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Final Summary Needs a Delivery Receipt](https://anyech.github.io/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html.md
+  - Date: 2026-07-06
+  - Summary: A final summary can exist internally while the user-facing thread still lacks proof of delivery. Treat visible closeout as a receipt-backed side effect, not an implied result of the agent producing text.
+  - Tags: ai-agents, agent-ops, automation, reliability, delivery, openclaw
 - [An Executor Contract Is Not Production Activation](https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html.md
   - Date: 2026-07-05
