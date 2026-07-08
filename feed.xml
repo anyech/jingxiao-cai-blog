@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Prepared Is Not Authorized</title>
+      <description>A public-safe agent-operations pattern: turn readiness into an activation packet instead of letting prepared work imply live permission.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html</guid>
+      <pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Credential Boundary Is a Production Feature</title>

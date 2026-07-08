@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Prepared Is Not Authorized: The Activation Packet Pattern for Agent Ops](https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html.md
+  - Date: 2026-07-08
+  - Summary: A prepared agent workflow can be useful and still not be authorized. The safe pattern is to turn readiness into an activation packet: scope, evidence, boundary state, rollback limits, specific activation verb, and explicit authority.
+  - Tags: ai-agents, agent-ops, automation, reliability, security, openclaw
 - [A Credential Boundary Is a Production Feature](https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html.md
   - Date: 2026-07-07
