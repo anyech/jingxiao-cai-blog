@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Credential Boundary Is a Production Feature</title>
+      <description>A sanitized agent-operations lesson: before connecting runtime code to production authority, prove the credential boundary as its own production feature.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html</guid>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Final Summary Needs a Delivery Receipt</title>

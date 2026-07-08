@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Credential Boundary Is a Production Feature](https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html.md
+  - Date: 2026-07-07
+  - Summary: Do not hand setup credentials to runtime route code just because the next integration step looks obvious. Treat the credential boundary itself as a production feature: narrow identity, bounded token minting, negative proofs, cleanup evidence, and a separate activation gate.
+  - Tags: ai-agents, agent-ops, automation, security, reliability, openclaw
 - [A Final Summary Needs a Delivery Receipt](https://anyech.github.io/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html.md
   - Date: 2026-07-06
