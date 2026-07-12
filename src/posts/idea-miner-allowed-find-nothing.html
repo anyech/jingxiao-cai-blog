@@ -1,0 +1,271 @@
+---
+layout: post.njk
+permalink: 'idea-miner-allowed-find-nothing.html'
+title: 'An Idea Miner Should Be Allowed to Find Nothing'
+slug: 'idea-miner-allowed-find-nothing'
+description: 'A public-safe idea-mining workflow that rewards evidence, counterevidence, and falsification instead of forcing every research run to produce a build.'
+summary: 'The useful output of an idea miner is not a pile of concepts. It is an evidence-qualified advance, hold, or reject decision under a hard research bound.'
+date: '2026-07-11'
+updated: ''
+tags: ['ai-agents', 'product-discovery', 'research', 'automation', 'agent-ops', 'validation']
+keywords: ['idea miner', 'AI product discovery', 'falsification workflow', 'agent research', 'demand validation', 'product ideas', 'counterevidence', 'AI agents']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'An Idea Miner Should Be Allowed to Find Nothing'
+feedDescription: 'An idea-mining workflow should return advance, hold, or reject under a hard evidence bound instead of forcing every research run to produce a build.'
+feedPubDate: 'Sat, 11 Jul 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-07-11'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>An Idea Miner Should Be Allowed to Find Nothing</h1>
+    <div class="meta">
+        <strong>July 11, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, product-discovery, research, automation, agent-ops, validation</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped run a bounded public-source research pilot, separate human pain from generated noise, and turn the result into a reusable falsification workflow without contacting anyone or publishing private research artifacts.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a product-discovery method, not proof that any candidate deserves to be built. Public issue reports can establish pain; they do not establish willingness to switch, install, or pay.
+    </div>
+</header>
+
+<main>
+    <p>Most automated idea workflows have a hidden failure condition: they are expected to find an idea.</p>
+
+    <p>That expectation quietly changes the objective. The agent stops asking, “Is there an evidence-qualified opportunity?” and starts asking, “Which candidate can I make sound exciting before the run ends?”</p>
+
+    <blockquote>
+        <p><strong>An idea miner that cannot return zero advance candidates is a content generator, not a discovery system.</strong></p>
+    </blockquote>
+
+    <p>I ran a small, time-bounded pilot against problems reported by developers using coding agents and multi-agent systems. The most useful result was not a launch plan. It was one <em>hold</em>, several <em>rejects</em>, and zero <em>advance</em> decisions.</p>
+
+    <p>That outcome made the workflow more credible. It also produced a repeatable method for operators who want agents to research product ideas without laundering noisy search results into a roadmap.</p>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a compact idea-card contract that forces independent evidence, existing-solution review, a narrow wedge, and explicit advance/kill thresholds before any build begins.
+    </div>
+
+    <h2>The Failure Mode: Research Owes You a Winner</h2>
+
+    <p>A forced-output miner tends to make four mistakes:</p>
+
+    <ul>
+        <li>it treats high comment counts as demand without checking whether the comments are human, independent, or about the same problem;</li>
+        <li>it searches for pain but not for capable existing solutions;</li>
+        <li>it mistakes an upstream feature request for a portable product surface;</li>
+        <li>it turns “interesting” into “build next” without a falsification test.</li>
+    </ul>
+
+    <p>The fix is not a more creative prompt. It is a workflow whose valid terminal states include <strong>advance</strong>, <strong>hold</strong>, <strong>reject</strong>, and <strong>none found</strong>.</p>
+
+    <h2>A Bounded Pilot Funnel</h2>
+
+    <p>One short pilot used a deliberately small search budget. Its public-safe funnel looked like this:</p>
+
+    <pre><code>7 issue artifacts
+  -> 5 human pain observations
+  -> 3 clusters
+  -> 2 portable clusters
+  -> 2 externally corroborated clusters
+  -> 1 hold card
+  -> 0 advance cards</code></pre>
+
+    <p>The numbers are one run's bookkeeping, not a conversion rate, prevalence estimate, or demand metric. They are useful only as a proof unit that the workflow discarded material at every gate instead of preserving every search hit as a candidate.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Gate</th>
+                <th>Question</th>
+                <th>Failure means</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Human pain</strong></td>
+                <td>Is this a first-person problem report rather than an automated tracker or generated roadmap item?</td>
+                <td>Reject as demand evidence.</td>
+            </tr>
+            <tr>
+                <td><strong>Independence</strong></td>
+                <td>Does the pain recur across unrelated tools, repositories, or communities?</td>
+                <td>Keep as a local bug, not a portable opportunity.</td>
+            </tr>
+            <tr>
+                <td><strong>Supply</strong></td>
+                <td>Do existing products already solve the problem well enough?</td>
+                <td>Reject or narrow the wedge.</td>
+            </tr>
+            <tr>
+                <td><strong>Control</strong></td>
+                <td>Can an independent product solve it, or is the behavior naturally owned by the upstream vendor?</td>
+                <td>Reject as a product surface.</td>
+            </tr>
+            <tr>
+                <td><strong>Falsifiability</strong></td>
+                <td>Can a cheap test change the decision within days rather than months?</td>
+                <td>Hold until a sharper test exists.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Counterevidence Is a First-Class Deliverable</h2>
+
+    <p>The pilot found repeated symptom reports of agents stalling after partial work. Public issues document incomplete actions followed by no response in <a href="https://github.com/microsoft/vscode/issues/253126">VS Code agent mode</a> and long zero-progress hangs in <a href="https://github.com/anthropics/claude-code/issues/26224">Claude Code</a>.</p>
+
+    <p>That is evidence that the pain can occur across more than one tool. It is not a prevalence estimate, proof of market-wide independent demand, or evidence of an empty market.</p>
+
+    <p>The current public listing for <a href="https://marketplace.visualstudio.com/items?itemName=agentlens.agentlens-dashboard">AgentLens</a> describes local agent-session observability, traces, file diffs, loop detection, and recommendations. Other local tools offer replay, rewind, or unified usage reporting. A generic dashboard would be duplicate supply.</p>
+
+    <p>The surviving wedge was narrower: a local recovery capsule that turns a likely stalled run into an explicit resume, handoff, or rollback-review packet. Even that candidate remained a hold because the unresolved question is whether it is meaningfully better than observability plus version control.</p>
+
+    <div class="success">
+        <strong>Discovery rule:</strong> pain evidence earns deeper investigation. Strong existing supply removes the right to keep the original idea unchanged.
+    </div>
+
+    <h2>The Idea Card Contract</h2>
+
+    <p>A useful idea card is designed to make rejection easy:</p>
+
+    <pre><code>idea_card:
+  user:
+    who_has_the_problem: specific
+    buyer_if_different: explicit_or_unknown
+  pain:
+    independent_sources: listed
+    recurrence: observed_not_assumed
+    workaround: recorded
+  counterevidence:
+    existing_solutions: strongest_first
+    upstream_owner: yes_or_no
+    duplicate_supply_risk: low_medium_high
+  wedge:
+    narrower_than_existing_tools: yes_or_no
+    unsafe_or_uncontrolled_behavior: absent
+  falsification:
+    cheapest_comparative_test: defined
+    advance_threshold: numeric_or_observable
+    kill_threshold: numeric_or_observable
+  authority:
+    outreach_approved: no_by_default
+    install_or_build_approved: no_by_default
+  verdict: advance | hold | reject</code></pre>
+
+    <p>The card should contain the strongest reason not to build. If the counterevidence section reads like a polite footnote, the miner is still pitching rather than investigating.</p>
+
+    <h2>Three Useful Rejections</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Candidate shape</th>
+                <th>Why it looked attractive</th>
+                <th>Why it was rejected or held</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Cross-agent usage tracker</strong></td>
+                <td>Unexpected token or cost consumption recurs across tools.</td>
+                <td>Capable unified reporting already exists, including <a href="https://github.com/ccusage/ccusage">ccusage</a>; an automatic circuit breaker also risks damaging partial work.</td>
+            </tr>
+            <tr>
+                <td><strong>Always-visible model thinking</strong></td>
+                <td>Users want feedback when an agent appears stuck.</td>
+                <td>The requested behavior is tightly coupled to vendor UI and API policy, so it is naturally upstream.</td>
+            </tr>
+            <tr>
+                <td><strong>Generic no-op detector</strong></td>
+                <td>Automated issues and logs can look like evidence of broad frustration.</td>
+                <td>Bot-generated artifacts are architecture output, not independent human demand; loop detection is already part of existing observability tools.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Rejecting these candidates was not lost work. It prevented duplicate products, unsafe automation, and vendor-policy dependencies from entering the build queue.</p>
+
+    <h2>Advance and Kill Thresholds</h2>
+
+    <p>A hold card should name the evidence that could flip it. For the recovery-capsule wedge, a cheap comparative test could show synthetic stalled-run traces beside existing recovery workflows and ask relevant users which path they would choose.</p>
+
+    <p>The exact thresholds will vary, but they should cover three distinct questions:</p>
+
+    <ol>
+        <li><strong>Recognition:</strong> do target users recognize a recent matching pain?</li>
+        <li><strong>Switching:</strong> do enough users prefer the proposed wedge over their current workaround?</li>
+        <li><strong>Commitment:</strong> will they take a costly next step such as sharing an anonymized trace, trying a local prototype, or accepting plausible pricing?</li>
+    </ol>
+
+    <p>The kill rule matters just as much. If users say existing tools plus ordinary retry are adequate, or safe integration requires capturing sensitive source content, the miner should retire the card.</p>
+
+    <div class="note">
+        <strong>Authority boundary:</strong> research can prepare an outreach plan. Contacting users, posting in communities, collecting traces, installing integrations, or building a prototype remains a separate approved action.
+    </div>
+
+    <h2>How This Differs From a Pattern Scout</h2>
+
+    <p>A pattern scout asks, “What fresh signal deserves attention?” An idea miner asks, “Should this opportunity survive counterevidence and earn a test?”</p>
+
+    <p>The scout protects novelty. The miner protects the build queue.</p>
+
+    <p>They can share sources, but they should not share success criteria. A scout succeeds when it finds a fresh, public-safe pattern. An idea miner succeeds when it produces a defensible decision, including the decision to build nothing.</p>
+
+    <h2>When Not To Use This Workflow</h2>
+
+    <p>Idea mining is the wrong tool when:</p>
+
+    <ul>
+        <li>you are responding to an active incident and need diagnosis, not product discovery;</li>
+        <li>the roadmap decision is already made and the real task is execution;</li>
+        <li>the only evidence is private or current-work material that should not enter a public research loop;</li>
+        <li>meaningful validation requires outreach, data collection, or installs that have not been approved;</li>
+        <li>the problem is clearly owned by an upstream vendor and no independent wedge exists.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>The credibility of an idea miner is not measured by how many polished concepts it produces.</p>
+
+    <p>It is measured by whether it separates human pain from generated noise, searches for the strongest existing alternatives, narrows the wedge, names a cheap verdict-flipping test, and refuses to build when the evidence does not earn it.</p>
+
+    <p>One hold and zero advances can be a successful run. Sometimes that is exactly the result that protects the next month of engineering time.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html">Building a Pattern Scout That Does Not Chase Its Own Echoes</a></li>
+            <li><a href="/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html">Freshness Is Not Permission</a></li>
+            <li><a href="/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html">Public-Safe Evidence Beats Private Debugging Dumps</a></li>
+            <li><a href="/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html">When a Dirty-Tree Alert Is Correct</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, evidence-driven workflows, and operational decision boundaries.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A research agent earns trust by knowing when not to pitch.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or examples of useful idea rejections? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 11, 2026 &bull; Part of my ongoing AI-agent research and workflow series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
