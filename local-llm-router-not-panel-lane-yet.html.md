@@ -3,6 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
 Date: 2026-07-04
+Updated: 2026-07-10
 Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
 
 Summary: A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.
@@ -14,7 +15,7 @@ Summary: A private local LLM router can pass health, auth, failover, and soak ch
 # A Local LLM Router Is Not a Panel Lane Yet
 
 
- July 4, 2026 | By Jingxiao Cai
+ July 4, 2026 | By Jingxiao Cai | Updated July 10, 2026
 
  Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
 
@@ -25,6 +26,10 @@ Summary: A private local LLM router can pass health, auth, failover, and soak ch
 
 
  Boundary: this is an agent-operations pattern, not a topology disclosure. The useful lesson is how to stage local model endpoints before trusting them in a panel, not the implementation shape behind one rollout.
+
+
+
+ Update, July 10, 2026: Added the next promotion boundary: one successful on-demand cold start is only a happy-path canary. Concurrent ownership, failure takeover, cache honesty, cleanup, and the serving contract remain separate gates.
 
 
  Local LLMs create a very specific temptation: once the endpoint answers, you want to wire it into everything.
@@ -132,6 +137,15 @@ Summary: A private local LLM router can pass health, auth, failover, and soak ch
 
  Practical rule: use local endpoint smokes to earn the next validation phase, not to bypass the policy layer that decides what the endpoint is allowed to influence.
 
+
+
+## July 2026 Follow-Up: A Cold Start Is a Path, Not an SLA
+
+ A later on-demand-serving canary made the next boundary more concrete. One request could bring a model from idle to a correct semantic response and restore the declared end state. That proved a real path, but it did not prove the path under contention or failure.
+
+ The stronger packet added concurrent requests with one activation owner and a waiting request, ownership expiry and takeover, disconnect cleanup, an idle-controller race guard, and explicit cache-layer caveats. Even after those checks, the result remained canary-only because latency objectives, observability, desired-warm semantics, rollout, and rollback still needed their own decision.
+
+ The detailed proof ladder is in A Cold-Start Canary Is Not a Serving SLA. The connection to panel promotion is simple: a local lane can become more operationally real without becoming a default decision lane.
 
 
 ## The Four Labels I Want
@@ -251,6 +265,8 @@ Summary: A private local LLM router can pass health, auth, failover, and soak ch
 - Proof Without Touching Production
 
 - Before Raising Reindex Concurrency, Prove the Memory Lane
+
+- A Cold-Start Canary Is Not a Serving SLA
 
 
 

@@ -17,6 +17,26 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [An Idea Miner Should Be Allowed to Find Nothing](https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html.md
+  - Date: 2026-07-11
+  - Summary: The useful output of an idea miner is not a pile of concepts. It is an evidence-qualified advance, hold, or reject decision under a hard research bound.
+  - Tags: ai-agents, product-discovery, research, automation, agent-ops, validation
+- [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
+  - Date: 2026-06-12; updated: 2026-07-11
+  - Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
+  - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
+- [A Cold-Start Canary Is Not a Serving SLA](https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html.md
+  - Date: 2026-07-10
+  - Summary: One successful cold start proves a path. It does not prove concurrent safety, cache independence, recovery, cleanup, or a production serving SLA.
+  - Tags: ai-agents, local-llm, agent-ops, reliability, kubernetes, self-hosted-ai
+- [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
+  - Date: 2026-07-04; updated: 2026-07-10
+  - Summary: A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.
+  - Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
 - [Prepared Is Not Authorized: The Activation Packet Pattern for Agent Ops](https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html.md
   - Date: 2026-07-08
@@ -37,11 +57,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-07-05
   - Summary: A dependency-injected executor contract can document shape, policy, and failure behavior offline. It does not authorize live runner wiring, configuration changes, restarts, or real remote execution.
   - Tags: ai-agents, agent-ops, automation, reliability, security, tooling
-- [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
-  - Date: 2026-07-04
-  - Summary: A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.
-  - Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
 - [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
   - Date: 2026-04-03; updated: 2026-07-04
@@ -172,11 +187,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-02; updated: 2026-06-13
   - Summary: A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, verifier false alarm, target-refresh follow-up, and upgrade guardrails I kept.
   - Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
-- [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
-  - Date: 2026-06-12
-  - Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
-  - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 - [Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload](https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html.md
   - Date: 2026-06-11

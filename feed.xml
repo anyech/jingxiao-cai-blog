@@ -6,7 +6,39 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 08 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>An Idea Miner Should Be Allowed to Find Nothing</title>
+      <description>An idea-mining workflow should return advance, hold, or reject under a hard evidence bound instead of forcing every research run to produce a build.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html</guid>
+      <pubDate>Sat, 11 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
+      <description>A pattern scout must prove novelty; an idea miner must then survive counterevidence, falsification, and the possibility that nothing should advance.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>A Cold-Start Canary Is Not a Serving SLA</title>
+      <description>One on-demand local-model success proves a path, not concurrent safety, cache independence, recovery, cleanup, or a serving SLA.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html</guid>
+      <pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>A Local LLM Router Is Not a Panel Lane Yet</title>
+      <description>Private local LLM endpoints need routing, auth, failover, cold-start concurrency, cleanup, soak, and policy proof before promotion.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</guid>
+      <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Prepared Is Not Authorized</title>
@@ -38,14 +70,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/executor-contract-not-production-activation.html</guid>
       <pubDate>Sun, 05 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>A Local LLM Router Is Not a Panel Lane Yet</title>
-      <description>Private local LLM endpoints need routing, auth, failover, soak, and policy proof before they become default panel lanes.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html</guid>
-      <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -254,14 +278,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html</guid>
       <pubDate>Thu, 02 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
-      <description>A pattern scout is only useful if it can prove novelty instead of recycling yesterday’s generated summaries.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

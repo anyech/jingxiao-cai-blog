@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-07-04",
-  "dateModified": "2026-07-04",
+  "dateModified": "2026-07-10",
   "url": "https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html"
@@ -71,7 +71,7 @@
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>A Local LLM Router Is Not a Panel Lane Yet</h1>
     <div class="meta">
-        <strong>July 4, 2026</strong> | By Jingxiao Cai<br>
+        <strong>July 4, 2026</strong> | By Jingxiao Cai | <strong>Updated July 10, 2026</strong><br>
         <span class="tags">Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling</span>
     </div>
     <div class="disclaimer">
@@ -79,6 +79,9 @@
     </div>
     <div class="warning">
         <strong>Boundary:</strong> this is an agent-operations pattern, not a topology disclosure. The useful lesson is how to stage local model endpoints before trusting them in a panel, not the implementation shape behind one rollout.
+    </div>
+    <div class="update-banner">
+        <strong>Update, July 10, 2026:</strong> Added the next promotion boundary: one successful on-demand cold start is only a happy-path canary. Concurrent ownership, failure takeover, cache honesty, cleanup, and the serving contract remain separate gates.
     </div>
 </header>
 
@@ -173,6 +176,14 @@
     <div class="success">
         <strong>Practical rule:</strong> use local endpoint smokes to earn the next validation phase, not to bypass the policy layer that decides what the endpoint is allowed to influence.
     </div>
+
+    <h2>July 2026 Follow-Up: A Cold Start Is a Path, Not an SLA</h2>
+
+    <p>A later on-demand-serving canary made the next boundary more concrete. One request could bring a model from idle to a correct semantic response and restore the declared end state. That proved a real path, but it did not prove the path under contention or failure.</p>
+
+    <p>The stronger packet added concurrent requests with one activation owner and a waiting request, ownership expiry and takeover, disconnect cleanup, an idle-controller race guard, and explicit cache-layer caveats. Even after those checks, the result remained canary-only because latency objectives, observability, desired-warm semantics, rollout, and rollback still needed their own decision.</p>
+
+    <p>The detailed proof ladder is in <a href="/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">A Cold-Start Canary Is Not a Serving SLA</a>. The connection to panel promotion is simple: a local lane can become more operationally real without becoming a default decision lane.</p>
 
     <h2>The Four Labels I Want</h2>
 
@@ -271,6 +282,7 @@
             <li><a href="/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html">Reachable Is Not Ready</a></li>
             <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
             <li><a href="/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html">Before Raising Reindex Concurrency, Prove the Memory Lane</a></li>
+            <li><a href="/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">A Cold-Start Canary Is Not a Serving SLA</a></li>
         </ul>
     </div>
 

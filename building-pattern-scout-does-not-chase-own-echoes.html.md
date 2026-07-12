@@ -3,6 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
 Date: 2026-06-12
+Updated: 2026-07-11
 Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 
 Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
@@ -14,7 +15,7 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 # Building a Pattern Scout That Does Not Chase Its Own Echoes
 
 
- June 12, 2026 | By Jingxiao Cai
+ June 12, 2026 | By Jingxiao Cai | Updated July 11, 2026
 
  Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 
@@ -25,6 +26,10 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 
 
  Short version: a scout that ranks ideas from its own prior reports is not doing discovery anymore. It is doing echo amplification.
+
+
+
+ Update, July 11, 2026: Added the handoff from source novelty to idea falsification. A scout can nominate a fresh signal; it cannot decide that a product deserves to be built.
 
 
  I like having a daily pattern scout.
@@ -260,6 +265,15 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 
 
 
+## July 2026 Follow-Up: The Scout Stops Before the Build Queue
+
+ A later idea-mining pilot exposed the next boundary. Clean source provenance and a genuinely fresh signal are necessary, but they are not product validation.
+
+ The scout asks whether a pattern is new, useful, public-safe, and non-duplicate. The idea miner then asks harder questions: does the pain recur independently, what capable solutions already exist, is the wedge controlled by the builder or by an upstream vendor, and what cheap test could kill the idea?
+
+ The important delta is the terminal state: the miner can return hold, reject, or none found without forcing the scout's candidate into the build queue. See An Idea Miner Should Be Allowed to Find Nothing for the evidence-card and falsification contract.
+
+
 ## My Take
 
  The best pattern scout is not the one with the cleverest scoring rubric. It is the one that can explain why this signal is new, why it is safe to talk about, and why it is not merely yesterday's output wearing a new title.
@@ -283,6 +297,8 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 - Thread Checkpoints Are Not Summaries
 
 - Nothing Ran, and That Was the Proof
+
+- An Idea Miner Should Be Allowed to Find Nothing
 
 
 

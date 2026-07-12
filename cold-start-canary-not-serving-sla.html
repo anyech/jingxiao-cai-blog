@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A public-safe pattern for on-demand local LLM serving: prove cold starts, concurrency, ownership, cleanup, cache limits, and SLO boundaries before promotion.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="A Cold-Start Canary Is Not a Serving SLA">
+    <meta property="og:description" content="A public-safe pattern for on-demand local LLM serving: prove cold starts, concurrency, ownership, cleanup, cache limits, and SLO boundaries before promotion.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A Cold-Start Canary Is Not a Serving SLA">
+    <meta name="twitter:description" content="A public-safe pattern for on-demand local LLM serving: prove cold starts, concurrency, ownership, cleanup, cache limits, and SLO boundaries before promotion.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "A Cold-Start Canary Is Not a Serving SLA",
+  "description": "A public-safe pattern for on-demand local LLM serving: prove cold starts, concurrency, ownership, cleanup, cache limits, and SLO boundaries before promotion.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-07-10",
+  "dateModified": "2026-07-10",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html"
+}</script>
+
+    <title>A Cold-Start Canary Is Not a Serving SLA</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>A Cold-Start Canary Is Not a Serving SLA</h1>
+    <div class="meta">
+        <strong>July 10, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, local-llm, agent-ops, reliability, kubernetes, self-hosted-ai</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a bounded local-serving experiment into a public proof ladder while keeping private topology, model identities, routes, resource figures, and operational artifacts out of the article.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a sanitized on-demand-serving pattern, not a benchmark or a description of a specific live cluster. The examples explain what a canary can and cannot prove.
+    </div>
+</header>
+
+<main>
+    <p>A local model that scales from idle, answers correctly, and returns to its baseline feels like a finished feature.</p>
+
+    <p>It is not. It is the first useful proof.</p>
+
+    <p>The distinction matters because on-demand serving combines several different systems: storage, scheduling, process startup, readiness, request coordination, failure recovery, idle cleanup, and the client-facing latency contract. A single successful request exercises one path through that graph. It does not prove the graph.</p>
+
+    <blockquote>
+        <p><strong>A cold-start canary proves that the path can work once. A serving SLA needs evidence about what happens when the path is concurrent, interrupted, stale, and slow.</strong></p>
+    </blockquote>
+
+    <p>This post gives self-hosted AI operators a small proof ladder for deciding when an on-demand model is still a canary, when it is ready for broader experiments, and when it might be eligible for production promotion.</p>
+
+    <div class="note">
+        <strong>Conceptual scope:</strong> the safe proof unit below preserves state transitions and failure semantics. It intentionally omits private model names, node labels, storage paths, ports, exact timings, and live configuration values.
+    </div>
+
+    <h2>The Pressure: Idle Capacity Is Expensive</h2>
+
+    <p>Large local models create an obvious incentive to scale down when unused. The promise sounds simple:</p>
+
+    <ol>
+        <li>a request arrives;</li>
+        <li>an activator brings the model online;</li>
+        <li>the request waits for readiness;</li>
+        <li>later, an idle controller scales the model down again.</li>
+    </ol>
+
+    <p>The first working request makes that design look complete. But the difficult questions start immediately afterward:</p>
+
+    <ul>
+        <li>Did the test actually start from a cold client-side cache?</li>
+        <li>Would two simultaneous requests trigger two competing activations?</li>
+        <li>What happens if the activation owner dies?</li>
+        <li>Can a disconnected waiter leave durable state behind?</li>
+        <li>Can the idle reaper race with an active request or a restoring baseline?</li>
+        <li>Does a restarted controller remember what it was warming?</li>
+    </ul>
+
+    <p>If those questions are unanswered, the feature is not “done but slow.” It is a canary with a larger proof surface still ahead.</p>
+
+    <h2>The Proof Ladder</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Stage</th>
+                <th>What it asks</th>
+                <th>What passing earns</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>0. Baseline</strong></td>
+                <td>Is the target state known, healthy, and free of stale ownership or helper residue?</td>
+                <td>Permission to run a bounded canary.</td>
+            </tr>
+            <tr>
+                <td><strong>1. Cold path</strong></td>
+                <td>Can one request activate, become ready, answer correctly, and restore the declared end state?</td>
+                <td>Evidence that the happy path exists.</td>
+            </tr>
+            <tr>
+                <td><strong>2. Concurrency</strong></td>
+                <td>Do simultaneous requests elect one owner while waiters reuse the same activation?</td>
+                <td>Evidence against double-scale and duplicate ownership.</td>
+            </tr>
+            <tr>
+                <td><strong>3. Failure recovery</strong></td>
+                <td>Can ownership expire or transfer safely, and do disconnects clean up waiter state?</td>
+                <td>Evidence that one dead actor does not wedge the path.</td>
+            </tr>
+            <tr>
+                <td><strong>4. Controller durability</strong></td>
+                <td>Are warm requests idempotent, restart-reconciled, cancellable, and bounded in history?</td>
+                <td>Eligibility for broader controlled trials.</td>
+            </tr>
+            <tr>
+                <td><strong>5. Service contract</strong></td>
+                <td>Are latency, observability, desired-warm semantics, rollout, rollback, and capacity limits explicit?</td>
+                <td>Eligibility for a production promotion decision, not automatic promotion.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success">
+        <strong>Promotion rule:</strong> each stage earns the next test. None of the early stages silently grants a production SLA.
+    </div>
+
+    <h2>Concurrency Is a Semantic Test</h2>
+
+    <p>A concurrent cold start is not just a load test. It asks whether the system has one coherent meaning for “activation in progress.”</p>
+
+    <p>The expected result is not merely two successful responses. It is one activation owner plus one or more waiters that observe the same transition:</p>
+
+    <pre><code>request_a:
+  role: activation_owner
+  transition: idle -> starting -> ready
+
+request_b:
+  role: waiter
+  transition: observe_starting -> reuse_ready
+
+shared_result:
+  scale_requests: one semantic activation
+  responses: successful
+  ownership_residue: absent
+  end_state: declared baseline restored</code></pre>
+
+    <p>Without that ownership proof, two green responses may hide duplicate scale requests, conflicting timers, or a race that appears only when one request disconnects.</p>
+
+    <p>A coordination primitive such as a lease can help, but the object itself is not the proof. A bounded canary can observe one owner, bounded waiters, expiry, takeover after failure, and cleanup. That still does not prove stale-owner fencing against a delayed former owner. A production design needs an explicit fencing or generation rule, or equivalent evidence that an expired actor can no longer mutate the target. Kubernetes documents <a href="https://kubernetes.io/docs/concepts/architecture/leases/">Lease objects</a> as coordination primitives; the application still has to define the ownership contract correctly.</p>
+
+    <h2>Cleanup Is Part of the Result</h2>
+
+    <p>Canary reports often stop when the response arrives. On-demand serving cannot.</p>
+
+    <p>The test result includes the state after the response:</p>
+
+    <ul>
+        <li>the activator returns to its declared idle state;</li>
+        <li>no stale owner or waiter record remains;</li>
+        <li>the model target is left in the intended baseline state;</li>
+        <li>an idle controller cannot race a still-active ownership lease;</li>
+        <li>a cleanup failure is reported as a failure, not hidden behind a correct model answer.</li>
+    </ul>
+
+    <p>This is the same reason readiness probes and startup probes are different concepts in Kubernetes: “the process exists,” “the process has started,” and “the process should receive traffic” are separate claims. The <a href="https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/">probe documentation</a> is a useful reminder not to collapse them.</p>
+
+    <h2>Cache Honesty Changes the Claim</h2>
+
+    <p>Cold-start measurements are easy to overstate because “cold” has layers:</p>
+
+    <ul>
+        <li>the model process may be absent;</li>
+        <li>the client node's file pages may be nonresident;</li>
+        <li>the storage server may still have hot pages;</li>
+        <li>container images, metadata, or shared libraries may still be warm;</li>
+        <li>the scheduler may already have the right placement information cached.</li>
+    </ul>
+
+    <p>A useful canary names the layer it controlled and the layers it did not. “Client page cache was cold; upstream caches were not characterized” is more valuable than a dramatic “true cold start” label that the test cannot defend.</p>
+
+    <div class="note">
+        <strong>Measurement rule:</strong> if a cache layer was not reset or observed, record it as unknown. Unknown is a boundary, not an embarrassment.
+    </div>
+
+    <h2>The Public-Safe Evidence Card</h2>
+
+    <pre><code>on_demand_serving_canary:
+  boundary: controlled_canary
+  scope: one_bounded_observation_set
+  baseline:
+    target_health: observed_healthy
+    stale_ownership: absent
+  cold_claim:
+    controlled_layer: client_page_cache_residency
+    upstream_cache_state: unknown
+  happy_path:
+    activation_to_semantic_answer: observed
+    declared_end_state_restored: observed
+  concurrency:
+    single_owner: observed_in_bounded_test
+    waiter_reuse: observed_in_bounded_test
+  recovery:
+    lease_expiry_and_takeover: observed_in_bounded_test
+    stale_owner_fencing: not_claimed
+    waiter_disconnect_cleanup: observed_in_bounded_test
+  durable_controller:
+    implemented: mock_or_staged_only
+  production_contract:
+    latency_slo: not_claimed
+    rollout_and_rollback: separate_gate
+  verdict: canary_only</code></pre>
+
+    <p>The card teaches more than a screenshot of a successful response. It shows exactly which claim moved and which claim did not.</p>
+
+    <h2>When Not To Use On-Demand Serving</h2>
+
+    <p>Scale-to-zero is not a universal win. Keep a model warm, or use a different serving shape, when:</p>
+
+    <ul>
+        <li>interactive latency cannot absorb model load time;</li>
+        <li>request bursts make repeated warm-up more expensive than steady capacity;</li>
+        <li>the storage path cannot deliver predictable startup behavior;</li>
+        <li>coordination or observability is too weak to distinguish waiting from wedging;</li>
+        <li>cleanup races would be more dangerous than the saved idle capacity;</li>
+        <li>a simpler scheduled warm window fits the workload better.</li>
+    </ul>
+
+    <p>On-demand serving is an operating policy, not merely an implementation trick. It should be chosen against workload shape and failure cost.</p>
+
+    <h2>Conclusion</h2>
+
+    <p>A correct cold-start response is worth celebrating. It proves the system has a real path from idle to useful output.</p>
+
+    <p>The disciplined next step is not to rename that path “production.” It is to test ownership, waiters, failure recovery, cleanup, cache boundaries, controller durability, and the service contract one gate at a time.</p>
+
+    <p>That is how on-demand local LLM serving becomes trustworthy: not through one impressive cold start, but through a ladder of claims that remain honest under concurrency and failure.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">A Local LLM Router Is Not a Panel Lane Yet</a></li>
+            <li><a href="/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html">Reachable Is Not Ready</a></li>
+            <li><a href="/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html">Synthetic Fanout Is Not Production Approval</a></li>
+            <li><a href="/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html">Before Raising Reindex Concurrency, Prove the Memory Lane</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted AI, agent operations, and evidence-driven promotion boundaries.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A canary earns the next question, not the final label.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or examples of cold-start proof ladders? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 10, 2026 &bull; Part of my ongoing self-hosted AI and agent operations series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

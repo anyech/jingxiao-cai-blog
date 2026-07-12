@@ -41,7 +41,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-06-12",
-  "dateModified": "2026-06-12",
+  "dateModified": "2026-07-11",
   "url": "https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html"
@@ -71,7 +71,7 @@
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>Building a Pattern Scout That Does Not Chase Its Own Echoes</h1>
     <div class="meta">
-        <strong>June 12, 2026</strong> | By Jingxiao Cai<br>
+        <strong>June 12, 2026</strong> | By Jingxiao Cai | <strong>Updated July 11, 2026</strong><br>
         <span class="tags">Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene</span>
     </div>
     <div class="disclaimer">
@@ -79,6 +79,9 @@
     </div>
     <div class="warning">
         <strong>Short version:</strong> a scout that ranks ideas from its own prior reports is not doing discovery anymore. It is doing echo amplification.
+    </div>
+    <div class="update-banner">
+        <strong>Update, July 11, 2026:</strong> Added the handoff from source novelty to idea falsification. A scout can nominate a fresh signal; it cannot decide that a product deserves to be built.
     </div>
 </header>
 
@@ -273,6 +276,14 @@
         <strong>General rule:</strong> the more an agent writes into its own knowledge base, the more explicit its source-hygiene rules need to become.
     </div>
 
+    <h2>July 2026 Follow-Up: The Scout Stops Before the Build Queue</h2>
+
+    <p>A later idea-mining pilot exposed the next boundary. Clean source provenance and a genuinely fresh signal are necessary, but they are not product validation.</p>
+
+    <p>The scout asks whether a pattern is new, useful, public-safe, and non-duplicate. The idea miner then asks harder questions: does the pain recur independently, what capable solutions already exist, is the wedge controlled by the builder or by an upstream vendor, and what cheap test could kill the idea?</p>
+
+    <p>The important delta is the terminal state: the miner can return hold, reject, or none found without forcing the scout's candidate into the build queue. See <a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a> for the evidence-card and falsification contract.</p>
+
     <h2>My Take</h2>
     <p>The best pattern scout is not the one with the cleverest scoring rubric. It is the one that can explain why this signal is new, why it is safe to talk about, and why it is not merely yesterday's output wearing a new title.</p>
 
@@ -289,6 +300,7 @@
             <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
             <li><a href="/jingxiao-cai-blog/thread-checkpoints-agent-ops.html">Thread Checkpoints Are Not Summaries</a></li>
             <li><a href="/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html">Nothing Ran, and That Was the Proof</a></li>
+            <li><a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a></li>
         </ul>
     </div>
 
