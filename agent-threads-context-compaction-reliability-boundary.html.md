@@ -9,22 +9,22 @@ Summary: Context compaction is not just token housekeeping. For long-running age
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary
 
 
- June 22, 2026 | By Jingxiao Cai
+ **June 22, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, reliability, workflow, context-engineering
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It abstracts a real self-hosted agent-ops failure pattern into a public engineering lesson; private hostnames, channel identifiers, configuration paths, and operational details are intentionally omitted.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It abstracts a real self-hosted agent-ops failure pattern into a public engineering lesson; private hostnames, channel identifiers, configuration paths, and operational details are intentionally omitted.
 
 
 
- Scope note: this is not a complaint that context windows are too small. The lesson is that long-running agent work needs reliability boundaries even when the model and runtime support automatic compaction.
+ **Scope note:** this is not a complaint that context windows are too small. The lesson is that long-running agent work needs reliability boundaries even when the model and runtime support automatic compaction.
 
 
  The failure mode is easy to underestimate because it sounds like housekeeping: an agent thread gets too large, the runtime tries to compact it, and the next turn either recovers or fails. If you only look at the token counter, the answer seems obvious: make compaction better, raise the limit, or trim more aggressively.
@@ -34,7 +34,7 @@ Summary: Context compaction is not just token housekeeping. For long-running age
  In a real long-running agent workflow, the transcript is not just chat history. It is the coordination surface: user intent, tool evidence, partial decisions, spawned-worker status, delivery targets, approvals, and the subtle difference between “work completed somewhere” and “the waiting user saw the final result.” When that surface grows until compaction becomes mandatory, you are no longer doing harmless cleanup. You are crossing a reliability boundary.
 
 
- Context compaction should be treated like a handoff, not like garbage collection.
+ **Context compaction should be treated like a handoff, not like garbage collection.**
 
 
 
@@ -70,7 +70,7 @@ Summary: Context compaction is not just token housekeeping. For long-running age
  The healthier question is not “how do I avoid ever compacting?” It is:
 
 
- If compaction happened right now, what exact state would have to survive for another agent or another turn to continue safely?
+ **If compaction happened right now, what exact state would have to survive for another agent or another turn to continue safely?**
 
 
 
@@ -81,7 +81,10 @@ Summary: Context compaction is not just token housekeeping. For long-running age
 
  The most useful fix is boring: write down a compact, explicit checkpoint before the thread becomes heroic. I like checkpoints that have a predictable shape:
 
- goal
+
+
+```
+goal
 current decision / status
 authoritative artifacts
 pending actions
@@ -91,6 +94,7 @@ verification already run
 next safe step
 stop conditions
 final-delivery target
+```
 
  That packet does not need to be long. In fact, if it is too long, it has the same disease as the transcript. The point is to turn an implicit pile of context into an explicit continuation contract.
 
@@ -103,13 +107,13 @@ final-delivery target
 
 
 
-- continue locally if the next action is short and the thread still has headroom
+- **continue locally** if the next action is short and the thread still has headroom
 
-- spawn a bounded worker if the next action is long, tool-heavy, or wait-heavy
+- **spawn a bounded worker** if the next action is long, tool-heavy, or wait-heavy
 
-- start a clean continuation if the old transcript is mostly historical baggage
+- **start a clean continuation** if the old transcript is mostly historical baggage
 
-- publish an artifact and link it back if the durable state belongs in a file, issue, PR, or run ledger
+- **publish an artifact and link it back** if the durable state belongs in a file, issue, PR, or run ledger
 
 
  The discipline is to choose a scope deliberately. An agent should not keep appending because the current thread is convenient. Convenience is not a reliability property.
@@ -142,7 +146,7 @@ final-delivery target
  The practical rule I now trust is:
 
 
- When a thread starts depending on compaction to stay alive, promote the important state out of the transcript.
+ **When a thread starts depending on compaction to stay alive, promote the important state out of the transcript.**
 
 
 
@@ -174,11 +178,11 @@ final-delivery target
 
 
 
-- The Checkpoint Is the Interface: Durable Handoffs for Long-Running Agent Work
+- [The Checkpoint Is the Interface: Durable Handoffs for Long-Running Agent Work](/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html)
 
-- LLM Panel Orchestration in OpenClaw
+- [LLM Panel Orchestration in OpenClaw](/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
 
-- Local Semantic Memory on a 4-Core ARM VPS
+- [Local Semantic Memory on a 4-Core ARM VPS](/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
 
 
 
@@ -198,4 +202,4 @@ final-delivery target
 
  Have a pattern for keeping long-running agent threads from turning into transcript archaeology? Leave a comment below.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

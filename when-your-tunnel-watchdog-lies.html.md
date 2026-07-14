@@ -9,22 +9,22 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When Your Tunnel Watchdog Lies: Fixing False SSH Alarms Without Hiding Real Failures
 
 
- June 2, 2026 | By Jingxiao Cai
+ **June 2, 2026** | By Jingxiao Cai
 
  Tags: devops, networking, monitoring, ai-agents, openclaw, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped separate a private reverse-SSH incident into the public-safe parts: transient transport noise, wrapper semantics, and alert honesty.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped separate a private reverse-SSH incident into the public-safe parts: transient transport noise, wrapper semantics, and alert honesty.
 
 
 
- Short version: a watchdog can be right about a transient failure and wrong about the operational headline. The fix is not to silence the watchdog; it is to make the alert contract say exactly what happened.
+ **Short version:** a watchdog can be right about a transient failure and wrong about the operational headline. The fix is not to silence the watchdog; it is to make the alert contract say exactly what happened.
 
 
  A tunnel watchdog fired on a reverse-SSH lane with a scary-looking connection-close signature.
@@ -33,18 +33,18 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-- A real transient transport failure. A burst-shaped probe could make one lane briefly reject a handshake while the same lane passed an immediate focused recheck.
+- **A real transient transport failure.** A burst-shaped probe could make one lane briefly reject a handshake while the same lane passed an immediate focused recheck.
 
-- A wrapper contract bug. In this wrapper, nonzero meant command/runtime failure, but the watchdog used that same channel for ordinary degraded alert text. The host wrapper therefore labeled the alert as a wrapper failure instead of a normal degraded condition.
-
-
-
- The alert was not fake. The headline was wrong.
+- **A wrapper contract bug.** In this wrapper, nonzero meant command/runtime failure, but the watchdog used that same channel for ordinary degraded alert text. The host wrapper therefore labeled the alert as a wrapper failure instead of a normal degraded condition.
 
 
 
+ **The alert was not fake. The headline was wrong.**
 
- Conceptual scope: this is a sanitized operations story. I am omitting hostnames, lane names, exact topology, file paths, schedule details, thread identifiers, script names, and private wrapper names. The reusable lesson is the monitor contract, not my deployment fingerprint.
+
+
+
+ **Conceptual scope:** this is a sanitized operations story. I am omitting hostnames, lane names, exact topology, file paths, schedule details, thread identifiers, script names, and private wrapper names. The reusable lesson is the monitor contract, not my deployment fingerprint.
 
 
 
@@ -72,34 +72,11 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-
- Observed event
- What it should mean
- Bad contract read
-
-
-
-
-
- Transient SSH close during burst probe
- Transport warning; recheck before escalating
- Hard tunnel failure
-
-
-
- Watchdog prints degraded alert text
- Monitor succeeded and found something worth reporting
- Wrapper crashed or command failed
-
-
-
- Immediate focused recheck succeeds
- Transient class confirmed; keep evidence and soak
- Contradictory noise
-
-
-
-
+| Observed event | What it should mean | Bad contract read |
+| --- | --- | --- |
+| Transient SSH close during burst probe | Transport warning; recheck before escalating | Hard tunnel failure |
+| Watchdog prints degraded alert text | Monitor succeeded and found something worth reporting | Wrapper crashed or command failed |
+| Immediate focused recheck succeeds | Transient class confirmed; keep evidence and soak | Contradictory noise |
 
  The monitor was trying to be helpful. The contract made it sound less trustworthy than it was.
 
@@ -112,15 +89,15 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-- Add a short grace recheck. If a lane fails during a burst probe, recheck the specific problem lane before paging the operator.
+- **Add a short grace recheck.** If a lane fails during a burst probe, recheck the specific problem lane before paging the operator.
 
-- Separate degraded output from command failure. A watchdog that successfully emits a degraded alert should encode that as monitored-system state, not as monitor-runtime failure. In a binary wrapper where nonzero means “the command failed,” that means success plus alert text. In a typed-status monitor, it may mean distinct warning/critical/unknown statuses.
+- **Separate degraded output from command failure.** A watchdog that successfully emits a degraded alert should encode that as monitored-system state, not as monitor-runtime failure. In a binary wrapper where nonzero means “the command failed,” that means success plus alert text. In a typed-status monitor, it may mean distinct warning/critical/unknown statuses.
 
-- Keep real wrapper failures distinct. Reserve the wrapper/runtime failure channel for cases where the watchdog itself cannot run, parse, connect to prerequisites, or produce a trustworthy report.
+- **Keep real wrapper failures distinct.** Reserve the wrapper/runtime failure channel for cases where the watchdog itself cannot run, parse, connect to prerequisites, or produce a trustworthy report.
 
 
 
- Healthy contract: “I successfully ran and found a degraded monitored condition” is not the same as “I failed to run.” Treat those as separate states in whatever status channel your supervisor actually understands.
+ **Healthy contract:** “I successfully ran and found a degraded monitored condition” is not the same as “I failed to run.” Treat those as separate states in whatever status channel your supervisor actually understands.
 
 
 
@@ -139,40 +116,12 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-
- State
- Status behavior
- Operator meaning
-
-
-
-
-
- All monitored lanes healthy
- Healthy status, usually silent
- No action
-
-
-
- Degraded monitored condition found
- Degraded monitored-state status; in binary wrappers, success plus alert text
- Monitor worked; investigate the reported condition
-
-
-
- Transient failure clears on focused recheck
- Recovered/transient status, with evidence or telemetry note
- Record and watch; do not page as a hard failure by default
-
-
-
- Watchdog cannot run or cannot trust its own result
- Runtime/unknown failure status
- Debug the monitor or wrapper first
-
-
-
-
+| State | Status behavior | Operator meaning |
+| --- | --- | --- |
+| All monitored lanes healthy | Healthy status, usually silent | No action |
+| Degraded monitored condition found | Degraded monitored-state status; in binary wrappers, success plus alert text | Monitor worked; investigate the reported condition |
+| Transient failure clears on focused recheck | Recovered/transient status, with evidence or telemetry note | Record and watch; do not page as a hard failure by default |
+| Watchdog cannot run or cannot trust its own result | Runtime/unknown failure status | Debug the monitor or wrapper first |
 
  The exact mechanics vary by system. Some supervisors intentionally use nonzero check states for warning or critical monitored conditions. That is fine when the states are typed and unambiguous. The stable principle is narrower: do not let the same status mean both monitored-system degradation and monitor-runtime failure.
 
@@ -181,15 +130,15 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-- Name the monitored condition separately from wrapper health. Do not let one word like “failed” cover both.
+- **Name the monitored condition separately from wrapper health.** Do not let one word like “failed” cover both.
 
-- Recheck burst-sensitive failures before paging. A topology-wide probe can create a failure shape that a focused probe does not reproduce.
+- **Recheck burst-sensitive failures before paging.** A topology-wide probe can create a failure shape that a focused probe does not reproduce.
 
-- Preserve the first failure signature. A cleared recheck does not mean the original event was imaginary.
+- **Preserve the first failure signature.** A cleared recheck does not mean the original event was imaginary.
 
-- Reserve the wrapper-runtime failure state for wrapper/runtime failure. Normal degraded alert text should not masquerade as command failure; if your monitor supports typed warning/critical states, use them explicitly.
+- **Reserve the wrapper-runtime failure state for wrapper/runtime failure.** Normal degraded alert text should not masquerade as command failure; if your monitor supports typed warning/critical states, use them explicitly.
 
-- Write reopen criteria. Decide what recurrence turns a transient class into a real infrastructure investigation.
+- **Write reopen criteria.** Decide what recurrence turns a transient class into a real infrastructure investigation.
 
 
 
@@ -207,13 +156,13 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
 
 
-- Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
-- When a True Alert Is Still the Wrong Page
+- [When a True Alert Is Still the Wrong Page](/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- The Monitor Is Not the Contract
+- [The Monitor Is Not the Contract](/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html)
 
 
 
@@ -233,4 +182,4 @@ Summary: A real transient SSH failure plus a wrapper contract bug turned one tun
 
  Found this useful? Leave a comment below, or send it to someone whose watchdogs still blur degraded alerts with wrapper crashes.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

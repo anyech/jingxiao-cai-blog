@@ -9,22 +9,22 @@ Summary: A recent OpenClaw auth-profile incident showed why source tags matter: 
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Fallback Is Not Preference: Keep Agent Auth Recovery Out of Session State
 
 
- June 10, 2026 | By Jingxiao Cai
+ **June 10, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, automation, auth, debugging, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the failure chain, separate durable state from transient recovery, and strip out account identifiers, session identifiers, watchdog names, raw paths, and live deployment fingerprints before publication.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped reconstruct the failure chain, separate durable state from transient recovery, and strip out account identifiers, session identifiers, watchdog names, raw paths, and live deployment fingerprints before publication.
 
 
 
- Short version: an automatic fallback can be the right behavior for a single failing turn. Persisting that fallback as if the user chose it is a different behavior entirely.
+ **Short version:** an automatic fallback can be the right behavior for a single failing turn. Persisting that fallback as if the user chose it is a different behavior entirely.
 
 
  A good agent runtime needs fallback paths. Providers time out. Auth profiles fail transiently. A reply should not disappear just because the primary route had a bad minute.
@@ -36,12 +36,12 @@ Summary: A recent OpenClaw auth-profile incident showed why source tags matter: 
  The root issue was sharper than that: an automatic recovery choice was being treated too much like durable session intent.
 
 
- Fallback is a recovery decision. Preference is a user decision. Do not store them as the same thing.
+ **Fallback is a recovery decision. Preference is a user decision. Do not store them as the same thing.**
 
 
 
 
- Sanitized scope: this post intentionally omits exact profile identifiers, account emails, session IDs, run IDs, watchdog job names, job IDs, raw log paths, exact schedules, private file paths, and live config values. The reusable lesson is the state-machine boundary, not my deployment map.
+ **Sanitized scope:** this post intentionally omits exact profile identifiers, account emails, session IDs, run IDs, watchdog job names, job IDs, raw log paths, exact schedules, private file paths, and live config values. The reusable lesson is the state-machine boundary, not my deployment map.
 
 
 
@@ -53,49 +53,26 @@ Summary: A recent OpenClaw auth-profile incident showed why source tags matter: 
 
 
 
-
- State meaning
- Who chose it?
- How long should it live?
-
-
-
-
-
- User preference
- The user or an explicit operator action.
- Durable until changed.
-
-
-
- Automatic fallback
- The runtime, during a failure or timeout.
- Transient; scoped to the failed turn or a narrow recovery window.
-
-
-
- Emergency break-glass route
- Policy, under constrained conditions.
- Available as a candidate, but not sticky by accident.
-
-
-
-
+| State meaning | Who chose it? | How long should it live? |
+| --- | --- | --- |
+| **User preference** | The user or an explicit operator action. | Durable until changed. |
+| **Automatic fallback** | The runtime, during a failure or timeout. | Transient; scoped to the failed turn or a narrow recovery window. |
+| **Emergency break-glass route** | Policy, under constrained conditions. | Available as a candidate, but not sticky by accident. |
 
  Once those meanings blur, the runtime starts asking the wrong question. Instead of “what route should this failing turn use so the user still gets a reply?” it starts behaving like “what auth profile should this session prefer next time?”
 
  Those are not the same question.
 
 
-## The Critical Distinction: auto Versus user
+## The Critical Distinction: `auto` Versus `user`
 
  The simplest way to express the boundary is with a source tag.
 
 
 
-- source=user means the user or operator explicitly selected the profile.
+- `source=user` means the user or operator explicitly selected the profile.
 
-- source=auto means the runtime selected the profile as part of recovery.
+- `source=auto` means the runtime selected the profile as part of recovery.
 
 
  Only the first one should behave like a durable preference.
@@ -103,7 +80,7 @@ Summary: A recent OpenClaw auth-profile incident showed why source tags matter: 
  That sounds obvious, but it is easy to lose in a real runtime. A live turn has a selected profile. A session record has a persisted profile field. A retry planner has candidate profiles. A cleanup job sees stale state after the fact. If the implementation copies a live automatic selection into the same durable field used for explicit preference, the system has encoded the wrong contract.
 
 
- Rule: a user-locked auth profile can be durable. An auto-selected emergency profile should be recoverable, explainable, and short-lived.
+ **Rule:** a user-locked auth profile can be durable. An auto-selected emergency profile should be recoverable, explainable, and short-lived.
 
 
 
@@ -137,24 +114,28 @@ Summary: A recent OpenClaw auth-profile incident showed why source tags matter: 
 
 
 
-- User-selected profiles are durable. If the user pins a profile, respect it until they change it.
+- **User-selected profiles are durable.** If the user pins a profile, respect it until they change it.
 
-- Automatic fallback is turn-scoped or narrowly window-scoped. It can save the current reply, but it should not become the session's remembered preference.
+- **Automatic fallback is turn-scoped or narrowly window-scoped.** It can save the current reply, but it should not become the session's remembered preference.
 
-- Emergency profiles remain candidates, not defaults. They are allowed to rescue failure, not quietly take over normal routing.
+- **Emergency profiles remain candidates, not defaults.** They are allowed to rescue failure, not quietly take over normal routing.
 
-- Recovery state is observable. Operators should be able to tell whether a fallback happened, why it happened, and whether it was later cleared.
+- **Recovery state is observable.** Operators should be able to tell whether a fallback happened, why it happened, and whether it was later cleared.
 
-- Cleanup is a backstop. The primary fix belongs in the persistence boundary, not only in the janitor.
+- **Cleanup is a backstop.** The primary fix belongs in the persistence boundary, not only in the janitor.
 
 
  In pseudocode, the rule is roughly:
 
- if selection.source == "user":
- persist_as_session_preference(selection.profile)
+
+
+```
+if selection.source == "user":
+    persist_as_session_preference(selection.profile)
 elif selection.source == "auto":
- use_for_this_recovery_path(selection.profile)
- do_not_persist_as_user_intent(selection.profile)
+    use_for_this_recovery_path(selection.profile)
+    do_not_persist_as_user_intent(selection.profile)
+```
 
  The actual implementation is more complicated, and this pseudocode is a public design invariant rather than a literal code excerpt.
 
@@ -171,34 +152,11 @@ elif selection.source == "auto":
 
 
 
-
- Recovery event
- Safe memory
- Unsafe memory
-
-
-
-
-
- Primary route timed out once.
- Record health evidence and maybe cool down briefly.
- Persist the emergency route as the session preference.
-
-
-
- Fallback route produced a reply.
- Record that the fallback path works.
- Assume it should be the default next time.
-
-
-
- Watchdog cleaned stale auto state.
- Keep the cleanup as audit evidence.
- Treat the watchdog as the permanent semantic fix.
-
-
-
-
+| Recovery event | Safe memory | Unsafe memory |
+| --- | --- | --- |
+| Primary route timed out once. | Record health evidence and maybe cool down briefly. | Persist the emergency route as the session preference. |
+| Fallback route produced a reply. | Record that the fallback path works. | Assume it should be the default next time. |
+| Watchdog cleaned stale auto state. | Keep the cleanup as audit evidence. | Treat the watchdog as the permanent semantic fix. |
 
 
 ## The Debugging Lesson
@@ -207,11 +165,11 @@ elif selection.source == "auto":
 
 
 
-- live turn selection: which route the current failing turn actually used;
+- **live turn selection:** which route the current failing turn actually used;
 
-- persistent session state: what the next turn might inherit;
+- **persistent session state:** what the next turn might inherit;
 
-- watchdog cleanup: what state was cleared after the fact.
+- **watchdog cleanup:** what state was cleared after the fact.
 
 
  If you look only at the final session state, everything may appear clean. If you look only at user-visible replies, it may look like the system “randomly” chose a different profile. If you look only at watchdog output, it may look like the watchdog is the main actor.
@@ -219,7 +177,7 @@ elif selection.source == "auto":
  The bug class appears when those three timelines are overlaid. The runtime can make a valid emergency choice during a transient failure, persist that choice too broadly, and then let a watchdog clean it later. Every individual step may look defensible. The composition is still wrong.
 
 
- When debugging agent recovery, inspect the live decision, the persisted state, and the cleanup path as separate timelines.
+ **When debugging agent recovery, inspect the live decision, the persisted state, and the cleanup path as separate timelines.**
 
 
 
@@ -233,7 +191,7 @@ elif selection.source == "auto":
  The right boundary is not “never use emergency profiles.” It is “never confuse an emergency profile with a durable preference unless the user explicitly made it one.” That preserves the operational benefit of fallback without letting transient failures slowly reshape session state.
 
 
- Design rule: make recovery state observable, but make user intent the only durable preference authority.
+ **Design rule:** make recovery state observable, but make user intent the only durable preference authority.
 
 
  Fallback should keep the conversation alive. It should not quietly become the conversation's memory.
@@ -244,13 +202,13 @@ elif selection.source == "auto":
 
 
 
-- Fail-Closing Agent Launches on Auth-Readiness Gates
+- [Fail-Closing Agent Launches on Auth-Readiness Gates](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
-- Credential Drift Is a Placeholder Problem
+- [Credential Drift Is a Placeholder Problem](/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- Gateway Restart Behavior in OpenClaw
+- [Gateway Restart Behavior in OpenClaw](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
 
 
@@ -270,4 +228,4 @@ elif selection.source == "auto":
 
  How do you keep fallback paths from becoming sticky state in agent systems? Leave a comment below.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

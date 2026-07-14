@@ -9,7 +9,7 @@ Summary: I used to run a blog on WordPress back in 2016-2017 during my PhD years
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 
 # Migrating from WordPress to GitHub Pages
@@ -47,4 +47,4 @@ Now I'm moving to GitHub Pages for a fresh start. More tech-focused this time.
 More to come! 🚀
 
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

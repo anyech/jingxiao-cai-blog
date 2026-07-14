@@ -9,7 +9,7 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 
 
@@ -19,7 +19,7 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
  Categories: tutorial, google-cloud, openclaw, automation
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. Yes, an AI wrote part of this blog post with a little help from me.
+ *This post was co-created with **Clawsistant**, my OpenClaw AI agent. Yes, an AI wrote part of this blog post with a little help from me.*
 
  When running a self-hosted AI assistant like OpenClaw, giving it access to your Google Workspace (Gmail, Calendar, Drive) opens up powerful automation possibilities: reading emails, checking calendar events, accessing files, and even sending messages on your behalf.
 
@@ -32,13 +32,13 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
-- Summarize emails — Get a daily digest of important messages
+- **Summarize emails** — Get a daily digest of important messages
 
-- Calendar management — Check upcoming events, schedule meetings
+- **Calendar management** — Check upcoming events, schedule meetings
 
-- File access — Read documents, spreadsheets, or drive files
+- **File access** — Read documents, spreadsheets, or drive files
 
-- Send emails — Automate responses or notifications
+- **Send emails** — Automate responses or notifications
 
 
 
@@ -58,33 +58,33 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
-- Go to Google Cloud Console
+- Go to [Google Cloud Console](https://console.cloud.google.com/)
 
-- Click Select a project → New Project
+- Click **Select a project** → **New Project**
 
 - Give it a descriptive name like "OpenClaw Integration"
 
-- Note your Project ID (we'll need it later)
+- Note your **Project ID** (we'll need it later)
 
 
 
 ## Step 2: Enable Required APIs
 
- In your project, go to APIs & Services → Library and enable these APIs:
+ In your project, go to **APIs & Services → Library** and enable these APIs:
 
 
 
-- Gmail API — For reading and sending emails
+- **Gmail API** — For reading and sending emails
 
-- Google Calendar API — For reading/creating calendar events
+- **Google Calendar API** — For reading/creating calendar events
 
-- Google Drive API — For reading files and folders
+- **Google Drive API** — For reading files and folders
 
-- Google Sheets API (optional) — If you need spreadsheet access
+- **Google Sheets API** (optional) — If you need spreadsheet access
 
 
 
- Tip: Search for each API name in the library and enable them one by one.
+ **Tip:** Search for each API name in the library and enable them one by one.
 
 
 
@@ -92,34 +92,34 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
-- Go to APIs & Services → OAuth consent screen
+- Go to **APIs & Services → OAuth consent screen**
 
-- Choose External (unless you have a Workspace organization with internal apps)
+- Choose **External** (unless you have a Workspace organization with internal apps)
 
 - Fill in the required fields:
 
- App name: "OpenClaw Google Integration" (or whatever you prefer)
+ **App name:** "OpenClaw Google Integration" (or whatever you prefer)
 
-- User support email: Your Google account
+- **User support email:** Your Google account
 
-- Developer contact information: Your email
-
-
+- **Developer contact information:** Your email
 
 
-- Click Save and Continue
 
-- On Scopes, click Add or remove scopes and add:
 
- https://www.googleapis.com/auth/gmail.readonly
+- Click **Save and Continue**
 
-- https://www.googleapis.com/auth/gmail.send
+- On **Scopes**, click **Add or remove scopes** and add:
 
-- https://www.googleapis.com/auth/calendar.readonly
+ `https://www.googleapis.com/auth/gmail.readonly`
 
-- https://www.googleapis.com/auth/drive.readonly
+- `https://www.googleapis.com/auth/gmail.send`
 
-- https://www.googleapis.com/auth/spreadsheets.readonly
+- `https://www.googleapis.com/auth/calendar.readonly`
+
+- `https://www.googleapis.com/auth/drive.readonly`
+
+- `https://www.googleapis.com/auth/spreadsheets.readonly`
 
 
 
@@ -128,7 +128,7 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
- Important: Since your app is "External" with unverified status, you'll need to add your own Google account as a test user. Go to Test users and add your email. This allows you to use the API even before Google verifies the app.
+ **Important:** Since your app is "External" with unverified status, you'll need to add your own Google account as a test user. Go to **Test users** and add your email. This allows you to use the API even before Google verifies the app.
 
 
 
@@ -136,30 +136,30 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
-- Go to APIs & Services → Credentials
+- Go to **APIs & Services → Credentials**
 
-- Click Create Credentials → OAuth client ID
+- Click **Create Credentials** → **OAuth client ID**
 
-- Choose Web application as the application type
+- Choose **Web application** as the application type
 
-- Add these Authorized redirect URIs:
+- Add these **Authorized redirect URIs**:
 
- http://localhost
+ `http://localhost`
 
-- http://localhost:8080
+- `http://localhost:8080`
 
-- http://127.0.0.1
+- `http://127.0.0.1`
 
-- https://developers.google.com/oauthplayground (for VPS/headless servers)
-
-
- (Add whatever redirect URIs your agent framework requires)
+- `https://developers.google.com/oauthplayground` *(for VPS/headless servers)*
 
 
+ *(Add whatever redirect URIs your agent framework requires)*
 
-- Click Create
 
-- Download the JSON file — this contains your Client ID and Client Secret
+
+- Click **Create**
+
+- Download the JSON file — this contains your **Client ID** and **Client Secret**
 
 
 
@@ -190,28 +190,23 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 
 
- Security tip: Treat your credentials file like a password. Don't commit it to git. Add it to your .gitignore if your agent stores it locally.
+ **Security tip:** Treat your credentials file like a password. Don't commit it to git. Add it to your .gitignore if your agent stores it locally.
 
 
 
 ## What Each Scope Means
 
 
- ScopeWhat it allows
 
- gmail.readonlyRead emails, labels, settings
+| Scope | What it allows |
+| --- | --- |
+| `gmail.readonly` | Read emails, labels, settings |
+| `gmail.send` | Send new emails |
+| `calendar.readonly` | Read calendar events |
+| `drive.readonly` | Read files in Drive |
+| `spreadsheets.readonly` | Read Google Sheets |
 
- gmail.sendSend new emails
-
- calendar.readonlyRead calendar events
-
- drive.readonlyRead files in Drive
-
- spreadsheets.readonlyRead Google Sheets
-
-
-
- Notice I only requested readonly scopes where possible, and gmail.send specifically (not full Gmail access). Follow the principle of least privilege — only ask for what you need.
+ Notice I only requested **readonly** scopes where possible, and **gmail.send** specifically (not full Gmail access). Follow the principle of least privilege — only ask for what you need.
 
 
 ## Troubleshooting
@@ -219,7 +214,7 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 ### "App not verified" warnings
 
- Google shows scary warnings for unverified apps. Since you're the only user, you can ignore this by clicking Advanced → Go to (App Name) (unsafe). This is normal during development.
+ Google shows scary warnings for unverified apps. Since you're the only user, you can ignore this by clicking **Advanced → Go to (App Name) (unsafe)**. This is normal during development.
 
 
 ### Token expired errors
@@ -237,24 +232,29 @@ Summary: A comprehensive guide to setting up Google APIs for your projects.
 
 #### Complete Headless OAuth Flow (Step-by-Step)
 
- For VPS deployments without any browser access, use the manual_oauth.py script from the gmail-reader repo:
+ For VPS deployments without any browser access, use the `manual_oauth.py` script from the gmail-reader repo:
 
- # On your VPS:
+
+
+```
+# On your VPS:
 cd ~/openclaw-gmail-reader/
 python3 manual_oauth.py
 
 # This will output an authorization URL
 # Copy it to your local browser, authorize, and paste the code back
+```
+
  The script handles token exchange and storage automatically. Token refresh is handled by the Google client library (tokens last ~6 months for published apps).
 
 
 ### ❌ Error: invalid_scope
 
- Symptom: OAuth fails with invalid_scope or Access blocked: This app's request is invalid
+ **Symptom:** OAuth fails with `invalid_scope` or `Access blocked: This app's request is invalid`
 
- Cause: The scopes in your authorization URL don't match what's configured in Google Cloud Console.
+ **Cause:** The scopes in your authorization URL don't match what's configured in Google Cloud Console.
 
- Fix:
+ **Fix:**
 
 
 
@@ -264,15 +264,15 @@ python3 manual_oauth.py
 
 - Ensure ALL these scopes are added:
 
- https://www.googleapis.com/auth/gmail.readonly
+ `https://www.googleapis.com/auth/gmail.readonly`
 
-- https://www.googleapis.com/auth/gmail.send
+- `https://www.googleapis.com/auth/gmail.send`
 
-- https://www.googleapis.com/auth/calendar.readonly
+- `https://www.googleapis.com/auth/calendar.readonly`
 
-- https://www.googleapis.com/auth/drive.readonly
+- `https://www.googleapis.com/auth/drive.readonly`
 
-- https://www.googleapis.com/auth/spreadsheets.readonly
+- `https://www.googleapis.com/auth/spreadsheets.readonly`
 
 
 
@@ -282,24 +282,24 @@ python3 manual_oauth.py
 - Re-run the OAuth flow
 
 
- Pro tip: If you're using the OAuth Playground method, make sure the scopes in your authorization URL exactly match what's in the console (including https:// prefix).
+ **Pro tip:** If you're using the OAuth Playground method, make sure the scopes in your authorization URL exactly match what's in the console (including `https://` prefix).
 
- If your agent runs on a server without a browser (like a VPS), you can't use the standard flow.run_local_server() OAuth flow. Instead:
+ If your agent runs on a server without a browser (like a VPS), you can't use the standard `flow.run_local_server()` OAuth flow. Instead:
 
 
 
-- Add https://developers.google.com/oauthplayground as a redirect URI
+- Add `https://developers.google.com/oauthplayground` as a redirect URI
 
 - Generate an authorization URL with this redirect URI
 
 - Visit the URL in your local browser, authorize
 
-- You'll be redirected to OAuth Playground with a ?code=... parameter
+- You'll be redirected to OAuth Playground with a `?code=...` parameter
 
 - Exchange that code for a token via POST request
 
 
- See the openclaw-gmail-reader repo for helper scripts that automate this.
+ See the [openclaw-gmail-reader](https://github.com/anyech/openclaw-gmail-reader) repo for helper scripts that automate this.
 
 
 
@@ -344,9 +344,9 @@ python3 manual_oauth.py
 
 
 
-- Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story — The messy journey that led to MultCloud
+- [Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story](/jingxiao-cai-blog/onedrive-multcloud-story.html) — The messy journey that led to MultCloud
 
-- Migrating from WordPress to GitHub Pages — Why I chose GitHub Pages for hosting
+- [Migrating from WordPress to GitHub Pages](/jingxiao-cai-blog/migrating-from-wordpress.html) — Why I chose GitHub Pages for hosting
 
 
 
@@ -355,11 +355,11 @@ python3 manual_oauth.py
 
 ### About the Author
 
- Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Radar Signal Processing from University of Oklahoma. Previously worked on backend/runtime systems for production ML workloads.
+ **Jingxiao Cai** is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Radar Signal Processing from University of Oklahoma. Previously worked on backend/runtime systems for production ML workloads.
 
 
 
 
 
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

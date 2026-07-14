@@ -9,22 +9,22 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 ---
 
-&larr; Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # A Final Summary Needs a Delivery Receipt
 
 
- July 6, 2026 | By Jingxiao Cai
+ **July 6, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, automation, reliability, delivery, openclaw
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private delivery-gap RCA into a public checklist and remove thread identifiers, raw logs, helper names, paths, project labels, and deployment-specific details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private delivery-gap RCA into a public checklist and remove thread identifiers, raw logs, helper names, paths, project labels, and deployment-specific details.
 
 
 
- Short version: a final summary that exists only inside an agent transcript is not enough. User-facing closeout needs a delivery receipt: explicit target, send result, read-back proof, and duplicate suppression.
+ **Short version:** a final summary that exists only inside an agent transcript is not enough. User-facing closeout needs a delivery receipt: explicit target, send result, read-back proof, and duplicate suppression.
 
 
  The failure mode was small, but it was the kind of small that matters.
@@ -36,12 +36,12 @@ Summary: A final summary can exist internally while the user-facing thread still
  I have written nearby lessons about a report that existed but was not delivered, and about a reply that existed while a thread stayed silent. This post is the contract-level follow-up: what evidence should exist before a user-waiting workflow is allowed to call the closeout delivered?
 
 
- Done is not done until the expected surface has delivery proof.
+ **Done is not done until the expected surface has delivery proof.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations lesson from a self-hosted chat workflow. I am intentionally leaving out private project names, thread and message identifiers, exact artifacts, helper filenames, paths, model routes, raw logs, and deployment topology. The useful public lesson is the closeout contract.
+ **Conceptual scope:** this is a sanitized agent-operations lesson from a self-hosted chat workflow. I am intentionally leaving out private project names, thread and message identifiers, exact artifacts, helper filenames, paths, model routes, raw logs, and deployment topology. The useful public lesson is the closeout contract.
 
 
 
@@ -51,40 +51,12 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-
- State
- Looks like progress?
- Counts as closeout?
-
-
-
-
-
- Worker completed
- Yes. A background lane finished its assigned work.
- No. Worker completion says nothing about where the result was delivered.
-
-
-
- Final summary generated
- Yes. The substantive answer exists inside the orchestration transcript.
- No. Internal text is not the same as user-visible text.
-
-
-
- Visible send attempted
- Usually. A message was submitted to the chat surface.
- Not by itself. Send attempts can fail, target the wrong place, or be duplicated.
-
-
-
- Read-back verified
- Yes. The destination shows the expected closeout.
- Yes. This is the receipt the workflow can rely on.
-
-
-
-
+| State | Looks like progress? | Counts as closeout? |
+| --- | --- | --- |
+| **Worker completed** | Yes. A background lane finished its assigned work. | No. Worker completion says nothing about where the result was delivered. |
+| **Final summary generated** | Yes. The substantive answer exists inside the orchestration transcript. | No. Internal text is not the same as user-visible text. |
+| **Visible send attempted** | Usually. A message was submitted to the chat surface. | Not by itself. Send attempts can fail, target the wrong place, or be duplicated. |
+| **Read-back verified** | Yes. The destination shows the expected closeout. | Yes. This is the receipt the workflow can rely on. |
 
  The missing piece was the last row. Without it, a transcript can look complete while the person in the source thread sees silence.
 
@@ -93,27 +65,31 @@ Summary: A final summary can exist internally while the user-facing thread still
 
  The public-safe proof unit for this class of incident is a delivery-receipt card. It does not need private identifiers to be useful.
 
- delivery_receipt:
- origin:
- request_surface: recorded
- expected_final_surface: recorded
- visible_delivery_required: yes
- payload:
- closeout_artifact: preserved
- payload_hash_or_marker: recorded
- public_safe_for_destination: checked
- send:
- attempted: yes
- target_matches_origin: yes
- platform_message_id: recorded_if_available
- read_back:
- expected_marker_visible: yes
- timestamp_after_send: yes
- dedupe:
- request_scoped_key: recorded
- duplicate_send_suppressed: yes
- final_state:
- delivered: yes
+
+
+```
+delivery_receipt:
+  origin:
+    request_surface: recorded
+    expected_final_surface: recorded
+    visible_delivery_required: yes
+  payload:
+    closeout_artifact: preserved
+    payload_hash_or_marker: recorded
+    public_safe_for_destination: checked
+  send:
+    attempted: yes
+    target_matches_origin: yes
+    platform_message_id: recorded_if_available
+  read_back:
+    expected_marker_visible: yes
+    timestamp_after_send: yes
+  dedupe:
+    request_scoped_key: recorded
+    duplicate_send_suppressed: yes
+  final_state:
+    delivered: yes
+```
 
  The exact storage format is not the point. The point is that closeout should have evidence at the same layer where the human experiences it.
 
@@ -128,34 +104,11 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-
- Control
- What it improves
- What it cannot prove alone
-
-
-
-
-
- Prompt reminder
- The agent is more likely to remember the desired behavior.
- That the platform accepted the message or that the right thread shows it.
-
-
-
- Skill/process text
- The workflow has a documented expectation.
- That every runtime path obeyed the expectation after handoff or interruption.
-
-
-
- Delivery ledger
- The system records origin, payload, attempts, receipt, and dedupe state.
- Nothing magical; it still needs careful target selection and failure handling.
-
-
-
-
+| Control | What it improves | What it cannot prove alone |
+| --- | --- | --- |
+| **Prompt reminder** | The agent is more likely to remember the desired behavior. | That the platform accepted the message or that the right thread shows it. |
+| **Skill/process text** | The workflow has a documented expectation. | That every runtime path obeyed the expectation after handoff or interruption. |
+| **Delivery ledger** | The system records origin, payload, attempts, receipt, and dedupe state. | Nothing magical; it still needs careful target selection and failure handling. |
 
  The practical fix is layered: keep the instruction, but add mechanical state so the workflow can audit itself.
 
@@ -166,23 +119,23 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-- origin target: where the human made the request;
+- **origin target:** where the human made the request;
 
-- expected delivery target: where the final result should appear;
+- **expected delivery target:** where the final result should appear;
 
-- payload marker: a hash, title, or stable marker for the closeout content;
+- **payload marker:** a hash, title, or stable marker for the closeout content;
 
-- delivery state: pending, attempted, read-back verified, failed, or intentionally suppressed;
+- **delivery state:** pending, attempted, read-back verified, failed, or intentionally suppressed;
 
-- platform receipt: message id or equivalent proof when the platform exposes one;
+- **platform receipt:** message id or equivalent proof when the platform exposes one;
 
-- dedupe key: a request-scoped key so retries do not double-post.
+- **dedupe key:** a request-scoped key so retries do not double-post.
 
 
  That outbox does not have to be heavyweight. It just has to survive the exact boundary where agents most often get confused: child finished, parent resumed, chat surface changed, final answer generated, but visible delivery still pending.
 
 
- Practical rule: a user-waiting task should not move from ready_for_delivery to complete without either read-back proof or an explicit blocked-delivery state.
+ **Practical rule:** a user-waiting task should not move from `ready_for_delivery` to `complete` without either read-back proof or an explicit blocked-delivery state.
 
 
 
@@ -212,40 +165,12 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-
- Workflow
- Generated artifact
- Delivery receipt
-
-
-
-
-
- Background research task
- Report or synthesis file
- Final message visible in the requesting thread
-
-
-
- Review panel
- Panelist outputs and synthesis
- Parent-owned closeout with coverage and degraded-lane notes
-
-
-
- Scheduled digest
- Saved digest artifact
- Message posted to the configured destination
-
-
-
- External publication
- Draft, build, or API response
- Live page/readback verification and canonical URL
-
-
-
-
+| Workflow | Generated artifact | Delivery receipt |
+| --- | --- | --- |
+| Background research task | Report or synthesis file | Final message visible in the requesting thread |
+| Review panel | Panelist outputs and synthesis | Parent-owned closeout with coverage and degraded-lane notes |
+| Scheduled digest | Saved digest artifact | Message posted to the configured destination |
+| External publication | Draft, build, or API response | Live page/readback verification and canonical URL |
 
  The repeated lesson is that artifacts and side effects need separate proof. An artifact can be complete while delivery failed. A delivery attempt can happen while read-back is missing. A visible message can land in the wrong place. A duplicate can be worse than a delay.
 
@@ -256,19 +181,19 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-- Name the expected final surface. Do not infer it from whatever context the worker happens to be in.
+- **Name the expected final surface.** Do not infer it from whatever context the worker happens to be in.
 
-- Preserve the final payload. Keep the summary or artifact separate from the delivery attempt.
+- **Preserve the final payload.** Keep the summary or artifact separate from the delivery attempt.
 
-- Send with an explicit target. Use the recorded destination, not a default.
+- **Send with an explicit target.** Use the recorded destination, not a default.
 
-- Read back or verify the result. Confirm the expected marker appears where the human will look.
+- **Read back or verify the result.** Confirm the expected marker appears where the human will look.
 
-- Record the receipt. Store the platform receipt, timestamp, payload marker, and final state.
+- **Record the receipt.** Store the platform receipt, timestamp, payload marker, and final state.
 
-- Suppress duplicates. If the final state is uncertain, reconcile before retrying.
+- **Suppress duplicates.** If the final state is uncertain, reconcile before retrying.
 
-- Report blocked delivery honestly. If the destination is inaccessible or verification fails, say that rather than pretending completion.
+- **Report blocked delivery honestly.** If the destination is inaccessible or verification fails, say that rather than pretending completion.
 
 
 
@@ -286,13 +211,13 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 
 
-- When the Reply Exists but the Thread Stayed Silent
+- [When the Reply Exists but the Thread Stayed Silent](/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- Long-Running Agent Work Needs a Bridge Back
+- [Long-Running Agent Work Needs a Bridge Back](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
-- A Thread Is Closable When No Local Blocker Remains
+- [A Thread Is Closable When No Local Blocker Remains](/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html)
 
 
 
@@ -311,10 +236,10 @@ Summary: A final summary can exist internally while the user-facing thread still
 
 ### Feedback
 
- Questions, critiques, or examples of missed closeouts in agent workflows? Open an issue in the blog repository or leave a comment below.
+ Questions, critiques, or examples of missed closeouts in agent workflows? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or leave a comment below.
 
 
 
- Published on July 6, 2026 &bull; Part of my ongoing agent operations and self-hosted AI workflow series
+ Published on July 6, 2026 • Part of my ongoing agent operations and self-hosted AI workflow series
 
- &larr; Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

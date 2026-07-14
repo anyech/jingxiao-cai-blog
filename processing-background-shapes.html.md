@@ -9,7 +9,7 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 
 # Processing Background Shapes: From Radar Signals to Distributed ML Runtime Systems
@@ -18,7 +18,7 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
  Categories: ml, runtime-systems, career, radar, signal-processing
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.
+ *This post was co-created with **Clawsistant**, my OpenClaw AI agent. Because sometimes the best way to explain your career path is to have an AI help you connect the dots.*
 
 
 ## The Unexpected Bridge
@@ -36,11 +36,11 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
 
 
-- Thermal noise — the inherent randomness of electron movement
+- **Thermal noise** — the inherent randomness of electron movement
 
-- Clutter — unwanted echoes from ground, weather, or birds
+- **Clutter** — unwanted echoes from ground, weather, or birds
 
-- Jamming — intentional interference
+- **Jamming** — intentional interference
 
 
  The art is separating the signal (an aircraft, a storm cell) from all this noise. This requires sophisticated filtering, adaptive algorithms, and understanding of signal statistics.
@@ -88,13 +88,13 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
 
 
-- Working with noisy data — ML training is fundamentally about extracting signal from noise in gradients, loss surfaces, and hyperparameter spaces
+- **Working with noisy data** — ML training is fundamentally about extracting signal from noise in gradients, loss surfaces, and hyperparameter spaces
 
-- Real-time constraints — understanding latency vs. throughput tradeoffs at a fundamental level
+- **Real-time constraints** — understanding latency vs. throughput tradeoffs at a fundamental level
 
-- Mathematical modeling — knowing when to apply statistical methods vs. deterministic approaches
+- **Mathematical modeling** — knowing when to apply statistical methods vs. deterministic approaches
 
-- System-level thinking — radar systems are inherently distributed, requiring coordination across components
+- **System-level thinking** — radar systems are inherently distributed, requiring coordination across components
 
 
  If you're considering a career transition from academia to industry, my advice: look for the underlying mathematical and systems-level similarities, not just the surface-level topic differences. The patterns transfer more than you'd expect.
@@ -114,11 +114,11 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
 
 
-- Troubleshooting AI Agent Skills: A Debugging Story
+- [Troubleshooting AI Agent Skills: A Debugging Story](/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html)
 
-- Getting OneDrive Working with Self-Hosted AI Agents
+- [Getting OneDrive Working with Self-Hosted AI Agents](/jingxiao-cai-blog/onedrive-multcloud-story.html)
 
-- Setting Up Google APIs for Self-Hosted AI Agents
+- [Setting Up Google APIs for Self-Hosted AI Agents](/jingxiao-cai-blog/google-api-setup-guide.html)
 
 
 
@@ -127,8 +127,8 @@ Summary: How my PhD in radar signal processing translated into distributed ML ru
 
 ### About the Author
 
- Dr. JCai is a Principal Member of Technical Staff at Oracle, where his work focuses on distributed ML runtime systems. He holds a PhD in Electrical Engineering from the University of Oklahoma, focusing on radar signal processing and adaptive sampling. Previously, he built distributed ML systems handling 200+ node Dask clusters and implemented zero-copy protocols for ML training data transfer. When not thinking about runtime reliability, he's likely thinking about cars, playing WoW, or finding better ways to extract signals from noise.
+ **Dr. JCai** is a Principal Member of Technical Staff at Oracle, where his work focuses on distributed ML runtime systems. He holds a PhD in Electrical Engineering from the University of Oklahoma, focusing on radar signal processing and adaptive sampling. Previously, he built distributed ML systems handling 200+ node Dask clusters and implemented zero-copy protocols for ML training data transfer. When not thinking about runtime reliability, he's likely thinking about cars, playing WoW, or finding better ways to extract signals from noise.
 
 
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof
 
 
- June 25, 2026 | By Jingxiao Cai
+ **June 25, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, automation, debugging, reliability, self-hosted-agents
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private infrastructure incident into a public-safe operations lesson about endpoint ownership, restart testing, and handoff design.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private infrastructure incident into a public-safe operations lesson about endpoint ownership, restart testing, and handoff design.
 
 
 
- Short version: a cutover is not complete when the new path works. It is complete when the old path can no longer reclaim the thing users call.
+ **Short version:** a cutover is not complete when the new path works. It is complete when the old path can no longer reclaim the thing users call.
 
 
  I recently hit a failure mode that looks obvious in hindsight: a new agent-serving path worked, health checks passed, and the old path seemed retired. Then a controlled backend restart exposed the truth. An obsolete tunnel still had enough lifecycle authority to come back and reclaim the public endpoint.
@@ -32,7 +32,7 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
  That is the kind of bug that hides between “it works now” and “it will keep working after replacement.” The first statement is a steady-state claim. The second is an ownership claim.
 
 
- Sanitized scope: this is an agent-operations pattern, not a topology dump. I am intentionally omitting private hostnames, paths, port numbers, thread IDs, service names, schedules, cloud details, and raw logs. The reusable lesson is the cutover contract.
+ **Sanitized scope:** this is an agent-operations pattern, not a topology dump. I am intentionally omitting private hostnames, paths, port numbers, thread IDs, service names, schedules, cloud details, and raw logs. The reusable lesson is the cutover contract.
 
 
 
@@ -43,14 +43,14 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
  But normal smoke tests only answer one question:
 
 
- Can the endpoint serve a request right now?
+ **Can the endpoint serve a request right now?**
 
 
 
  They do not automatically answer the more important cutover question:
 
 
- Who is allowed to own this endpoint after a restart, replacement, or supervisor recovery?
+ **Who is allowed to own this endpoint after a restart, replacement, or supervisor recovery?**
 
 
 
@@ -87,40 +87,12 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
 
 
 
-
- Claim
- Evidence needed
- What the restart test showed
-
-
-
-
-
- Steady-state healthy
- Normal request smoke passes
- True, but incomplete
-
-
-
- Old owner retired
- Old supervisor cannot restart and reclaim the endpoint
- Initially false
-
-
-
- Self-recovering replacement
- Backend replacement returns to healthy service without manual rollback
- True after removing the obsolete owner
-
-
-
- Zero-client-failure replacement
- Continuous polling sees no client-visible failures during replacement
- False for direct ownership
-
-
-
-
+| Claim | Evidence needed | What the restart test showed |
+| --- | --- | --- |
+| Steady-state healthy | Normal request smoke passes | True, but incomplete |
+| Old owner retired | Old supervisor cannot restart and reclaim the endpoint | Initially false |
+| Self-recovering replacement | Backend replacement returns to healthy service without manual rollback | True after removing the obsolete owner |
+| Zero-client-failure replacement | Continuous polling sees no client-visible failures during replacement | False for direct ownership |
 
  That table is the safe proof unit I would reuse. It keeps the operational claims separate. “Healthy,” “retired,” “self-recovering,” and “zero-client-failure” are not synonyms.
 
@@ -145,7 +117,7 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
  Notice the narrower wording. The proxy process itself was still a single local owner. Restarting that owner is a separate claim. Host reboot persistence is another separate claim. Treating all of those as one big “persistent” label would hide the actual risk surface.
 
 
- Reusable rule: put the stable name in front of replaceable things. Then test the replaceable things while continuously exercising the stable name.
+ **Reusable rule:** put the stable name in front of replaceable things. Then test the replaceable things while continuously exercising the stable name.
 
 
 
@@ -155,15 +127,15 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
 
 
 
-- List every possible owner. Include old tunnels, socket activators, service managers, watchdogs, cron jobs, rollback units, and manual scripts.
+- **List every possible owner.** Include old tunnels, socket activators, service managers, watchdogs, cron jobs, rollback units, and manual scripts.
 
-- Prove old owners are inert. Disabled is better than “currently not running.” Removed is better than disabled when rollback no longer needs it.
+- **Prove old owners are inert.** Disabled is better than “currently not running.” Removed is better than disabled when rollback no longer needs it.
 
-- Test replacement, not only steady state. Delete or restart the replaceable component while polling the stable endpoint.
+- **Test replacement, not only steady state.** Delete or restart the replaceable component while polling the stable endpoint.
 
-- Name claims precisely. Self-recovering, zero-client-failure, reboot-persistent, and rollback-ready should each require different evidence.
+- **Name claims precisely.** Self-recovering, zero-client-failure, reboot-persistent, and rollback-ready should each require different evidence.
 
-- Keep rollback compatible with ownership. A rollback that reclaims the same endpoint may be unsafe once the new owner is live.
+- **Keep rollback compatible with ownership.** A rollback that reclaims the same endpoint may be unsafe once the new owner is live.
 
 
 
@@ -190,13 +162,13 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
 
 
 
-- When Your Tunnel Watchdog Lies
+- [When Your Tunnel Watchdog Lies](/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html)
 
-- When Live State Moves, Agent Validators Must Move With It
+- [When Live State Moves, Agent Validators Must Move With It](/jingxiao-cai-blog/when-live-state-moves-agent-validators.html)
 
-- Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
-- Fail-Closed Stage Environments for AI Agents
+- [Fail-Closed Stage Environments for AI Agents](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
 
 
@@ -216,4 +188,4 @@ Summary: A backend restart exposed an obsolete tunnel that could still reclaim t
 
  Found this useful? Leave a comment below, or send it to someone who has ever retired a service by only checking that the replacement worked.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: A good agent closeout does more than say “done.” It records the all
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization
 
 
- June 26, 2026 | By Jingxiao Cai
+ **June 26, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, automation, reliability, security, tooling
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private agent-operations checkpoint into a generalized public pattern and remove concrete project names, host names, paths, identifiers, configuration details, logs, and operational details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private agent-operations checkpoint into a generalized public pattern and remove concrete project names, host names, paths, identifiers, configuration details, logs, and operational details.
 
 
 
- Boundary: this is an agent-operations pattern, not a disclosure about any specific system. The example is intentionally anonymized. No private repository names, service names, infrastructure details, access details, or operational artifacts are needed for the lesson.
+ **Boundary:** this is an agent-operations pattern, not a disclosure about any specific system. The example is intentionally anonymized. No private repository names, service names, infrastructure details, access details, or operational artifacts are needed for the lesson.
 
 
  A successful agent checkpoint can be dangerous if it only says what worked.
@@ -36,7 +36,7 @@ Summary: A good agent closeout does more than say “done.” It records the all
  The pattern I now like is simple:
 
 
- The stop point is a deliverable.
+ **The stop point is a deliverable.**
 
 
 
@@ -82,20 +82,23 @@ Summary: A good agent closeout does more than say “done.” It records the all
 
 
 
-- What succeeded? The narrow technical result that is actually supported by evidence.
+- **What succeeded?** The narrow technical result that is actually supported by evidence.
 
-- What evidence supports it? The build, test, dry run, artifact, or inspection that backs the claim.
+- **What evidence supports it?** The build, test, dry run, artifact, or inspection that backs the claim.
 
-- What did not happen? The live changes, privileged actions, data movement, service mutations, or external sends that were intentionally avoided.
+- **What did not happen?** The live changes, privileged actions, data movement, service mutations, or external sends that were intentionally avoided.
 
-- What remains fail-closed? The routes, flags, schedulers, plugins, access paths, or public surfaces that are still disabled or unchanged.
+- **What remains fail-closed?** The routes, flags, schedulers, plugins, access paths, or public surfaces that are still disabled or unchanged.
 
-- What approval is next? The exact future action that requires a human or stronger gate.
+- **What approval is next?** The exact future action that requires a human or stronger gate.
 
 
  The fourth and fifth bullets matter the most. They turn the closeout from a progress summary into an authority boundary.
 
- Closeout pattern:
+
+
+```text
+Closeout pattern:
 
 Passed:
 - offline validation passed
@@ -116,6 +119,7 @@ Still fail-closed:
 
 Next approval gate:
 - enabling the live path or changing the loaded plugin/config requires explicit operator approval
+```
 
  That language is intentionally boring. Boring is the point. It gives the next actor fewer ways to misunderstand the state.
 
@@ -142,7 +146,7 @@ Next approval gate:
  Those facts are as important as “tests passed.” They support the claim that the workflow respected the permission envelope.
 
 
- Public-safe example: an agent prepares a new capability in a staged package path. Offline tests pass. A synthetic render-only scenario passes. But a protected live-runtime or configuration boundary would require a separate activation decision. The correct closeout is not “ready to enable.” It is “prepared and validated offline; live activation remains blocked until explicit operator approval.”
+ **Public-safe example:** an agent prepares a new capability in a staged package path. Offline tests pass. A synthetic render-only scenario passes. But a protected live-runtime or configuration boundary would require a separate activation decision. The correct closeout is not “ready to enable.” It is “prepared and validated offline; live activation remains blocked until explicit operator approval.”
 
 
 
@@ -155,7 +159,7 @@ Next approval gate:
  The better choice is to promote the guard into the closeout:
 
 
- The system refused this live mutation through the supported path. Therefore the next step is an approval or design question, not a clever bypass.
+ **The system refused this live mutation through the supported path. Therefore the next step is an approval or design question, not a clever bypass.**
 
 
 
@@ -168,40 +172,13 @@ Next approval gate:
 
 
 
-
- Preparation
- Activation
-
-
-
-
-
- Read current state
- Write live configuration
-
-
-
- Build a staged package
- Switch a loaded plugin or runtime path
-
-
-
- Run offline tests
- Reload or restart a service
-
-
-
- Render a synthetic scenario
- Enable a public or live route
-
-
-
- Create rollback instructions
- Mutate schedulers, daemons, or persistent state
-
-
-
-
+| Preparation | Activation |
+| --- | --- |
+| Read current state | Write live configuration |
+| Build a staged package | Switch a loaded plugin or runtime path |
+| Run offline tests | Reload or restart a service |
+| Render a synthetic scenario | Enable a public or live route |
+| Create rollback instructions | Mutate schedulers, daemons, or persistent state |
 
  Agents should be allowed to move quickly through low-risk preparation when the user has asked for it. Activation should stay explicit, named, and current.
 
@@ -214,19 +191,19 @@ Next approval gate:
 
 
 
-- Scope: what was the approved task boundary?
+- **Scope:** what was the approved task boundary?
 
-- Evidence: what concrete checks passed?
+- **Evidence:** what concrete checks passed?
 
-- Mutation ledger: what files, configs, services, schedulers, or external surfaces changed?
+- **Mutation ledger:** what files, configs, services, schedulers, or external surfaces changed?
 
-- Non-mutation proof: what high-risk actions explicitly did not occur?
+- **Non-mutation proof:** what high-risk actions explicitly did not occur?
 
-- Fail-closed state: what remains disabled, staged, read-only, or offline?
+- **Fail-closed state:** what remains disabled, staged, read-only, or offline?
 
-- Rollback/provenance: where are the rollback notes or artifacts, and were old provenance files preserved?
+- **Rollback/provenance:** where are the rollback notes or artifacts, and were old provenance files preserved?
 
-- Next gate: what exact human approval or separate review would be required to proceed?
+- **Next gate:** what exact human approval or separate review would be required to proceed?
 
 
  If the closeout cannot answer those questions, the work may still be useful, but it is not safe to hand off as “done.”
@@ -282,7 +259,7 @@ Next approval gate:
  Those answers are not bureaucracy. They are the interface between fast autonomous preparation and deliberate human-controlled activation.
 
 
- If an agent cannot show where it stopped, it has not really finished.
+ **If an agent cannot show where it stopped, it has not really finished.**
 
 
 
@@ -292,13 +269,13 @@ Next approval gate:
 
 
 
-- Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes
+- [Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes](/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html)
 
-- Proof Without Touching Production: A Boundary for Agent-Run PR Validation
+- [Proof Without Touching Production: A Boundary for Agent-Run PR Validation](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- The Canary Boundary Is Not a Launch Button
+- [The Canary Boundary Is Not a Launch Button](/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html)
 
-- Patch the Thing You Changed: Narrow Validation for Safer Agent Work
+- [Patch the Thing You Changed: Narrow Validation for Safer Agent Work](/jingxiao-cai-blog/patch-the-thing-you-changed-narrow-config-validation.html)
 
 
 
@@ -309,11 +286,11 @@ Next approval gate:
 
 
 
-- Google SRE Workbook: Canarying Releases
+- [Google SRE Workbook: Canarying Releases](https://sre.google/workbook/canarying-releases/)
 
-- Google SRE Book: Monitoring Distributed Systems
+- [Google SRE Book: Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
 
-- Google SRE Book: Managing Incidents
+- [Google SRE Book: Managing Incidents](https://sre.google/sre-book/managing-incidents/)
 
 
 
@@ -322,7 +299,7 @@ Next approval gate:
 
 ### About the Author
 
- Jingxiao Cai works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
+ **Jingxiao Cai** works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
 
 
 
@@ -330,4 +307,4 @@ Next approval gate:
 
 ### Feedback
 
- Questions, critiques, or war stories about stop points in agent-run workflows? Open an issue in the blog repository or reach out through the linked channels.
+ Questions, critiques, or war stories about stop points in agent-run workflows? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or reach out through the linked channels.

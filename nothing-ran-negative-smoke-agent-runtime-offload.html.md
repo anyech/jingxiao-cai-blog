@@ -9,22 +9,22 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload
 
 
- June 11, 2026 | By Jingxiao Cai
+ **June 11, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, automation, runtime, testing, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private post-restart runtime smoke into a public testing pattern, then removed request identifiers, private paths, exact tool names, raw reports, host details, and live deployment fingerprints.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private post-restart runtime smoke into a public testing pattern, then removed request identifiers, private paths, exact tool names, raw reports, host details, and live deployment fingerprints.
 
 
 
- Short version: for an agent offload runtime, a good smoke test should prove two things at once: the safe surface is alive, and the dangerous surface still refuses to act.
+ **Short version:** for an agent offload runtime, a good smoke test should prove two things at once: the safe surface is alive, and the dangerous surface still refuses to act.
 
 
  A normal smoke test asks, “does the thing work?”
@@ -36,12 +36,12 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
  A recent offload-runtime checkpoint made the distinction concrete. After a manual restart, I needed to verify that the runtime actually loaded the new offload surface. But the correct result was not “great, now run a worker.” The correct result was: the safe read-only facades answer, and every state-changing path remains blocked/noop.
 
 
- In a safety-gated runtime, “nothing ran” can be the proof you were looking for.
+ **In a safety-gated runtime, “nothing ran” can be the proof you were looking for.**
 
 
 
 
- Sanitized scope: this post intentionally omits exact tool names, request IDs, session IDs, private source paths, raw diagnostic file names, hostnames, deployment topology, approval tokens, and live config values. The reusable lesson is the test shape, not my local routing map.
+ **Sanitized scope:** this post intentionally omits exact tool names, request IDs, session IDs, private source paths, raw diagnostic file names, hostnames, deployment topology, approval tokens, and live config values. The reusable lesson is the test shape, not my local routing map.
 
 
 
@@ -64,12 +64,12 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
  Those checks matter. Without them, the runtime might not be alive at all.
 
- But positive assertions only tell you what responded. They do not tell you what did not happen. For offload, that missing half is the dangerous half.
+ But positive assertions only tell you what responded. They do not tell you what *did not* happen. For offload, that missing half is the dangerous half.
 
  If a dry-run smoke accidentally starts a worker, the smoke did not pass. If a status call silently mutates state, the smoke did not pass. If a blocked path consumes an approval token just to say it is blocked, the smoke did not pass. If a post-restart check quietly advances the system into the next phase, the smoke did not pass.
 
 
- Runtime-smoke rule: prove the safe surface is callable, then prove the unsafe surface stayed inert.
+ **Runtime-smoke rule:** prove the safe surface is callable, then prove the unsafe surface stayed inert.
 
 
 
@@ -79,52 +79,14 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
 
 
-
- Negative assertion
- Why it matters
- What failure would mean
-
-
-
-
-
- No worker execution
- The smoke is still a smoke, not a hidden dispatch.
- A “test” has crossed into real work.
-
-
-
- No queue or state mutation
- Blocked/noop routes remain reversible and repeatable.
- The check can change later behavior merely by observing it.
-
-
-
- No daemon or background process start
- Readiness does not create a long-lived runtime by accident.
- A harmless probe becomes an activation path.
-
-
-
- No approval consumption
- Approval remains attached to a specific future action, not to probing.
- A diagnostic burns the very gate it was supposed to respect.
-
-
-
- No gateway or config lifecycle change
- The runtime check does not become a control-plane mutation.
- Verification and activation have been mixed together.
-
-
-
- No implicit phase promotion
- Passing one rung does not authorize the next rung.
- The project advances because a test succeeded, not because a gate was approved.
-
-
-
-
+| Negative assertion | Why it matters | What failure would mean |
+| --- | --- | --- |
+| **No worker execution** | The smoke is still a smoke, not a hidden dispatch. | A “test” has crossed into real work. |
+| **No queue or state mutation** | Blocked/noop routes remain reversible and repeatable. | The check can change later behavior merely by observing it. |
+| **No daemon or background process start** | Readiness does not create a long-lived runtime by accident. | A harmless probe becomes an activation path. |
+| **No approval consumption** | Approval remains attached to a specific future action, not to probing. | A diagnostic burns the very gate it was supposed to respect. |
+| **No gateway or config lifecycle change** | The runtime check does not become a control-plane mutation. | Verification and activation have been mixed together. |
+| **No implicit phase promotion** | Passing one rung does not authorize the next rung. | The project advances because a test succeeded, not because a gate was approved. |
 
  That is a stronger smoke than “the endpoint returned 200.” It is a contract about what the endpoint is allowed to do.
 
@@ -151,7 +113,7 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
  That is not useless. It is how you let the app learn the contract before the runtime learns how to execute.
 
 
- A good noop route is not absence of behavior. It is a deliberate refusal with evidence.
+ **A good noop route is not absence of behavior. It is a deliberate refusal with evidence.**
 
 
 
@@ -164,52 +126,14 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
 
 
-
- Rung
- What it proves
- What it does not prove
-
-
-
-
-
- Configured
- The runtime can see the intended feature definition.
- The code loaded or the surface is callable.
-
-
-
- Loaded
- The runtime selected and activated the expected source.
- The public contract behaves correctly.
-
-
-
- Callable
- Safe facades can answer shaped requests.
- Stateful routes are safe.
-
-
-
- Blocked/noop
- State-changing routes refuse to execute in the current phase.
- A state store, queue, worker, or daemon is ready.
-
-
-
- Stateful noop
- A local state layer can record harmless proof without worker execution.
- Remote or background execution is safe.
-
-
-
- Live canary
- One explicitly approved workload can execute inside a narrow boundary.
- General-purpose offload should be enabled.
-
-
-
-
+| Rung | What it proves | What it does not prove |
+| --- | --- | --- |
+| **Configured** | The runtime can see the intended feature definition. | The code loaded or the surface is callable. |
+| **Loaded** | The runtime selected and activated the expected source. | The public contract behaves correctly. |
+| **Callable** | Safe facades can answer shaped requests. | Stateful routes are safe. |
+| **Blocked/noop** | State-changing routes refuse to execute in the current phase. | A state store, queue, worker, or daemon is ready. |
+| **Stateful noop** | A local state layer can record harmless proof without worker execution. | Remote or background execution is safe. |
+| **Live canary** | One explicitly approved workload can execute inside a narrow boundary. | General-purpose offload should be enabled. |
 
  The post-restart checkpoint only needed to prove the loaded/callable/blocked-noop rungs. That was the right stopping point. Calling it a live offload success would have been a category error.
 
@@ -250,21 +174,21 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
 
 
-- What phase was being tested? Name the rung, not the whole project.
+- **What phase was being tested?** Name the rung, not the whole project.
 
-- What was allowed to succeed? Usually safe read-only facades and shaped blocked/noop responses.
+- **What was allowed to succeed?** Usually safe read-only facades and shaped blocked/noop responses.
 
-- What was not allowed to happen? Workers, queues, daemons, approval consumption, gateway lifecycle changes, or phase promotion.
+- **What was not allowed to happen?** Workers, queues, daemons, approval consumption, gateway lifecycle changes, or phase promotion.
 
-- What evidence says the negative assertions held? Side-effect booleans, explicit blocked categories, and no diagnostic warnings.
+- **What evidence says the negative assertions held?** Side-effect booleans, explicit blocked categories, and no diagnostic warnings.
 
-- What is the next gate? A separate approval-scoped step, not an implication of the current smoke.
+- **What is the next gate?** A separate approval-scoped step, not an implication of the current smoke.
 
 
  That shape keeps the report useful without turning it into an operations dump. It gives future readers the thing they need most: a boundary.
 
 
- Report rule: every staged runtime smoke should end with a “not yet” statement. If the test did not authorize the next phase, say so plainly.
+ **Report rule:** every staged runtime smoke should end with a “not yet” statement. If the test did not authorize the next phase, say so plainly.
 
 
 
@@ -277,7 +201,7 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
  Agent systems need that discipline because they often combine observation, planning, and execution behind one conversational interface. If a smoke test is not explicit about which mode it is in, the system can drift from “inspect” to “act” without a human noticing.
 
 
- For staged offload, the safest first proof is not that a worker ran. It is that the runtime knew exactly why it must not run one yet.
+ **For staged offload, the safest first proof is not that a worker ran. It is that the runtime knew exactly why it must not run one yet.**
 
 
  That is the difference between readiness evidence and accidental activation.
@@ -288,13 +212,13 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
 
 
-- Reachable Is Not Ready
+- [Reachable Is Not Ready](/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html)
 
-- Do Not Teach the App About the Worker
+- [Do Not Teach the App About the Worker](/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html)
 
-- Proof Without Touching Production
+- [Proof Without Touching Production](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- The Monitor Is Not the Contract
+- [The Monitor Is Not the Contract](/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html)
 
 
 
@@ -314,4 +238,4 @@ Summary: A post-restart offload smoke passed because the runtime loaded, the saf
 
  How do you write smoke tests that prove unsafe paths stayed blocked? Leave a comment below.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

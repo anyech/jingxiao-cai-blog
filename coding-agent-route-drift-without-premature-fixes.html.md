@@ -9,22 +9,22 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes
 
 
- May 10, 2026 | By Jingxiao Cai
+ **May 10, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, coding-agents, openclaw, gemini, reliability, devops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the route-drift timeline, separate true repair work from passive monitoring, and keep the public version focused on the reusable operating pattern instead of private thread details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped reconstruct the route-drift timeline, separate true repair work from passive monitoring, and keep the public version focused on the reusable operating pattern instead of private thread details.
 
 
 
- Short version: a degraded coding-agent route is not automatically a local repair task. First decide whether the correct state is passive watch, upstream wait, or local fix.
+ **Short version:** a degraded coding-agent route is not automatically a local repair task. First decide whether the correct state is passive watch, upstream wait, or local fix.
 
 
  Coding-agent integrations fail in a particularly annoying way: the visible symptom often says only that a route degraded. That can mean capacity pressure, auth drift, an upstream tool regression, a local adapter mismatch, a transient provider incident, or a real bug in your orchestration code.
@@ -34,12 +34,12 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
  That reflex is dangerous. Sometimes the right closeout is not a fix. Sometimes the right closeout is a clean state label, a watch surface, and a narrow reopen criterion.
 
 
- Closing the loop is not the same as changing the system.
+ **Closing the loop is not the same as changing the system.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations pattern drawn from a Gemini ACP / coding-agent route. I am intentionally leaving out private paths, channel and thread identifiers, exact local helper names, raw logs, and deployment-specific topology. Public issue and PR numbers are not needed for the lesson, so I omit them too.
+ **Conceptual scope:** this is a sanitized agent-operations pattern drawn from a Gemini ACP / coding-agent route. I am intentionally leaving out private paths, channel and thread identifiers, exact local helper names, raw logs, and deployment-specific topology. Public issue and PR numbers are not needed for the lesson, so I omit them too.
 
 
 
@@ -69,34 +69,11 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 
 
-
- State
- Evidence
- Right response
-
-
-
-
-
- Passive watch
- Current readiness probes are green; no active local change is needed; remaining risk is future drift.
- Close the active work thread, keep watch coverage, and write explicit reopen criteria.
-
-
-
- Upstream wait
- The relevant fix or issue lives upstream; local evidence is already captured; no extra local patch improves the situation.
- Track the upstream item and respond only to meaningful review, CI, or maintainer movement.
-
-
-
- Local repair
- A narrow local adapter or wrapper incompatibility is reproducible and owned by your integration boundary.
- Build the smallest repro, patch in an isolated checkout, validate, and publish the fix through the normal review lane.
-
-
-
-
+| State | Evidence | Right response |
+| --- | --- | --- |
+| **Passive watch** | Current readiness probes are green; no active local change is needed; remaining risk is future drift. | Close the active work thread, keep watch coverage, and write explicit reopen criteria. |
+| **Upstream wait** | The relevant fix or issue lives upstream; local evidence is already captured; no extra local patch improves the situation. | Track the upstream item and respond only to meaningful review, CI, or maintainer movement. |
+| **Local repair** | A narrow local adapter or wrapper incompatibility is reproducible and owned by your integration boundary. | Build the smallest repro, patch in an isolated checkout, validate, and publish the fix through the normal review lane. |
 
  The important part is that each state has a different default action. Passive watch should not mutate config. Upstream wait should not create a local fork of policy. Local repair should not hide behind “probably upstream.”
 
@@ -123,7 +100,7 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
  That is a legitimate closeout state. In fact, it is healthier than keeping a thread open forever just because something related might break again.
 
 
- “Closable with passive monitoring” is not denial. It is a boundary between current work and future evidence.
+ **“Closable with passive monitoring” is not denial. It is a boundary between current work and future evidence.**
 
 
 
@@ -158,40 +135,12 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 
 
-
- Tempting move
- Why it is risky
- Safer default
-
-
-
-
-
- Change lane order because one run failed.
- One transient failure becomes a durable policy change.
- Check readiness and failure class first.
-
-
-
- Leave every thread open until upstream is perfect.
- The work surface becomes a graveyard of unresolved-but-not-actionable items.
- Move true upstream dependencies to a watch surface with reopen criteria.
-
-
-
- Call every adapter failure “upstream.”
- Local integration bugs hide behind someone else’s queue.
- Patch the compatibility seam when the repro points there.
-
-
-
- Add a catch-all fallback.
- Auth, capacity, adapter, and prompt-time failures get blurred together.
- Classify the failure before choosing fallback behavior.
-
-
-
-
+| Tempting move | Why it is risky | Safer default |
+| --- | --- | --- |
+| Change lane order because one run failed. | One transient failure becomes a durable policy change. | Check readiness and failure class first. |
+| Leave every thread open until upstream is perfect. | The work surface becomes a graveyard of unresolved-but-not-actionable items. | Move true upstream dependencies to a watch surface with reopen criteria. |
+| Call every adapter failure “upstream.” | Local integration bugs hide behind someone else’s queue. | Patch the compatibility seam when the repro points there. |
+| Add a catch-all fallback. | Auth, capacity, adapter, and prompt-time failures get blurred together. | Classify the failure before choosing fallback behavior. |
 
 
 ## The Closeout Checklist I Trust
@@ -200,15 +149,15 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 
 
-- What is the current readiness state? Not yesterday’s failure, not the first symptom—the current probe result.
+- **What is the current readiness state?** Not yesterday’s failure, not the first symptom—the current probe result.
 
-- Where does the remaining work live? Local adapter, upstream project, provider capacity, or passive monitoring.
+- **Where does the remaining work live?** Local adapter, upstream project, provider capacity, or passive monitoring.
 
-- What would reopen this? A failing readiness probe, maintainer feedback, check failure, auth drift, or a new real-world regression.
+- **What would reopen this?** A failing readiness probe, maintainer feedback, check failure, auth drift, or a new real-world regression.
 
-- What should not happen now? No broad config changes, no live-runtime patching, no rerouting without fresh evidence.
+- **What should not happen now?** No broad config changes, no live-runtime patching, no rerouting without fresh evidence.
 
-- Where is the watch surface? The future signal needs a place to land that is not the old chat thread.
+- **Where is the watch surface?** The future signal needs a place to land that is not the old chat thread.
 
 
  That packet is boring by design. It turns “this route feels flaky” into an operational state that another agent—or a future me—can safely resume.
@@ -230,7 +179,7 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 
 
- The reusable rule: close the work when the current state is known, the remaining signals have an owner, and the reopen criteria are explicit. Patch only when the evidence points at a local seam you actually own.
+ **The reusable rule:** close the work when the current state is known, the remaining signals have an owner, and the reopen criteria are explicit. Patch only when the evidence points at a local seam you actually own.
 
 
 
@@ -248,13 +197,13 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
 
 
-- Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows
+- [Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows](/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html)
 
-- Fail-Closing Agent Launches
+- [Fail-Closing Agent Launches](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
-- Closing External Threads Cleanly: An Agent-Ops Pattern
+- [Closing External Threads Cleanly: An Agent-Ops Pattern](/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html)
 
-- Long-Running Agent Work Needs a Bridge Back
+- [Long-Running Agent Work Needs a Bridge Back](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
 
 
@@ -274,4 +223,4 @@ Summary: A degraded coding-agent lane is not automatically a local repair task; 
 
  Found this useful? Discussion is open below via the comment embed—or send it to someone who is about to “fix” a route that only needed a watch state.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

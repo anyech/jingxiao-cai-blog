@@ -9,22 +9,22 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Panel Results Are Not Finished Until You Grade the Panelists
 
 
- June 29, 2026 | By Jingxiao Cai
+ **June 29, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It converts a private agent-review maintenance lesson into a public operations pattern while omitting private logs, identifiers, routes, and deployment details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It converts a private agent-review maintenance lesson into a public operations pattern while omitting private logs, identifiers, routes, and deployment details.
 
 
 
- Boundary: this is a workflow-quality pattern for self-hosted AI-agent operations. It is not a transcript of a private panel run, and it does not claim that any specific model lineup is universally reliable.
+ **Boundary:** this is a workflow-quality pattern for self-hosted AI-agent operations. It is not a transcript of a private panel run, and it does not claim that any specific model lineup is universally reliable.
 
 
  Running a panel is easy to over-celebrate.
@@ -34,7 +34,7 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
  But in agent operations, the panel result is only an intermediate artifact. The real gate is one level higher:
 
 
- Did the panelists actually evaluate the thing we needed evaluated?
+ **Did the panelists actually evaluate the thing we needed evaluated?**
 
 
 
@@ -71,46 +71,13 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
 
 
-
- Check
- Question
- Why it matters
-
-
-
-
-
- Target coverage
- Did the panelist review the exact artifact, diff, post, packet, or decision?
- Prevents generic advice from being counted as artifact review.
-
-
-
- Surface coverage
- Did it inspect all relevant public or operational surfaces?
- Prevents “main body is fine” from hiding feed, index, mirror, teaser, or delivery defects.
-
-
-
- Verdict quality
- Is the verdict actionable: publish, revise, block, or needs a human decision?
- Prevents a long critique from becoming an ambiguous gate.
-
-
-
- Evidence boundary
- Does the panelist separate what it verified from what it assumed?
- Prevents unverified confidence from entering the final synthesis.
-
-
-
- Operational state
- Was the lane complete, degraded, inaccessible, late, or invalid?
- Prevents tooling failures from being mistaken for substantive disagreement.
-
-
-
-
+| Check | Question | Why it matters |
+| --- | --- | --- |
+| **Target coverage** | Did the panelist review the exact artifact, diff, post, packet, or decision? | Prevents generic advice from being counted as artifact review. |
+| **Surface coverage** | Did it inspect all relevant public or operational surfaces? | Prevents “main body is fine” from hiding feed, index, mirror, teaser, or delivery defects. |
+| **Verdict quality** | Is the verdict actionable: publish, revise, block, or needs a human decision? | Prevents a long critique from becoming an ambiguous gate. |
+| **Evidence boundary** | Does the panelist separate what it verified from what it assumed? | Prevents unverified confidence from entering the final synthesis. |
+| **Operational state** | Was the lane complete, degraded, inaccessible, late, or invalid? | Prevents tooling failures from being mistaken for substantive disagreement. |
 
  That table is small on purpose. The goal is not to create a second bureaucracy around the first review. The goal is to make the parent agent prove that the review evidence is usable.
 
@@ -143,17 +110,21 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
  For important reviews, I like a compact scorecard:
 
- panelist_result:
- usable: yes | no | partial
- verdict: publish | revise | block | human-decision
- target_reviewed: exact | adjacent | generic | inaccessible
- required_edits:
- - ...
- missed_or_unverified_surfaces:
- - ...
- degradation:
- state: none | timeout | access-failure | invalid-output | late
- effect_on_decision: blocking | nonblocking | informational
+
+
+```
+panelist_result:
+  usable: yes | no | partial
+  verdict: publish | revise | block | human-decision
+  target_reviewed: exact | adjacent | generic | inaccessible
+  required_edits:
+    - ...
+  missed_or_unverified_surfaces:
+    - ...
+  degradation:
+    state: none | timeout | access-failure | invalid-output | late
+    effect_on_decision: blocking | nonblocking | informational
+```
 
  This is intentionally more boring than the panel itself. That is the point. The boring scorecard is what prevents a fluent review from becoming an overconfident final claim.
 
@@ -183,7 +154,7 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
  My current rule is:
 
 
- A panel result becomes evidence only after the parent grades the panelists.
+ **A panel result becomes evidence only after the parent grades the panelists.**
 
 
 
@@ -199,11 +170,11 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
 
 
-- Consult Panels Need Orchestration, Not Vibes
+- [Consult Panels Need Orchestration, Not Vibes](/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
 
-- Role Split Is Not Model Diversity
+- [Role Split Is Not Model Diversity](/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
 
 
@@ -212,7 +183,7 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
 ### About the Author
 
- Jingxiao Cai works on distributed ML runtime systems and writes about the operational edges of self-hosted AI-agent workflows.
+ **Jingxiao Cai** works on distributed ML runtime systems and writes about the operational edges of self-hosted AI-agent workflows.
 
 
 
@@ -220,10 +191,10 @@ Summary: A panel result is not complete when the reviewers answer. It is complet
 
 ### Feedback
 
- Questions, critiques, or examples of panel-review failure modes? Open an issue in the blog repository or reach out through the linked channels.
+ Questions, critiques, or examples of panel-review failure modes? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or reach out through the linked channels.
 
 
 
  Published on June 29, 2026 • Part of my ongoing agent operations and self-hosted AI workflow series
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

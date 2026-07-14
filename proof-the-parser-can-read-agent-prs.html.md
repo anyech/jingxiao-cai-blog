@@ -10,26 +10,26 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Proof the Parser Can Read: Behavior Evidence in Agent PRs
 
 
- May 30, 2026 | By Jingxiao Cai | Updated June 3, 2026
+ **May 30, 2026** | By Jingxiao Cai | **Updated June 3, 2026**
 
  Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a pull-request hygiene correction into a public workflow pattern while removing private thread context, deployment identifiers, local paths, raw logs, and reviewer-specific details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a pull-request hygiene correction into a public workflow pattern while removing private thread context, deployment identifiers, local paths, raw logs, and reviewer-specific details.
 
 
 
- Short version: if repository automation decides whether proof exists, the proof must be written in the format the automation actually parses. A convincing paragraph that the policy parser ignores is still operationally missing proof.
+ **Short version:** if repository automation decides whether proof exists, the proof must be written in the format the automation actually parses. A convincing paragraph that the policy parser ignores is still operationally missing proof.
 
 
 
- Update, June 3, 2026: I tightened the boundary around proof overrides. A maintainer override request can be useful communication when safe real-world proof is blocked, but it is not the same as satisfying a red real-behavior gate. If the parser accepts the section shape and the remaining failure says the evidence is only mock, source, lint, typecheck, or CI proof, stop polishing wording: either provide public-safe non-production behavior evidence, keep the item explicitly blocked, or wait for an actual maintainer decision.
+ **Update, June 3, 2026:** I tightened the boundary around proof overrides. A maintainer override request can be useful communication when safe real-world proof is blocked, but it is not the same as satisfying a red real-behavior gate. If the parser accepts the section shape and the remaining failure says the evidence is only mock, source, lint, typecheck, or CI proof, stop polishing wording: either provide public-safe non-production behavior evidence, keep the item explicitly blocked, or wait for an actual maintainer decision.
 
 
  A pull request can have real evidence and still fail the process.
@@ -48,12 +48,12 @@ Summary: Human-readable proof is not enough when repository automation enforces 
  The public lesson from this OpenClaw-style workflow is simple:
 
 
- Behavior proof is not done until the parser can read it.
+ **Behavior proof is not done until the parser can read it.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations pattern from public/open-source contribution workflow. I am intentionally omitting exact private thread references, local checkout paths, deployment-specific runtime details, raw logs, internal reviewer lanes, and unnecessary issue identifiers. The point is the proof contract, not one deployment fingerprint.
+ **Conceptual scope:** this is a sanitized agent-operations pattern from public/open-source contribution workflow. I am intentionally omitting exact private thread references, local checkout paths, deployment-specific runtime details, raw logs, internal reviewer lanes, and unnecessary issue identifiers. The point is the proof contract, not one deployment fingerprint.
 
 
 
@@ -85,23 +85,23 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 
 
-- Behavior addressed: what user-visible or operator-visible behavior changed?
+- **Behavior addressed:** what user-visible or operator-visible behavior changed?
 
-- Real setup tested: what non-mock setup exercised the behavior seam?
+- **Real setup tested:** what non-mock setup exercised the behavior seam?
 
-- Exact steps or command run after this patch: what did I actually run against the patched code?
+- **Exact steps or command run after this patch:** what did I actually run against the patched code?
 
-- Evidence after fix: what artifact, output, or observation supports the claim?
+- **Evidence after fix:** what artifact, output, or observation supports the claim?
 
-- Observed result after fix: what happened, and how does that differ from the failure?
+- **Observed result after fix:** what happened, and how does that differ from the failure?
 
-- What was not tested: what remains partial, unsafe, out of scope, or blocked?
+- **What was not tested:** what remains partial, unsafe, out of scope, or blocked?
 
 
  The exact field names matter when the repository policy expects them. This is one of the few times where “roughly equivalent wording” can be worse than it looks, because the missing marker changes how the automation classifies the pull request.
 
 
- Design rule: if a repository publishes a machine-readable proof policy, copy the required headings and fields exactly. Add human explanation around them, not instead of them.
+ **Design rule:** if a repository publishes a machine-readable proof policy, copy the required headings and fields exactly. Add human explanation around them, not instead of them.
 
 
 
@@ -113,40 +113,12 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 
 
-
- Evidence type
- What it proves well
- What it may not prove
-
-
-
-
-
- Unit test
- A narrow function or branch behaves as expected.
- The real integration path changed for users.
-
-
-
- Typecheck / lint
- The patch is structurally acceptable.
- The original failure no longer happens.
-
-
-
- Local reproduction harness
- A realistic seam behaves differently after the patch.
- Every production edge case is covered.
-
-
-
- Live production canary
- The real deployment path works under current conditions.
- It may be unsafe or inappropriate without explicit approval.
-
-
-
-
+| Evidence type | What it proves well | What it may not prove |
+| --- | --- | --- |
+| **Unit test** | A narrow function or branch behaves as expected. | The real integration path changed for users. |
+| **Typecheck / lint** | The patch is structurally acceptable. | The original failure no longer happens. |
+| **Local reproduction harness** | A realistic seam behaves differently after the patch. | Every production edge case is covered. |
+| **Live production canary** | The real deployment path works under current conditions. | It may be unsafe or inappropriate without explicit approval. |
 
  For agent infrastructure, I strongly prefer non-production proof when it can exercise the relevant behavior seam. A local or isolated setup can produce credible before/after evidence without using a live personal deployment as the test target.
 
@@ -181,21 +153,21 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 
 
-- Search adjacent work. Check open and recently closed issues or pull requests for overlapping symptoms, root causes, touched files, or competing fixes.
+- **Search adjacent work.** Check open and recently closed issues or pull requests for overlapping symptoms, root causes, touched files, or competing fixes.
 
-- Decide the relationship. Update existing, consolidate, stack explicitly, open new, or hold.
+- **Decide the relationship.** Update existing, consolidate, stack explicitly, open new, or hold.
 
-- Prepare real behavior proof. Use parser-recognized headings and fields.
+- **Prepare real behavior proof.** Use parser-recognized headings and fields.
 
-- Separate proof classes. Label unit tests, lint, typecheck, and behavior proof as different evidence types unless one directly exercises the behavior seam.
+- **Separate proof classes.** Label unit tests, lint, typecheck, and behavior proof as different evidence types unless one directly exercises the behavior seam.
 
-- Run the local proof-policy evaluator when available. Test the exact markdown that will be posted.
+- **Run the local proof-policy evaluator when available.** Test the exact markdown that will be posted.
 
-- Sanitize public updates. Remove local paths, private identifiers, raw secrets, deployment fingerprints, and unnecessary operational details.
+- **Sanitize public updates.** Remove local paths, private identifiers, raw secrets, deployment fingerprints, and unnecessary operational details.
 
-- Only then request review. A reviewer should not have to infer the proof shape from prose.
+- **Only then request review.** A reviewer should not have to infer the proof shape from prose.
 
-- Do not confuse override requests with completion. If the real-behavior gate is still red, record the blocker and keep building safe proof unless a maintainer actually grants the exception.
+- **Do not confuse override requests with completion.** If the real-behavior gate is still red, record the blocker and keep building safe proof unless a maintainer actually grants the exception.
 
 
  This is especially useful for AI-assisted PR work. Agents are good at drafting explanatory prose. They are also very capable of producing text that sounds right while missing a strict interface. The remedy is to make the interface explicit and test it.
@@ -210,7 +182,7 @@ Summary: Human-readable proof is not enough when repository automation enforces 
  The failure shape is always similar:
 
 
- The content exists, but the interface cannot consume it.
+ **The content exists, but the interface cannot consume it.**
 
 
 
@@ -231,15 +203,15 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
 
 
-- When PR Gates Look Broken, Rebase First
+- [When PR Gates Look Broken, Rebase First](/jingxiao-cai-blog/when-pr-gates-look-broken-rebase-first.html)
 
-- Proof Without Touching Production
+- [Proof Without Touching Production](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- Multi-Agent Proof Surface Coordination
+- [Multi-Agent Proof Surface Coordination](/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html)
 
-- When Reviewers Demand Live Proof
+- [When Reviewers Demand Live Proof](/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html)
 
-- Freshness Is Not Permission
+- [Freshness Is Not Permission](/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
 
 
 
@@ -259,4 +231,4 @@ Summary: Human-readable proof is not enough when repository automation enforces 
 
  Found this useful? Leave a comment below, or send it to someone whose AI-assisted pull requests need evidence that both humans and policy automation can read.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

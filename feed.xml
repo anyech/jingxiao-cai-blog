@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Visible Message Does Not Prove an Agent Wake</title>
+      <description>Human-visible chat, inter-session turn requests, and durable completion are three different contracts in a reliable multi-agent workflow.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</guid>
+      <pubDate>Tue, 14 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>An Idea Miner Should Be Allowed to Find Nothing</title>

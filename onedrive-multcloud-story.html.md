@@ -9,7 +9,7 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 
 # Getting OneDrive Working with Self-Hosted AI Agents: A Survival Story
@@ -18,12 +18,12 @@ Summary: How I migrated my cloud storage using MultCloud.
 
  Categories: story, onedrive, multcloud, automation, openclaw
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. Yes, an AI and a human brainstormed this mess together.
+ *This post was co-created with **Clawsistant**, my OpenClaw AI agent. Yes, an AI and a human brainstormed this mess together.*
 
- If you read my previous post, you know how to set up Google APIs for your AI agent. What I didn't mention? Getting Google Drive working was the easy part. The real adventure was OneDrive.
+ If you read my [previous post](/jingxiao-cai-blog/google-api-setup-guide.html), you know how to set up Google APIs for your AI agent. What I didn't mention? Getting Google Drive working was the *easy* part. The real adventure was OneDrive.
 
 
- TL;DR: Microsoft Graph API for OneDrive is painful. Use MultCloud as a workaround — it handles the OAuth mess so you don't have to. Free tier works for basic use; lifetime deals show up occasionally.
+ **TL;DR:** Microsoft Graph API for OneDrive is painful. Use [MultCloud](https://www.multcloud.com/) as a workaround — it handles the OAuth mess so you don't have to. Free tier works for basic use; lifetime deals show up occasionally.
 
 
  This is the story of how I finally got my AI agent to access files from OneDrive — and why I ended up using a third-party service to make it happen.
@@ -63,21 +63,21 @@ Summary: How I migrated my cloud storage using MultCloud.
 - Connect to your agent
 
 
- The reality: Microsoft's developer ecosystem feels like it was designed by a committee that never talked to each other. Here's what went wrong:
+ **The reality:** Microsoft's developer ecosystem feels like it was designed by a committee that never talked to each other. Here's what went wrong:
 
 
 
-- Consent issues: Even with a personal Microsoft account, the OAuth flow kept failing with cryptic error messages
+- **Consent issues:** Even with a personal Microsoft account, the OAuth flow kept failing with cryptic error messages
 
-- Permission scopes are confusing: Files.Read, Files.Read.All, Files.ReadWrite — which one do I need?
+- **Permission scopes are confusing:** Files.Read, Files.Read.All, Files.ReadWrite — which one do I need?
 
-- Token refresh problems: Unlike Google's relatively stable token system, Microsoft's refresh tokens have all sorts of edge cases
+- **Token refresh problems:** Unlike Google's relatively stable token system, Microsoft's refresh tokens have all sorts of edge cases
 
-- No straightforward "service account" option: For personal accounts, you're stuck with delegated permissions, not the application permissions you'd use in an enterprise setup
+- **No straightforward "service account" option:** For personal accounts, you're stuck with delegated permissions, not the application permissions you'd use in an enterprise setup
 
 
 
- Fun fact: Microsoft charges for some Azure AD features. What started as "free" quickly became "wait, I need to pay for that?"
+ **Fun fact:** Microsoft charges for some Azure AD features. What started as "free" quickly became "wait, I need to pay for that?"
 
 
 
@@ -91,12 +91,12 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 - Installing rclone
 
-- Running rclone config to authorize OneDrive
+- Running `rclone config` to authorize OneDrive
 
 - Using rclone commands to sync/mount folders
 
 
- The problem: rclone works great for a human typing commands, but integrating it with an AI agent? That's tricky. The agent would need to:
+ **The problem:** rclone works great for a human typing commands, but integrating it with an AI agent? That's tricky. The agent would need to:
 
 
 
@@ -116,33 +116,33 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 
 
-- onedrive-docker — Docker containers that sync OneDrive locally. Good, but still requires server resources and maintenance.
+- **onedrive-docker** — Docker containers that sync OneDrive locally. Good, but still requires server resources and maintenance.
 
-- ownCloud/Nextcloud — Self-hosted alternatives. Overkill for my use case.
+- **ownCloud/Nextcloud** — Self-hosted alternatives. Overkill for my use case.
 
-- Direct WebDAV — OneDrive doesn't natively support WebDAV anymore.
+- **Direct WebDAV** — OneDrive doesn't natively support WebDAV anymore.
 
 
 
 ## The Solution: MultCloud
 
- After weeks of frustration, I discovered MultCloud — a service that lets you manage multiple cloud storage providers from one interface.
+ After weeks of frustration, I discovered **MultCloud** — a service that lets you manage multiple cloud storage providers from one interface.
 
  Here's why it won:
 
 
 
-- Easy setup: Connect OneDrive and Google Drive (or other clouds) with a few clicks
+- **Easy setup:** Connect OneDrive and Google Drive (or other clouds) with a few clicks
 
-- Built-in sync: Schedule automatic sync between clouds
+- **Built-in sync:** Schedule automatic sync between clouds
 
-- Agent-friendly: The AI agent talks to Google Drive (which we already set up), and files are automatically synced from OneDrive
+- **Agent-friendly:** The AI agent talks to Google Drive (which we already set up), and files are automatically synced from OneDrive
 
-- Reliable: No more OAuth headaches
+- **Reliable:** No more OAuth headaches
 
 
 
- The workaround: I set up MultCloud to automatically sync specific folders from OneDrive to Google Drive. Now my AI agent accesses everything through Google Drive — the "easy" API we set up in the previous post.
+ **The workaround:** I set up MultCloud to automatically sync specific folders from OneDrive to Google Drive. Now my AI agent accesses everything through Google Drive — the "easy" API we set up in the previous post.
 
 
 
@@ -150,19 +150,19 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 
 
-- Sign up for MultCloud (free tier available, paid for more features)
+- **Sign up for MultCloud** (free tier available, paid for more features)
 
-- Add OneDrive — authorize access to your OneDrive account
+- **Add OneDrive** — authorize access to your OneDrive account
 
-- Add Google Drive — authorize access
+- **Add Google Drive** — authorize access
 
-- Create a sync job — choose which OneDrive folders to sync to Google Drive
+- **Create a sync job** — choose which OneDrive folders to sync to Google Drive
 
-- Schedule it — sync hourly, daily, or in real-time
+- **Schedule it** — sync hourly, daily, or in real-time
 
 
 
- Tip: I caught MultCloud on a Valentine's Day lifetime deal — normally it's subscription-based. If you see a deal, grab it!
+ **Tip:** I caught MultCloud on a Valentine's Day lifetime deal — normally it's subscription-based. If you see a deal, grab it!
 
 
 
@@ -171,17 +171,13 @@ Summary: How I migrated my cloud storage using MultCloud.
  Is MultCloud perfect? No. Here's the reality:
 
 
- ProsCons
 
- Simple to set upThird-party dependency
-
- Works reliablySubscription cost (or one-time deal)
-
- No OAuth headachesData passes through their servers
-
- Supports 80+ cloudsFree tier has limits
-
-
+| Pros | Cons |
+| --- | --- |
+| Simple to set up | Third-party dependency |
+| Works reliably | Subscription cost (or one-time deal) |
+| No OAuth headaches | Data passes through their servers |
+| Supports 80+ clouds | Free tier has limits |
 
  For me, the trade-off was worth it. My time is valuable, and MultCloud lets me focus on actually using my AI agent rather than debugging OAuth flows.
 
@@ -192,13 +188,13 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 
 
-- Start with MultCloud from day one if you need multi-cloud access
+- **Start with MultCloud from day one** if you need multi-cloud access
 
-- Don't waste time on Microsoft Graph unless you have a business need
+- **Don't waste time on Microsoft Graph** unless you have a business need
 
-- Use rclone if you want a free, self-hosted solution and don't mind the CLI
+- **Use rclone** if you want a free, self-hosted solution and don't mind the CLI
 
-- Consider the sync approach: One-way sync (OneDrive → Google Drive) is simpler than two-way
+- **Consider the sync approach:** One-way sync (OneDrive → Google Drive) is simpler than two-way
 
 
 
@@ -208,13 +204,13 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 
 
-- Not all clouds are equal: Google's developer experience is far ahead of Microsoft's
+- **Not all clouds are equal:** Google's developer experience is far ahead of Microsoft's
 
-- Workarounds are valid: Sometimes the "elegant" solution isn't worth the headache
+- **Workarounds are valid:** Sometimes the "elegant" solution isn't worth the headache
 
-- AI agents need stable APIs: The less friction in cloud access, the more useful the agent
+- **AI agents need stable APIs:** The less friction in cloud access, the more useful the agent
 
-- Third-party services exist for a reason: MultCloud fills a real gap
+- **Third-party services exist for a reason:** MultCloud fills a real gap
 
 
 
@@ -239,9 +235,9 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 
 
-- Setting Up Google APIs for Self-Hosted AI Agents — How to set up Google Drive access
+- [Setting Up Google APIs for Self-Hosted AI Agents](/jingxiao-cai-blog/google-api-setup-guide.html) — How to set up Google Drive access
 
-- Migrating from WordPress to GitHub Pages — This blog's hosting setup
+- [Migrating from WordPress to GitHub Pages](/jingxiao-cai-blog/migrating-from-wordpress.html) — This blog's hosting setup
 
 
 
@@ -250,8 +246,8 @@ Summary: How I migrated my cloud storage using MultCloud.
 
 ### About the Author
 
- Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Radar Signal Processing from University of Oklahoma. Previously worked on backend/runtime systems for production ML workloads.
+ **Jingxiao Cai** is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Radar Signal Processing from University of Oklahoma. Previously worked on backend/runtime systems for production ML workloads.
 
 
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

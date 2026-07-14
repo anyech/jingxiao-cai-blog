@@ -9,22 +9,22 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When a Dirty-Tree Alert Is Correct: Classify the Artifact Before You Commit
 
 
- May 25, 2026 | By Jingxiao Cai
+ **May 25, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, git, automation, debugging, reliability, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a repository-health recovery into a reusable agent-ops pattern while removing thread identifiers, local paths, branch names, raw alerts, commit hashes, and deployment-specific details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a repository-health recovery into a reusable agent-ops pattern while removing thread identifiers, local paths, branch names, raw alerts, commit hashes, and deployment-specific details.
 
 
 
- Short version: a dirty-tree alert is not automatically noise. Treat it as a classification prompt: decide what is durable evidence, what is disposable workspace state, and what policy gap let the artifact appear.
+ **Short version:** a dirty-tree alert is not automatically noise. Treat it as a classification prompt: decide what is durable evidence, what is disposable workspace state, and what policy gap let the artifact appear.
 
 
  The alert was annoying because it arrived from an automated maintenance workflow that is supposed to be boring. A repository-health check found unexpected workspace changes, and the tempting response was to make the tree clean as quickly as possible.
@@ -32,12 +32,12 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
  That would have been the wrong first move. The alert was not a false positive. It was pointing at a real boundary problem: review-local artifacts had landed in a place where automated git hygiene could see them.
 
 
- Do not answer a dirty-tree alert with blind cleanup. Answer it with artifact classification.
+ **Do not answer a dirty-tree alert with blind cleanup. Answer it with artifact classification.**
 
 
 
 
- Conceptual scope: this is a sanitized OpenClaw agent-operations story. I am intentionally leaving out exact thread identifiers, channel identifiers, branch names, review directory names, commit hashes, local filesystem paths, raw terminal output, schedules, and live deployment details. The public lesson is the recovery pattern, not my local fingerprint.
+ **Conceptual scope:** this is a sanitized OpenClaw agent-operations story. I am intentionally leaving out exact thread identifiers, channel identifiers, branch names, review directory names, commit hashes, local filesystem paths, raw terminal output, schedules, and live deployment details. The public lesson is the recovery pattern, not my local fingerprint.
 
 
 
@@ -47,34 +47,11 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 
 
-
- Material
- What it meant
- Correct handling
-
-
-
-
-
- Review-local source checkout
- A disposable copy of source code used for analysis appeared under the automation-visible workspace. In some workflows a review checkout can be the work product itself; here the important question is whether it is intentional source, retained evidence, or scratch scaffolding.
- Do not commit it. Add narrow ignore coverage or move it outside the watched area.
-
-
-
- Completed evidence bundle
- Small result files captured useful proof from completed work.
- Preserve the durable evidence only if it is safe, intended to be retained, and small enough to justify keeping.
-
-
-
- Recovery notes
- The incident itself taught a recurring workflow boundary.
- Record the lesson in a durable, sanitized checkpoint or protocol note.
-
-
-
-
+| Material | What it meant | Correct handling |
+| --- | --- | --- |
+| **Review-local source checkout** | A disposable copy of source code used for analysis appeared under the automation-visible workspace. In some workflows a review checkout can be the work product itself; here the important question is whether it is intentional source, retained evidence, or scratch scaffolding. | Do not commit it. Add narrow ignore coverage or move it outside the watched area. |
+| **Completed evidence bundle** | Small result files captured useful proof from completed work. | Preserve the durable evidence only if it is safe, intended to be retained, and small enough to justify keeping. |
+| **Recovery notes** | The incident itself taught a recurring workflow boundary. | Record the lesson in a durable, sanitized checkpoint or protocol note. |
 
  One alert, three categories. If an agent collapses those categories into “dirty tree,” it will either commit too much or delete useful evidence.
 
@@ -94,21 +71,21 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 
 
-- Freeze the situation. Stop adding unrelated changes until the dirty-tree shape is understood.
+- **Freeze the situation.** Stop adding unrelated changes until the dirty-tree shape is understood.
 
-- Classify each path. Label every changed or untracked path as source change, durable evidence, disposable workspace state, generated output, or unknown.
+- **Classify each path.** Label every changed or untracked path as source change, durable evidence, disposable workspace state, generated output, or unknown.
 
-- Preserve before pruning. If evidence is useful, keep a small retained artifact or checkpoint before deleting bulky scratch state; if it contains sensitive material, sanitize, truncate, or reject retention fail-closed.
+- **Preserve before pruning.** If evidence is useful, keep a small retained artifact or checkpoint before deleting bulky scratch state; if it contains sensitive material, sanitize, truncate, or reject retention fail-closed.
 
-- Patch the policy narrowly. Add narrow `.gitignore` or equivalent ignore coverage for the disposable shape, not a broad pattern that hides future real changes.
+- **Patch the policy narrowly.** Add narrow `.gitignore` or equivalent ignore coverage for the disposable shape, not a broad pattern that hides future real changes.
 
-- Verify the clean state. Run the smallest meaningful gate: status, ahead/behind check, secret scan if new text was retained, and the maintenance dry run when available. If the secret scan fails, retention stops until the artifact is sanitized, truncated, or removed.
+- **Verify the clean state.** Run the smallest meaningful gate: status, ahead/behind check, secret scan if new text was retained, and the maintenance dry run when available. If the secret scan fails, retention stops until the artifact is sanitized, truncated, or removed.
 
-- Record the reopen criteria. Make it clear what future alert should reopen the incident versus what is now expected behavior.
+- **Record the reopen criteria.** Make it clear what future alert should reopen the incident versus what is now expected behavior.
 
 
 
- The useful invariant: a repository-health bot should never be trained to ignore “dirty.” It should be given better categories for why a path is dirty.
+ **The useful invariant:** a repository-health bot should never be trained to ignore “dirty.” It should be given better categories for why a path is dirty.
 
 
 
@@ -122,40 +99,12 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 
 
-
- Question
- If yes
- If no
-
-
-
-
-
- Is this the actual source change the agent meant to make?
- Review, test, and commit intentionally.
- Do not sweep it into a generic cleanup commit.
-
-
-
- Is this small, sanitized evidence that future agents need?
- Preserve it with a clear manifest or checkpoint.
- Archive or remove after confirming nothing durable is lost.
-
-
-
- Is this a full source checkout, dependency cache, build output, or scratch reproduction?
- Ignore or relocate it using a narrow pattern, such as a specific scratch-workspace path rather than a broad source-tree wildcard.
- Keep investigating before deleting or committing.
-
-
-
- Does this path contain secrets, credentials, private identifiers, or deployment fingerprints?
- Stop and sanitize fail-closed before any public or durable write.
- It may still be private; lack of obvious secrets is not enough.
-
-
-
-
+| Question | If yes | If no |
+| --- | --- | --- |
+| Is this the actual source change the agent meant to make? | Review, test, and commit intentionally. | Do not sweep it into a generic cleanup commit. |
+| Is this small, sanitized evidence that future agents need? | Preserve it with a clear manifest or checkpoint. | Archive or remove after confirming nothing durable is lost. |
+| Is this a full source checkout, dependency cache, build output, or scratch reproduction? | Ignore or relocate it using a narrow pattern, such as a specific scratch-workspace path rather than a broad source-tree wildcard. | Keep investigating before deleting or committing. |
+| Does this path contain secrets, credentials, private identifiers, or deployment fingerprints? | Stop and sanitize fail-closed before any public or durable write. | It may still be private; lack of obvious secrets is not enough. |
 
 
 ## The Concurrency Trap
@@ -173,15 +122,15 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 
 
-- Review workspaces may contain source checkouts, but each checkout needs classification: intentional work product, retained evidence, or disposable scaffolding.
+- **Review workspaces may contain source checkouts,** but each checkout needs classification: intentional work product, retained evidence, or disposable scaffolding.
 
-- Durable result bundles are allowed, but they need manifests, sanitization, and clear ownership.
+- **Durable result bundles are allowed,** but they need manifests, sanitization, and clear ownership.
 
-- Ignore rules should be narrow, tied to specific artifact shapes rather than broad “review/**” erasure.
+- **Ignore rules should be narrow,** tied to specific artifact shapes rather than broad “review/**” erasure.
 
-- Secret scans should run on retained text, especially when evidence is promoted from scratch space to durable memory; a failed scan means sanitize, truncate, or discard before retention.
+- **Secret scans should run on retained text,** especially when evidence is promoted from scratch space to durable memory; a failed scan means sanitize, truncate, or discard before retention.
 
-- Final verification should include both cleanliness and synchronization, because a clean local tree that is still ahead, behind, or unpushed is not the same operational state.
+- **Final verification should include both cleanliness and synchronization,** because a clean local tree that is still ahead, behind, or unpushed is not the same operational state.
 
 
  This is not glamorous infrastructure. It is the boring line between a repository that stays trustworthy and one that slowly fills with accidental reviewer leftovers.
@@ -201,13 +150,13 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
 
 
-- Proof Without Touching Production: A Safer PR Boundary for Agents
+- [Proof Without Touching Production: A Safer PR Boundary for Agents](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- When a Reviewer Demands Live Proof: An Agent Escalation Pattern
+- [When a Reviewer Demands Live Proof: An Agent Escalation Pattern](/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html)
 
-- When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern
+- [When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- True Alert, Wrong Page: An Agent-Ops Triage Pattern
+- [True Alert, Wrong Page: An Agent-Ops Triage Pattern](/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html)
 
 
 
@@ -227,4 +176,4 @@ Summary: An automated repository-health alert exposed a boundary problem: classi
 
  Have a similar cleanup rule for agent-maintained repositories? Leave a comment below, or send this to someone whose bots still treat every dirty tree as the same kind of problem.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

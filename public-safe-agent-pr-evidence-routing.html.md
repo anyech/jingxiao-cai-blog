@@ -9,22 +9,22 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Public-Safe Evidence Beats Private Debugging Dumps in Agent PRs
 
 
- June 21, 2026 | By Jingxiao Cai
+ **June 21, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, open-source, debugging, opsec, automation
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private auth/session debugging episode into a generalized public pattern and remove emails, session IDs, channel IDs, hostnames, local paths, tokens, private logs, and deployment-specific context.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private auth/session debugging episode into a generalized public pattern and remove emails, session IDs, channel IDs, hostnames, local paths, tokens, private logs, and deployment-specific context.
 
 
 
- Boundary: this is an agent-operations pattern, not a raw incident report. The upstream thread was public, but the private runtime context behind the observation is intentionally generalized.
+ **Boundary:** this is an agent-operations pattern, not a raw incident report. The upstream thread was public, but the private runtime context behind the observation is intentionally generalized.
 
 
  The easiest way to make an upstream bug report useless is to remove all evidence.
@@ -34,7 +34,7 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
  Agent systems make this trade-off sharper because the raw evidence is often full of things that should not become public: auth profile names, session identifiers, channel context, local file paths, hostnames, provider fallbacks, command transcripts, and operational habits. But upstream maintainers still need something concrete. They do not need vibes. They need a small, reproducible-looking signal that explains the failure class without leaking the operator.
 
 
- The useful unit is not the log dump. The useful unit is a public-safe evidence slice: observed state shape, failure class, proof boundary, and next verification step.
+ **The useful unit is not the log dump. The useful unit is a public-safe evidence slice: observed state shape, failure class, proof boundary, and next verification step.**
 
 
 
@@ -62,7 +62,7 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 - the affected sessions did not have a user-auth-profile lock
 
-- the persisted state was marked as auto, not as a deliberate user override
+- the persisted state was marked as `auto`, not as a deliberate user override
 
 - the primary profile was available at scan time
 
@@ -74,7 +74,7 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
  That is enough for an upstream maintainer to evaluate relevance without receiving a private transcript.
 
 
- Public reference: the sanitized evidence comment is on OpenClaw PR #87893. The blog post you are reading deliberately keeps the lesson more general than the comment itself.
+ **Public reference:** the sanitized evidence comment is on OpenClaw PR [#87893](https://github.com/openclaw/openclaw/pull/87893#issuecomment-4665323033). The blog post you are reading deliberately keeps the lesson more general than the comment itself.
 
 
 
@@ -84,46 +84,13 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 
 
-
- Private raw evidence
- Public-safe replacement
- Why it is better
-
-
-
-
-
- Exact account, profile, or email values
- Role-level shape: primary profile, fallback profile, emergency profile, user override, automatic override
- Preserves the state-machine meaning without exposing identity.
-
-
-
- Session IDs, channel IDs, and local store paths
- Counted observations and affected surface class
- Gives maintainers scale and scope without leaking routing metadata.
-
-
-
- Full logs or transcripts
- Minimal state predicates and sanitized counters
- Turns noisy logs into a checkable bug shape.
-
-
-
- Private recovery command output
- Dry-run recovery behavior: what would be cleared, skipped, or left untouched
- Shows operational consequence without publishing local tools.
-
-
-
- “This PR probably fixes it”
- Explicit proof boundary: current-release failing evidence, not after-fix proof
- Prevents evidence inflation. The maintainer knows exactly what claim is being made.
-
-
-
-
+| Private raw evidence | Public-safe replacement | Why it is better |
+| --- | --- | --- |
+| Exact account, profile, or email values | Role-level shape: primary profile, fallback profile, emergency profile, user override, automatic override | Preserves the state-machine meaning without exposing identity. |
+| Session IDs, channel IDs, and local store paths | Counted observations and affected surface class | Gives maintainers scale and scope without leaking routing metadata. |
+| Full logs or transcripts | Minimal state predicates and sanitized counters | Turns noisy logs into a checkable bug shape. |
+| Private recovery command output | Dry-run recovery behavior: what would be cleared, skipped, or left untouched | Shows operational consequence without publishing local tools. |
+| “This PR probably fixes it” | Explicit proof boundary: current-release failing evidence, not after-fix proof | Prevents evidence inflation. The maintainer knows exactly what claim is being made. |
 
 
 ## Route Evidence to the Right Upstream Surface
@@ -135,7 +102,7 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
  That routing decision matters. A good evidence slice in the wrong thread becomes archaeology. A good evidence slice in the active repair thread becomes maintainer leverage.
 
 
- Rule of thumb: route evidence to the narrowest active upstream surface where it can change a maintainer decision. If the evidence is only background, say that. If it is not after-fix proof, say that too.
+ **Rule of thumb:** route evidence to the narrowest active upstream surface where it can change a maintainer decision. If the evidence is only background, say that. If it is not after-fix proof, say that too.
 
 
 
@@ -149,11 +116,11 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 
 
-- Failure-class evidence: this bug shape is real outside the test fixture.
+- **Failure-class evidence:** this bug shape is real outside the test fixture.
 
-- Patch relevance evidence: the proposed change appears to target the right state transition.
+- **Patch relevance evidence:** the proposed change appears to target the right state transition.
 
-- After-fix proof: the patched branch was run against a representative before/after scenario and the failure disappeared.
+- **After-fix proof:** the patched branch was run against a representative before/after scenario and the failure disappeared.
 
 
  It is fine to contribute the first one. Just do not label it as the third.
@@ -181,7 +148,7 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
  The agent should be helpful enough to produce a useful upstream signal and paranoid enough not to export the user’s life as a debugging artifact.
 
 
- Public-posting check: if the post needs exact private identifiers to be convincing, it is not ready to post. First convert identifiers into roles, counters, state predicates, or a reproducible minimal case.
+ **Public-posting check:** if the post needs exact private identifiers to be convincing, it is not ready to post. First convert identifiers into roles, counters, state predicates, or a reproducible minimal case.
 
 
 
@@ -191,17 +158,17 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 
 
-- Target: is this the narrow active thread where the evidence can help?
+- **Target:** is this the narrow active thread where the evidence can help?
 
-- Claim: what exactly does the evidence prove, and what does it not prove?
+- **Claim:** what exactly does the evidence prove, and what does it not prove?
 
-- Shape: did I preserve the state predicates maintainers need?
+- **Shape:** did I preserve the state predicates maintainers need?
 
-- Privacy: did I remove exact people, emails, IDs, paths, hostnames, secrets, channels, and raw logs?
+- **Privacy:** did I remove exact people, emails, IDs, paths, hostnames, secrets, channels, and raw logs?
 
-- Boundary: did I distinguish failing evidence from after-fix proof?
+- **Boundary:** did I distinguish failing evidence from after-fix proof?
 
-- Next step: did I say what would turn this into stronger proof?
+- **Next step:** did I say what would turn this into stronger proof?
 
 
  That is the difference between an agent that merely has access and an agent that can participate safely in an open-source maintenance loop.
@@ -212,13 +179,13 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
 
 
-- The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts
+- [The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts](/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html)
 
-- When the Report Exists but the User Never Sees It
+- [When the Report Exists but the User Never Sees It](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- Troubleshooting AI Agent Skills: Why “Installed” Is Not the Same as “Usable”
+- [Troubleshooting AI Agent Skills: Why “Installed” Is Not the Same as “Usable”](/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html)
 
-- Local Semantic Memory on a 4-Core ARM VPS
+- [Local Semantic Memory on a 4-Core ARM VPS](/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
 
 
 
@@ -235,4 +202,4 @@ Summary: When an agent hits a real production-flavored failure, the useful upstr
 
  Found this useful? Send it to someone whose “evidence” folder is one unsanitized log dump away from becoming a security incident.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory
 
 
- June 7, 2026 | By Jingxiao Cai
+ **June 7, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, automation, debugging, memory, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the incident, separate the tool mistake from the guardrail that worked, and remove private paths, thread identifiers, commit details, and deployment-specific workflow names before publication.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped reconstruct the incident, separate the tool mistake from the guardrail that worked, and remove private paths, thread identifiers, commit details, and deployment-specific workflow names before publication.
 
 
 
- Short version: if an agent writes durable memory with whole-file replacement, one normal note-taking turn can become a silent history deletion. Treat daily memory as append-only unless recovery explicitly says otherwise.
+ **Short version:** if an agent writes durable memory with whole-file replacement, one normal note-taking turn can become a silent history deletion. Treat daily memory as append-only unless recovery explicitly says otherwise.
 
 
  The scary part was not that the publish gate stopped. The scary part was why it stopped.
@@ -34,12 +34,12 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
  The good news: a shrink guard caught it before the change was committed and pushed.
 
 
- The failure was an agent write mistake. The save was a boring guardrail that refused to publish a suspicious shrink.
+ **The failure was an agent write mistake. The save was a boring guardrail that refused to publish a suspicious shrink.**
 
 
 
 
- Sanitized scope: this is a public agent-operations pattern, not a dump of my private automation. I am intentionally omitting exact local paths, thread IDs, message IDs, commit hashes, private cron names, raw logs, and deployment-specific topology. The reusable lesson is append-only memory discipline and recovery-before-bypass behavior.
+ **Sanitized scope:** this is a public agent-operations pattern, not a dump of my private automation. I am intentionally omitting exact local paths, thread IDs, message IDs, commit hashes, private cron names, raw logs, and deployment-specific topology. The reusable lesson is append-only memory discipline and recovery-before-bypass behavior.
 
 
 
@@ -73,34 +73,11 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 
 
-
- Signal
- Why it mattered
- What the guard did
-
-
-
-
-
- Large shrink in a daily memory file
- Daily notes should usually grow or be compacted deliberately, not collapse by accident.
- Blocked the commit before the bad state became remote history.
-
-
-
- File remained syntactically valid
- Markdown validity would not catch semantic deletion.
- Treated size/content regression as a policy problem, not a parser problem.
-
-
-
- There was a recoverable new note
- The new work was not wrong; only the write mode was wrong.
- Forced recovery: restore previous content, then re-append safely.
-
-
-
-
+| Signal | Why it mattered | What the guard did |
+| --- | --- | --- |
+| Large shrink in a daily memory file | Daily notes should usually grow or be compacted deliberately, not collapse by accident. | Blocked the commit before the bad state became remote history. |
+| File remained syntactically valid | Markdown validity would not catch semantic deletion. | Treated size/content regression as a policy problem, not a parser problem. |
+| There was a recoverable new note | The new work was not wrong; only the write mode was wrong. | Forced recovery: restore previous content, then re-append safely. |
 
  This is the important design point: the guard did not need to know the whole story. It only needed to know that an ordinary daily-memory file should not suddenly become tiny without an explicit compaction trail.
 
@@ -113,21 +90,21 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 
 
-- Preserve the new note. Extract the small section that the assistant was trying to add.
+- **Preserve the new note.** Extract the small section that the assistant was trying to add.
 
-- Restore the previous memory file. Bring back the previously tracked content before reapplying the new section.
+- **Restore the previous memory file.** Bring back the previously tracked content before reapplying the new section.
 
-- Append through the helper. Re-add the saved note using the append-only path instead of another whole-file write.
+- **Append through the helper.** Re-add the saved note using the append-only path instead of another whole-file write.
 
-- Compact deliberately if needed. If the daily file is too large, preserve the full content elsewhere first, then replace it with a pointer summary intentionally.
+- **Compact deliberately if needed.** If the daily file is too large, preserve the full content elsewhere first, then replace it with a pointer summary intentionally.
 
-- Promote the rule. Add a durable invariant: existing daily memory files are append-only by default.
+- **Promote the rule.** Add a durable invariant: existing daily memory files are append-only by default.
 
-- Run the original commit flow again. Let the same guard that blocked the bad state verify the repaired state.
+- **Run the original commit flow again.** Let the same guard that blocked the bad state verify the repaired state.
 
 
 
- Recovery rule: when a shrink guard fires, restore first and re-append. Do not teach the system that bypassing safety checks is a valid way to finish a task.
+ **Recovery rule:** when a shrink guard fires, restore first and re-append. Do not teach the system that bypassing safety checks is a valid way to finish a task.
 
 
 
@@ -139,34 +116,11 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 
 
-
- Mutation type
- Good for
- Risk if misused
-
-
-
-
-
- Append
- Daily notes, incident checkpoints, incremental handoffs.
- Can grow noisy if never compacted.
-
-
-
- Targeted edit
- Correcting one known section or replacing a unique block.
- Can drift if the match is not unique or the section boundary is wrong.
-
-
-
- Whole-file rewrite
- Generated artifacts, fresh drafts, deliberate compacted summaries.
- Can silently delete history when used on existing continuity files.
-
-
-
-
+| Mutation type | Good for | Risk if misused |
+| --- | --- | --- |
+| **Append** | Daily notes, incident checkpoints, incremental handoffs. | Can grow noisy if never compacted. |
+| **Targeted edit** | Correcting one known section or replacing a unique block. | Can drift if the match is not unique or the section boundary is wrong. |
+| **Whole-file rewrite** | Generated artifacts, fresh drafts, deliberate compacted summaries. | Can silently delete history when used on existing continuity files. |
 
  Continuity memory belongs in the first category most of the time. If it needs to become the third category, that should be called a compaction, not disguised as a routine note update.
 
@@ -193,7 +147,7 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
  The fix is not to ban writing. The fix is to make write intent explicit.
 
 
- Before an agent writes a durable file, it should know whether the operation is append, targeted replacement, compaction, or full regeneration.
+ **Before an agent writes a durable file, it should know whether the operation is append, targeted replacement, compaction, or full regeneration.**
 
 
 
@@ -202,19 +156,19 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 
 
-- Classify the file. Is this continuity memory, source code, generated output, scratch, or config?
+- **Classify the file.** Is this continuity memory, source code, generated output, scratch, or config?
 
-- Choose the mutation type. Append, targeted edit, or rewrite should be a deliberate decision.
+- **Choose the mutation type.** Append, targeted edit, or rewrite should be a deliberate decision.
 
-- Prefer append helpers for daily notes. Do not rely on generic whole-file writers for continuity files.
+- **Prefer append helpers for daily notes.** Do not rely on generic whole-file writers for continuity files.
 
-- Use shrink guards on durable memory. Syntax checks are not enough; deletion is often valid syntax.
+- **Use shrink guards on durable memory.** Syntax checks are not enough; deletion is often valid syntax.
 
-- Treat guard failures as evidence. Preserve the new work, restore the old state, then reapply safely.
+- **Treat guard failures as evidence.** Preserve the new work, restore the old state, then reapply safely.
 
-- Compact with provenance. If a daily file must shrink, archive the full version and leave a pointer trail.
+- **Compact with provenance.** If a daily file must shrink, archive the full version and leave a pointer trail.
 
-- Re-run the same gate after repair. The guard that caught the problem should be part of the proof that it is fixed.
+- **Re-run the same gate after repair.** The guard that caught the problem should be part of the proof that it is fixed.
 
 
 
@@ -225,7 +179,7 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
  The practical rule I am keeping is simple:
 
 
- Append by default. Rewrite only by explicit design. Restore before bypass.
+ **Append by default. Rewrite only by explicit design. Restore before bypass.**
 
 
  That is not glamorous agent architecture. It is better: a boring invariant that turns one bad write into a recoverable incident instead of a permanent loss of memory.
@@ -236,13 +190,13 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
 
 
-- The Recovery Problem: Why AI Agents Need Undo
+- [The Recovery Problem: Why AI Agents Need Undo](/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html)
 
-- The Nightly Build That Caught My Mistakes
+- [The Nightly Build That Caught My Mistakes](/jingxiao-cai-blog/nightly-build-security-audits.html)
 
-- When the Live State Moves
+- [When the Live State Moves](/jingxiao-cai-blog/when-live-state-moves-agent-validators.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
 
 
@@ -262,4 +216,4 @@ Summary: An assistant accidentally replaced a daily memory note instead of appen
 
  Have you seen an automation system almost delete its own history? Leave a comment below.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

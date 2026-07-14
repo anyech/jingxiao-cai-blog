@@ -9,22 +9,22 @@ Summary: A self-hosted agent-ops debugging story: raw SQLite can still see rows 
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod
 
 
- May 6, 2026 | By Jingxiao Cai
+ **May 6, 2026** | By Jingxiao Cai
 
  Tags: sqlite, openclaw, ai-agents, incident-response, debugging, self-hosted
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped separate raw database evidence from runtime restore behavior, then kept the public version focused on the transferable repair pattern instead of deployment-specific artifacts.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped separate raw database evidence from runtime restore behavior, then kept the public version focused on the transferable repair pattern instead of deployment-specific artifacts.
 
 
 
- Short version: a SQLite-backed task registry can look non-empty under raw inspection while the application still sees an unusable or effectively empty registry view. Do not debug that by poking production. Preserve copies, compare query paths, reproduce in isolation, and only cut over after the repair path is proven.
+ **Short version:** a SQLite-backed task registry can look non-empty under raw inspection while the application still sees an unusable or effectively empty registry view. Do not debug that by poking production. Preserve copies, compare query paths, reproduce in isolation, and only cut over after the repair path is proven.
 
 
 
@@ -35,12 +35,12 @@ Summary: A self-hosted agent-ops debugging story: raw SQLite can still see rows 
  The tricky case I hit was not the cartoon version where every read explodes immediately. The confusing symptom was more subtle: raw SQLite inspection could still see task-history rows, while the agent runtime behaved as if the task registry could not be restored correctly.
 
 
- “The rows exist” and “the runtime can safely use this registry” are not the same claim.
+ **“The rows exist” and “the runtime can safely use this registry” are not the same claim.**
 
 
 
 
- Public-surface note: this write-up is sanitized from self-hosted OpenClaw operations. It keeps the reusable debugging structure and SQLite concepts, but omits private paths, task IDs, channel IDs, hostnames, exact schedules, live counts, helper filenames, and deployment-specific topology.
+ **Public-surface note:** this write-up is sanitized from self-hosted OpenClaw operations. It keeps the reusable debugging structure and SQLite concepts, but omits private paths, task IDs, channel IDs, hostnames, exact schedules, live counts, helper filenames, and deployment-specific topology.
 
 
 
@@ -50,9 +50,13 @@ Summary: A self-hosted agent-ops debugging story: raw SQLite can still see rows 
 
  That led to a dangerous temptation:
 
- SQLite can count rows,
+
+
+```
+SQLite can count rows,
 so the registry is probably fine,
 so maybe I can repair this in place.
+```
 
  That would have been the wrong conclusion. A task registry is not just a bag of rows. The runtime depends on a particular schema, indexes, uniqueness assumptions, WAL sidecar state, and query paths. If any of those are inconsistent, the database can still answer some direct SQL while the application restore path fails or silently sees the wrong subset of state.
 
@@ -63,39 +67,16 @@ so maybe I can repair this in place.
 
 
 
+| Failure class | What raw inspection may show | What the runtime may experience |
+| --- | --- | --- |
+| Index drift or index corruption | Base-table scans still reveal rows; indexed scans may disagree. | Queries that rely on indexes or uniqueness invariants can return the wrong view. |
+| Table or overflow-page damage | Some rows remain readable; specific payload reads fail or return mixed/corrupt fields. | The restore path may abort, quarantine state, or treat the registry as unavailable. |
+| Sidecar mismatch | The main database file looks plausible by itself. | The application sees a different state once WAL/SHM behavior and checkpoint timing enter the picture. |
 
- Failure class
- What raw inspection may show
- What the runtime may experience
-
-
-
-
-
- Index drift or index corruption
- Base-table scans still reveal rows; indexed scans may disagree.
- Queries that rely on indexes or uniqueness invariants can return the wrong view.
+ That is why one-liner diagnostics are not enough. `PRAGMA quick_check` is a useful gate, but it should not be the only evidence. A full `PRAGMA integrity_check`, indexed-vs-`NOT INDEXED` comparisons, schema inspection, and a runtime restore probe answer different questions.
 
 
-
- Table or overflow-page damage
- Some rows remain readable; specific payload reads fail or return mixed/corrupt fields.
- The restore path may abort, quarantine state, or treat the registry as unavailable.
-
-
-
- Sidecar mismatch
- The main database file looks plausible by itself.
- The application sees a different state once WAL/SHM behavior and checkpoint timing enter the picture.
-
-
-
-
-
- That is why one-liner diagnostics are not enough. PRAGMA quick_check is a useful gate, but it should not be the only evidence. A full PRAGMA integrity_check, indexed-vs-NOT INDEXED comparisons, schema inspection, and a runtime restore probe answer different questions.
-
-
- Operational smell: if raw SQL and the application disagree, do not immediately choose the answer you prefer. Treat the disagreement itself as evidence.
+ **Operational smell:** if raw SQL and the application disagree, do not immediately choose the answer you prefer. Treat the disagreement itself as evidence.
 
 
 
@@ -105,17 +86,17 @@ so maybe I can repair this in place.
 
 
 
-- Freeze evidence first. Preserve the database and its sidecar files before running tools that might checkpoint, truncate, or rewrite them.
+- **Freeze evidence first.** Preserve the database and its sidecar files before running tools that might checkpoint, truncate, or rewrite them.
 
-- Work on disposable copies. Put each hypothesis in a scratch directory, stage clone, container, or other throwaway environment.
+- **Work on disposable copies.** Put each hypothesis in a scratch directory, stage clone, container, or other throwaway environment.
 
-- Ask multiple SQLite questions. Compare quick_check, integrity_check, ordinary counts, NOT INDEXED counts, and representative row scans.
+- **Ask multiple SQLite questions.** Compare `quick_check`, `integrity_check`, ordinary counts, `NOT INDEXED` counts, and representative row scans.
 
-- Run the application restore path separately. A database can satisfy a direct SQL query and still fail the runtime’s actual startup or restore code.
+- **Run the application restore path separately.** A database can satisfy a direct SQL query and still fail the runtime’s actual startup or restore code.
 
-- Try repairs only on copies. Test REINDEX, logical backup, or CLI recovery on preserved snapshots before deciding whether any production cutover is justified.
+- **Try repairs only on copies.** Test `REINDEX`, logical backup, or CLI recovery on preserved snapshots before deciding whether any production cutover is justified.
 
-- Cut over only during an explicit maintenance window. If the gateway has to be offline, that action needs a human-owned or pre-approved offline execution plan with logs that survive the outage.
+- **Cut over only during an explicit maintenance window.** If the gateway has to be offline, that action needs a human-owned or pre-approved offline execution plan with logs that survive the outage.
 
 
  The key move is step four. Many incidents stop at “SQLite says there are rows.” Agent systems need a second gate: “the runtime can restore those rows through the same path it uses in real life.”
@@ -127,34 +108,11 @@ so maybe I can repair this in place.
 
 
 
-
- Lens
- Question
- Useful signal
-
-
-
-
-
- Base-table lens
- What rows are physically readable without trusting indexes?
- NOT INDEXED scans, selected payload reads, logical export attempts.
-
-
-
- Index/invariant lens
- Do indexed paths agree with raw scans?
- Count mismatches, uniqueness failures, integrity_check output, post-REINDEX comparisons.
-
-
-
- Runtime lens
- Can the application restore and use the registry safely?
- Isolated startup/restore probes, task-list parsing, and control-plane smoke checks.
-
-
-
-
+| Lens | Question | Useful signal |
+| --- | --- | --- |
+| Base-table lens | What rows are physically readable without trusting indexes? | `NOT INDEXED` scans, selected payload reads, logical export attempts. |
+| Index/invariant lens | Do indexed paths agree with raw scans? | Count mismatches, uniqueness failures, `integrity_check` output, post-`REINDEX` comparisons. |
+| Runtime lens | Can the application restore and use the registry safely? | Isolated startup/restore probes, task-list parsing, and control-plane smoke checks. |
 
  When all three lenses agree, you can start trusting the result. When they disagree, the mismatch is the incident.
 
@@ -165,16 +123,16 @@ so maybe I can repair this in place.
 
 
 
-- REINDEX is attractive when the base table is readable and the strongest evidence points to index drift. SQLite documents it as rebuilding indexes from scratch, which is exactly the shape you want for an index-only hypothesis.
+- **`REINDEX`** is attractive when the base table is readable and the strongest evidence points to index drift. SQLite documents it as rebuilding indexes from scratch, which is exactly the shape you want for an index-only hypothesis.
 
-- Logical backup or dump is useful when ordinary reads are still reliable enough to export a coherent database image.
+- **Logical backup or dump** is useful when ordinary reads are still reliable enough to export a coherent database image.
 
-- CLI recovery is the “the file is damaged, salvage what can be salvaged” lane. It belongs on copies, not casually on the live registry.
+- **CLI recovery** is the “the file is damaged, salvage what can be salvaged” lane. It belongs on copies, not casually on the live registry.
 
-- Restore from a known-good candidate is sometimes safer than clever repair, especially when the runtime registry is already unreliable and recent history loss is bounded.
+- **Restore from a known-good candidate** is sometimes safer than clever repair, especially when the runtime registry is already unreliable and recent history loss is bounded.
 
 
- The important part is not picking the flashiest tool. It is matching the tool to the evidence. If the evidence says index drift, a copy-tested REINDEX can be a small repair. If the evidence says table payload contamination, pretending it is “just an index” is wishful thinking.
+ The important part is not picking the flashiest tool. It is matching the tool to the evidence. If the evidence says index drift, a copy-tested `REINDEX` can be a small repair. If the evidence says table payload contamination, pretending it is “just an index” is wishful thinking.
 
 
 ## The Production Boundary
@@ -182,7 +140,7 @@ so maybe I can repair this in place.
  The cleanest operational rule from this incident is simple:
 
 
- Do not let production be your reproduction harness.
+ **Do not let production be your reproduction harness.**
 
 
  That rule has two parts.
@@ -204,15 +162,15 @@ so maybe I can repair this in place.
 
 
 
-- Trusting mtime over viability. The newest backup is not necessarily the best backup if it is empty, partial, or unreadable.
+- **Trusting mtime over viability.** The newest backup is not necessarily the best backup if it is empty, partial, or unreadable.
 
-- Trusting the main database file alone. WAL-backed systems need sidecar-aware evidence capture.
+- **Trusting the main database file alone.** WAL-backed systems need sidecar-aware evidence capture.
 
-- Trusting row counts as health. Counts can hide index drift, payload damage, or runtime restore failures.
+- **Trusting row counts as health.** Counts can hide index drift, payload damage, or runtime restore failures.
 
-- Running repairs from the wrong control plane. If stopping the gateway kills your supervisor, you need a different execution model.
+- **Running repairs from the wrong control plane.** If stopping the gateway kills your supervisor, you need a different execution model.
 
-- Conflating “recovered enough for SQL” with “safe for the application.” The runtime restore path is its own test.
+- **Conflating “recovered enough for SQL” with “safe for the application.”** The runtime restore path is its own test.
 
 
 
@@ -224,13 +182,13 @@ so maybe I can repair this in place.
 
 - Record which checks are read-only and which are mutating.
 
-- Compare indexed scans with NOT INDEXED scans for key tables.
+- Compare indexed scans with `NOT INDEXED` scans for key tables.
 
 - Run both quick and full integrity checks on copies where possible.
 
 - Probe the application restore path in an isolated harness.
 
-- Test REINDEX, recovery, or restore candidates on copies first.
+- Test `REINDEX`, recovery, or restore candidates on copies first.
 
 - Choose the smallest repair that explains the evidence.
 
@@ -247,7 +205,7 @@ so maybe I can repair this in place.
  For an agent gateway, the better question is stricter:
 
 
- Can the live runtime restore, query, and update this registry through its real paths without contradicting the lower-level evidence?
+ **Can the live runtime restore, query, and update this registry through its real paths without contradicting the lower-level evidence?**
 
 
 
@@ -258,11 +216,11 @@ so maybe I can repair this in place.
 
 
 
-- SQLite documentation: PRAGMA integrity_check and related checks
+- [SQLite documentation: `PRAGMA integrity_check` and related checks](https://www.sqlite.org/pragma.html#pragma_integrity_check)
 
-- SQLite documentation: REINDEX
+- [SQLite documentation: `REINDEX`](https://www.sqlite.org/lang_reindex.html)
 
-- SQLite CLI documentation: recovering data from a corrupted database
+- [SQLite CLI documentation: recovering data from a corrupted database](https://www.sqlite.org/cli.html#recover_data_from_a_corrupted_database)
 
 
 
@@ -271,13 +229,13 @@ so maybe I can repair this in place.
 
 
 
-- Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
-- Building Fail-Closed Stage Environments for AI Agents on a Small VPS
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
-- The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways
+- [The 10-Second Session List: Why Prefiltering Before Row Build Matters in Agent Gateways](/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html)
 
-- Treating AI Agent Updates Like Production Deployments: The Runbook Keeps Paying Off
+- [Treating AI Agent Updates Like Production Deployments: The Runbook Keeps Paying Off](/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html)
 
 
 
@@ -297,4 +255,4 @@ so maybe I can repair this in place.
 
  Found this useful? Send it to someone who says “the rows are still there” a little too confidently.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

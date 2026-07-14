@@ -9,18 +9,18 @@ Summary: I created a sanitization checklist after nearly publishing sensitive de
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Blog Post Sanitization Checklist: What to Redact Before Publishing
 
 
- March 3, 2026 | By Jingxiao Cai
+ **March 3, 2026** | By Jingxiao Cai
 
  Tags: writing, security, blogging, opsec, technical-writing
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It flagged the operational security leak in the original draft and helped create the sanitization checklist. Because sometimes the best way to learn opsec is to have your AI catch your mistakes before publishing.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It flagged the operational security leak in the original draft and helped create the sanitization checklist. Because sometimes the best way to learn opsec is to have your AI catch your mistakes before publishing.
 
 
 
@@ -34,16 +34,21 @@ Summary: I created a sanitization checklist after nearly publishing sensitive de
  Then my AI assistant (Clawsistant) flagged something:
 
 
- "Wait. You're about to publish specific cron job names, channel IDs, and exact deployment counts. This is operational security information."
+ **"Wait. You're about to publish specific cron job names, channel IDs, and exact deployment counts. This is operational security information."**
 
 
  Ouch.
 
  I had written things like:
 
- My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54)
+
+
+```
+My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54)
 runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
- That's three unique identifiers that could be used to:
+```
+
+ That's **three unique identifiers** that could be used to:
 
 
 
@@ -54,12 +59,12 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 - Target attacks against known infrastructure
 
 
- None of this was malicious. I just didn't think about it. I was focused on writing good technical content, not protecting operational details.
+ **None of this was malicious.** I just didn't think about it. I was focused on writing good technical content, not protecting operational details.
 
 
 ## Why This Matters
 
- Blog posts are permanent and public. Once published:
+ Blog posts are **permanent and public**. Once published:
 
 
 
@@ -69,10 +74,10 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 - They can be quoted, shared, and screenshot
 
-- You can't fully delete them (even if you remove the post, copies exist)
+- **You can't fully delete them** (even if you remove the post, copies exist)
 
 
- Unlike GitHub issues (where you can edit comments) or social media (where you can delete posts), blog posts should be treated as immutable.
+ Unlike GitHub issues (where you can edit comments) or social media (where you can delete posts), blog posts should be treated as **immutable**.
 
  So what do you redact?
 
@@ -84,160 +89,64 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 
 
-
- Category
- Examples
- Replacement
-
-
-
-
-
- Cron Job Names
- moltbook-lunch-scan, healthcheck-nightly-audit
- "daily scan job", "security audit job"
-
-
-
- Cron Job IDs
- 89dcec9f-5e45-4ef3-824b-1a4761779e54
- Remove entirely or "job ID"
-
-
-
- Channel IDs
- Telegram -1003892593540, Discord guild IDs
- "my Telegram channel", "configured channel"
-
-
-
- API Keys/Tokens
- moltbook_sk_*, gmail tokens
- "API key", "stored credentials"
-
-
-
- File Paths with Usernames
- /home/ubuntu/.openclaw/
- ~/.openclaw/ or [workspace]/
-
-
-
- Exact Deployment Counts
- "7 cron jobs"
- "multiple cron jobs", "several automated jobs"
-
-
-
- Specific Schedule Times
- "3:00 AM PST" (exact)
- "early morning", "nightly" (keep timezone, generalize time)
-
-
-
- Infrastructure Details
- VM specs, IP addresses, hostnames
- "cloud VM", "VPS"
-
-
-
- Personal Schedule Patterns
- "I wake up at 10 AM daily"
- "I review results each morning"
-
-
-
- Family/Personal Details
- Children's names, specific school info
- Generic: "family", "school updates"
-
-
-
- Financial Details
- Exact account balances, trade amounts
- Ranges or omit
-
-
-
-
+| Category | Examples | Replacement |
+| --- | --- | --- |
+| **Cron Job Names** | `moltbook-lunch-scan`, `healthcheck-nightly-audit` | "daily scan job", "security audit job" |
+| **Cron Job IDs** | `89dcec9f-5e45-4ef3-824b-1a4761779e54` | Remove entirely or "job ID" |
+| **Channel IDs** | Telegram `-1003892593540`, Discord guild IDs | "my Telegram channel", "configured channel" |
+| **API Keys/Tokens** | `moltbook_sk_*`, `gmail tokens` | "API key", "stored credentials" |
+| **File Paths with Usernames** | `/home/ubuntu/.openclaw/` | `~/.openclaw/` or `[workspace]/` |
+| **Exact Deployment Counts** | "7 cron jobs" | "multiple cron jobs", "several automated jobs" |
+| **Specific Schedule Times** | "3:00 AM PST" (exact) | "early morning", "nightly" (keep timezone, generalize time) |
+| **Infrastructure Details** | VM specs, IP addresses, hostnames | "cloud VM", "VPS" |
+| **Personal Schedule Patterns** | "I wake up at 10 AM daily" | "I review results each morning" |
+| **Family/Personal Details** | Children's names, specific school info | Generic: "family", "school updates" |
+| **Financial Details** | Exact account balances, trade amounts | Ranges or omit |
 
 
 ### ✅ SAFE TO KEEP
 
 
 
-
- Category
- Examples
- Why Safe
-
-
-
-
-
- Software Versions
- "OpenClaw 2026.2.26"
- Public information
-
-
-
- OS and Platform
- "Ubuntu 22.04 LTS", "arm64"
- Generic deployment info
-
-
-
- Error Messages
- "403 insufficient scopes"
- Technical details, no secrets
-
-
-
- Configuration Structure
- JSON schema, field names
- Not actual values
-
-
-
- Technical Analysis
- Root cause, troubleshooting steps
- Educational value
-
-
-
- Your Name/Employer
- "Jingxiao Cai", "Oracle"
- It's your blog—be transparent about authorship
-
-
-
- Timezones
- "PST/PDT"
- General location info
-
-
-
-
+| Category | Examples | Why Safe |
+| --- | --- | --- |
+| **Software Versions** | "OpenClaw 2026.2.26" | Public information |
+| **OS and Platform** | "Ubuntu 22.04 LTS", "arm64" | Generic deployment info |
+| **Error Messages** | "403 insufficient scopes" | Technical details, no secrets |
+| **Configuration Structure** | JSON schema, field names | Not actual values |
+| **Technical Analysis** | Root cause, troubleshooting steps | Educational value |
+| **Your Name/Employer** | "Jingxiao Cai", "Oracle" | It's your blog—be transparent about authorship |
+| **Timezones** | "PST/PDT" | General location info |
 
 
 ## Before/After Examples
 
 
- ❌ Before (Unsanitized)
- My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54)
+ **❌ Before (Unsanitized)**
+
+
+```
+My `moltbook-lunch-scan` cron job (ID: 89dcec9f-5e45-4ef3-824b-1a4761779e54)
 runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
+```
 
 
 
- ✅ After (Sanitized)
- My daily Moltbook scan job runs at noon PST and sends reports to my Telegram channel.
+
+ **✅ After (Sanitized)**
 
 
- What changed:
+```
+My daily Moltbook scan job runs at noon PST and sends reports to my Telegram channel.
+```
 
 
 
-- ❌ Removed specific job name (moltbook-lunch-scan)
+ **What changed:**
+
+
+
+- ❌ Removed specific job name (`moltbook-lunch-scan`)
 
 - ❌ Removed job ID (UUID)
 
@@ -258,26 +167,46 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 ### 1. Check for UUIDs
 
- grep -E "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" draft.html
- Expected: No results ✅
+
+
+```
+grep -E "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" draft.html
+```
+
+ **Expected:** No results ✅
 
 
 ### 2. Check for Telegram Channel IDs
 
- grep -E "\-100[0-9]+" draft.html
- Expected: No results ✅
+
+
+```
+grep -E "\-100[0-9]+" draft.html
+```
+
+ **Expected:** No results ✅
 
 
 ### 3. Check for Specific Job Names
 
- grep -E "moltbook-|healthcheck-|morning-" draft.html
- Expected: Only in generic context (e.g., "Moltbook scan" not moltbook-lunch-scan)
+
+
+```
+grep -E "moltbook-|healthcheck-|morning-" draft.html
+```
+
+ **Expected:** Only in generic context (e.g., "Moltbook scan" not `moltbook-lunch-scan`)
 
 
 ### 4. Check for Full Paths with Usernames
 
- grep -E "/home/[a-z]+" draft.html
- Expected: No results ✅ (use ~ instead)
+
+
+```
+grep -E "/home/[a-z]+" draft.html
+```
+
+ **Expected:** No results ✅ (use `~` instead)
 
 
 ### 5. Manual Review
@@ -285,10 +214,10 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
  Read the entire post asking:
 
 
- "Could someone identify my specific deployment from this?"
+ **"Could someone identify my specific deployment from this?"**
 
 
- Check for combination leaks—multiple harmless details that together identify you.
+ Check for **combination leaks**—multiple harmless details that together identify you.
 
 
 ## Blog Posts ≠ GitHub Issues
@@ -323,7 +252,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 - ❌ Financial privacy (exact compensation, account balances)
 
 
- Key principle: Protect how your deployment works, not who you are.
+ **Key principle:** Protect *how your deployment works*, not *who you are*.
 
 
 ## The Checklist I Use Now
@@ -355,7 +284,7 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 
 
- Location: I keep this checklist at memory/categories/blog-sanitization-checklist.md and review it before every post.
+ **Location:** I keep this checklist at `memory/categories/blog-sanitization-checklist.md` and review it before every post.
 
 
 ## Lessons Learned
@@ -363,13 +292,13 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 ### 1. Operational Security > Anonymity
 
- The goal isn't to hide who you are—it's to protect how your systems work.
+ The goal isn't to hide who you are—it's to protect **how your systems work**.
 
 
 
 - ✅ "I run security audits" (general capability)
 
-- ❌ "My healthcheck-nightly-audit job runs at exactly 3:00 AM" (specific pattern)
+- ❌ "My `healthcheck-nightly-audit` job runs at exactly 3:00 AM" (specific pattern)
 
 
 
@@ -400,8 +329,12 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
  Individual details might be harmless, but together they can identify you:
 
- ❌ "Oracle PMTS" + "HeatWave ML" + "Fremont CA" + "36M" = Specific person
+
+
+```
+❌ "Oracle PMTS" + "HeatWave ML" + "Fremont CA" + "36M" = Specific person
 ✅ "senior engineer" + "distributed systems" + "Bay Area" = Many people
+```
 
 
 ## Why I'm Publishing This
@@ -410,12 +343,12 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
  The AI agent community is growing fast. People are building autonomous systems, running cron jobs, connecting to their personal data. We're sharing our experiences, our architectures, our lessons learned.
 
- That's great. But let's do it safely.
+ **That's great. But let's do it safely.**
 
- Use this checklist. Adapt it. Improve it. But use something.
+ Use this checklist. Adapt it. Improve it. But *use something*.
 
 
- Your blog is permanent. Your operational security matters. Redact before you publish.
+ **Your blog is permanent. Your operational security matters. Redact before you publish.**
 
 
 
@@ -425,11 +358,11 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
 
 
-- The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep
+- [The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep](/jingxiao-cai-blog/nightly-build-security-audits.html)
 
-- The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know
+- [The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know](/jingxiao-cai-blog/supply-chain-attack-ai-agents.html)
 
-- VPS OAuth Survival Guide: Google APIs Without a Browser
+- [VPS OAuth Survival Guide: Google APIs Without a Browser](/jingxiao-cai-blog/vps-oauth-survival-guide.html)
 
 
 
@@ -447,4 +380,4 @@ runs at 12:00 PM PST and sends reports to Telegram channel -1003892593540.
 
  Found this helpful? Share it with someone else writing about their infrastructure.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

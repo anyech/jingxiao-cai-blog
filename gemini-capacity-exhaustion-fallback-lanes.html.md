@@ -10,34 +10,34 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows
 
 
- March 29, 2026 · Updated June 15, 2026 | By Jingxiao Cai
+ **March 29, 2026 · Updated June 15, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, gemini, reliability, devops, llm-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with operational defaults.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a messy fallback-design debate, implementation trail, and internal review into a cleaner operator memo—and then pressure-tested the draft so I would not blur conceptual design with operational defaults.
 
 
 
- Important boundary up front: the wrapper described here improves startup-layer fallback. It does not yet solve prompt-time ACP failures after a Gemini session has already started. That is still the real engineering gap.
+ **Important boundary up front:** the wrapper described here improves *startup-layer* fallback. It does **not** yet solve prompt-time ACP failures after a Gemini session has already started. That is still the real engineering gap.
 
 
 
- May 2026 update: a later Gemini ACP closeout reinforced the same boundary from a different angle: when readiness is green and remaining dependencies are already watched, the right action can be passive monitoring—not another route change.
+ **May 2026 update:** a later Gemini ACP closeout reinforced the same boundary from a different angle: when readiness is green and remaining dependencies are already watched, the right action can be passive monitoring—not another route change.
 
 
 
- June 12 update: I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
+ **June 12 update:** I tightened this into a scoutable state-machine rule: do not turn every degraded coding-agent lane into a local config or route change. Classify first.
 
 
 
- June 15 update: I now treat fallback lanes as one example of a broader boundary rule: classify the failing layer before changing architecture. The same rule showed up again in a container-first distributed-serving prototype.
+ **June 15 update:** I now treat fallback lanes as one example of a broader boundary rule: classify the failing layer before changing architecture. The same rule showed up again in a container-first distributed-serving prototype.
 
 
 
@@ -46,16 +46,16 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 ## The Real Question Wasn't “What Model Next?”
 
- When Gemini preview capacity collapses, the obvious question is: what should I try next?
+ When Gemini preview capacity collapses, the obvious question is: *what should I try next?*
 
- The more important question is: where should fallback policy live?
+ The more important question is: **where should fallback policy live?**
 
- I run Gemini through an ACP-backed path inside OpenClaw—a wrapper/runtime layer that lets Gemini act as a consultant inside a larger agent workflow. When that path fails, the user-facing symptom can be something generic like acpx exited with code 1, while the actual cause is upstream 429, RESOURCE_EXHAUSTED, or MODEL_CAPACITY_EXHAUSTED.
+ I run Gemini through an ACP-backed path inside OpenClaw—a wrapper/runtime layer that lets Gemini act as a consultant inside a larger agent workflow. When that path fails, the user-facing symptom can be something generic like `acpx exited with code 1`, while the actual cause is upstream `429`, `RESOURCE_EXHAUSTED`, or `MODEL_CAPACITY_EXHAUSTED`.
 
  That distinction matters because a model-capacity problem, an auth problem, and a local wrapper bug should not trigger the same fallback behavior. If your system collapses all of them into “Gemini failed,” the fallback strategy is already wrong.
 
 
- The design problem was not “which model should come second?” It was “how do I keep model policy out of the wrong layers?”
+ **The design problem was not “which model should come second?” It was “how do I keep model policy out of the wrong layers?”**
 
 
 
@@ -74,7 +74,7 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 ### 2. Every workflow that happens to use Gemini
 
- This is worse. If panel review code, summarization code, and research code all start manually walking preview -> stable -> fast, model policy gets scattered across business logic. A future model change becomes archaeology.
+ This is worse. If panel review code, summarization code, and research code all start manually walking `preview -> stable -> fast`, model policy gets scattered across business logic. A future model change becomes archaeology.
 
 
 ### 3. Operator memory
@@ -86,58 +86,62 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 ## The Design That Survived the Internal Panel Review
 
- The design that survived an internal multi-model review was simple:
+ The design that survived an **internal multi-model review** was simple:
 
 
 
-- define semantic lanes
+- define **semantic lanes**
 
-- keep lane order and failure triggers in OpenClaw-owned config
+- keep lane order and failure triggers in **OpenClaw-owned config**
 
-- keep Gemini settings limited to alias -> concrete model mapping
+- keep Gemini settings limited to **alias -> concrete model mapping**
 
-- use a small Gemini-specific wrapper to execute that lane plan
+- use a small **Gemini-specific wrapper** to execute that lane plan
 
-- let higher-level workflows ask only for the logical Gemini consultant
+- let higher-level workflows ask only for the **logical Gemini consultant**
 
 
  The conceptual lane stack looked like this:
 
- {
- "profiles": {
- "consult-primary": {
- "order": ["preview-primary", "stable-primary"],
- "rescueOrder": ["fast-fallback"],
- "enableRescueLane": false,
- "fallbackOn": ["429", "RESOURCE_EXHAUSTED", "MODEL_CAPACITY_EXHAUSTED"]
- }
- },
- "lanes": {
- "preview-primary": { "alias": "gemini-preview" },
- "stable-primary": { "alias": "gemini-stable" },
- "fast-fallback": { "alias": "gemini-fast", "disabledByDefault": true }
- }
+
+
+```
+{
+  "profiles": {
+    "consult-primary": {
+      "order": ["preview-primary", "stable-primary"],
+      "rescueOrder": ["fast-fallback"],
+      "enableRescueLane": false,
+      "fallbackOn": ["429", "RESOURCE_EXHAUSTED", "MODEL_CAPACITY_EXHAUSTED"]
+    }
+  },
+  "lanes": {
+    "preview-primary": { "alias": "gemini-preview" },
+    "stable-primary": { "alias": "gemini-stable" },
+    "fast-fallback": { "alias": "gemini-fast", "disabledByDefault": true }
+  }
 }
+```
 
 
- Illustrative structure only: this JSON is a simplified example, not a byte-for-byte copy of my live config. The point is the separation of policy, mapping, and execution—not the exact local schema or alias names.
+ **Illustrative structure only:** this JSON is a simplified example, not a byte-for-byte copy of my live config. The point is the separation of policy, mapping, and execution—not the exact local schema or alias names.
 
 
  That separation gave each layer one job:
 
 
 
-- Gemini settings answer: what concrete model does this alias mean?
+- **Gemini settings** answer: what concrete model does this alias mean?
 
-- OpenClaw lane config answers: in what order should I try lanes, and under what failure class?
+- **OpenClaw lane config** answers: in what order should I try lanes, and under what failure class?
 
-- The wrapper answers: how do I execute that policy and log what happened?
+- **The wrapper** answers: how do I execute that policy and log what happened?
 
-- The workflow answers only: I need the Gemini consultant role.
+- **The workflow** answers only: I need the Gemini consultant role.
 
 
 
- Operational default, not production-service guidance: the original conceptual design prioritized preview-primary -> stable-primary -> fast-fallback. In my personal automation setup, the implemented default uses stable-primary -> preview-primary as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
+ **Operational default, not production-service guidance:** the original conceptual design prioritized `preview-primary -> stable-primary -> fast-fallback`. In my personal automation setup, the implemented default uses `stable-primary -> preview-primary` as the normal route, with the fast lane still defined but disabled by default. That change happened because lane-health probes mattered more than design preference.
 
 
 
@@ -148,7 +152,7 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
  If a high-end preview lane is overloaded, the next question should not be “what is the fastest thing that still returns text?” The next question should be:
 
 
- What is the best available downgrade that preserves answer quality for the kind of work I am doing?
+ **What is the best available downgrade that preserves answer quality for the kind of work I am doing?**
 
 
 
@@ -156,16 +160,16 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 
 
-- preview-primary — highest-quality, less stable lane
+- **preview-primary** — highest-quality, less stable lane
 
-- stable-primary — quality-preserving fallback
+- **stable-primary** — quality-preserving fallback
 
-- fast-fallback — emergency rescue lane, intentionally lower tier
+- **fast-fallback** — emergency rescue lane, intentionally lower tier
 
 
  The important rule was that the fast lane should exist, but it should not silently become the everyday default just because it happens to be available.
 
- That is still the design principle I like most here: make the downgrade legible. If you are using a fast rescue lane, that should mean something operationally. It should not masquerade as a normal quality path.
+ That is still the design principle I like most here: **make the downgrade legible**. If you are using a fast rescue lane, that should mean something operationally. It should not masquerade as a normal quality path.
 
 
 ## Failure Classes Should Map to Different Behaviors
@@ -174,65 +178,36 @@ Summary: When a coding-agent route drifts, classify the state first: capacity, a
 
 
 
-
- Failure shape
- What it probably means
- What I want the system to do
-
-
-
-
-
- 429 / MODEL_CAPACITY_EXHAUSTED on preview
- Temporary capacity pressure on the preferred lane
- Try the stable lane next; maybe use fast only if rescue is intentionally enabled
-
-
-
- 429 on stable too
- The quality lanes are unhealthy right now
- Either use an explicit fast rescue route or mark Gemini degraded
-
-
-
- Auth / permission error
- Configuration or account problem
- Stop immediately; do not pretend another lane solves it
-
-
-
- Generic ACP exit with no useful classification
- Wrapper symptom, not root cause
- Run direct lane-health probes before blaming local ACP plumbing
-
-
-
- All lanes unhealthy
- Gemini is effectively unavailable for this workflow
- Continue the wider panel in degraded mode and say so plainly
-
-
-
-
+| Failure shape | What it probably means | What I want the system to do |
+| --- | --- | --- |
+| **`429` / `MODEL_CAPACITY_EXHAUSTED` on preview** | Temporary capacity pressure on the preferred lane | Try the stable lane next; maybe use fast only if rescue is intentionally enabled |
+| **`429` on stable too** | The quality lanes are unhealthy right now | Either use an explicit fast rescue route or mark Gemini degraded |
+| **Auth / permission error** | Configuration or account problem | Stop immediately; do not pretend another lane solves it |
+| **Generic ACP exit with no useful classification** | Wrapper symptom, not root cause | Run direct lane-health probes before blaming local ACP plumbing |
+| **All lanes unhealthy** | Gemini is effectively unavailable for this workflow | Continue the wider panel in degraded mode and say so plainly |
 
 
 ## What the Wrapper Solved — and What It Didn't
 
  The wrapper itself stayed intentionally boring:
 
- resolve profile -> lane order
+
+
+```
+resolve profile -> lane order
 for each lane:
- run Gemini with that alias
- if success: return
- if error is capacity-only: try next lane
- else: stop and surface the failure
+  run Gemini with that alias
+  if success: return
+  if error is capacity-only: try next lane
+  else: stop and surface the failure
 if all lanes fail: mark Gemini degraded/unavailable
+```
 
  That design did a few useful things immediately:
 
 
 
-- fallback became capacity-aware at startup, instead of blanket retry-everything chaos
+- fallback became **capacity-aware at startup**, instead of blanket retry-everything chaos
 
 - event logging could explain whether a run succeeded on the first lane or fell back
 
@@ -242,15 +217,15 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
- The boundary that matters most: this wrapper helps only when failure happens during lane selection or process start. It does not intercept prompt-time quota failures after the ACP session has already started.
+ **The boundary that matters most:** this wrapper helps only when failure happens during lane selection or process start. It does **not** intercept prompt-time quota failures after the ACP session has already started.
 
 
  That correction mattered more than the original implementation.
 
- The first version solved startup-layer lane choice cleanly. Later live failures showed that some Gemini ACP failures happened after the ACP process started successfully, during the prompt/session phase. At that point, the startup wrapper was already out of the decision path. The failure surfaced outward as a generic ACP exit, and the fallback chain never had a chance to run.
+ The first version solved startup-layer lane choice cleanly. Later live failures showed that some Gemini ACP failures happened *after* the ACP process started successfully, during the prompt/session phase. At that point, the startup wrapper was already out of the decision path. The failure surfaced outward as a generic ACP exit, and the fallback chain never had a chance to run.
 
 
- Fallback at startup is an operational improvement. Fallback at prompt/session time is the real long-term reliability fix.
+ **Fallback at startup is an operational improvement. Fallback at prompt/session time is the real long-term reliability fix.**
 
 
 
@@ -258,28 +233,32 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
-- wrapper-layer fallback is a good first operational layer
+- **wrapper-layer fallback** is a good first operational layer
 
-- prompt/session-layer fallback is still the real engineering target
+- **prompt/session-layer fallback** is still the real engineering target
 
 
 
 ## Health Probes Beat Preference
 
- The original conceptual story was preview -> stable -> fast. The live story got messier.
+ The original conceptual story was `preview -> stable -> fast`. The live story got messier.
 
  At one point, direct lane probes showed both quality lanes unhealthy while the fast lane still worked. That is exactly the sort of moment when design preference has to lose to operational evidence.
 
  A sanitized failure-state probe looks like this:
 
- - preview-primary: capacity_exhausted
+
+
+```
+- preview-primary: capacity_exhausted
 - stable-primary: capacity_exhausted
 - fast-fallback: ok
+```
 
- That is the sort of result that justifies a temporary emergency route. But it is not the whole story forever. Before publishing this post, a fresh probe showed all three lane aliases healthy again. The point of the health gate is not to memorialize one outage. The point is to keep route changes tied to current evidence instead of static preference.
+ That is the sort of result that justifies a temporary emergency route. But it is not the whole story forever. Before publishing this post, a fresh probe showed all three lane aliases healthy again. The point of the health gate is not to memorialize one outage. The point is to keep route changes tied to **current evidence** instead of static preference.
 
 
- Practical rule: route changes should be based on live lane health, not preference alone. If the health picture changes, the lane order should be cheap to change too.
+ **Practical rule:** route changes should be based on live lane health, not preference alone. If the health picture changes, the lane order should be cheap to change too.
 
 
 
@@ -291,45 +270,22 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
-
- State
- What it means
- Best next action
-
-
-
-
-
- Passive watch
- Readiness is green and the remaining risk is future drift.
- Close active implementation work, keep the watch surface, and write reopen criteria.
-
-
-
- Upstream wait
- The meaningful movement belongs to an upstream issue, pull request, or provider surface.
- Monitor for maintainer feedback, check failures, or fresh provider evidence instead of patching locally.
-
-
-
- Local repair
- A narrow wrapper or adapter incompatibility is reproducible at the integration boundary.
- Patch the compatibility seam in an isolated checkout and preserve the broader lane policy.
-
-
-
-
+| State | What it means | Best next action |
+| --- | --- | --- |
+| **Passive watch** | Readiness is green and the remaining risk is future drift. | Close active implementation work, keep the watch surface, and write reopen criteria. |
+| **Upstream wait** | The meaningful movement belongs to an upstream issue, pull request, or provider surface. | Monitor for maintainer feedback, check failures, or fresh provider evidence instead of patching locally. |
+| **Local repair** | A narrow wrapper or adapter incompatibility is reproducible at the integration boundary. | Patch the compatibility seam in an isolated checkout and preserve the broader lane policy. |
 
  That distinction kept the system from turning every degraded coding-agent lane into a configuration change. If the health probe is green and the remaining dependency is already watched, the honest state is passive monitoring. If a backend rejects a control message before work starts, that is a local adapter contract bug. Different state, different response.
 
 
- Follow-up rule: route drift needs classification before action. Do not use fallback policy as a broom for capacity, auth, upstream, and adapter failures that need different handling.
+ **Follow-up rule:** route drift needs classification before action. Do not use fallback policy as a broom for capacity, auth, upstream, and adapter failures that need different handling.
 
 
  The June 12 refinement is about publication and operations hygiene as much as routing: if the scout sees a degraded lane, the candidate lesson should not be “change the model.” The candidate lesson should name the state transition. Passive watch, upstream wait, and local repair are different outcomes, and only one of them should create code or config work.
 
 
- Related write-up: I expanded that state-machine closeout into When a Coding-Agent Route Drifts.
+ **Related write-up:** I expanded that state-machine closeout into [When a Coding-Agent Route Drifts](/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html).
 
 
 
@@ -340,7 +296,7 @@ if all lanes fail: mark Gemini degraded/unavailable
  That is the same principle as Gemini fallback in a different costume: do not let one generic symptom choose the response. Startup fallback, prompt-time fallback, passive watch, upstream wait, local adapter repair, and remote-worker substrate failure all deserve different actions.
 
 
- June 15 rule: fallback policy should classify where the failure lives before it changes lane order, architecture, or host state. I wrote the container-first version of that lesson in Container-First Distributed Model Serving.
+ **June 15 rule:** fallback policy should classify where the failure lives before it changes lane order, architecture, or host state. I wrote the container-first version of that lesson in [Container-First Distributed Model Serving](/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html).
 
 
 
@@ -349,7 +305,7 @@ if all lanes fail: mark Gemini degraded/unavailable
  The most durable lesson was not Gemini-specific. It was this:
 
 
- Keep policy separate from mapping, and separate again from execution.
+ **Keep policy separate from mapping, and separate again from execution.**
 
 
 
@@ -377,27 +333,27 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
-- Classify failure shapes before you classify models.
+- **Classify failure shapes before you classify models.**
 
-- Prefer the best downgrade, not the first downgrade.
+- **Prefer the best downgrade, not the first downgrade.**
 
-- Put fallback policy in one owner-controlled place.
+- **Put fallback policy in one owner-controlled place.**
 
-- Make lane order cheap to change.
+- **Make lane order cheap to change.**
 
-- Separate startup fallback from prompt-time fallback in your head and in your code.
+- **Separate startup fallback from prompt-time fallback in your head and in your code.**
 
-- Use live health probes, not yesterday’s theory.
+- **Use live health probes, not yesterday’s theory.**
 
 
  The real mistake is not failing over from a preview model. The real mistake is building a system where model policy lives in random places and then acting surprised when reliability turns into a scavenger hunt.
 
 
- The winning shape for me: semantic lanes, OpenClaw-owned policy, thin provider mapping, explicit degraded mode, and health-gated route changes. Not fancy—just much harder to misread and much easier to maintain.
+ **The winning shape for me:** semantic lanes, OpenClaw-owned policy, thin provider mapping, explicit degraded mode, and health-gated route changes. Not fancy—just much harder to misread and much easier to maintain.
 
 
 
- Sanitization note: I kept the architecture, public model names, and workflow shape because those are the useful parts. I intentionally generalized local alias names and left out deployment-specific IDs, exact schedules, and other fingerprints that would not help anyone copy the pattern safely.
+ **Sanitization note:** I kept the architecture, public model names, and workflow shape because those are the useful parts. I intentionally generalized local alias names and left out deployment-specific IDs, exact schedules, and other fingerprints that would not help anyone copy the pattern safely.
 
 
 
@@ -406,13 +362,13 @@ if all lanes fail: mark Gemini degraded/unavailable
 
 
 
-- When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes
+- [When a Coding-Agent Route Drifts: Closing the Loop Without Premature Fixes](/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html)
 
-- Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs
+- [Container-First Distributed Model Serving: Treat Remote Workers as Disposable Proofs](/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html)
 
-- Declarative Change Propagation: How I Built a Self-Documenting Cron System
+- [Declarative Change Propagation: How I Built a Self-Documenting Cron System](/jingxiao-cai-blog/declarative-change-propagation-cron-system.html)
 
-- Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
 
 
@@ -430,4 +386,4 @@ if all lanes fail: mark Gemini degraded/unavailable
 
  Found this useful? Send it to the person who still thinks “just change the alias” counts as a fallback strategy.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

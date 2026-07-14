@@ -9,22 +9,22 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects
 
 
- June 16, 2026 | By Jingxiao Cai
+ **June 16, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, routing, workflow-design, openclaw, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private validation exercise into a generalized workflow pattern while omitting private identifiers, raw prompts, and deployment details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private validation exercise into a generalized workflow pattern while omitting private identifiers, raw prompts, and deployment details.
 
 
 
- Boundary: this is a design and operations pattern, not a claim that broad autonomous dispatch is enabled. The safe shape described here keeps worker launch authority in the parent workflow and treats router output as a contract to inspect, not permission to freelance.
+ **Boundary:** this is a design and operations pattern, not a claim that broad autonomous dispatch is enabled. The safe shape described here keeps worker launch authority in the parent workflow and treats router output as a contract to inspect, not permission to freelance.
 
 
  A router feels harmless while it only answers a question: should this request be handled directly, escalated, split into work, or sent through a different workflow?
@@ -35,18 +35,18 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 
 
 
-- routing judgment: what kind of work is this?
+- **routing judgment:** what kind of work is this?
 
-- side-effect authority: what is allowed to run, write, post, modify, or verify?
-
-
-
- A router should be allowed to recommend work. It should not silently grant itself launch authority.
+- **side-effect authority:** what is allowed to run, write, post, modify, or verify?
 
 
 
+ **A router should be allowed to recommend work. It should not silently grant itself launch authority.**
 
- Conceptual scope: this is a sanitized agent-operations lesson from validating a staged dispatch flow. The public lesson is the control-plane shape: route, prepare, authorize, launch, verify, close out. It is not a dump of private tasks, prompts, identifiers, or runtime configuration.
+
+
+
+ **Conceptual scope:** this is a sanitized agent-operations lesson from validating a staged dispatch flow. The public lesson is the control-plane shape: route, prepare, authorize, launch, verify, close out. It is not a dump of private tasks, prompts, identifiers, or runtime configuration.
 
 
 
@@ -56,34 +56,11 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 
 
 
-
- Role
- Allowed to do
- Not allowed to do
-
-
-
-
-
- Router
- Classify the request and recommend a lane.
- Launch workers or mutate state.
-
-
-
- Runner / planner
- Turn the recommendation into an exact-scope dispatch contract.
- Bypass user approval, parent policy, or artifact bounds.
-
-
-
- Parent workflow
- Inspect the contract, launch the worker, enforce scope, verify output, and deliver closeout.
- Pretend a recommendation is evidence of completion.
-
-
-
-
+| Role | Allowed to do | Not allowed to do |
+| --- | --- | --- |
+| **Router** | Classify the request and recommend a lane. | Launch workers or mutate state. |
+| **Runner / planner** | Turn the recommendation into an exact-scope dispatch contract. | Bypass user approval, parent policy, or artifact bounds. |
+| **Parent workflow** | Inspect the contract, launch the worker, enforce scope, verify output, and deliver closeout. | Pretend a recommendation is evidence of completion. |
 
  This split sounds bureaucratic until you see what it prevents. The router can be wrong without being dangerous. The runner can prepare a bad contract without launching it. The parent can reject, revise, or approve a single exact-scope launch with visible evidence.
 
@@ -113,10 +90,10 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 - the stop rule if the contract is stale, ambiguous, or violated.
 
 
- The important word is exact. “Run the next step” is not a contract. “Launch one worker that may write only these result files under this review root, with these forbidden actions and these verification checks” is a contract.
+ The important word is *exact*. “Run the next step” is not a contract. “Launch one worker that may write only these result files under this review root, with these forbidden actions and these verification checks” is a contract.
 
 
- Dispatch rule: the parent should be able to reject the launch without interpreting the worker prompt like a legal document.
+ **Dispatch rule:** the parent should be able to reject the launch without interpreting the worker prompt like a legal document.
 
 
 
@@ -189,46 +166,13 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 
 
 
-
- Failure
- What it looks like
- Safe response
-
-
-
-
-
- Scope drift
- The worker wants to write outside the allowed surface.
- Block or regenerate the contract with explicit approval.
-
-
-
- Stale authorization
- The approval window expired before launch.
- Regenerate the packet and re-check the guard before launch.
-
-
-
- Ambiguous forbidden list
- The contract says what to do but not what must not happen.
- Revise before launching; silence is not permission.
-
-
-
- Ready-but-invalid result
- The worker reports completion but the result file is missing, empty, or off-shape.
- Mark operational degradation and inspect before synthesis.
-
-
-
- Invisible completion
- The background work finishes but the origin surface gets no closeout.
- Keep parent-owned final delivery or create a watchdog before waiting.
-
-
-
-
+| Failure | What it looks like | Safe response |
+| --- | --- | --- |
+| **Scope drift** | The worker wants to write outside the allowed surface. | Block or regenerate the contract with explicit approval. |
+| **Stale authorization** | The approval window expired before launch. | Regenerate the packet and re-check the guard before launch. |
+| **Ambiguous forbidden list** | The contract says what to do but not what must not happen. | Revise before launching; silence is not permission. |
+| **Ready-but-invalid result** | The worker reports completion but the result file is missing, empty, or off-shape. | Mark operational degradation and inspect before synthesis. |
+| **Invisible completion** | The background work finishes but the origin surface gets no closeout. | Keep parent-owned final delivery or create a watchdog before waiting. |
 
  None of these need a clever model to diagnose. They need a contract that is small enough to check.
 
@@ -237,27 +181,31 @@ Summary: Routers can make agent work safer by producing exact-scope dispatch con
 
  The safe flow is deliberately plain:
 
- route = router.classify(request)
+
+
+```python
+route = router.classify(request)
 
 contract = runner.prepare_dispatch_contract(
- request=request,
- route=route,
- max_workers=1,
- allowed_outputs=["review summary", "status record"],
- forbidden_actions=["external post", "config activation", "broad fanout"],
- freshness_window="short",
+    request=request,
+    route=route,
+    max_workers=1,
+    allowed_outputs=["review summary", "status record"],
+    forbidden_actions=["external post", "config activation", "broad fanout"],
+    freshness_window="short",
 )
 
 if not parent.guard(contract).ok:
- return Blocked(reason="dispatch contract failed pre-launch guard")
+    return Blocked(reason="dispatch contract failed pre-launch guard")
 
 worker = parent.launch_exactly(contract)
 result = parent.verify_artifacts(worker, contract)
 
 if not result.ok:
- return Degraded(reason=result.reason, side_effects_bounded=True)
+    return Degraded(reason=result.reason, side_effects_bounded=True)
 
 return parent.deliver_closeout(result)
+```
 
  The code is not the point. The authority boundary is the point. The router classifies. The runner prepares. The parent launches and verifies. Completion is not accepted until evidence returns to the original surface.
 
@@ -268,15 +216,15 @@ return parent.deliver_closeout(result)
 
 
 
-- classification stability: similar requests route the same way unless the criteria changed,
+- **classification stability:** similar requests route the same way unless the criteria changed,
 
-- contract quality: allowed and forbidden surfaces are explicit,
+- **contract quality:** allowed and forbidden surfaces are explicit,
 
-- launch determinism: the parent launches exactly what the contract permits,
+- **launch determinism:** the parent launches exactly what the contract permits,
 
-- artifact validity: completion means substantive checked output, not just a status string, and
+- **artifact validity:** completion means substantive checked output, not just a status string, and
 
-- delivery closure: the origin surface receives a visible result or a recorded blocker.
+- **delivery closure:** the origin surface receives a visible result or a recorded blocker.
 
 
  Only after those are boring would I consider multi-worker fanout, recurring dispatch, or broader default use.
@@ -289,7 +237,7 @@ return parent.deliver_closeout(result)
  The pattern I want is not “never dispatch.” It is “dispatch through a parent-owned contract.” Keep the router smart, the runner boring, and the parent accountable.
 
 
- The safest router is one that can prepare a launch so clearly that the parent can say no.
+ **The safest router is one that can prepare a launch so clearly that the parent can say no.**
 
 
 
@@ -299,13 +247,13 @@ return parent.deliver_closeout(result)
 
 
 
-- Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
-- Long-Running Agent Work Needs a Bridge Back, Not Just a Background Thread
+- [Long-Running Agent Work Needs a Bridge Back, Not Just a Background Thread](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
-- The Checkpoint Is the Interface: Making Agent Handoffs Boring
+- [The Checkpoint Is the Interface: Making Agent Handoffs Boring](/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html)
 
-- A Monitor Is Not a Contract: Why Agent Handoffs Need Acceptance Criteria
+- [A Monitor Is Not a Contract: Why Agent Handoffs Need Acceptance Criteria](/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html)
 
 
 
@@ -322,4 +270,4 @@ return parent.deliver_closeout(result)
 
  Found this useful? Send it to someone who is about to let a router launch the thing it just recommended.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

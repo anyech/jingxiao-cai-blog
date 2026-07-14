@@ -9,22 +9,22 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Upgrade Preflight as a Product Habit: Why Target Refreshes Should Be Boring
 
 
- June 13, 2026 | By Jingxiao Cai
+ **June 13, 2026** | By Jingxiao Cai
 
  Tags: openclaw, devops, ai-agents, release-engineering, self-hosted
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn repeated upgrade notes, target-refresh checks, and activation-boundary rules into a public runbook instead of a pile of private operational trivia.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn repeated upgrade notes, target-refresh checks, and activation-boundary rules into a public runbook instead of a pile of private operational trivia.
 
 
 
- Short version: a boring upgrade is not an accident. It comes from refreshing the release target before acting, separating preparation from activation, and writing down the exact checks that must pass before the user lets the system restart or roll forward.
+ **Short version:** a boring upgrade is not an accident. It comes from refreshing the release target before acting, separating preparation from activation, and writing down the exact checks that must pass before the user lets the system restart or roll forward.
 
 
 
@@ -38,7 +38,7 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
  That sounds slow until you have lived through the alternative: a clean-looking upgrade that installs fine, restarts fine, then fails later on the exact AI-agent paths you actually depend on. Once that happens, a boring preflight starts looking less like bureaucracy and more like a product feature.
 
 
- Upgrade preflight is not a checklist you do before the real work. For self-hosted agent systems, it is part of the product habit that keeps the system trustworthy.
+ **Upgrade preflight is not a checklist you do before the real work. For self-hosted agent systems, it is part of the product habit that keeps the system trustworthy.**
 
 
 
@@ -55,40 +55,13 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
 
 
-
- Question
- Why it matters
-
-
-
-
-
- What version is installed now?
- Rollback and compatibility checks need a real starting point, not a memory of yesterday's state.
-
-
-
- What exact version is the candidate target?
- Release notes, risk scans, and smoke tests are only meaningful against a specific target.
-
-
-
- What changed since the last review?
- The delta can be tiny, but it decides whether the old confidence still transfers.
-
-
-
- What must remain user-owned?
- Preparation can be automated; activation, downtime, restart, and rollback gates need explicit ownership.
-
-
-
- What would make us stop?
- Rollback or hold criteria should be written before the upgrade starts hurting.
-
-
-
-
+| Question | Why it matters |
+| --- | --- |
+| What version is installed now? | Rollback and compatibility checks need a real starting point, not a memory of yesterday's state. |
+| What exact version is the candidate target? | Release notes, risk scans, and smoke tests are only meaningful against a specific target. |
+| What changed since the last review? | The delta can be tiny, but it decides whether the old confidence still transfers. |
+| What must remain user-owned? | Preparation can be automated; activation, downtime, restart, and rollback gates need explicit ownership. |
+| What would make us stop? | Rollback or hold criteria should be written before the upgrade starts hurting. |
 
 
 ## Preparation Is Not Activation
@@ -96,7 +69,7 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
  This distinction is easy to blur in a personal automation stack because the same assistant can read release notes, prepare diffs, validate config, and potentially restart the runtime. That power is useful, but it makes the boundary more important, not less.
 
 
- The rule I trust: collecting evidence, drafting a diff, validating a candidate config, and writing a rollback plan are preparation. Applying live config, restarting the gateway, changing scheduler behavior, or touching the active runtime is activation. Those are different decisions.
+ **The rule I trust:** collecting evidence, drafting a diff, validating a candidate config, and writing a rollback plan are preparation. Applying live config, restarting the gateway, changing scheduler behavior, or touching the active runtime is activation. Those are different decisions.
 
 
  That boundary changes the feel of the whole upgrade. The assistant can be aggressive about gathering facts and conservative about changing state. The user gets a concrete packet instead of a vague "should I upgrade?" question.
@@ -108,19 +81,19 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
 
 
-- Current state: installed version, candidate version, and whether the candidate is still the same target that was reviewed.
+- **Current state:** installed version, candidate version, and whether the candidate is still the same target that was reviewed.
 
-- Release-risk scan: known changes that touch model routing, sessions, memory, channels, plugin loading, scheduler behavior, or config migration.
+- **Release-risk scan:** known changes that touch model routing, sessions, memory, channels, plugin loading, scheduler behavior, or config migration.
 
-- Backup posture: what backup exists, whether it was verified, and whether any backup limitation is a go/no-go decision rather than a footnote.
+- **Backup posture:** what backup exists, whether it was verified, and whether any backup limitation is a go/no-go decision rather than a footnote.
 
-- Activation boundary: who approves the restart or live config write, and what is explicitly out of scope for the assistant to do automatically.
+- **Activation boundary:** who approves the restart or live config write, and what is explicitly out of scope for the assistant to do automatically.
 
-- Representative smoke paths: one ordinary reply path, one tool path, one background automation path, and any high-value advanced path that the deployment actually depends on.
+- **Representative smoke paths:** one ordinary reply path, one tool path, one background automation path, and any high-value advanced path that the deployment actually depends on.
 
-- Rollback trigger: the concrete failure signature that turns "investigate" into "roll back now."
+- **Rollback trigger:** the concrete failure signature that turns "investigate" into "roll back now."
 
-- Post-activation watch: a short, evidence-based window that checks for the specific bad patterns the preflight was worried about.
+- **Post-activation watch:** a short, evidence-based window that checks for the specific bad patterns the preflight was worried about.
 
 
  The goal is not to make every upgrade heavy. The goal is to make the minimum safe packet so repeatable that the upgrade becomes boring.
@@ -133,7 +106,7 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
  That is why I no longer treat "gateway up" as the finish line. For an AI-agent runtime, a startup check is an entry ticket to representative use, not the verdict.
 
 
- A practical bar: if the system survives a small set of representative paths and the watch window stays clean, keep going. If the same failure signature repeats across the ordinary reply path and one important advanced path, do not keep negotiating with the release just because startup was green.
+ **A practical bar:** if the system survives a small set of representative paths and the watch window stays clean, keep going. If the same failure signature repeats across the ordinary reply path and one important advanced path, do not keep negotiating with the release just because startup was green.
 
 
 
@@ -143,15 +116,15 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
 
 
-- Stale target confidence: reviewing one candidate, then installing a later one because it is "probably close enough."
+- **Stale target confidence:** reviewing one candidate, then installing a later one because it is "probably close enough."
 
-- Backup theater: mentioning backups without saying whether the backup was current, verified, and actually usable for this rollback.
+- **Backup theater:** mentioning backups without saying whether the backup was current, verified, and actually usable for this rollback.
 
-- Green-banner overconfidence: treating a healthy startup status as proof that user-facing agent work is safe.
+- **Green-banner overconfidence:** treating a healthy startup status as proof that user-facing agent work is safe.
 
-- Activation creep: letting a preparation task silently turn into a live restart or config application.
+- **Activation creep:** letting a preparation task silently turn into a live restart or config application.
 
-- Rollback improvisation: debating rollback criteria only after the upgraded system is already misbehaving.
+- **Rollback improvisation:** debating rollback criteria only after the upgraded system is already misbehaving.
 
 
  None of these failures require malice or incompetence. They mostly happen when upgrade work is treated as a one-off chore instead of a repeated product workflow.
@@ -164,7 +137,7 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
  When the target changes, refresh the packet. When the backup posture is weaker than expected, say that out loud. When the restart needs a human decision, keep that decision human-owned. When the release passes startup checks, run the representative paths anyway.
 
 
- The point of preflight is not to avoid every bad upgrade. The point is to make the next decision obvious when the upgrade is not as safe as you hoped.
+ **The point of preflight is not to avoid every bad upgrade. The point is to make the next decision obvious when the upgrade is not as safe as you hoped.**
 
 
 
@@ -181,13 +154,13 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
 
 
-- When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression
+- [When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression](/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html)
 
-- Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
-- Shadow Indexes Beat Hope: Testing Agent Memory Without Touching Production
+- [Shadow Indexes Beat Hope: Testing Agent Memory Without Touching Production](/jingxiao-cai-blog/shadow-indexes-agent-memory-without-touching-production.html)
 
-- Building a Pattern Scout That Does Not Chase Its Own Echoes
+- [Building a Pattern Scout That Does Not Chase Its Own Echoes](/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
 
 
 
@@ -205,4 +178,4 @@ Summary: A practical upgrade preflight pattern for self-hosted AI agent runtimes
 
  Found this useful? Send it to someone who thinks "latest target" and "reviewed target" are always the same thing.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

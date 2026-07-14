@@ -10,26 +10,26 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When PR Gates Look Broken, Rebase First
 
 
- June 3, 2026 | By Jingxiao Cai | Updated June 14, 2026
+ **June 3, 2026** | By Jingxiao Cai | **Updated June 14, 2026**
 
  Tags: ai-agents, automation, debugging, open-source, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy pull-request maintenance loop into a sanitized public workflow lesson while removing private thread context, local paths, raw logs, branch-specific operational details, and unnecessary identifiers.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a messy pull-request maintenance loop into a sanitized public workflow lesson while removing private thread context, local paths, raw logs, branch-specific operational details, and unnecessary identifiers.
 
 
 
- Short version: when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
+ **Short version:** when a pull request has been sitting behind the base branch, treat broad CI or policy-gate failures as stale-branch symptoms first. Refresh the branch through the least-destructive safe path before patching around every red check.
 
 
 
- Update, June 14, 2026: rebase-first is only one coordinate of pull request readiness. After the branch is fresh, the queue still needs a coherent read on code head, CI, mergeability, parser-readable proof, review labels, and maintainer scope fit. I expanded that broader model in Ready Is Not a Label.
+ **Update, June 14, 2026:** rebase-first is only one coordinate of pull request readiness. After the branch is fresh, the queue still needs a coherent read on code head, CI, mergeability, parser-readable proof, review labels, and maintainer scope fit. I expanded that broader model in [Ready Is Not a Label](/jingxiao-cai-blog/ready-is-not-a-label-pr-readiness-vector.html).
 
 
  Some pull request failures are not bugs in your patch. They are symptoms of time passing.
@@ -38,15 +38,15 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
  Sometimes that is exactly the wrong move.
 
- One terminology note matters: I use refresh as the safe umbrella term. That might mean rebasing a solo branch, merging the current base into a shared branch, or asking a maintainer to update the branch through the hosting platform. An autonomous agent should not blindly force-push over collaborator work.
+ One terminology note matters: I use *refresh* as the safe umbrella term. That might mean rebasing a solo branch, merging the current base into a shared branch, or asking a maintainer to update the branch through the hosting platform. An autonomous agent should not blindly force-push over collaborator work.
 
 
- If the branch is stale, refresh the branch before debugging the symptoms created by staleness.
+ **If the branch is stale, refresh the branch before debugging the symptoms created by staleness.**
 
 
 
 
- Conceptual scope: this is a sanitized OpenClaw-style agent-operations lesson from public/open-source pull request work. I am intentionally omitting exact private thread references, local checkout paths, access-token details, raw logs, temporary artifact names, and unnecessary pull request identifiers. The point is the workflow pattern, not a deployment fingerprint.
+ **Conceptual scope:** this is a sanitized OpenClaw-style agent-operations lesson from public/open-source pull request work. I am intentionally omitting exact private thread references, local checkout paths, access-token details, raw logs, temporary artifact names, and unnecessary pull request identifiers. The point is the workflow pattern, not a deployment fingerprint.
 
 
 
@@ -77,26 +77,26 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
  My updated rule is simple:
 
 
- Refresh the pull request branch through the safe path for that branch ownership model before treating stale-check failures as patch bugs.
+ **Refresh the pull request branch through the safe path for that branch ownership model before treating stale-check failures as patch bugs.**
 
 
  In practice, that means:
 
 
 
-- Start from a clean disposable checkout. Do not mix real repair with temporary workaround commits.
+- **Start from a clean disposable checkout.** Do not mix real repair with temporary workaround commits.
 
-- Fetch the current base branch and the pull request branch. Make sure you know which commit you are proving.
+- **Fetch the current base branch and the pull request branch.** Make sure you know which commit you are proving.
 
-- Refresh the PR branch onto the current base. Use the safe form for the branch ownership model: rebase a solo branch, merge/update a shared branch, or ask the hosting platform/maintainer to update it. Resolve conflicts by preserving the PR's semantic intent and the current base's API surface.
+- **Refresh the PR branch onto the current base.** Use the safe form for the branch ownership model: rebase a solo branch, merge/update a shared branch, or ask the hosting platform/maintainer to update it. Resolve conflicts by preserving the PR's semantic intent and the current base's API surface.
 
-- Validate the intended diff. The resulting diff should still be about the pull request, not a bundle of unrelated workflow or dependency churn.
+- **Validate the intended diff.** The resulting diff should still be about the pull request, not a bundle of unrelated workflow or dependency churn.
 
-- Run targeted checks. Re-run the originally failing path and the tests that cover the PR's actual behavior.
+- **Run targeted checks.** Re-run the originally failing path and the tests that cover the PR's actual behavior.
 
-- Push with lease protection, or do not push. If the branch is shared or protected, avoid autonomous force-pushes. Ask for a maintainer update or use the repository's normal update flow.
+- **Push with lease protection, or do not push.** If the branch is shared or protected, avoid autonomous force-pushes. Ask for a maintainer update or use the repository's normal update flow.
 
-- Re-check live status. Only then decide whether the remaining red checks are real blockers.
+- **Re-check live status.** Only then decide whether the remaining red checks are real blockers.
 
 
  The important part is the order. A stale branch can make the check surface lie by omission. It shows you the first place the old branch collides with the new world, not necessarily the actual work needed to finish the pull request.
@@ -108,15 +108,15 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
 
 
-- Do not add current-base helper files one by one just to appease a newer workflow. That can create an unnatural hybrid of old source and new CI assumptions.
+- **Do not add current-base helper files one by one** just to appease a newer workflow. That can create an unnatural hybrid of old source and new CI assumptions.
 
-- Do not treat dependency-gate churn as a dependency bug by default when the branch is far behind. First ask whether the diff is simply being compared from an obsolete base.
+- **Do not treat dependency-gate churn as a dependency bug by default** when the branch is far behind. First ask whether the diff is simply being compared from an obsolete base.
 
-- Do not keep posting review requests while the latest branch state is still red for a known stale-base reason.
+- **Do not keep posting review requests** while the latest branch state is still red for a known stale-base reason.
 
-- Do not let an agent blindly force-push a shared branch. Freshness is important, but history safety and collaborator work matter more than making the bot quiet.
+- **Do not let an agent blindly force-push a shared branch.** Freshness is important, but history safety and collaborator work matter more than making the bot quiet.
 
-- Do not declare the PR green because local tests passed if the live gate still reflects an unrefreshed or partially refreshed branch.
+- **Do not declare the PR green** because local tests passed if the live gate still reflects an unrefreshed or partially refreshed branch.
 
 
  This is especially relevant for AI agents because they tend to optimize for the nearest actionable error. A good agent workflow needs a higher-level stale-branch detector before it starts editing code.
@@ -132,34 +132,11 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
 
 
-
- Question
- Bad shortcut
- Better answer
-
-
-
-
-
- Is the branch current enough for CI to mean what it says?
- Patch around each new workflow error.
- Refresh safely first, then validate the intended diff.
-
-
-
- Can the policy parser read the proof?
- Write flexible prose and assume the bot understands it.
- Use the exact proof fields the repository expects.
-
-
-
- Is the evidence behavior proof or only supplemental validation?
- Call unit tests, lint, or CI enough for every behavior-sensitive change.
- Provide honest non-production behavior evidence when the gate asks for it.
-
-
-
-
+| Question | Bad shortcut | Better answer |
+| --- | --- | --- |
+| Is the branch current enough for CI to mean what it says? | Patch around each new workflow error. | Refresh safely first, then validate the intended diff. |
+| Can the policy parser read the proof? | Write flexible prose and assume the bot understands it. | Use the exact proof fields the repository expects. |
+| Is the evidence behavior proof or only supplemental validation? | Call unit tests, lint, or CI enough for every behavior-sensitive change. | Provide honest non-production behavior evidence when the gate asks for it. |
 
  The branch-refresh problem is about whether CI is looking at a coherent branch. The proof problem is about whether the evidence is sufficient and legible. The history-safety problem is about whether the agent is allowed to rewrite or update the branch at all. They often appear together, but they are not the same bug.
 
@@ -170,19 +147,19 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
 
 
-- Is the branch stale relative to the current base?
+- **Is the branch stale relative to the current base?**
 
-- Is the failure outside the intended diff?
+- **Is the failure outside the intended diff?**
 
-- Is a current-base workflow expecting files or state missing from the PR branch?
+- **Is a current-base workflow expecting files or state missing from the PR branch?**
 
-- Does a dependency or policy gate report broad unrelated churn?
+- **Does a dependency or policy gate report broad unrelated churn?**
 
-- Would a safe branch refresh make the failure surface more trustworthy?
+- **Would a safe branch refresh make the failure surface more trustworthy?**
 
-- After a safe branch refresh, are the remaining checks fresh, relevant, and tied to the actual patch?
+- **After a safe branch refresh, are the remaining checks fresh, relevant, and tied to the actual patch?**
 
-- Does the proof satisfy the repository's parser-facing contract and the human review contract?
+- **Does the proof satisfy the repository's parser-facing contract and the human review contract?**
 
 
  If the answer to the first five questions points toward staleness, stop chasing symptoms. Refresh the branch through the least-destructive path available.
@@ -195,7 +172,7 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
  When those relationships drift, the agent should repair the state boundary before repairing the code. Otherwise it may optimize against an artifact of the old branch and call that progress.
 
 
- Before debugging a gate, make sure the gate is judging the branch you actually want reviewed.
+ **Before debugging a gate, make sure the gate is judging the branch you actually want reviewed.**
 
 
 
@@ -212,13 +189,13 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
 
 
-- Proof the Parser Can Read
+- [Proof the Parser Can Read](/jingxiao-cai-blog/proof-the-parser-can-read-agent-prs.html)
 
-- Proof Without Touching Production
+- [Proof Without Touching Production](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- Before Opening Another Agent PR, Reduce the Queue
+- [Before Opening Another Agent PR, Reduce the Queue](/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html)
 
-- Multi-Agent Proof Surface Coordination
+- [Multi-Agent Proof Surface Coordination](/jingxiao-cai-blog/multi-agent-proof-surface-coordination.html)
 
 
 
@@ -238,4 +215,4 @@ Summary: A stale pull request can produce misleading CI and policy failures. Upd
 
  Found this useful? Leave a comment below, or send it to someone whose AI-assisted pull requests need fewer stale-branch ghost hunts.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

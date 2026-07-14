@@ -9,22 +9,22 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Thread Affinity Is a Safety Boundary for Agent Work
 
 
- June 24, 2026 | By Jingxiao Cai
+ **June 24, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a recent continuation-routing lesson into a public agent-operations pattern while removing private thread identifiers, local paths, raw logs, exact schedules, and deployment-specific fingerprints.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a recent continuation-routing lesson into a public agent-operations pattern while removing private thread identifiers, local paths, raw logs, exact schedules, and deployment-specific fingerprints.
 
 
 
- Short version: when an operator says “continue,” an agent should not silently choose an old workstream just because it has a plausible unfinished task. If the current thread, label, or origin does not match, the safe move is to ask which target to continue.
+ **Short version:** when an operator says “continue,” an agent should not silently choose an old workstream just because it has a plausible unfinished task. If the current thread, label, or origin does not match, the safe move is to ask which target to continue.
 
 
  “Continue” looks harmless. It is short, natural, and often exactly what a human wants to type after an agent has been working for a while.
@@ -34,12 +34,12 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
  If only one workstream exists, the intent is usually obvious. If several threads, background workers, or old process handles are still visible, the same word can point to the wrong place. That is the failure mode this post is about: not a model reasoning failure, not a missing summary, but a weak boundary between the current conversation and another plausible continuation target.
 
 
- Thread affinity is the rule that a continuation belongs to its origin unless the user explicitly redirects it.
+ **Thread affinity is the rule that a continuation belongs to its origin unless the user explicitly redirects it.**
 
 
 
 
- Conceptual scope: this is a sanitized OpenClaw-style agent-operations pattern. I am intentionally omitting real channel names, message IDs, job IDs, session IDs, hostnames, local paths, raw logs, provider fingerprints, and exact deployment topology. The public lesson is the guardrail, not the deployment.
+ **Conceptual scope:** this is a sanitized OpenClaw-style agent-operations pattern. I am intentionally omitting real channel names, message IDs, job IDs, session IDs, hostnames, local paths, raw logs, provider fingerprints, and exact deployment topology. The public lesson is the guardrail, not the deployment.
 
 
 
@@ -63,44 +63,16 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 ## A Safe Proof Unit: The Ambiguity Table
 
- A small public-safe way to reason about this is to separate candidate freshness from origin match.
+ A small public-safe way to reason about this is to separate *candidate freshness* from *origin match*.
 
 
 
-
- Signal
- What it proves
- What it does not prove
-
-
-
-
-
- Recent worker activity
- A workstream may still matter.
- That the current message is about that workstream.
-
-
-
- Old process or session handle
- There may be resumable state.
- That resuming it would be visible in the right thread.
-
-
-
- Matching thread or channel origin
- The continuation target is likely aligned with the current conversation.
- That every side effect is safe without normal checks.
-
-
-
- User names the target explicitly
- The routing ambiguity is resolved.
- That destructive or external actions no longer need their own approvals.
-
-
-
-
+| Signal | What it proves | What it does not prove |
+| --- | --- | --- |
+| **Recent worker activity** | A workstream may still matter. | That the current message is about that workstream. |
+| **Old process or session handle** | There may be resumable state. | That resuming it would be visible in the right thread. |
+| **Matching thread or channel origin** | The continuation target is likely aligned with the current conversation. | That every side effect is safe without normal checks. |
+| **User names the target explicitly** | The routing ambiguity is resolved. | That destructive or external actions no longer need their own approvals. |
 
  The key point is in the first row: freshness is not authority. A recent dangling task can be a good candidate, but it cannot automatically override the current conversation’s origin.
 
@@ -111,19 +83,19 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 
 
-- Identify the current surface. Which thread, channel, session, or visible context did the command arrive in?
+- **Identify the current surface.** Which thread, channel, session, or visible context did the command arrive in?
 
-- List plausible continuation targets. Include active workers, recent process handles, and unfinished checkpoints only if they are relevant enough to consider.
+- **List plausible continuation targets.** Include active workers, recent process handles, and unfinished checkpoints only if they are relevant enough to consider.
 
-- Compare origin and label. Does the candidate belong to the same thread, same workstream label, or an explicitly linked handoff?
+- **Compare origin and label.** Does the candidate belong to the same thread, same workstream label, or an explicitly linked handoff?
 
-- Ask when there is a mismatch. If the best candidate is from a different origin, ask one target question instead of continuing silently.
+- **Ask when there is a mismatch.** If the best candidate is from a different origin, ask one target question instead of continuing silently.
 
-- Preserve independent approval gates. Even after the target is clear, external posts, destructive changes, config activation, and credential-sensitive actions still need their normal approvals.
+- **Preserve independent approval gates.** Even after the target is clear, external posts, destructive changes, config activation, and credential-sensitive actions still need their normal approvals.
 
 
 
- The useful default: if current origin and candidate origin disagree, treat “continue” as ambiguous. Ask “which workstream should I continue?” instead of guessing.
+ **The useful default:** if current origin and candidate origin disagree, treat “continue” as ambiguous. Ask “which workstream should I continue?” instead of guessing.
 
 
 
@@ -156,35 +128,12 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 
 
-
- Situation
- Default
-
-
-
-
-
- One active task in the current thread.
- Continue.
-
-
-
- Multiple candidates, same origin, clear latest checkpoint.
- Continue, but cite the target briefly.
-
-
-
- Best candidate belongs to a different thread or label.
- Ask which workstream to continue.
-
-
-
- User explicitly names the target.
- Proceed on that target, preserving other approval gates.
-
-
-
-
+| Situation | Default |
+| --- | --- |
+| One active task in the current thread. | Continue. |
+| Multiple candidates, same origin, clear latest checkpoint. | Continue, but cite the target briefly. |
+| Best candidate belongs to a different thread or label. | Ask which workstream to continue. |
+| User explicitly names the target. | Proceed on that target, preserving other approval gates. |
 
 
 ## The General Pattern
@@ -192,7 +141,7 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
  Thread affinity is one example of a broader agent-operations rule:
 
 
- Do not let plausible context substitute for explicit target selection when side effects are possible.
+ **Do not let plausible context substitute for explicit target selection when side effects are possible.**
 
 
 
@@ -215,13 +164,13 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 
 
-- Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely
+- [Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely](/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
 
-- Agent Threads Need a Reliability Boundary Before Context Compaction
+- [Agent Threads Need a Reliability Boundary Before Context Compaction](/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html)
 
-- When the Reply Exists but the Thread Stayed Silent
+- [When the Reply Exists but the Thread Stayed Silent](/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
 
 
@@ -241,4 +190,4 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
  Found this useful? Leave a comment below, or send it to someone whose agents still treat “continue” as a single global command.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

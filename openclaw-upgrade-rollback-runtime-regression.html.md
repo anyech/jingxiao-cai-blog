@@ -10,26 +10,26 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression
 
 
- April 2, 2026 | By Jingxiao Cai
+ **April 2, 2026** | By Jingxiao Cai
 
  Tags: openclaw, devops, ai-agents, incident-response, rollback, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy upgrade investigation, rollback trail, and protocol follow-through into a cleaner incident report instead of a dramatic but useless "bad release" story.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a messy upgrade investigation, rollback trail, and protocol follow-through into a cleaner incident report instead of a dramatic but useless "bad release" story.
 
 
 
- Short version: the upgrade to 2026.4.1 installed cleanly, restarted cleanly, and passed immediate health checks. It still regressed under real use. The rollback to 2026.3.28 was the right call, and the durable lesson was to deepen verification—not to panic about the entire upgrade process.
+ **Short version:** the upgrade to `2026.4.1` installed cleanly, restarted cleanly, and passed immediate health checks. It still regressed under real use. The rollback to `2026.3.28` was the right call, and the durable lesson was to deepen verification—not to panic about the entire upgrade process.
 
 
 
- Update, June 13, 2026: this rollback later hardened into a broader target-refresh habit: if the candidate release, routing surface, backup posture, or restart boundary changes after the first review, refresh the upgrade packet before activation. I expanded that practice in Upgrade Preflight as a Product Habit.
+ **Update, June 13, 2026:** this rollback later hardened into a broader target-refresh habit: if the candidate release, routing surface, backup posture, or restart boundary changes after the first review, refresh the upgrade packet before activation. I expanded that practice in [Upgrade Preflight as a Product Habit](/jingxiao-cai-blog/upgrade-preflight-product-habit-boring-upgrades.html).
 
 
 
@@ -45,7 +45,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
  And then the real workload showed up.
 
 
- A release can pass startup checks and still be wrong for production.
+ **A release can pass startup checks and still be wrong for production.**
 
 
 
@@ -58,9 +58,9 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
 
-- ordinary user-facing replies
+- **ordinary user-facing replies**
 
-- higher-value panel / multi-model workflows
+- **higher-value panel / multi-model workflows**
 
 
  In practice, "representative use" here meant exactly the work I actually cared about protecting: a normal reply path plus a compact multi-model review flow. The system looked healthy at restart time, but it did not stay healthy once those real paths were exercised.
@@ -69,8 +69,12 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
  The most useful signature in the live gateway journal looked like this:
 
- [agent/embedded] Profile <model-route>:<profile> timed out. Trying next account...
+
+
+```
+[agent/embedded] Profile <model-route>:<profile> timed out. Trying next account...
 [agent/embedded] embedded run failover decision ... decision=surface_error reason=timeout provider=<redacted-provider>
+```
 
  The important point was not the exact wording. The important point was the pattern:
 
@@ -84,24 +88,24 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
 
- Durable troubleshooting lesson: for this class of current runtime incident, the live systemd journal was more trustworthy than older file logs under /tmp. The file log could be stale enough to mislead the investigation.
+ **Durable troubleshooting lesson:** for this class of current runtime incident, the live `systemd` journal was more trustworthy than older file logs under `/tmp`. The file log could be stale enough to mislead the investigation.
 
 
 
 ## Why I Rolled Back Instead of Hunting Longer
 
- I did not have a full upstream root cause in hand before rolling back.
+ I did *not* have a full upstream root cause in hand before rolling back.
 
  I did have enough to justify the decision:
 
 
 
 
-- T+0: the upgrade completed cleanly and immediate restart checks looked healthy.
+- **T+0:** the upgrade completed cleanly and immediate restart checks looked healthy.
 
-- Later real use: repeated timeout/failover behavior started hitting both the normal reply path and a compact multi-model review path.
+- **Later real use:** repeated timeout/failover behavior started hitting both the normal reply path and a compact multi-model review path.
 
-- Decision point: the pattern repeated often enough that staying on the new version meant paying reliability cost while a known-good downgrade target was available.
+- **Decision point:** the pattern repeated often enough that staying on the new version meant paying reliability cost while a known-good downgrade target was available.
 
 
 
@@ -109,7 +113,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
  That was enough.
 
 
- Rollback trigger rule I trust now: if a fresh upgrade produces repeated timeout/failover behavior on both the normal reply path and one representative advanced path within roughly the first 10–15 minutes of representative use after restart, rollback is justified even before full upstream root cause is proven. In practice, the soak can stay simple: spend about 10 minutes running one ordinary reply path, one high-value advanced path you actually depend on, then watch briefly for new timeout/failover lines.
+ **Rollback trigger rule I trust now:** if a fresh upgrade produces repeated timeout/failover behavior on both the normal reply path and one representative advanced path within roughly the first 10–15 minutes of representative use after restart, rollback is justified even before full upstream root cause is proven. In practice, the soak can stay simple: spend about 10 minutes running one ordinary reply path, one high-value advanced path you actually depend on, then watch briefly for new timeout/failover lines.
 
 
 
@@ -121,7 +125,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 - Create a fresh backup first.
 
-- Downgrade installed code back to 2026.3.28.
+- Downgrade installed code back to `2026.3.28`.
 
 - Keep the manual restart gate; let the human restart the gateway explicitly.
 
@@ -139,62 +143,35 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
  That turned out to be the wrong interpretation.
 
- The correct check was to compare the warning against the official npm package ground truth. Once that was done, the supposedly missing bundled files turned out not to be part of the target package in the first place.
+ The correct check was to compare the warning against the **official npm package ground truth**. Once that was done, the supposedly missing bundled files turned out not to be part of the target package in the first place.
 
 
- Important distinction: a rollback verifier mismatch is not automatically proof of rollback corruption. It may still be serious. It just needs to be checked against the actual release artifact before you conclude the rollback is broken.
+ **Important distinction:** a rollback verifier mismatch is not automatically proof of rollback corruption. It may still be serious. It just needs to be checked against the actual release artifact before you conclude the rollback is broken.
 
 
  This is exactly the kind of moment where incident handling can go sideways: one scary warning appears during rollback, and suddenly the team starts doubting the only thing that just restored service. The better rule is calmer:
 
 
- Do not ignore verifier warnings. Do verify whether the warning matches the official package contents before turning it into a larger story.
+ **Do not ignore verifier warnings. Do verify whether the warning matches the official package contents before turning it into a larger story.**
 
 
 
 
 ## What the Incident Changed in My Upgrade Procedure
 
- I do not think this incident proves that the upgrade procedure was broken.
+ I do *not* think this incident proves that the upgrade procedure was broken.
 
- I think it proves that the verification depth was too shallow for this failure mode.
-
-
-
-
- Before
- After
+ I think it proves that the **verification depth** was too shallow for this failure mode.
 
 
 
-
-
- Startup checks were treated as near-success.
- Startup checks are only entry criteria for a roughly 10-minute runtime soak.
-
-
-
- Rollback was possible, but triggers were mostly implicit.
- Rollback criteria are now explicit for timeout/failover patterns on representative paths.
-
-
-
- Backup trouble could feel like friction to push through.
- Degraded backup posture must be surfaced as an explicit go/no-go decision.
-
-
-
- Post-rollback success could be declared too early.
- A short live watch is now part of rollback verification.
-
-
-
- Baseline capture was optional and easy to skip.
- Known suspect anomaly classes should get a small pre-update baseline when practical.
-
-
-
-
+| Before | After |
+| --- | --- |
+| Startup checks were treated as near-success. | Startup checks are only entry criteria for a roughly 10-minute runtime soak. |
+| Rollback was possible, but triggers were mostly implicit. | Rollback criteria are now explicit for timeout/failover patterns on representative paths. |
+| Backup trouble could feel like friction to push through. | Degraded backup posture must be surfaced as an explicit go/no-go decision. |
+| Post-rollback success could be declared too early. | A short live watch is now part of rollback verification. |
+| Baseline capture was optional and easy to skip. | Known suspect anomaly classes should get a small pre-update baseline when practical. |
 
 
 ## June 2026 Update: Target Refreshes Belong in the Procedure
@@ -204,7 +181,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
  If the target release changes after the first review, the preflight packet gets refreshed. If routing defaults or runtime assumptions changed since the last pass, they get rechecked. If the backup story is weaker than expected, it becomes an explicit go/no-go item instead of a quiet footnote. If the restart touches the live agent surface, the activation boundary stays user-owned.
 
 
- Target-refresh rule: do not treat a reviewed target and the latest available target as interchangeable. Re-lock the candidate, re-check the risky surfaces, and only then decide whether to activate.
+ **Target-refresh rule:** do not treat a reviewed target and the latest available target as interchangeable. Re-lock the candidate, re-check the risky surfaces, and only then decide whether to activate.
 
 
  That is the same pattern as the rollback itself: the procedure should make the next decision boring before the runtime forces the decision to become urgent.
@@ -222,7 +199,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 ### 2. Explicit rollback trigger language
 
- I now want the decision threshold written down before the release, not improvised after the pain starts accumulating.
+ I now want the decision threshold written down *before* the release, not improvised after the pain starts accumulating.
 
 
 ### 3. A short post-rollback live watch
@@ -240,7 +217,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
  If the full backup path is messy, the right move is to surface that risk explicitly—not to quietly pretend the safety posture is stronger than it is. In this case, that meant treating config-only backup plus dry-run as a temporary holding posture while working toward a clean verified full backup, rather than silently downgrading the safety bar.
 
 
- Industry sanity check: this lines up with Amazon's rollback-safety deployment guidance: prepare rollback safety before every deployment, not only after production starts hurting. It also argues for something I now agree with more strongly: check release notes and known-risk surfaces before upgrade day, but do not confuse that preflight work with real runtime validation after the restart.
+ **Industry sanity check:** this lines up with [Amazon's rollback-safety deployment guidance](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/): prepare rollback safety before every deployment, not only after production starts hurting. It also argues for something I now agree with more strongly: check release notes and known-risk surfaces before upgrade day, but do not confuse that preflight work with real runtime validation after the restart.
 
 
 
@@ -248,17 +225,17 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
 
-- I am not claiming that 2026.4.1 was universally bad for everyone.
+- I am **not** claiming that `2026.4.1` was universally bad for everyone.
 
-- I am not claiming the install, restart, or rollback procedure itself was botched.
+- I am **not** claiming the install, restart, or rollback procedure itself was botched.
 
-- I am not claiming every warning observed during the trial belonged to the same root cause.
-
-
- What I am claiming is narrower and more useful:
+- I am **not** claiming every warning observed during the trial belonged to the same root cause.
 
 
- For this deployment, the upgrade had a bad runtime outcome under representative use, and the rollback process contained the blast radius cleanly.
+ What I *am* claiming is narrower and more useful:
+
+
+ **For this deployment, the upgrade had a bad runtime outcome under representative use, and the rollback process contained the blast radius cleanly.**
 
 
 
@@ -269,7 +246,7 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
  That is why "green after restart" is such a dangerous stopping point for agent platforms. A lot of the stack can be alive while the part that matters most is already quietly worse.
 
 
- The safest upgrade story is not “it restarted.” The safest upgrade story is “it survived realistic use, and we knew exactly when we would roll it back if it didn’t.”
+ **The safest upgrade story is not “it restarted.” The safest upgrade story is “it survived realistic use, and we knew exactly when we would roll it back if it didn’t.”**
 
 
 
@@ -288,13 +265,13 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
 
 
-- Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
+- [Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes](/jingxiao-cai-blog/gateway-restart-behavior-openclaw.html)
 
-- Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows
+- [Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows](/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html)
 
-- OpenClaw 2026.3.12 Regression: When logs --follow Breaks But the Gateway Stays Healthy
+- [OpenClaw 2026.3.12 Regression: When `logs --follow` Breaks But the Gateway Stays Healthy](/jingxiao-cai-blog/openclaw-logs-follow-regression-2026-3-12.html)
 
-- Declarative Change Propagation: How I Built a Self-Documenting Cron System
+- [Declarative Change Propagation: How I Built a Self-Documenting Cron System](/jingxiao-cai-blog/declarative-change-propagation-cron-system.html)
 
 
 
@@ -312,4 +289,4 @@ Summary: A clean OpenClaw upgrade passed startup checks but regressed under real
 
  Found this useful? Send it to someone who thinks a green restart banner means the deployment is done.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

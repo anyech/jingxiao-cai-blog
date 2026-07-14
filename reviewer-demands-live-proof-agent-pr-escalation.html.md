@@ -9,22 +9,22 @@ Summary: A reviewer asking for live proof is not a permission grant; agents need
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When Reviewers Still Ask for Live Proof
 
 
- May 19, 2026 | By Jingxiao Cai
+ **May 19, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, github, pull-requests, proof, staging, escalation, reliability, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a proof-review edge case into a safer escalation pattern while keeping examples generic and removing PR identifiers, branch names, raw logs, local paths, and live deployment details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a proof-review edge case into a safer escalation pattern while keeping examples generic and removing PR identifiers, branch names, raw logs, local paths, and live deployment details.
 
 
 
- Short version: a reviewer asking for live proof is not a tool permission grant. The agent should clarify the live-only concern, offer safer alternatives, and route production risk to explicit human approval.
+ **Short version:** a reviewer asking for live proof is not a tool permission grant. The agent should clarify the live-only concern, offer safer alternatives, and route production risk to explicit human approval.
 
 
 
@@ -44,12 +44,12 @@ Summary: A reviewer asking for live proof is not a permission grant; agents need
  The answer should not be “the agent now has permission to touch production.” A review request is a signal. It is not an authorization boundary.
 
 
- A reviewer can ask for live proof. Only the operator can approve live risk.
+ **A reviewer can ask for live proof. Only the operator can approve live risk.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations write-up and part 2 of a proof-boundary mini-series. I am intentionally omitting exact PR numbers, branch names, commit hashes, check-run counts, bot labels, local worktree paths, session identifiers, channel identifiers, raw terminal transcripts, and live deployment details. The examples are generalized patterns, not transcripts from any single review thread. The public lesson is escalation discipline.
+ **Conceptual scope:** this is a sanitized agent-operations write-up and part 2 of a proof-boundary mini-series. I am intentionally omitting exact PR numbers, branch names, commit hashes, check-run counts, bot labels, local worktree paths, session identifiers, channel identifiers, raw terminal transcripts, and live deployment details. The examples are generalized patterns, not transcripts from any single review thread. The public lesson is escalation discipline.
 
 
 
@@ -61,8 +61,12 @@ Summary: A reviewer asking for live proof is not a permission grant; agents need
 
  So the first response should be respect, not resistance:
 
- I hear the request for live proof.
+
+
+```
+I hear the request for live proof.
 Before touching any live system, I want to clarify the specific property that staged proof did not answer.
+```
 
  That one sentence keeps the review collaborative while preserving the safety boundary.
 
@@ -73,34 +77,11 @@ Before touching any live system, I want to clarify the specific property that st
 
 
 
-
- Case
- What it means
- Right response
-
-
-
-
-
- The proof packet is unclear
- The reviewer cannot tell what was exercised, what environment was used, or what the limits were.
- Rewrite the proof packet. Do not escalate to live systems yet.
-
-
-
- There is a real live-only property
- The disputed behavior depends on production-only state, permissions, scale, timing, routing, or side effects that staged proof cannot represent.
- Document the live-only property and ask the operator whether to approve a scoped live proof plan.
-
-
-
- The reviewer prefers live proof despite adequate staged evidence
- The staged proof appears to answer the behavior claim, but the reviewer still wants a stronger confidence signal.
- Offer safer alternatives first; if still blocked, escalate the decision to the human operator instead of improvising access.
-
-
-
-
+| Case | What it means | Right response |
+| --- | --- | --- |
+| **The proof packet is unclear** | The reviewer cannot tell what was exercised, what environment was used, or what the limits were. | Rewrite the proof packet. Do not escalate to live systems yet. |
+| **There is a real live-only property** | The disputed behavior depends on production-only state, permissions, scale, timing, routing, or side effects that staged proof cannot represent. | Document the live-only property and ask the operator whether to approve a scoped live proof plan. |
+| **The reviewer prefers live proof despite adequate staged evidence** | The staged proof appears to answer the behavior claim, but the reviewer still wants a stronger confidence signal. | Offer safer alternatives first; if still blocked, escalate the decision to the human operator instead of improvising access. |
 
  Those cases have different blast radii. Treating all of them as “go run live” is how a proof discipline turns into production experimentation.
 
@@ -110,7 +91,7 @@ Before touching any live system, I want to clarify the specific property that st
  The agent should ask one focused question before proposing any live action:
 
 
- What live-only property remains unproven by the staged evidence?
+ **What live-only property remains unproven by the staged evidence?**
 
 
 
@@ -132,30 +113,34 @@ Before touching any live system, I want to clarify the specific property that st
 
  When the reviewer asks for live proof, I want the agent to respond with a compact, public-safe packet like this:
 
- Claim under review:
- behavior this PR claims to fix or protect
+
+
+```
+Claim under review:
+  behavior this PR claims to fix or protect
 
 Current proof supplied:
- proof surface, environment, target revision, and freshness boundary
+  proof surface, environment, target revision, and freshness boundary
 
 Limits already stated:
- what the staged proof does not prove
+  what the staged proof does not prove
 
 Clarifying question:
- what live-only property remains unproven?
+  what live-only property remains unproven?
 
 Safer alternatives:
- focused regression / fixture adjustment / fake integration improvement / staged runtime canary
+  focused regression / fixture adjustment / fake integration improvement / staged runtime canary
 
 If live proof is still required:
- authorized approver / operator
- target behavior
- live surface
- allowed side effects and concurrent-user impact
- credentials / secrets handling
- execution window / timeout
- rollback or cleanup plan
- public-safe evidence summary
+  authorized approver / operator
+  target behavior
+  live surface
+  allowed side effects and concurrent-user impact
+  credentials / secrets handling
+  execution window / timeout
+  rollback or cleanup plan
+  public-safe evidence summary
+```
 
  This does two useful things. It gives the reviewer a better artifact to critique, and it gives the operator a clean decision packet if the request truly reaches live-risk territory.
 
@@ -166,50 +151,15 @@ If live proof is still required:
 
 
 
-
- Approval field
- Why it matters
-
-
-
-
-
- Target behavior
- Prevents the proof from expanding into unrelated exploration.
-
-
-
- Live surface
- Names exactly which environment, account class, or channel type is in scope without exposing private identifiers publicly.
-
-
-
- Allowed side effects
- Separates read-only observation, synthetic traffic, real messages, config writes, user-visible actions, monitoring/audit effects, and acceptable impact on concurrent live users.
-
-
-
- Execution window / time boundary
- Sets the exact proof window, timeout, and expiration of the approval so live work cannot continue open-ended.
-
-
-
- Secrets and credentials
- Confirms whether production credentials are used and how evidence will avoid leaking them.
-
-
-
- Rollback or cleanup
- Defines how the system returns to normal after the proof.
-
-
-
- Public evidence summary
- Defines what can be posted back to the PR without exposing operational details.
-
-
-
-
+| Approval field | Why it matters |
+| --- | --- |
+| Target behavior | Prevents the proof from expanding into unrelated exploration. |
+| Live surface | Names exactly which environment, account class, or channel type is in scope without exposing private identifiers publicly. |
+| Allowed side effects | Separates read-only observation, synthetic traffic, real messages, config writes, user-visible actions, monitoring/audit effects, and acceptable impact on concurrent live users. |
+| Execution window / time boundary | Sets the exact proof window, timeout, and expiration of the approval so live work cannot continue open-ended. |
+| Secrets and credentials | Confirms whether production credentials are used and how evidence will avoid leaking them. |
+| Rollback or cleanup | Defines how the system returns to normal after the proof. |
+| Public evidence summary | Defines what can be posted back to the PR without exposing operational details. |
 
  Without that scope, the agent should not proceed. “The reviewer asked” is not a substitute for “the operator approved this exact live action.” If the reviewer and operator are the same person, the distinction still matters: the agent needs explicit production-approval language, not merely a review comment that asks for stronger evidence.
 
@@ -240,7 +190,7 @@ If live proof is still required:
  The point is not to avoid proof. The point is to match the proof surface to the risk.
 
 
- The useful invariant: escalate proof strength before escalating blast radius.
+ **The useful invariant:** escalate proof strength before escalating blast radius.
 
 
 
@@ -250,10 +200,14 @@ If live proof is still required:
 
  The agent should then state the boundary plainly:
 
- Live proof is not approved for this PR.
+
+
+```
+Live proof is not approved for this PR.
 The available evidence is staged proof only.
 The PR can proceed only if reviewers accept that evidence and its limits;
 otherwise it should remain blocked rather than testing against production.
+```
 
  That is better than quietly stretching the proof scope, trying to infer permission from review pressure, or posting vague comments that imply stronger evidence than exists.
 
@@ -296,13 +250,13 @@ otherwise it should remain blocked rather than testing against production.
 
 
 
-- Proof Expires
+- [Proof Expires](/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html)
 
-- Proof Without Touching Production
+- [Proof Without Touching Production](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- Before Opening Another Agent PR, Reduce the Queue First
+- [Before Opening Another Agent PR, Reduce the Queue First](/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html)
 
-- Building Fail-Closed Stage Environments for AI Agents on a Small VPS
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
 
 
@@ -325,4 +279,4 @@ otherwise it should remain blocked rather than testing against production.
 
  Found this useful? Leave a comment below, or send it to someone whose agent is about to treat a review comment like production approval.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

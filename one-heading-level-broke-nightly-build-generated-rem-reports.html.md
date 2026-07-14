@@ -9,22 +9,22 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports
 
 
- May 8, 2026 | By Jingxiao Cai
+ **May 8, 2026** | By Jingxiao Cai
 
  Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the heading-depth failure, keep the public version free of deployment fingerprints, and turn a small Markdown bug into a reusable artifact-contract lesson.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped reconstruct the heading-depth failure, keep the public version free of deployment fingerprints, and turn a small Markdown bug into a reusable artifact-contract lesson.
 
 
 
- Short version: a generated report failed because one heading jumped to the wrong level. The durable fix was not “tell the agent to format better”; it was to test each rendered output surface as its own artifact contract.
+ **Short version:** a generated report failed because one heading jumped to the wrong level. The durable fix was not “tell the agent to format better”; it was to test each rendered output surface as its own artifact contract.
 
 
  The bug was almost comically small: a generated Markdown report emitted a heading at the wrong depth. The content was fine. The summary was useful. The automation around it was doing exactly what I wanted.
@@ -32,12 +32,12 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
  And then the nightly check failed anyway.
 
 
- Generated Markdown is not “just text” once another tool consumes it. It is an API with indentation, heading depth, and document-shape contracts.
+ **Generated Markdown is not “just text” once another tool consumes it. It is an API with indentation, heading depth, and document-shape contracts.**
 
 
 
 
- Conceptual scope: this is a public OpenClaw/tooling lesson from a self-hosted agent workflow. I am intentionally leaving out private paths, job names, thread identifiers, runtime topology, exact local schedules, and raw command logs. The public teaching point is the artifact contract, not my deployment fingerprint.
+ **Conceptual scope:** this is a public OpenClaw/tooling lesson from a self-hosted agent workflow. I am intentionally leaving out private paths, job names, thread identifiers, runtime topology, exact local schedules, and raw command logs. The public teaching point is the artifact contract, not my deployment fingerprint.
 
 
 
@@ -67,33 +67,15 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 
 
-
- Output surface
- Parent context
- Correct contract
-
-
-
-
-
- Inline daily-note block
- Already nested under an existing section.
- Keep deeper child headings so the block remains under its parent.
-
-
-
- Standalone REM report
- Starts from its own document root.
- Lower the same conceptual headings to fit under the document title.
-
-
-
-
+| Output surface | Parent context | Correct contract |
+| --- | --- | --- |
+| **Inline daily-note block** | Already nested under an existing section. | Keep deeper child headings so the block remains under its parent. |
+| **Standalone REM report** | Starts from its own document root. | Lower the same conceptual headings to fit under the document title. |
 
  A global heading change would fix one surface while breaking the other. That is the part I liked about the eventual review feedback: it was not bike-shedding Markdown style. It caught a real two-consumer contract.
 
 
- Public reference: this became an upstream OpenClaw fix shape in openclaw/openclaw#68505. The useful part was not the PR number; it was the realization that inline and standalone output paths needed separate rendered-shape validation.
+ **Public reference:** this became an upstream OpenClaw fix shape in [openclaw/openclaw#68505](https://github.com/openclaw/openclaw/pull/68505). The useful part was not the PR number; it was the realization that inline and standalone output paths needed separate rendered-shape validation.
 
 
 
@@ -104,7 +86,7 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
  That may sound like a small implementation detail, but it is the design rule:
 
 
- When one generated fragment has multiple consumers, normalize for each output boundary instead of pretending there is one universally correct shape.
+ **When one generated fragment has multiple consumers, normalize for each output boundary instead of pretending there is one universally correct shape.**
 
 
 
@@ -134,34 +116,11 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 
 
-
- Weak guard
- Better guard
- Why
-
-
-
-
-
- “Please use valid Markdown.”
- Render the final Markdown and lint it.
- The linter checks the artifact, not the intention.
-
-
-
- One shared template assumption.
- Per-output boundary normalization.
- Different consumers can require different heading depth.
-
-
-
- Manual spot-checking.
- Regression tests for each supported surface.
- The bug was small enough for humans to miss and automation to catch.
-
-
-
-
+| Weak guard | Better guard | Why |
+| --- | --- | --- |
+| “Please use valid Markdown.” | Render the final Markdown and lint it. | The linter checks the artifact, not the intention. |
+| One shared template assumption. | Per-output boundary normalization. | Different consumers can require different heading depth. |
+| Manual spot-checking. | Regression tests for each supported surface. | The bug was small enough for humans to miss and automation to catch. |
 
 
 ## The General Lesson for Agent Workflows
@@ -172,13 +131,13 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 
 
-- name the consumer;
+- **name the consumer;**
 
-- define the artifact shape;
+- **define the artifact shape;**
 
-- validate the final rendered output;
+- **validate the final rendered output;**
 
-- test every supported output surface, not just the shared prose generator.
+- **test every supported output surface, not just the shared prose generator.**
 
 
  This is especially important for “almost the same” outputs. Inline and standalone reports feel similar enough that a shared helper is attractive. That is fine. But once their parent contexts differ, their heading contracts differ too.
@@ -190,19 +149,19 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 
 
-- List every output surface. Inline note, standalone report, issue body, email draft, feed excerpt—each one gets a row.
+- **List every output surface.** Inline note, standalone report, issue body, email draft, feed excerpt—each one gets a row.
 
-- Write down the parent context. What heading level, wrapper, or metadata already exists before the generated fragment appears?
+- **Write down the parent context.** What heading level, wrapper, or metadata already exists before the generated fragment appears?
 
-- Render examples, not just fragments. Test the whole document shape that downstream tools will consume.
+- **Render examples, not just fragments.** Test the whole document shape that downstream tools will consume.
 
-- Lint the final artifacts. Structure rules should fail before the artifact reaches a nightly job or public surface.
+- **Lint the final artifacts.** Structure rules should fail before the artifact reaches a nightly job or public surface.
 
-- Treat review comments as contract probes. If a reviewer says a fix handles one output but breaks another, assume that is real until proven otherwise.
+- **Treat review comments as contract probes.** If a reviewer says a fix handles one output but breaks another, assume that is real until proven otherwise.
 
 
 
- The tiny bug was useful because it was tiny. It exposed a boundary that would have been easy to ignore: generated text becomes software once other software depends on its structure.
+ **The tiny bug was useful because it was tiny.** It exposed a boundary that would have been easy to ignore: generated text becomes software once other software depends on its structure.
 
 
 
@@ -220,13 +179,13 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
 
 
-- Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up
+- [Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up](/jingxiao-cai-blog/workspace-skills-bug.html)
 
-- Why AI Cron Jobs Need Exact-Exec Drivers
+- [Why AI Cron Jobs Need Exact-Exec Drivers](/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html)
 
-- The Nightly Build: How My Agent Runs Security Audits While I Sleep
+- [The Nightly Build: How My Agent Runs Security Audits While I Sleep](/jingxiao-cai-blog/nightly-build-security-audits.html)
 
-- Long-Running Agent Work Needs a Bridge Back
+- [Long-Running Agent Work Needs a Bridge Back](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
 
 
@@ -246,4 +205,4 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
  Found this useful? Leave a comment below, or send it to someone building generated reports that have quietly become APIs.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

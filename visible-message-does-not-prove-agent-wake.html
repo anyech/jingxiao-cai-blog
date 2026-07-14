@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A public-safe OpenClaw pattern for separating visible chat mirrors from inter-session turn requests, dedupe, evidence, and bounded handoffs.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="A Visible Message Does Not Prove an Agent Wake">
+    <meta property="og:description" content="A public-safe OpenClaw pattern for separating visible chat mirrors from inter-session turn requests, dedupe, evidence, and bounded handoffs.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A Visible Message Does Not Prove an Agent Wake">
+    <meta name="twitter:description" content="A public-safe OpenClaw pattern for separating visible chat mirrors from inter-session turn requests, dedupe, evidence, and bounded handoffs.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "A Visible Message Does Not Prove an Agent Wake",
+  "description": "A public-safe OpenClaw pattern for separating visible chat mirrors from inter-session turn requests, dedupe, evidence, and bounded handoffs.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-07-14",
+  "dateModified": "2026-07-14",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html"
+}</script>
+
+    <title>A Visible Message Does Not Prove an Agent Wake</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Posts</a>
+          <a href="/jingxiao-cai-blog/search.html">Search</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+          <a href="/jingxiao-cai-blog/llms.txt">llms.txt</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>A Visible Message Does Not Prove an Agent Wake</h1>
+    <div class="meta">
+        <strong>July 14, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: openclaw, ai-agents, agent-ops, multi-agent, reliability, automation</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a bounded cross-session test into a public coordination pattern while keeping the underlying conversations and deployment details out of the article.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a conceptual agent-operations pattern, not a claim that every chat platform or agent runtime has identical wake behavior. Verify the control path on the exact runtime you operate.
+    </div>
+</header>
+
+<main>
+    <p>A handoff appeared exactly where a human would expect to see it. The message was readable, timely, and pointed at the right workstream.</p>
+
+    <p>No target turn appeared within the defined test window.</p>
+
+    <p>A second handoff used the runtime's documented inter-session transport instead of the human-facing chat surface. The addressed session began a turn during the test window and returned the requested result.</p>
+
+    <blockquote>
+        <p><strong>Visible delivery proves observability. It does not prove that the addressed session began a turn, claimed the work, or completed it.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Term boundary:</strong> <em>agent wake</em> means only that the addressed session began a turn during the defined test window. An <em>agent wake signal</em> is the request used to seek that outcome; it does not imply durable enqueueing, cold-session activation, or exactly-once execution.
+    </div>
+
+    <p>This is the control-plane counterpart to a more familiar delivery problem. Earlier posts on this blog asked whether a finished result became visible to the user. This post asks the opposite question: when one agent needs another existing session to act, what actually converts a handoff into work?</p>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small contract for separating the human-visible mirror, the machine wake path, and the durable completion record without turning every two-agent handoff into a heavyweight coordinator service.
+    </div>
+
+    <h2>One Message, Three Different Claims</h2>
+
+    <p>Multi-agent workflows often compress three planes into the word <em>message</em>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Plane</th>
+                <th>What it is for</th>
+                <th>What success proves</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Human-visible mirror</strong></td>
+                <td>Auditability, progress, operator intervention, and shared context.</td>
+                <td>A person can see the handoff.</td>
+            </tr>
+            <tr>
+                <td><strong>Inter-session control transport</strong></td>
+                <td>Delivering a bounded event to a specific agent session.</td>
+                <td>The transport accepted the request for that target; execution still needs separate evidence.</td>
+            </tr>
+            <tr>
+                <td><strong>Durable coordination record</strong></td>
+                <td>Claim, dedupe, evidence, terminal state, and recovery.</td>
+                <td>The work has an inspectable lifecycle beyond one chat turn.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>These planes can be connected, but they are not interchangeable. A chat post may be visible without entering the receiver's run queue. A control event may trigger work while the human mirror fails. A receiver may answer without producing the artifact that the workflow needs for verification.</p>
+
+    <p>OpenClaw makes the control distinction explicit: its <a href="https://docs.openclaw.ai/session-tool"><code>sessions_send</code> session tool</a> sends a message to another session and can optionally wait for a reply. The same documentation says inter-session messages carry provenance as tool-routed data, not as direct end-user instructions. Transport provenance can support an enforced admission boundary, but it is not authentication or authorization by itself.</p>
+
+    <h2>A Public-Safe Wake Test</h2>
+
+    <p>A useful smoke test does not need private transcripts or production identifiers. It needs two paths and observable state transitions:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Test path</th>
+                <th>Human-visible</th>
+                <th>Target turn observed</th>
+                <th>Result returned</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Post a sanitized handoff to the shared chat surface</td>
+                <td>Yes</td>
+                <td>No target turn observed within the defined test window</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>Send the same bounded request through the inter-session transport</td>
+                <td>Mirror optional</td>
+                <td>Target turn observed within the defined test window</td>
+                <td>Yes</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>This is not a benchmark, prevalence claim, or guarantee across cold and unhealthy sessions. It is a bounded diagnostic observation: in one controlled test, the visible surface and the inter-session path produced different observed state transitions.</p>
+
+    <p>The negative path was configuration-dependent. It says that a chat post did not start a target turn in this test window, not that chat platforms can never be configured to trigger agent work. A sound test also confirms that the target is healthy before attributing the missing turn to delivery.</p>
+
+    <div class="success">
+        <strong>Diagnostic rule:</strong> if the handoff is visible but the target has no new turn, debug the event path before debugging the target's reasoning.
+    </div>
+
+    <h2>Use an Event Envelope, Not a Transcript Dump</h2>
+
+    <p>The receiver rarely needs the sender's whole conversation. It needs a bounded event with stable identity, a clear objective, and a result contract.</p>
+
+    <p>Rather than inventing every field from scratch, borrow the core shape of the <a href="https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md">CloudEvents specification</a>: <code>id</code>, <code>source</code>, <code>specversion</code>, and <code>type</code>. CloudEvents also gives a useful dedupe property: the combination of <code>source</code> and <code>id</code> identifies a distinct event.</p>
+
+    <pre><code class="language-json">{
+  "specversion": "1.0",
+  "id": "opaque-event-id",
+  "source": "agent://requester",
+  "type": "com.example.agent.handoff.requested",
+  "time": "2026-07-14T00:00:00Z",
+  "subject": "bounded-workstream",
+  "data": {
+    "target_role": "specialist",
+    "objective": "produce one verified result artifact",
+    "input_artifact": "sha256:public-safe-digest",
+    "reply_contract": "completed | blocked | expired",
+    "dedupe_key": "stable-logical-request",
+    "max_hops": 1
+  }
+}</code></pre>
+
+    <p>This is an illustrative pattern, not a captured production payload or a claim that every agent handoff must be a fully compliant CloudEvent. The <code>agent://</code> value is an example URI scheme, not an established agent-addressing convention. The important move is to reuse familiar event semantics and add only the application data fields you can justify.</p>
+
+    <p>Keep sensitive context out of routing attributes. The CloudEvents specification warns that context attributes may be inspected or logged, and an implementation may also log event data. Point to a protected artifact when the receiver needs more detail, and authorize access separately. The envelope's <code>source</code> is a label unless the transport binds it to an authenticated sender.</p>
+
+    <h2>The Minimum Control Contract</h2>
+
+    <p>A reliable two-session handoff needs more than a target address:</p>
+
+    <ol>
+        <li><strong>Admission:</strong> authenticate the sender, deny by default, and scope permission by sender, receiver, event type, and permitted effects.</li>
+        <li><strong>Identity:</strong> give the logical request a stable dedupe key and each delivery attempt a unique event ID.</li>
+        <li><strong>Claim:</strong> fence ownership by the logical request key so only one receiver can produce effects; record who claimed it and when.</li>
+        <li><strong>Bounds:</strong> cap hops, retries, payload size, and wall-clock lifetime.</li>
+        <li><strong>Evidence:</strong> require a result artifact or an explicit limitation, not only conversational confidence.</li>
+        <li><strong>Terminal state:</strong> finish as completed, blocked, expired, or rejected, with a reason and a reply target.</li>
+    </ol>
+
+    <p>The <a href="https://docs.openclaw.ai/gateway/config-tools">OpenClaw session-tool visibility and agent-to-agent controls</a> determine which sessions can be targeted. That configuration is necessary, but targeting permission alone is not workflow correctness. The event contract still needs dedupe, bounded behavior, and terminal evidence.</p>
+
+    <div class="note">
+        <strong>Evidence boundary:</strong> the observation supports only the distinction between visible delivery and an observed inter-session turn. The ledger, fencing, and coordinator sections are design guidance, not a description of the tested deployment.
+    </div>
+
+    <h2>Keep the Chat Mirror Observability-Only</h2>
+
+    <p>The chat surface remains valuable. It should show enough for a human to understand what happened:</p>
+
+    <pre><code>HANDOFF accepted
+from: requester role
+to: specialist role
+objective: one-line public summary
+event: short redacted id
+state: accepted | running | completed | blocked
+artifact: durable result pointer when available</code></pre>
+
+    <p>But the mirror should not become the hidden control bus. Enabling bot-message ingestion just to manufacture wake behavior creates loop and provenance risk. A system that cannot distinguish human instructions, bot mirrors, and inter-session control data is inviting accidental recursion.</p>
+
+    <p>The clean split is:</p>
+
+    <ul>
+        <li>the session transport requests the receiver's turn and carries bounded context;</li>
+        <li>the ledger owns claim and terminal state;</li>
+        <li>the chat mirror reports sanitized progress to the human.</li>
+    </ul>
+
+    <h2>Failure Matrix</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Observed state</th>
+                <th>Likely contract failure</th>
+                <th>Correct response</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mirror visible; no target turn</td>
+                <td>Observability succeeded, control delivery did not.</td>
+                <td>Inspect target resolution, admission, and enqueue evidence.</td>
+            </tr>
+            <tr>
+                <td>Target turn exists; mirror missing</td>
+                <td>Control delivery succeeded, operator visibility degraded.</td>
+                <td>Continue only if the effect is safe; repair the mirror separately.</td>
+            </tr>
+            <tr>
+                <td>Two receivers claim the same request</td>
+                <td>Dedupe or atomic claim is missing.</td>
+                <td>Fence the duplicate and preserve one authoritative owner.</td>
+            </tr>
+            <tr>
+                <td>Receiver replies but no artifact exists</td>
+                <td>Conversation was mistaken for completion evidence.</td>
+                <td>Keep the request open or mark it blocked.</td>
+            </tr>
+            <tr>
+                <td>Receiver crashes after claim</td>
+                <td>Ownership has no lease, expiry, or recovery rule.</td>
+                <td>Expire or reassign through the ledger, not a blind resend.</td>
+            </tr>
+            <tr>
+                <td>Agents keep replying to each other</td>
+                <td>Hop or ping-pong bounds are absent.</td>
+                <td>Stop at the configured bound and escalate to the human.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Direct Handoff or Coordinator?</h2>
+
+    <p>Two agents with a single bounded dependency usually do not need a new coordinator service. A direct event plus a small durable ledger is easier to inspect and easier to retire.</p>
+
+    <p>Escalate to a coordinator when the workflow has:</p>
+
+    <ul>
+        <li>more than two active workers;</li>
+        <li>dependency ordering or a critical path;</li>
+        <li>shared mutable effects;</li>
+        <li>repeated ownership conflicts;</li>
+        <li>fan-out/fan-in completion rules; or</li>
+        <li>protocol violations that require central fencing.</li>
+    </ul>
+
+    <p>A coordinator is useful when it owns real coordination state. Adding one merely to relay text creates another failure surface without solving the wake contract.</p>
+
+    <h2>Canary the Uncomfortable States</h2>
+
+    <p>A warm-session success is only the first proof. Before making cross-session coordination a standing workflow, test:</p>
+
+    <ul>
+        <li>a cold or archived target;</li>
+        <li>a compacted target with reduced recent context;</li>
+        <li>a busy or locked target;</li>
+        <li>a duplicate event;</li>
+        <li>a receiver crash after claim;</li>
+        <li>a missing result artifact;</li>
+        <li>an expired event; and</li>
+        <li>a denied sender/receiver pair.</li>
+    </ul>
+
+    <p>If the runtime cannot prove those cases, call the design a bounded warm-session pattern, not a general coordination layer.</p>
+
+    <h2>When Not To Use This Pattern</h2>
+
+    <p>Use a simpler mechanism when:</p>
+
+    <ul>
+        <li>a parent is spawning one isolated subtask and already owns its lifecycle;</li>
+        <li>the message is only for a human and should not trigger agent work;</li>
+        <li>the receiver does not need durable claim or recovery state;</li>
+        <li>the task can be completed safely in the current session; or</li>
+        <li>cross-session targeting or artifact access has not been authorized.</li>
+    </ul>
+
+    <p>The goal is not to route everything through a control protocol. The goal is to stop pretending that a visible chat post already is one.</p>
+
+    <h2>Conclusion</h2>
+
+    <p>A multi-agent system becomes easier to reason about when it stops using one surface for three jobs.</p>
+
+    <p>Let the human-facing channel show the work. Use the documented inter-session path to request the receiver's turn, then verify that the turn occurred. Let the durable record prove who claimed the request, what evidence was produced, and how the attempt ended.</p>
+
+    <p>When those contracts are separate, a visible message can be honestly described as visible—and nothing more.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html">When the Reply Exists but the Thread Stayed Silent</a></li>
+            <li><a href="/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html">A Final Summary Needs a Delivery Receipt</a></li>
+            <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
+            <li><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, evidence-driven workflows, and operational decision boundaries.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A handoff is real when the receiver can claim it and the operator can verify how it ended.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Questions, critiques, or examples of agent wake-path failures? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 14, 2026 &bull; Part of my ongoing AI-agent operations and reliability series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

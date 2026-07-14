@@ -9,22 +9,22 @@ Summary: One successful cold start proves a path. It does not prove concurrent s
 
 ---
 
-&larr; Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # A Cold-Start Canary Is Not a Serving SLA
 
 
- July 10, 2026 | By Jingxiao Cai
+ **July 10, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, local-llm, agent-ops, reliability, kubernetes, self-hosted-ai
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a bounded local-serving experiment into a public proof ladder while keeping private topology, model identities, routes, resource figures, and operational artifacts out of the article.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a bounded local-serving experiment into a public proof ladder while keeping private topology, model identities, routes, resource figures, and operational artifacts out of the article.
 
 
 
- Boundary: this is a sanitized on-demand-serving pattern, not a benchmark or a description of a specific live cluster. The examples explain what a canary can and cannot prove.
+ **Boundary:** this is a sanitized on-demand-serving pattern, not a benchmark or a description of a specific live cluster. The examples explain what a canary can and cannot prove.
 
 
  A local model that scales from idle, answers correctly, and returns to its baseline feels like a finished feature.
@@ -34,14 +34,14 @@ Summary: One successful cold start proves a path. It does not prove concurrent s
  The distinction matters because on-demand serving combines several different systems: storage, scheduling, process startup, readiness, request coordination, failure recovery, idle cleanup, and the client-facing latency contract. A single successful request exercises one path through that graph. It does not prove the graph.
 
 
- A cold-start canary proves that the path can work once. A serving SLA needs evidence about what happens when the path is concurrent, interrupted, stale, and slow.
+ **A cold-start canary proves that the path can work once. A serving SLA needs evidence about what happens when the path is concurrent, interrupted, stale, and slow.**
 
 
 
  This post gives self-hosted AI operators a small proof ladder for deciding when an on-demand model is still a canary, when it is ready for broader experiments, and when it might be eligible for production promotion.
 
 
- Conceptual scope: the safe proof unit below preserves state transitions and failure semantics. It intentionally omits private model names, node labels, storage paths, ports, exact timings, and live configuration values.
+ **Conceptual scope:** the safe proof unit below preserves state transitions and failure semantics. It intentionally omits private model names, node labels, storage paths, ports, exact timings, and live configuration values.
 
 
 
@@ -84,55 +84,17 @@ Summary: One successful cold start proves a path. It does not prove concurrent s
 
 
 
-
- Stage
- What it asks
- What passing earns
-
-
-
-
-
- 0. Baseline
- Is the target state known, healthy, and free of stale ownership or helper residue?
- Permission to run a bounded canary.
+| Stage | What it asks | What passing earns |
+| --- | --- | --- |
+| **0. Baseline** | Is the target state known, healthy, and free of stale ownership or helper residue? | Permission to run a bounded canary. |
+| **1. Cold path** | Can one request activate, become ready, answer correctly, and restore the declared end state? | Evidence that the happy path exists. |
+| **2. Concurrency** | Do simultaneous requests elect one owner while waiters reuse the same activation? | Evidence against double-scale and duplicate ownership. |
+| **3. Failure recovery** | Can ownership expire or transfer safely, and do disconnects clean up waiter state? | Evidence that one dead actor does not wedge the path. |
+| **4. Controller durability** | Are warm requests idempotent, restart-reconciled, cancellable, and bounded in history? | Eligibility for broader controlled trials. |
+| **5. Service contract** | Are latency, observability, desired-warm semantics, rollout, rollback, and capacity limits explicit? | Eligibility for a production promotion decision, not automatic promotion. |
 
 
-
- 1. Cold path
- Can one request activate, become ready, answer correctly, and restore the declared end state?
- Evidence that the happy path exists.
-
-
-
- 2. Concurrency
- Do simultaneous requests elect one owner while waiters reuse the same activation?
- Evidence against double-scale and duplicate ownership.
-
-
-
- 3. Failure recovery
- Can ownership expire or transfer safely, and do disconnects clean up waiter state?
- Evidence that one dead actor does not wedge the path.
-
-
-
- 4. Controller durability
- Are warm requests idempotent, restart-reconciled, cancellable, and bounded in history?
- Eligibility for broader controlled trials.
-
-
-
- 5. Service contract
- Are latency, observability, desired-warm semantics, rollout, rollback, and capacity limits explicit?
- Eligibility for a production promotion decision, not automatic promotion.
-
-
-
-
-
-
- Promotion rule: each stage earns the next test. None of the early stages silently grants a production SLA.
+ **Promotion rule:** each stage earns the next test. None of the early stages silently grants a production SLA.
 
 
 
@@ -142,23 +104,27 @@ Summary: One successful cold start proves a path. It does not prove concurrent s
 
  The expected result is not merely two successful responses. It is one activation owner plus one or more waiters that observe the same transition:
 
- request_a:
- role: activation_owner
- transition: idle -> starting -> ready
+
+
+```
+request_a:
+  role: activation_owner
+  transition: idle -> starting -> ready
 
 request_b:
- role: waiter
- transition: observe_starting -> reuse_ready
+  role: waiter
+  transition: observe_starting -> reuse_ready
 
 shared_result:
- scale_requests: one semantic activation
- responses: successful
- ownership_residue: absent
- end_state: declared baseline restored
+  scale_requests: one semantic activation
+  responses: successful
+  ownership_residue: absent
+  end_state: declared baseline restored
+```
 
  Without that ownership proof, two green responses may hide duplicate scale requests, conflicting timers, or a race that appears only when one request disconnects.
 
- A coordination primitive such as a lease can help, but the object itself is not the proof. A bounded canary can observe one owner, bounded waiters, expiry, takeover after failure, and cleanup. That still does not prove stale-owner fencing against a delayed former owner. A production design needs an explicit fencing or generation rule, or equivalent evidence that an expired actor can no longer mutate the target. Kubernetes documents Lease objects as coordination primitives; the application still has to define the ownership contract correctly.
+ A coordination primitive such as a lease can help, but the object itself is not the proof. A bounded canary can observe one owner, bounded waiters, expiry, takeover after failure, and cleanup. That still does not prove stale-owner fencing against a delayed former owner. A production design needs an explicit fencing or generation rule, or equivalent evidence that an expired actor can no longer mutate the target. Kubernetes documents [Lease objects](https://kubernetes.io/docs/concepts/architecture/leases/) as coordination primitives; the application still has to define the ownership contract correctly.
 
 
 ## Cleanup Is Part of the Result
@@ -180,7 +146,7 @@ shared_result:
 - a cleanup failure is reported as a failure, not hidden behind a correct model answer.
 
 
- This is the same reason readiness probes and startup probes are different concepts in Kubernetes: “the process exists,” “the process has started,” and “the process should receive traffic” are separate claims. The probe documentation is a useful reminder not to collapse them.
+ This is the same reason readiness probes and startup probes are different concepts in Kubernetes: “the process exists,” “the process has started,” and “the process should receive traffic” are separate claims. The [probe documentation](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/) is a useful reminder not to collapse them.
 
 
 ## Cache Honesty Changes the Claim
@@ -203,37 +169,41 @@ shared_result:
  A useful canary names the layer it controlled and the layers it did not. “Client page cache was cold; upstream caches were not characterized” is more valuable than a dramatic “true cold start” label that the test cannot defend.
 
 
- Measurement rule: if a cache layer was not reset or observed, record it as unknown. Unknown is a boundary, not an embarrassment.
+ **Measurement rule:** if a cache layer was not reset or observed, record it as unknown. Unknown is a boundary, not an embarrassment.
 
 
 
 ## The Public-Safe Evidence Card
 
- on_demand_serving_canary:
- boundary: controlled_canary
- scope: one_bounded_observation_set
- baseline:
- target_health: observed_healthy
- stale_ownership: absent
- cold_claim:
- controlled_layer: client_page_cache_residency
- upstream_cache_state: unknown
- happy_path:
- activation_to_semantic_answer: observed
- declared_end_state_restored: observed
- concurrency:
- single_owner: observed_in_bounded_test
- waiter_reuse: observed_in_bounded_test
- recovery:
- lease_expiry_and_takeover: observed_in_bounded_test
- stale_owner_fencing: not_claimed
- waiter_disconnect_cleanup: observed_in_bounded_test
- durable_controller:
- implemented: mock_or_staged_only
- production_contract:
- latency_slo: not_claimed
- rollout_and_rollback: separate_gate
- verdict: canary_only
+
+
+```
+on_demand_serving_canary:
+  boundary: controlled_canary
+  scope: one_bounded_observation_set
+  baseline:
+    target_health: observed_healthy
+    stale_ownership: absent
+  cold_claim:
+    controlled_layer: client_page_cache_residency
+    upstream_cache_state: unknown
+  happy_path:
+    activation_to_semantic_answer: observed
+    declared_end_state_restored: observed
+  concurrency:
+    single_owner: observed_in_bounded_test
+    waiter_reuse: observed_in_bounded_test
+  recovery:
+    lease_expiry_and_takeover: observed_in_bounded_test
+    stale_owner_fencing: not_claimed
+    waiter_disconnect_cleanup: observed_in_bounded_test
+  durable_controller:
+    implemented: mock_or_staged_only
+  production_contract:
+    latency_slo: not_claimed
+    rollout_and_rollback: separate_gate
+  verdict: canary_only
+```
 
  The card teaches more than a screenshot of a successful response. It shows exactly which claim moved and which claim did not.
 
@@ -274,13 +244,13 @@ shared_result:
 
 
 
-- A Local LLM Router Is Not a Panel Lane Yet
+- [A Local LLM Router Is Not a Panel Lane Yet](/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
 
-- Reachable Is Not Ready
+- [Reachable Is Not Ready](/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html)
 
-- Synthetic Fanout Is Not Production Approval
+- [Synthetic Fanout Is Not Production Approval](/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html)
 
-- Before Raising Reindex Concurrency, Prove the Memory Lane
+- [Before Raising Reindex Concurrency, Prove the Memory Lane](/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html)
 
 
 
@@ -299,10 +269,10 @@ shared_result:
 
 ### Feedback
 
- Questions, critiques, or examples of cold-start proof ladders? Open an issue in the blog repository or leave a comment below.
+ Questions, critiques, or examples of cold-start proof ladders? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or leave a comment below.
 
 
 
- Published on July 10, 2026 &bull; Part of my ongoing self-hosted AI and agent operations series
+ Published on July 10, 2026 • Part of my ongoing self-hosted AI and agent operations series
 
- &larr; Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

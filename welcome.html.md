@@ -9,7 +9,7 @@ Summary: After several years in industry, I&#39;m starting to share my learnings
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 
 # Welcome to My Blog
@@ -24,15 +24,15 @@ After several years in industry, I'm starting to share my learnings, thoughts, a
 
 ## What to Expect
 
-- Distributed ML Runtime Systems — Backend execution, distributed workloads, and reliability at scale
+- **Distributed ML Runtime Systems** — Backend execution, distributed workloads, and reliability at scale
 
-- Career Journey — From radar PhD to distributed ML runtime systems
+- **Career Journey** — From radar PhD to distributed ML runtime systems
 
-- Tech Deep Dives — Signal processing to ML
+- **Tech Deep Dives** — Signal processing to ML
 
-- Life — Things I learn along the way
+- **Life** — Things I learn along the way
 
 Stay tuned for more!
 
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -10,21 +10,21 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Gateway Restart Behavior: What OpenClaw Users Need to Know About Config Changes
 
 
- March 11, 2026 | By Jingxiao Cai | Updated June 2, 2026
+ **March 11, 2026** | By Jingxiao Cai | **Updated June 2, 2026**
 
  Tags: openclaw, devops, ai-agents, configuration, gateway, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped reconstruct the restart timeline, cross-check local docs, and turn one mildly annoying surprise into a hopefully useful field guide.
 
 
- Follow-up (March–June 2026): I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.
+ **Follow-up (March–June 2026):** I added a mixed-state upgrade case study, a Discord health-monitor restart-loop incident, a 2026.4.1 rollback case study, a task-registry restore-gap lesson, and a watchdog false-alarm note covering copy-first evidence, isolated repair validation, explicit offline control, and alert-surface honesty.
 
 
 
@@ -34,16 +34,16 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
  I was in the middle of an active OpenClaw session when the conversation went quiet.
 
- Not "the model is thinking" quiet. Not "Discord is slow" quiet. Infrastructure quiet.
+ Not "the model is thinking" quiet. Not "Discord is slow" quiet. **Infrastructure quiet.**
 
  A few seconds later, the gateway was back. No crash. No obvious failure. Just a restart that happened while work was in flight.
 
- The root cause turned out to be straightforward: some OpenClaw config changes trigger a gateway restart, and the restart may be deferred just long enough to confuse you.
+ The root cause turned out to be straightforward: **some OpenClaw config changes trigger a gateway restart, and the restart may be deferred just long enough to confuse you.**
 
  If you're editing auth profiles, plugin config, or other restart-sensitive settings, this is behavior you need to know before you learn it the annoying way.
 
 
- Short version: OpenClaw config does not behave uniformly. Some changes are effectively live. Others require a gateway restart. Some restart paths are immediate, while others defer until in-flight work drains or a timeout is hit.
+ **Short version:** OpenClaw config does *not* behave uniformly. Some changes are effectively live. Others require a gateway restart. Some restart paths are immediate, while others defer until in-flight work drains or a timeout is hit.
 
 
 
@@ -53,16 +53,16 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
 
 
-- config.apply = validate + write config + restart + wake
+- `config.apply` = validate + write config + **restart** + wake
 
-- config.patch = merge partial update + restart + wake
+- `config.patch` = merge partial update + **restart** + wake
 
 
- They also note that restart behavior is coalesced, with a 30-second cooldown between restart cycles.
+ They also note that restart behavior is **coalesced**, with a **30-second cooldown** between restart cycles.
 
- Plugin docs are equally direct: plugin config changes require a gateway restart.
+ Plugin docs are equally direct: **plugin config changes require a gateway restart.**
 
- That's the documented part. The part that catches people off guard is the user experience of that restart when it happens during an active session.
+ That's the documented part. The part that catches people off guard is the **user experience** of that restart when it happens during an active session.
 
 
 ## What It Looks Like in Practice
@@ -72,9 +72,9 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
 
 
-- A config change touches a restart-sensitive area, such as auth.profiles or plugins.entries.*.
+- A config change touches a restart-sensitive area, such as `auth.profiles` or `plugins.entries.*`.
 
-- OpenClaw does not necessarily hard-cut immediately.
+- OpenClaw does **not** necessarily hard-cut immediately.
 
 - It defers the restart while in-flight work drains.
 
@@ -90,7 +90,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
  That behavior is sane from an infrastructure perspective. It's less sane from a human perspective if nobody warned you it was coming.
 
 
- The system is trying to be graceful. The user experience still feels abrupt if you're mid-conversation.
+ **The system is trying to be graceful. The user experience still feels abrupt if you're mid-conversation.**
 
 
 
@@ -99,7 +99,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
  This is the part most likely to confuse users.
 
- When a restart-sensitive change lands, OpenClaw may defer the restart to let in-flight operations finish. That's good. But it also means you get a weird limbo period:
+ When a restart-sensitive change lands, OpenClaw may **defer** the restart to let in-flight operations finish. That's good. But it also means you get a weird limbo period:
 
 
 
@@ -115,7 +115,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
  If you don't know that drain behavior exists, it feels random. It isn't random. It's deferred restart behavior doing exactly what it was designed to do.
 
 
- Important nuance: "Deferred" does not mean "canceled." It means "restart later, after active work drains or the timeout says we're done waiting."
+ **Important nuance:** "Deferred" does not mean "canceled." It means "restart later, after active work drains or the timeout says we're done waiting."
 
 
 
@@ -125,52 +125,14 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
 
 
-
- Change Type
- Typical Behavior
- Why
-
-
-
-
-
- config.apply
- Restart + wake
- Full config write path explicitly restarts the gateway
-
-
-
- config.patch
- Restart + wake
- Partial config write still goes through restart-aware control plane
-
-
-
- auth.profiles / auth routing changes
- Restart-sensitive
- Affects provider/auth wiring and model routing behavior
-
-
-
- plugins.entries.*
- Restart required
- Plugin load/config state is gateway-managed
-
-
-
- Plugin/channel-related config
- Usually restart-sensitive
- Changes runtime wiring, manifests, or loaded integrations
-
-
-
- Cron payload edits via cron tools
- Usually no gateway restart
- You're updating job data, not gateway wiring
-
-
-
-
+| Change Type | Typical Behavior | Why |
+| --- | --- | --- |
+| **`config.apply`** | Restart + wake | Full config write path explicitly restarts the gateway |
+| **`config.patch`** | Restart + wake | Partial config write still goes through restart-aware control plane |
+| **`auth.profiles` / auth routing changes** | Restart-sensitive | Affects provider/auth wiring and model routing behavior |
+| **`plugins.entries.*`** | Restart required | Plugin load/config state is gateway-managed |
+| **Plugin/channel-related config** | Usually restart-sensitive | Changes runtime wiring, manifests, or loaded integrations |
+| **Cron payload edits via cron tools** | Usually no gateway restart | You're updating job data, not gateway wiring |
 
  That last line matters. Not every change deserves restart anxiety. A lot of operational edits are just data updates. The pain starts when you treat restart-sensitive config like ordinary live state.
 
@@ -179,10 +141,14 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
  The most common mistake isn't "I restarted the gateway." It's this:
 
- 1. Make a config tweak during an active conversation
+
+
+```
+1. Make a config tweak during an active conversation
 2. Assume it'll either apply live or wait until later
 3. Keep chatting
 4. Get surprised when the gateway quietly restarts 30 seconds later
+```
 
  That surprise is avoidable.
 
@@ -205,7 +171,7 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
  If you're in an active support thread, a debugging session, or a long-running task, restart-sensitive config work can wait five minutes. That applies doubly when you still have active panel deliberations or other multi-lane work in flight: a "graceful" restart can turn into a supersession mess surprisingly fast.
 
 
-### 4. Prefer config.patch over partial config.apply
+### 4. Prefer `config.patch` over partial `config.apply`
 
  This isn't just about restart behavior. It's about not nuking unrelated config. Full apply replaces the whole object. Patch is the sane default for narrow edits.
 
@@ -214,9 +180,13 @@ Summary: Some OpenClaw config changes apply live. Others trigger gateway restart
 
  If you're operating OpenClaw for yourself or others, say the quiet part out loud:
 
- This config change will restart the gateway.
+
+
+```
+This config change will restart the gateway.
 Expect a brief interruption.
 Let's do it after this turn finishes.
+```
 
 
 ### 6. Verify after restart
@@ -239,75 +209,42 @@ Let's do it after this turn finishes.
 
 
 
-
- If you're changing…
- Assume restart?
- Best move
-
-
-
-
-
- Plugin entries or plugin wiring
- Yes
- Batch edits, schedule restart consciously
-
-
-
- Auth profiles / provider routing config
- Yes
- Avoid doing it mid-session
-
-
-
- Full config replacement
- Absolutely yes
- Backup first, then apply once
-
-
-
- Cron job message/prompt updates
- Usually no
- Use cron tooling directly
-
-
-
- Unsure whether a field is restart-sensitive
- Act like maybe
- Check docs/schema first, then proceed
-
-
-
-
+| If you're changing… | Assume restart? | Best move |
+| --- | --- | --- |
+| Plugin entries or plugin wiring | Yes | Batch edits, schedule restart consciously |
+| Auth profiles / provider routing config | Yes | Avoid doing it mid-session |
+| Full config replacement | Absolutely yes | Backup first, then apply once |
+| Cron job message/prompt updates | Usually no | Use cron tooling directly |
+| Unsure whether a field is restart-sensitive | Act like maybe | Check docs/schema first, then proceed |
 
 
 ## Case Study: The 2026.3.23-2 Upgrade Incident
 
  A later upgrade gave me a much clearer example of why restart behavior gets confusing when local config debt and rollout strategy interact.
 
- The upstream release itself was not the whole problem. The host still had legacy plugin configuration from an older layout, so the upgrade path was already carrying local debt before the restart question even showed up.
+ The upstream release itself was not the whole problem. The host still had **legacy plugin configuration** from an older layout, so the upgrade path was already carrying local debt before the restart question even showed up.
 
- The most misleading choice was using --no-restart. That left three different things briefly out of sync: the code installed on disk, the gateway process still running in memory, and the config now being judged against the target version. Once the gateway did have to reconcile that state, the failure was harder to reason about than a clean stop-and-start would have been.
+ The most misleading choice was using `--no-restart`. That left three different things briefly out of sync: the code installed on disk, the gateway process still running in memory, and the config now being judged against the target version. Once the gateway did have to reconcile that state, the failure was harder to reason about than a clean stop-and-start would have been.
 
  The eventual fix was boring in the best possible way: remove the stale plugin configuration, rerun the upgrade cleanly, and refresh the gateway service so the runtime entrypoint matched the installed version again.
 
 
- Restart lesson: before you rely on a deferred or no-restart path, validate legacy plugin-related config first. Otherwise you may think you're avoiding interruption when you're really just deferring a more confusing one.
+ **Restart lesson:** before you rely on a deferred or no-restart path, validate legacy plugin-related config first. Otherwise you may think you're avoiding interruption when you're really just deferring a more confusing one.
 
 
- This case did not change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.
+ This case did *not* change my main conclusion from the original post. It reinforced it. Restart behavior is easiest to reason about when the system is clean, the config is current, and you are not trying to squeeze a wiring change through the side door while active work is still draining.
 
 
 ## Case Study: A Periodic Discord WebSocket Restart Loop
 
- A different kind of restart behavior showed up later: the gateway was restarting on a recurring cadence, consistently but without any obvious config change triggering it.
+ A different kind of restart behavior showed up later: **the gateway was restarting on a recurring cadence**, consistently but without any obvious config change triggering it.
 
  The pattern was confusing at first. No errors in the logs. No user-initiated config patches. Just regular, predictable restarts that looked like infrastructure noise.
 
- The root cause turned out to be the Discord health monitor's stale-socket detection. Discord WebSocket connections can enter a "zombie" state where the TCP connection appears alive but no messages flow. OpenClaw's health monitor detects this and triggers a clean reconnect — which looks exactly like a gateway restart in the logs.
+ The root cause turned out to be the **Discord health monitor's stale-socket detection**. Discord WebSocket connections can enter a "zombie" state where the TCP connection appears alive but no messages flow. OpenClaw's health monitor detects this and triggers a clean reconnect — which looks exactly like a gateway restart in the logs.
 
 
- Key insight: the restarts were not failures. They were the intended behavior of a health-monitoring system doing its job. The confusion came from not recognizing the pattern.
+ **Key insight:** the restarts were not failures. They were the *intended behavior* of a health-monitoring system doing its job. The confusion came from not recognizing the pattern.
 
 
 
@@ -315,11 +252,11 @@ Let's do it after this turn finishes.
 
 
 
-- Stale-socket detection is a feature — without it, zombie connections would silently fail to deliver messages.
+- **Stale-socket detection is a feature** — without it, zombie connections would silently fail to deliver messages.
 
-- The timing reflects connection behavior — it's not a timer you configured, but the natural point at which the monitor detects stale state.
+- **The timing reflects connection behavior** — it's not a timer you configured, but the natural point at which the monitor detects stale state.
 
-- Restart frequency alone is not a reliability signal — you have to understand why the restarts are happening.
+- **Restart frequency alone is not a reliability signal** — you have to understand *why* the restarts are happening.
 
 
 
@@ -328,7 +265,7 @@ Let's do it after this turn finishes.
  If you're running long-lived sessions (multi-turn conversations, extended debugging, panel work), you should expect periodic brief interruptions on Discord-connected deployments. The gateway comes back quickly, but mid-flight work may need rehydration.
 
 
- Practical rule: for restart-sensitive operations like config changes or long-running agent tasks, don't assume "no config edit means no restart." Health-monitor behavior is a separate variable.
+ **Practical rule:** for restart-sensitive operations like config changes or long-running agent tasks, don't assume "no config edit means no restart." Health-monitor behavior is a separate variable.
 
 
 
@@ -354,10 +291,10 @@ Let's do it after this turn finishes.
 
 
 
- The oddest moment in the rollback was a verifier complaint about missing bundled sidecar files. That looked scary until the official package contents were checked directly. The supposedly “missing” files were not part of the target release at all, so the better read was verifier mismatch, not rollback corruption.
+ The oddest moment in the rollback was a verifier complaint about missing bundled sidecar files. That looked scary until the official package contents were checked directly. The supposedly “missing” files were not part of the target release at all, so the better read was **verifier mismatch, not rollback corruption**.
 
 
- Rollback lesson: separate install-time health from runtime stability under real use. And if a rollback verifier says files are missing, compare the warning against the official package ground truth before deciding the rollback itself is broken.
+ **Rollback lesson:** separate install-time health from runtime stability under real use. And if a rollback verifier says files are missing, compare the warning against the official package ground truth before deciding the rollback itself is broken.
 
 
  The practical outcome was straightforward: the rollback was the right call, the post-rollback smoke tests were clean, and the stronger lesson was not “never update.” It was “do not declare an update successful on startup checks alone.”
@@ -370,12 +307,12 @@ Let's do it after this turn finishes.
  The confusing symptom was a restore gap. Raw SQLite inspection could still find historical task rows, while the runtime restore path treated the registry as unusable or effectively empty. That is not a contradiction. It means “rows are physically readable” and “the application can safely restore this registry” are different claims.
 
 
- Repair lesson: if raw database checks and runtime restore behavior disagree, treat production as evidence, not a workbench. Preserve the database and sidecars, reproduce on copies, and prove the repair path before any live cutover.
+ **Repair lesson:** if raw database checks and runtime restore behavior disagree, treat production as evidence, not a workbench. Preserve the database and sidecars, reproduce on copies, and prove the repair path before any live cutover.
 
 
  This also changes the lifecycle plan. A repair that requires gateway downtime should not be supervised by the same gateway-backed chat session that disappears when the service stops. Either the human runs the maintenance window directly, or a pre-approved host-detached one-shot runner writes durable phase/result markers before taking the gateway down.
 
- I wrote the database side of that lesson separately in When SQLite Looks Empty but Isn’t. The restart-side takeaway for this post is shorter: state-store repair is a deployment event, even when the SQL command looks small.
+ I wrote the database side of that lesson separately in [When SQLite Looks Empty but Isn’t](/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html). The restart-side takeaway for this post is shorter: state-store repair is a deployment event, even when the SQL command looks small.
 
 
 ## Case Study: When a Watchdog Alert Is True but Misleading
@@ -385,12 +322,12 @@ Let's do it after this turn finishes.
  The useful distinction was between two separate facts. First, a burst-shaped connectivity probe could produce a transient connection-close signature that cleared on immediate focused recheck. Second, the wrapper around the watchdog treated alert text as a command failure, which made the alert surface look more severe than the underlying lane state.
 
 
- Watchdog lesson: do not hide real alerts, but do separate transport noise from wrapper-contract bugs. A monitor should be able to say “degraded condition observed and reported” without also implying that the monitor itself crashed.
+ **Watchdog lesson:** do not hide real alerts, but do separate transport noise from wrapper-contract bugs. A monitor should be able to say “degraded condition observed and reported” without also implying that the monitor itself crashed.
 
 
  The fix pattern was not “silence the watchdog.” It was to make the contract honest: degraded output should be visible, healthy follow-up probes should clear stale state, and the wrapper exit behavior should match the meaning of the report. That keeps humans from chasing phantom infrastructure failures while preserving the real warning signal.
 
- I expanded that watchdog-specific lesson in When Your Tunnel Watchdog Lies. The restart-side takeaway is narrower: alert-surface repair is still lifecycle-sensitive work when it changes how operators decide whether to touch the gateway, tunnel, or wrapper.
+ I expanded that watchdog-specific lesson in [When Your Tunnel Watchdog Lies](/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html). The restart-side takeaway is narrower: alert-surface repair is still lifecycle-sensitive work when it changes how operators decide whether to touch the gateway, tunnel, or wrapper.
 
 
 ## One More Important Distinction
@@ -399,9 +336,9 @@ Let's do it after this turn finishes.
 
 
 
-- Operational data changes — job payloads, prompts, reminders, content
+- **Operational data changes** — job payloads, prompts, reminders, content
 
-- Gateway wiring changes — auth, plugins, transport/config structure
+- **Gateway wiring changes** — auth, plugins, transport/config structure
 
 
  The first category often behaves like normal app state. The second category behaves like service infrastructure.
@@ -409,7 +346,7 @@ Let's do it after this turn finishes.
  If you remember just one thing from this post, make it this:
 
 
- Changing what the agent says is not the same as changing how the gateway is built.
+ **Changing what the agent says is not the same as changing how the gateway is built.**
 
 
 
@@ -423,7 +360,7 @@ Let's do it after this turn finishes.
  So the practical rule I use now is simple:
 
 
- Operational rule: If a config change touches gateway wiring, I plan for a restart. If it only changes job data, I don't.
+ **Operational rule:** If a config change touches gateway wiring, I plan for a restart. If it only changes job data, I don't.
 
 
  That one distinction has already saved me a bunch of confusion.
@@ -439,7 +376,7 @@ Let's do it after this turn finishes.
 
 - Can I batch this with other pending changes?
 
-- Am I using a --no-restart path to postpone a problem I should validate now?
+- Am I using a `--no-restart` path to postpone a problem I should validate now?
 
 - If this touches state-store repair, have I preserved copy-first evidence and proven the repair outside production?
 
@@ -447,7 +384,7 @@ Let's do it after this turn finishes.
 
 - Have I checked for legacy plugin configuration that may no longer match the target version?
 
-- Do I need config.patch rather than config.apply?
+- Do I need `config.patch` rather than `config.apply`?
 
 - Have I warned the human that a restart is coming?
 
@@ -462,11 +399,11 @@ Let's do it after this turn finishes.
 
 
 
-- When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod
+- [When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod](/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html)
 
-- The Recovery Problem: Why Your AI Agent Needs an Undo Button
+- [The Recovery Problem: Why Your AI Agent Needs an Undo Button](/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html)
 
-- The Nightly Build: How My Agent Runs Security Audits While I Sleep
+- [The Nightly Build: How My Agent Runs Security Audits While I Sleep](/jingxiao-cai-blog/nightly-build-security-audits.html)
 
 
 
@@ -484,4 +421,4 @@ Let's do it after this turn finishes.
 
  Found this useful? Send it to someone who edits production config like it's a casual note to self.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,28 +9,28 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Shadow Indexes Beat Hope: Testing Agent Memory Without Touching Production
 
 
- June 5, 2026 | By Jingxiao Cai
+ **June 5, 2026** | By Jingxiao Cai
 
  Tags: openclaw, ai-agents, memory, retrieval, debugging, reliability
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private retrieval experiment into the public-safe parts: shadow builds, recall evidence, latency checks, and change discipline.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private retrieval experiment into the public-safe parts: shadow builds, recall evidence, latency checks, and change discipline.
 
 
 
- Short version: do not change an agent's memory lane because a config diff looks plausible. Build a shadow index, run representative recall probes, and prove the live system will not get worse.
+ **Short version:** do not change an agent's memory lane because a config diff looks plausible. Build a shadow index, run representative recall probes, and prove the live system will not get worse.
 
 
  I wanted to re-open a question that most personal agent systems eventually hit:
 
 
- Should old session transcripts be searchable memory, or are they just expensive noise?
+ **Should old session transcripts be searchable memory, or are they just expensive noise?**
 
 
 
@@ -41,7 +41,7 @@ Summary: A shadow memory index let me test session-aware agent recall without to
  So I used a shadow index.
 
 
- Conceptual scope: this is a sanitized agent-ops write-up. I am omitting job IDs, session IDs, channel IDs, exact filesystem paths, hostnames, private model/provider labels, and one-off helper names. The reusable lesson is the verification pattern, not my deployment fingerprint.
+ **Conceptual scope:** this is a sanitized agent-ops write-up. I am omitting job IDs, session IDs, channel IDs, exact filesystem paths, hostnames, private model/provider labels, and one-off helper names. The reusable lesson is the verification pattern, not my deployment fingerprint.
 
 
 
@@ -55,11 +55,11 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
 
 
-- Can the larger index rebuild cleanly? If a memory lane cannot be rebuilt on demand, it is not operationally trustworthy.
+- **Can the larger index rebuild cleanly?** If a memory lane cannot be rebuilt on demand, it is not operationally trustworthy.
 
-- Does search latency stay acceptable? Better recall is not enough if every lookup becomes painful in normal chat.
+- **Does search latency stay acceptable?** Better recall is not enough if every lookup becomes painful in normal chat.
 
-- Do transcripts improve the right queries? Session hits should appear where history is actually useful, not drown out canonical notes everywhere.
+- **Do transcripts improve the right queries?** Session hits should appear where history is actually useful, not drown out canonical notes everywhere.
 
 
 
@@ -69,44 +69,16 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
 
 
-
- Question
- Shadow-index check
- Why it mattered
-
-
-
-
-
- Will the build finish?
- Run a full incremental build into a separate database.
- Protects the live memory lane from partial migration state.
-
-
-
- Is the index internally consistent?
- Check provider identity, vector dimensions, dirty state, source counts, and text-search availability.
- Prevents cosmetic "done" states from hiding mixed or stale data.
-
-
-
- Did recall improve?
- Run representative queries against baseline and shadow, then inspect top results.
- Measures retrieval usefulness instead of trusting a model or config label.
-
-
-
- Did latency regress?
- Compare small-sample search timings for the same query set.
- Keeps "better memory" from becoming a worse daily interaction loop.
-
-
-
-
+| Question | Shadow-index check | Why it mattered |
+| --- | --- | --- |
+| Will the build finish? | Run a full incremental build into a separate database. | Protects the live memory lane from partial migration state. |
+| Is the index internally consistent? | Check provider identity, vector dimensions, dirty state, source counts, and text-search availability. | Prevents cosmetic "done" states from hiding mixed or stale data. |
+| Did recall improve? | Run representative queries against baseline and shadow, then inspect top results. | Measures retrieval usefulness instead of trusting a model or config label. |
+| Did latency regress? | Compare small-sample search timings for the same query set. | Keeps "better memory" from becoming a worse daily interaction loop. |
 
  The shadow build was not cheap. It took long enough and produced a materially larger local database, which is still fine for a deliberate validation run. It would be a problem if I learned about that cost only after mixing the live index.
 
- That is the first lesson: expensive is acceptable when it is isolated; expensive is dangerous when it is also irreversible or ambiguous.
+ That is the first lesson: **expensive is acceptable when it is isolated; expensive is dangerous when it is also irreversible or ambiguous.**
 
 
 ## What the Results Actually Said
@@ -133,7 +105,7 @@ Summary: A shadow memory index let me test session-aware agent recall without to
  That is a healthier shape than "transcripts took over everything." The transcript corpus helped where the question was actually historical or conversational, while durable notes remained strong for stable protocols.
 
 
- Good shadow result: transcripts became supporting evidence for the right classes of queries. They did not obviously replace the canonical memory layer as the system of record.
+ **Good shadow result:** transcripts became supporting evidence for the right classes of queries. They did not obviously replace the canonical memory layer as the system of record.
 
 
 
@@ -146,7 +118,7 @@ Summary: A shadow memory index let me test session-aware agent recall without to
  So I did not stack that tuning change onto the same decision.
 
 
- Do not turn a safe shadow validation into an uncontrolled bundle of live changes.
+ **Do not turn a safe shadow validation into an uncontrolled bundle of live changes.**
 
 
 
@@ -177,21 +149,21 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
 
 
-- Classify the source. Durable note, transcript, generated report, tool log, or external document? Do not treat all text as equal memory.
+- **Classify the source.** Durable note, transcript, generated report, tool log, or external document? Do not treat all text as equal memory.
 
-- Build in shadow first. Separate database, separate state, no live lane mutation during the experiment.
+- **Build in shadow first.** Separate database, separate state, no live lane mutation during the experiment.
 
-- Verify internal identity. Provider class, vector shape, dirty flag, source counts, and text-search support should match the intended lane.
+- **Verify internal identity.** Provider class, vector shape, dirty flag, source counts, and text-search support should match the intended lane.
 
-- Probe real recall. Use representative questions that match how the agent actually needs memory.
+- **Probe real recall.** Use representative questions that match how the agent actually needs memory.
 
-- Inspect result classes, not just scores. Durable notes should still win durable-policy questions; transcripts should help historical/session questions.
+- **Inspect result classes, not just scores.** Durable notes should still win durable-policy questions; transcripts should help historical/session questions.
 
-- Measure enough latency to catch obvious pain. Do not overclaim small differences from tiny samples.
+- **Measure enough latency to catch obvious pain.** Do not overclaim small differences from tiny samples.
 
-- Promote one change at a time. Source inclusion, ranking parameters, and model changes deserve separate proof.
+- **Promote one change at a time.** Source inclusion, ranking parameters, and model changes deserve separate proof.
 
-- Write the rollback story before promotion. Know which database, config, and verification probes prove you are back to the old lane.
+- **Write the rollback story before promotion.** Know which database, config, and verification probes prove you are back to the old lane.
 
 
 
@@ -204,7 +176,7 @@ Summary: A shadow memory index let me test session-aware agent recall without to
  The first question is operational:
 
 
- Can I rebuild, verify, compare, and roll back this memory lane without guessing?
+ **Can I rebuild, verify, compare, and roll back this memory lane without guessing?**
 
 
 
@@ -227,13 +199,13 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
 
 
-- Bigger Embeddings ≠ Better Memory
+- [Bigger Embeddings ≠ Better Memory](/jingxiao-cai-blog/text-embedding-3-small-openclaw-remote-memory.html)
 
-- Local Semantic Memory on a 4-Core ARM VPS
+- [Local Semantic Memory on a 4-Core ARM VPS](/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
 
-- Building Fail-Closed Stage Environments for AI Agents on a Small VPS
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
-- Thread Checkpoints Are Not Summaries
+- [Thread Checkpoints Are Not Summaries](/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
 
 
 
@@ -253,4 +225,4 @@ Summary: A shadow memory index let me test session-aware agent recall without to
 
  Found this useful? Leave a comment below, or send it to someone who is still changing agent memory by editing config and hoping.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Mock First, Live When Proven: How to Keep Agent Demos Honest
 
 
- June 17, 2026 | By Jingxiao Cai
+ **June 17, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, tooling, demo-safety, reliability, openclaw
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a search-demo hardening pass into a generalized public pattern and remove deployment-specific names, identifiers, paths, prompts, and logs.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a search-demo hardening pass into a generalized public pattern and remove deployment-specific names, identifiers, paths, prompts, and logs.
 
 
 
- Boundary: this is a demo-safety pattern, not a transcript of a live system. The examples below are intentionally generic so the useful lesson survives without exposing deployment fingerprints that are not needed for the lesson.
+ **Boundary:** this is a demo-safety pattern, not a transcript of a live system. The examples below are intentionally generic so the useful lesson survives without exposing deployment fingerprints that are not needed for the lesson.
 
 
  A mock-backed demo is not dishonest by itself. It is often the safest way to build a user interface, exercise error states, and keep a prototype moving while the real connector is still unstable.
@@ -34,7 +34,7 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
  That distinction matters even more for AI-agent systems. A normal application can usually label a feature as “demo data.” An agent demo has more moving parts: model output, tool calls, cached examples, retrieval snippets, retry behavior, timeouts, and final natural-language synthesis. If those layers are not labeled clearly, a mock can accidentally inherit the credibility of a live run.
 
 
- Mock mode is a valid engineering tool. Unlabeled mock mode is a product risk.
+ **Mock mode is a valid engineering tool. Unlabeled mock mode is a product risk.**
 
 
 
@@ -59,7 +59,7 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
  That flow is less flashy than “just wire the API and hope.” It also prevents a much worse failure: a user seeing a beautiful answer and assuming the system actually queried the live source when it only replayed canned data.
 
 
- Conceptual example: imagine a search-backed assistant demo with two lanes: a mock lane that returns fixed examples, and a live lane that calls a real search service. The public lesson is the control boundary between those lanes, not any specific service, endpoint, account, or deployment.
+ **Conceptual example:** imagine a search-backed assistant demo with two lanes: a mock lane that returns fixed examples, and a live lane that calls a real search service. The public lesson is the control boundary between those lanes, not any specific service, endpoint, account, or deployment.
 
 
 
@@ -71,70 +71,45 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 
 
-
- Failure
- What it looks like
- Safer behavior
-
-
-
-
-
- Mode ambiguity
- The UI says “search result” without saying mock or live.
- Show a mode badge and include the mode in exported reports.
-
-
-
- Cached proof drift
- A stale successful live response keeps making the demo look healthy.
- Attach timestamps and freshness windows to live evidence.
-
-
-
- Timeout laundering
- The live path times out, then the demo silently uses mock data.
- Return “live unavailable; showing mock example” instead of pretending success.
-
-
-
- Prompt-level overclaim
- The model says “I found” even though the tool did not run.
- Pass provenance into synthesis and forbid unsupported live claims.
-
-
-
- Operator blind spot
- The demo works on-screen, but logs cannot explain which lane ran.
- Record mode, probe result, freshness, and fallback reason as first-class fields.
-
-
-
-
+| Failure | What it looks like | Safer behavior |
+| --- | --- | --- |
+| **Mode ambiguity** | The UI says “search result” without saying mock or live. | Show a mode badge and include the mode in exported reports. |
+| **Cached proof drift** | A stale successful live response keeps making the demo look healthy. | Attach timestamps and freshness windows to live evidence. |
+| **Timeout laundering** | The live path times out, then the demo silently uses mock data. | Return “live unavailable; showing mock example” instead of pretending success. |
+| **Prompt-level overclaim** | The model says “I found” even though the tool did not run. | Pass provenance into synthesis and forbid unsupported live claims. |
+| **Operator blind spot** | The demo works on-screen, but logs cannot explain which lane ran. | Record mode, probe result, freshness, and fallback reason as first-class fields. |
 
 
 ## A Good Demo Has a Mode Ledger
 
  I like a tiny mode ledger because it makes the demo state hard to hand-wave:
 
- {
- "mode": "live",
- "live_probe": "passed",
- "probe_checked_at": "recent",
- "source_freshness": "within_window",
- "fallback_used": false,
- "user_visible_label": "Live data"
+
+
+```json
+{
+  "mode": "live",
+  "live_probe": "passed",
+  "probe_checked_at": "recent",
+  "source_freshness": "within_window",
+  "fallback_used": false,
+  "user_visible_label": "Live data"
 }
+```
 
  When live proof is missing, the ledger should look different:
 
- {
- "mode": "mock",
- "live_probe": "timeout",
- "source_freshness": "not_proven",
- "fallback_used": true,
- "user_visible_label": "Mock example; live source unavailable"
+
+
+```json
+{
+  "mode": "mock",
+  "live_probe": "timeout",
+  "source_freshness": "not_proven",
+  "fallback_used": true,
+  "user_visible_label": "Mock example; live source unavailable"
 }
+```
 
  The exact field names do not matter. The invariant does: the final experience should not be able to claim more liveness than the system proved.
 
@@ -162,34 +137,11 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 
 
-
- State
- Meaning
- User-visible claim
-
-
-
-
-
- Mock
- Deterministic sample data; no live source proof.
- “Example response.”
-
-
-
- Live-proven
- Recent cheap probe passed and the request used the live connector.
- “Live response.”
-
-
-
- Degraded
- Live source was attempted or expected but proof failed.
- “Live unavailable; showing mock or cached example.”
-
-
-
-
+| State | Meaning | User-visible claim |
+| --- | --- | --- |
+| **Mock** | Deterministic sample data; no live source proof. | “Example response.” |
+| **Live-proven** | Recent cheap probe passed and the request used the live connector. | “Live response.” |
+| **Degraded** | Live source was attempted or expected but proof failed. | “Live unavailable; showing mock or cached example.” |
 
 
 ## Feature-Flag Lessons Apply Here
@@ -206,7 +158,7 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
  For demos that influence decisions, I prefer this rule:
 
 
- If the system cannot prove live mode, it must not describe the result as live.
+ **If the system cannot prove live mode, it must not describe the result as live.**
 
 
 
@@ -232,21 +184,21 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 
 
-- Mode: is the current run mock, live, cached, or degraded?
+- **Mode:** is the current run mock, live, cached, or degraded?
 
-- Label: does the user-facing screen say that plainly?
+- **Label:** does the user-facing screen say that plainly?
 
-- Probe: did the live connector pass a cheap, non-destructive check recently?
+- **Probe:** did the live connector pass a cheap, non-destructive check recently?
 
-- Freshness: is the live proof inside a documented freshness window?
+- **Freshness:** is the live proof inside a documented freshness window?
 
-- Fallback: if fallback occurred, is it visible in the UI and final report?
+- **Fallback:** if fallback occurred, is it visible in the UI and final report?
 
-- Synthesis: does the model receive the mode/provenance fields before writing the answer?
+- **Synthesis:** does the model receive the mode/provenance fields before writing the answer?
 
-- Audit: can logs reconstruct which lane ran without exposing private details?
+- **Audit:** can logs reconstruct which lane ran without exposing private details?
 
-- Public safety: can the mock path demonstrate the idea without leaking real data, accounts, paths, or identifiers?
+- **Public safety:** can the mock path demonstrate the idea without leaking real data, accounts, paths, or identifiers?
 
 
  If the answer to any of those is fuzzy, the demo can still be shown as a mock. It should not be sold as live.
@@ -259,7 +211,7 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
  Mock first so you can design safely. Go live only when the connector proves itself. If the proof disappears, fail closed on the claim, not necessarily on the whole demo.
 
 
- A good demo does not need to be live all the time. It needs to be honest every time.
+ **A good demo does not need to be live all the time. It needs to be honest every time.**
 
 
 
@@ -269,13 +221,13 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 
 
-- Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
-- Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects
+- [Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects](/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html)
 
-- When Live State Moves, Agent Validators Need to Follow
+- [When Live State Moves, Agent Validators Need to Follow](/jingxiao-cai-blog/when-live-state-moves-agent-validators.html)
 
-- When a Reviewer Demands Live Proof: Escalation Paths for Agent PRs
+- [When a Reviewer Demands Live Proof: Escalation Paths for Agent PRs](/jingxiao-cai-blog/reviewer-demands-live-proof-agent-pr-escalation.html)
 
 
 
@@ -286,9 +238,9 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 
 
-- LaunchDarkly: Testing code that uses feature flags
+- [LaunchDarkly: Testing code that uses feature flags](https://launchdarkly.com/docs/guides/flags/testing-code)
 
-- Google SRE Book: Monitoring Distributed Systems
+- [Google SRE Book: Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
 
 
 
@@ -297,7 +249,7 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 ### About the Author
 
- Jingxiao Cai works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
+ **Jingxiao Cai** works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
 
 
 
@@ -305,4 +257,4 @@ Summary: Mock paths make agent demos safe to build, but they should never preten
 
 ### Feedback
 
- Questions, critiques, or war stories about mock/live demo boundaries? Open an issue in the blog repository or reach out through the linked channels.
+ Questions, critiques, or war stories about mock/live demo boundaries? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or reach out through the linked channels.

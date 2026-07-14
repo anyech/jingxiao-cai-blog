@@ -9,22 +9,22 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Proof Without Touching Production: A Safer PR Boundary for Agents
 
 
- May 17, 2026 | By Jingxiao Cai
+ **May 17, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, github, pull-requests, proof, staging, reliability, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a same-day PR proof-boundary decision into a reusable workflow while stripping PR numbers, branch names, run identifiers, local paths, and live deployment details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a same-day PR proof-boundary decision into a reusable workflow while stripping PR numbers, branch names, run identifiers, local paths, and live deployment details.
 
 
 
- Short version: when an agent-authored PR needs behavior proof, start with isolated or staged evidence. Production is not the default laboratory, and non-production proof must never be described as live proof.
+ **Short version:** when an agent-authored PR needs behavior proof, start with isolated or staged evidence. Production is not the default laboratory, and non-production proof must never be described as live proof.
 
 
 
@@ -37,12 +37,12 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
  The better rule is simple:
 
 
- When a PR lacks proof, try isolated non-production evidence first. Do not use production as the default proof surface.
+ **When a PR lacks proof, try isolated non-production evidence first. Do not use production as the default proof surface.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations write-up from OpenClaw-related GitHub maintenance. I am intentionally omitting exact PR numbers, branch names, commit hashes, check-run counts, bot labels, local worktree paths, session identifiers, channel identifiers, raw terminal transcripts, and live configuration details. The public lesson is the proof boundary.
+ **Conceptual scope:** this is a sanitized agent-operations write-up from OpenClaw-related GitHub maintenance. I am intentionally omitting exact PR numbers, branch names, commit hashes, check-run counts, bot labels, local worktree paths, session identifiers, channel identifiers, raw terminal transcripts, and live configuration details. The public lesson is the proof boundary.
 
 
 
@@ -56,9 +56,9 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
 
 
 
-- Reviewers deserve behavior evidence, not just confident prose.
+- **Reviewers deserve behavior evidence,** not just confident prose.
 
-- Operators deserve production boundaries, not pressure to validate every PR against the live system.
+- **Operators deserve production boundaries,** not pressure to validate every PR against the live system.
 
 
  The boundary I want agents to use is therefore evidence-first, but production-last.
@@ -70,51 +70,18 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
 
 
 
-
- Proof level
- Use it when
- Honest claim
-
-
-
-
-
- Focused regression test
- The bug can be expressed as a narrow input/output or state-transition case.
- “This behavior is covered by a regression test.”
-
-
-
- Synthetic state fixture
- The bug depends on persisted state shape, config shape, or migration history.
- “This reproduced against controlled state shaped like the failure.”
-
-
-
- Fake integration harness
- The seam involves providers, chat surfaces, gateway calls, webhooks, or external tools.
- “This exercised the integration contract without external side effects.”
-
-
-
- Disposable staged runtime
- The issue requires multiple components to run together.
- “This worked in an isolated runtime that does not use production state.”
-
-
-
- Live production proof
- The behavior cannot be meaningfully proven elsewhere and the operator explicitly approves the risk.
- “This was validated live, with the exact scope and risk acknowledged.”
-
-
-
-
+| Proof level | Use it when | Honest claim |
+| --- | --- | --- |
+| **Focused regression test** | The bug can be expressed as a narrow input/output or state-transition case. | “This behavior is covered by a regression test.” |
+| **Synthetic state fixture** | The bug depends on persisted state shape, config shape, or migration history. | “This reproduced against controlled state shaped like the failure.” |
+| **Fake integration harness** | The seam involves providers, chat surfaces, gateway calls, webhooks, or external tools. | “This exercised the integration contract without external side effects.” |
+| **Disposable staged runtime** | The issue requires multiple components to run together. | “This worked in an isolated runtime that does not use production state.” |
+| **Live production proof** | The behavior cannot be meaningfully proven elsewhere and the operator explicitly approves the risk. | “This was validated live, with the exact scope and risk acknowledged.” |
 
  The important part is not the labels. The important part is honesty. A fake integration harness can be excellent proof for an integration contract, but it is not a live canary. A staged runtime can prove cross-component behavior, but it is not evidence about production data or production traffic.
 
 
- The useful invariant: every proof claim should name the environment it exercised and the environment it did not exercise.
+ **The useful invariant:** every proof claim should name the environment it exercised and the environment it did not exercise.
 
 
 
@@ -124,15 +91,15 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
 
 
 
-- disposable checkouts so the agent can rebase, patch, and test without mutating the live runtime;
+- **disposable checkouts** so the agent can rebase, patch, and test without mutating the live runtime;
 
-- synthetic config and state that reproduce the exact shape of the failure without copying production secrets;
+- **synthetic config and state** that reproduce the exact shape of the failure without copying production secrets;
 
-- fake providers or fake chat surfaces that exercise request routing, serialization, delivery, and error handling without sending real messages;
+- **fake providers or fake chat surfaces** that exercise request routing, serialization, delivery, and error handling without sending real messages;
 
-- redacted terminal output that shows the command, the relevant assertion, and the result without leaking private paths or identifiers; and
+- **redacted terminal output** that shows the command, the relevant assertion, and the result without leaking private paths or identifiers; and
 
-- targeted CI or local focused gates that map directly to the changed behavior instead of hiding behind broad green checks.
+- **targeted CI or local focused gates** that map directly to the changed behavior instead of hiding behind broad green checks.
 
 
  That is enough for many PRs. The proof may not be production proof, but it can be real behavior proof.
@@ -142,32 +109,36 @@ Summary: Agent PRs need behavior evidence, but production should not be the defa
 
  The artifact I want from an agent is a small proof packet that can be pasted into a PR comment or summarized in the PR body after sanitization:
 
- claim:
- behavior this PR claims to fix or protect
+
+
+```
+claim:
+  behavior this PR claims to fix or protect
 
 proof surface:
- regression test / synthetic fixture / fake integration / staged runtime / live runtime
+  regression test / synthetic fixture / fake integration / staged runtime / live runtime
 
 environment boundary:
- production touched: yes/no
- production secrets used: yes/no
- external side effects sent: yes/no
+  production touched: yes/no
+  production secrets used: yes/no
+  external side effects sent: yes/no
 proof plan approval captured: yes/no/n/a
 cleanup or teardown complete: yes/no/n/a
 
 commands or checks:
- focused commands, CI jobs, or harness steps that exercised the claim
+  focused commands, CI jobs, or harness steps that exercised the claim
 
 result:
- pass/fail summary with the relevant assertion
+  pass/fail summary with the relevant assertion
 
 limits:
- what this proof does not prove
+  what this proof does not prove
 
 next review action:
- request re-review / ask maintainer whether live proof is still required / block with reason
+  request re-review / ask maintainer whether live proof is still required / block with reason
+```
 
- The limits line is not self-sabotage. It is the part that keeps the proof honest. If the packet says “fake chat surface only,” nobody has to infer whether a real user-facing channel was touched. If it says “synthetic state only,” nobody has to wonder whether production state was copied.
+ The `limits` line is not self-sabotage. It is the part that keeps the proof honest. If the packet says “fake chat surface only,” nobody has to infer whether a real user-facing channel was touched. If it says “synthetic state only,” nobody has to wonder whether production state was copied.
 
 
 ## Labels and Comments Are Not Proof
@@ -237,13 +208,13 @@ next review action:
 
 
 
-- Before Opening Another Agent PR, Reduce the Queue First
+- [Before Opening Another Agent PR, Reduce the Queue First](/jingxiao-cai-blog/before-opening-another-agent-pr-reduce-the-queue.html)
 
-- Building Fail-Closed Stage Environments for AI Agents on a Small VPS
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
-- Treating AI Agent Updates Like Production Deployments
+- [Treating AI Agent Updates Like Production Deployments](/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html)
 
-- When a Coding-Agent Route Drifts
+- [When a Coding-Agent Route Drifts](/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html)
 
 
 
@@ -266,4 +237,4 @@ next review action:
 
  Found this useful? Leave a comment below, or send it to someone whose agent is about to prove a PR against the wrong environment.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents
 
 
- May 28, 2026 | By Jingxiao Cai
+ **May 28, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a handoff-hardening incident into a public operations pattern while removing private identifiers, exact helper names, raw paths, schedules, and deployment fingerprints.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a handoff-hardening incident into a public operations pattern while removing private identifiers, exact helper names, raw paths, schedules, and deployment fingerprints.
 
 
 
- Short version: a progress monitor can tell you that work is moving. It cannot, by itself, prove that the work has a durable result, a clear owner, or a visible final-delivery path.
+ **Short version:** a progress monitor can tell you that work is moving. It cannot, by itself, prove that the work has a durable result, a clear owner, or a visible final-delivery path.
 
 
  There is a trap in long-running agent work: once you add a monitor, it starts to feel as if the workflow is safe.
@@ -34,12 +34,12 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
  I hit this distinction while hardening a detached blog-publication workflow. The public lesson is not about one private script, one thread, or one exact local setup. The lesson is more general:
 
 
- If a task may outlive the initiating conversation, it needs a durable handoff artifact before it needs a louder watchdog.
+ **If a task may outlive the initiating conversation, it needs a durable handoff artifact before it needs a louder watchdog.**
 
 
 
 
- Conceptual scope: this is a sanitized OpenClaw-style agent-operations pattern. I am intentionally omitting exact helper names, thread IDs, job IDs, session IDs, channel IDs, raw logs, private paths, hostnames, schedules, and live routing/model details. The design lesson is the contract shape, not my deployment fingerprint. The examples below describe a pattern I want in long-running agent workflows, not a claim that every current system already behaves this way.
+ **Conceptual scope:** this is a sanitized OpenClaw-style agent-operations pattern. I am intentionally omitting exact helper names, thread IDs, job IDs, session IDs, channel IDs, raw logs, private paths, hostnames, schedules, and live routing/model details. The design lesson is the contract shape, not my deployment fingerprint. The examples below describe a pattern I want in long-running agent workflows, not a claim that every current system already behaves this way.
 
 
 
@@ -50,7 +50,7 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
  But the risky question was hiding one layer lower:
 
 
- What would the monitor read if the chat context disappeared, the worker finished in a different surface, or the parent needed to prove delivery later?
+ **What would the monitor read if the chat context disappeared, the worker finished in a different surface, or the parent needed to prove delivery later?**
 
 
 
@@ -65,46 +65,13 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
 
 
-
- Question
- A monitor can answer
- A durable contract should answer
-
-
-
-
-
- Is something still running?
- Usually, yes.
- It records the expected state transitions.
-
-
-
- Where should status be read from?
- Only if configured correctly.
- It names the artifact or record directly.
-
-
-
- Who owns final delivery?
- Not reliably.
- It names the owner and visible target class.
-
-
-
- What counts as done?
- It may see that a worker stopped.
- It distinguishes done, blocked, delivered, no-op, and still-running states.
-
-
-
- When should it stay silent?
- Only if silence is encoded.
- It defines delivered/no-op/self-silencing conditions.
-
-
-
-
+| Question | A monitor can answer | A durable contract should answer |
+| --- | --- | --- |
+| **Is something still running?** | Usually, yes. | It records the expected state transitions. |
+| **Where should status be read from?** | Only if configured correctly. | It names the artifact or record directly. |
+| **Who owns final delivery?** | Not reliably. | It names the owner and visible target class. |
+| **What counts as done?** | It may see that a worker stopped. | It distinguishes done, blocked, delivered, no-op, and still-running states. |
+| **When should it stay silent?** | Only if silence is encoded. | It defines delivered/no-op/self-silencing conditions. |
 
  This is why “add a watchdog” is an incomplete reliability answer. A watchdog without a contract may simply automate confusion faster.
 
@@ -117,19 +84,19 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
 
 
-- the human-facing goal, stated without private identifiers;
+- **the human-facing goal,** stated without private identifiers;
 
-- the origin surface, so later code does not guess where the request came from;
+- **the origin surface,** so later code does not guess where the request came from;
 
-- the visible final target, so a worker-thread final does not masquerade as user delivery;
+- **the visible final target,** so a worker-thread final does not masquerade as user delivery;
 
-- a status file or record, with a small state machine such as running, blocked, done, delivered, and no-op;
+- **a status file or record,** with a small state machine such as running, blocked, done, delivered, and no-op;
 
-- a result artifact, so the final answer survives context loss;
+- **a result artifact,** so the final answer survives context loss;
 
-- a blocker field, so failures are explicit instead of buried in logs;
+- **a blocker field,** so failures are explicit instead of buried in logs;
 
-- a delivery-proof step, so “the result exists” is separate from “the user-visible surface received it.”
+- **a delivery-proof step,** so “the result exists” is separate from “the user-visible surface received it.”
 
 
  That list is not a product specification. It is a reliability posture. If a workflow cannot explain where its status and result will live before detaching, it probably should not detach yet.
@@ -141,15 +108,15 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
 
 
-- Create the handoff artifact. Write down the goal, target, status shape, and final-result location.
+- **Create the handoff artifact.** Write down the goal, target, status shape, and final-result location.
 
-- Then spawn or detach work. Give the worker the artifact contract as its source of truth.
+- **Then spawn or detach work.** Give the worker the artifact contract as its source of truth.
 
-- Then monitor the artifact. Progress checks read durable state, not just live session context.
+- **Then monitor the artifact.** Progress checks read durable state, not just live session context.
 
-- Then bridge final delivery. The parent or final bridge owner sends the concise result to the expected visible surface.
+- **Then bridge final delivery.** The parent or final bridge owner sends the concise result to the expected visible surface.
 
-- Then mark delivery as proven. Only after visible delivery should cleanup and self-silencing become safe.
+- **Then mark delivery as proven.** Only after visible delivery should cleanup and self-silencing become safe.
 
 
  Reversing the first two steps is where a lot of pain begins. If you spawn first and invent the artifact later, the system can enter a split-brain state: the worker has work, the parent has expectations, and the monitor has only a vague idea of what to watch.
@@ -175,7 +142,7 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
  That makes the handoff contract more than bureaucracy. It prevents a worker from quietly preparing a draft while the parent forgets the review gate, or from reporting completion somewhere that the original requester never sees.
 
 
- Live-behavior boundary: in my own workflow, parent-owned gates still matter. A detached worker may prepare drafts, review packets, and local validation evidence. It should not publish, push, or post externally just because it has a draft and a monitor. The durable artifact coordinates the handoff; it does not move approval boundaries by itself.
+ **Live-behavior boundary:** in my own workflow, parent-owned gates still matter. A detached worker may prepare drafts, review packets, and local validation evidence. It should not publish, push, or post externally just because it has a draft and a monitor. The durable artifact coordinates the handoff; it does not move approval boundaries by itself.
 
 
 
@@ -184,7 +151,7 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
  The rule I am taking forward is:
 
 
- Before detaching long-running work, create the artifact that a future monitor, parent, or recovery agent could read without needing the original chat context.
+ **Before detaching long-running work, create the artifact that a future monitor, parent, or recovery agent could read without needing the original chat context.**
 
 
 
@@ -207,13 +174,13 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
 
 
-- When Cleanup Reveals the Real Contract
+- [When Cleanup Reveals the Real Contract](/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html)
 
-- Long-Running Agent Work Needs a Bridge Back
+- [Long-Running Agent Work Needs a Bridge Back](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
-- When the Reply Exists but the Thread Stayed Silent
+- [When the Reply Exists but the Thread Stayed Silent](/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
 
 
@@ -233,4 +200,4 @@ Summary: Progress monitors are useful, but they are not the contract. A sanitize
 
  Found this useful? Leave a comment below, or send it to someone whose long-running agent tasks have monitors but not durable handoffs.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

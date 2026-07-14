@@ -9,22 +9,22 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables
 
 
- June 27, 2026 | By Jingxiao Cai
+ **June 27, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, automation, debugging, reliability, tooling
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private artifact-review workflow into a public pattern while removing operational fingerprints and private implementation details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private artifact-review workflow into a public pattern while removing operational fingerprints and private implementation details.
 
 
 
- Boundary: this is an agent-operations pattern for reviewing concrete deliverables. It is not a claim that same-model reviewers create independent model consensus, and it is not a transcript of any private review.
+ **Boundary:** this is an agent-operations pattern for reviewing concrete deliverables. It is not a claim that same-model reviewers create independent model consensus, and it is not a transcript of any private review.
 
 
  There is a useful review pattern hiding inside a very easy overclaim.
@@ -34,7 +34,7 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
  But that does not make it a multi-model jury.
 
 
- Different review jobs are role diversity. Different independent systems are model diversity. They are both useful, but they are not the same proof.
+ **Different review jobs are role diversity. Different independent systems are model diversity. They are both useful, but they are not the same proof.**
 
 
 
@@ -62,46 +62,13 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 
 
-
- Reviewer role
- Primary question
- Typical catch
-
-
-
-
-
- First-time reader
- Can someone understand this without private context?
- missing setup, unexplained jargon, unclear conclusion
-
-
-
- Acceptance gate
- Does the artifact satisfy the original request?
- beautiful but incomplete deliverables
-
-
-
- Skeptic
- What claim is under-proved or too broad?
- overclaiming, stale evidence, weak proof boundaries
-
-
-
- Operator
- Can someone act on this safely?
- missing stop rule, unclear rollback, unsafe next step
-
-
-
- Editor
- Can the artifact be shorter, sharper, and less ambiguous?
- buried decision, duplicated prose, muddy wording
-
-
-
-
+| Reviewer role | Primary question | Typical catch |
+| --- | --- | --- |
+| **First-time reader** | Can someone understand this without private context? | missing setup, unexplained jargon, unclear conclusion |
+| **Acceptance gate** | Does the artifact satisfy the original request? | beautiful but incomplete deliverables |
+| **Skeptic** | What claim is under-proved or too broad? | overclaiming, stale evidence, weak proof boundaries |
+| **Operator** | Can someone act on this safely? | missing stop rule, unclear rollback, unsafe next step |
+| **Editor** | Can the artifact be shorter, sharper, and less ambiguous? | buried decision, duplicated prose, muddy wording |
 
  That is a genuinely useful shape. It produces better artifacts because the review objectives are separated instead of averaged into one vague “looks good.”
 
@@ -113,7 +80,7 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
  If five role lenses use the same underlying model, same prompt family, same context, and same hidden assumptions, they are not five independent judges. They are five structured passes through a similar reasoning system. That can still be valuable. It just should not be sold as independent consensus.
 
 
- Labeling rule: call it an artifact QA panel, role-split review, or structured deliverable review. Do not call it a model-diverse jury unless the lanes are actually independent enough to support that claim.
+ **Labeling rule:** call it an *artifact QA panel*, *role-split review*, or *structured deliverable review*. Do not call it a model-diverse jury unless the lanes are actually independent enough to support that claim.
 
 
  This may sound pedantic, but it prevents a real operational bug: laundering a formatting improvement into a confidence claim. The panel may have made the artifact easier to read. It may have caught missing acceptance criteria. It may have improved the handoff. None of those facts automatically prove that the underlying technical conclusion is correct.
@@ -145,17 +112,17 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 
 
-- Artifact: the exact file, screenshot, post, deck, report, or bundle being reviewed.
+- **Artifact:** the exact file, screenshot, post, deck, report, or bundle being reviewed.
 
-- Audience: who will read it and what they need to do after reading it.
+- **Audience:** who will read it and what they need to do after reading it.
 
-- Success criteria: what must be true for the artifact to pass.
+- **Success criteria:** what must be true for the artifact to pass.
 
-- Evidence boundary: what the artifact proves and what it does not prove.
+- **Evidence boundary:** what the artifact proves and what it does not prove.
 
-- Role assignments: the specific lenses reviewers should hold.
+- **Role assignments:** the specific lenses reviewers should hold.
 
-- Verdict format: publish as-is, revise, block, or needs-human-decision.
+- **Verdict format:** publish as-is, revise, block, or needs-human-decision.
 
 
  The key is to keep each role narrow enough that it catches a class of failure rather than rewriting the whole artifact from its own taste.
@@ -168,7 +135,7 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
  Agents often write artifacts with too much invisible context. They know the history, the failed attempts, the filenames, the actors, the target channel, and the reason a detail matters. The future reader often knows none of that. A first-time-reader role catches the classic agent handoff bug:
 
 
- The answer is locally true but globally unreadable.
+ **The answer is locally true but globally unreadable.**
 
 
 
@@ -195,7 +162,7 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
  My current rule is:
 
 
- Use role-split panels to improve artifacts. Use model-diverse or evidence-diverse panels to improve confidence claims. Do not mix the labels.
+ **Use role-split panels to improve artifacts. Use model-diverse or evidence-diverse panels to improve confidence claims. Do not mix the labels.**
 
 
 
@@ -209,11 +176,11 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 
 
-- The Screenshot Was Green. The Page Was Wrong
+- [The Screenshot Was Green. The Page Was Wrong](/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html)
 
-- When the Report Exists but Delivery Failed
+- [When the Report Exists but Delivery Failed](/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html)
 
-- Parent-Owned Agent Dispatch and Router Contracts
+- [Parent-Owned Agent Dispatch and Router Contracts](/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html)
 
 
 
@@ -222,7 +189,7 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 ### About the Author
 
- Jingxiao Cai works on distributed ML runtime systems and writes about the operational edges of self-hosted AI-agent workflows.
+ **Jingxiao Cai** works on distributed ML runtime systems and writes about the operational edges of self-hosted AI-agent workflows.
 
 
 
@@ -230,10 +197,10 @@ Summary: Artifact QA panels are useful when reviewers hold different jobs: first
 
 ### Feedback
 
- Questions, critiques, or examples of artifact QA patterns? Open an issue in the blog repository or reach out through the linked channels.
+ Questions, critiques, or examples of artifact QA patterns? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or reach out through the linked channels.
 
 
 
  Published on June 27, 2026 • Part of my ongoing agent operations and self-hosted AI workflow series
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

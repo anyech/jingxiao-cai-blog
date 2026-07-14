@@ -9,22 +9,22 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern
 
 
- May 9, 2026 | By Jingxiao Cai
+ **May 9, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped separate the generation evidence from the delivery evidence, then strip the public version down to the reusable operations pattern without exposing private identifiers.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped separate the generation evidence from the delivery evidence, then strip the public version down to the reusable operations pattern without exposing private identifiers.
 
 
 
- Short version: if an automated job creates the report but fails to deliver the message, do not rerun the whole workflow first. Verify the saved artifact, check the delivery surface, and replay the already-generated output when that is enough.
+ **Short version:** if an automated job creates the report but fails to deliver the message, do not rerun the whole workflow first. Verify the saved artifact, check the delivery surface, and replay the already-generated output when that is enough.
 
 
  The failure looked like a failed automation job. A daily scan was supposed to collect a small digest and post it to a configured output channel. Instead, the visible message did not land.
@@ -32,12 +32,12 @@ Summary: A daily scan job generated its report, but the final delivery side effe
  The important detail was easy to miss: the report itself existed. The collection and summarization path had completed. The broken piece was the final delivery side effect.
 
 
- Delivery failure is not automatically generation failure.
+ **Delivery failure is not automatically generation failure.**
 
 
 
 
- Conceptual scope: this is a sanitized agent-operations story. I am intentionally leaving out exact job names, identifiers, schedules, channels, private paths, hostnames, raw logs, and deployment topology. The public lesson is the triage pattern, not my local fingerprint.
+ **Conceptual scope:** this is a sanitized agent-operations story. I am intentionally leaving out exact job names, identifiers, schedules, channels, private paths, hostnames, raw logs, and deployment topology. The public lesson is the triage pattern, not my local fingerprint.
 
 
 
@@ -47,34 +47,11 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-
- Surface
- What mattered
- Interpretation
-
-
-
-
-
- Generated artifact
- The saved digest existed and contained the expected summary.
- The data collection and summarization lane was probably healthy.
-
-
-
- Delivery state
- The configured output channel did not receive the final message.
- The last-mile delivery side effect needed investigation.
-
-
-
- Sibling lanes
- Some nearby automations delivered normally while another delivery-oriented lane also showed transient trouble.
- The provider surface looked flaky, not uniformly broken.
-
-
-
-
+| Surface | What mattered | Interpretation |
+| --- | --- | --- |
+| **Generated artifact** | The saved digest existed and contained the expected summary. | The data collection and summarization lane was probably healthy. |
+| **Delivery state** | The configured output channel did not receive the final message. | The last-mile delivery side effect needed investigation. |
+| **Sibling lanes** | Some nearby automations delivered normally while another delivery-oriented lane also showed transient trouble. | The provider surface looked flaky, not uniformly broken. |
 
  That split changed the response. If the artifact had been missing, the right move would have been to debug collection, credentials, source API access, or the summarizer. But with the artifact already present, a full rerun risked creating duplicate work, different output, or confusing evidence.
 
@@ -85,15 +62,15 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-- Check whether the artifact exists. If yes, preserve it and treat it as the source of truth for recovery.
+- **Check whether the artifact exists.** If yes, preserve it and treat it as the source of truth for recovery.
 
-- Check whether delivery actually completed. Do not infer success from generation logs or from the job reaching the final step.
+- **Check whether delivery actually completed.** Do not infer success from generation logs or from the job reaching the final step.
 
-- Compare neighboring lanes. If unrelated delivery lanes are also flaky, suspect the shared delivery surface before rewriting local config.
+- **Compare neighboring lanes.** If unrelated delivery lanes are also flaky, suspect the shared delivery surface before rewriting local config.
 
-- Check external provider health. A transient message-send incident can look like a local automation regression if you only stare at your own logs.
+- **Check external provider health.** A transient message-send incident can look like a local automation regression if you only stare at your own logs.
 
-- Replay the saved output when safe. If the report is already generated and public-safe for its intended destination, replaying is often better than rerunning the collector.
+- **Replay the saved output when safe.** If the report is already generated and public-safe for its intended destination, replaying is often better than rerunning the collector.
 
 
  This is the same reliability habit I want in larger agent systems: distinguish the durable artifact from the side effects around it.
@@ -105,34 +82,11 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-
- Move
- Risk
- Better default
-
-
-
-
-
- Rerun the whole scan immediately.
- Duplicate collection, drifted summary, or a second delivery attempt that hides the original failure shape.
- Replay the already-saved digest if it is complete.
-
-
-
- Patch local config during the incident.
- Fixes the wrong layer when the shared provider is briefly unhealthy.
- Check provider health and sibling delivery lanes first.
-
-
-
- Declare the job broken.
- Mislabels a last-mile delivery failure as a generation failure.
- Name the failing surface precisely.
-
-
-
-
+| Move | Risk | Better default |
+| --- | --- | --- |
+| Rerun the whole scan immediately. | Duplicate collection, drifted summary, or a second delivery attempt that hides the original failure shape. | Replay the already-saved digest if it is complete. |
+| Patch local config during the incident. | Fixes the wrong layer when the shared provider is briefly unhealthy. | Check provider health and sibling delivery lanes first. |
+| Declare the job broken. | Mislabels a last-mile delivery failure as a generation failure. | Name the failing surface precisely. |
 
  The outcome was intentionally unglamorous: the saved digest was replayed to the configured destination, the local workflow was left unchanged, and the next natural run was allowed to prove whether the issue repeated.
 
@@ -143,17 +97,17 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-- artifact generation — did the workflow create the report, summary, file, or decision packet?
+- **artifact generation** — did the workflow create the report, summary, file, or decision packet?
 
-- state recording — did the system record enough evidence to recover or audit the run?
+- **state recording** — did the system record enough evidence to recover or audit the run?
 
-- external delivery — did the final message, post, email, or notification reach its destination?
+- **external delivery** — did the final message, post, email, or notification reach its destination?
 
 
  When those are collapsed into one success bit, operators make bad choices. A failed delivery can trigger a needless rerun. A successful generation can look like a total outage. A transient provider incident can send you hunting through local code that did nothing wrong.
 
 
- The healthier pattern: make generated artifacts durable before external delivery, record delivery as its own side effect, and keep a replay path for the already-generated output.
+ **The healthier pattern:** make generated artifacts durable before external delivery, record delivery as its own side effect, and keep a replay path for the already-generated output.
 
 
 
@@ -163,15 +117,15 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-- Artifact-first execution. Write the report before trying to send it.
+- **Artifact-first execution.** Write the report before trying to send it.
 
-- Separate delivery status. Store whether the message reached the configured destination.
+- **Separate delivery status.** Store whether the message reached the configured destination.
 
-- Idempotent replay. Make it easy to resend the saved output without recollecting data.
+- **Idempotent replay.** Make it easy to resend the saved output without recollecting data.
 
-- Sibling-lane comparison. Before changing local settings, check whether other jobs using the same delivery surface were also flaky.
+- **Sibling-lane comparison.** Before changing local settings, check whether other jobs using the same delivery surface were also flaky.
 
-- External incident check. If the error smells like upstream availability, check provider health before assuming local drift.
+- **External incident check.** If the error smells like upstream availability, check provider health before assuming local drift.
 
 
  None of that is complicated. That is why it is useful. The goal is not a heroic recovery story; the goal is to make the boring recovery path obvious while the incident is still fresh.
@@ -191,13 +145,13 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
 
 
-- Why AI Cron Jobs Need Exact-Exec Drivers
+- [Why AI Cron Jobs Need Exact-Exec Drivers](/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html)
 
-- Long-Running Agent Work Needs a Bridge Back
+- [Long-Running Agent Work Needs a Bridge Back](/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html)
 
-- Closing External Threads Cleanly: An Agent-Ops Pattern
+- [Closing External Threads Cleanly: An Agent-Ops Pattern](/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html)
 
-- The Nightly Build: How My Agent Runs Security Audits While I Sleep
+- [The Nightly Build: How My Agent Runs Security Audits While I Sleep](/jingxiao-cai-blog/nightly-build-security-audits.html)
 
 
 
@@ -217,4 +171,4 @@ Summary: A daily scan job generated its report, but the final delivery side effe
 
  Found this useful? Leave a comment below, or send it to someone whose automation still treats generation and delivery as one giant success bit.
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

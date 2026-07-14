@@ -9,22 +9,22 @@ Summary: How I modernized agent skills with problem-first discovery, intake gate
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Modernizing Agent Skills Without Growing a Skill Jungle
 
 
- April 29, 2026 | By Jingxiao Cai
+ **April 29, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, openclaw, skills, workflow, maintenance, governance
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a messy skill-cleanup thread into a public operator guide, then helped remove the deployment-specific fingerprints that were not needed for the lesson.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a messy skill-cleanup thread into a public operator guide, then helped remove the deployment-specific fingerprints that were not needed for the lesson.
 
 
 
- Short version: the answer to every repeated agent workflow is not “add another skill.” The better pattern is fewer, sharper skills with explicit owners, stable trigger surfaces, package hygiene, and a bias toward consolidation when an old skill becomes only an alias for a richer workflow.
+ **Short version:** the answer to every repeated agent workflow is not “add another skill.” The better pattern is fewer, sharper skills with explicit owners, stable trigger surfaces, package hygiene, and a bias toward consolidation when an old skill becomes only an alias for a richer workflow.
 
 
 
@@ -53,7 +53,7 @@ Summary: How I modernized agent skills with problem-first discovery, intake gate
  The maintenance move is not to bulldoze the catalog. It is to prune it and mark its paths: one best owner for each recurring problem, short trigger surfaces, explicit capability gates, and a clear retirement path when a skill becomes only an alias for something better.
 
 
- A skill catalog is not a trophy shelf. It is part of the runtime decision surface.
+ **A skill catalog is not a trophy shelf. It is part of the runtime decision surface.**
 
 
 
@@ -62,20 +62,20 @@ Summary: How I modernized agent skills with problem-first discovery, intake gate
 
 ## Why Catalog Shape Matters More Than It Looks
 
- Modern agent-skill systems commonly use progressive disclosure: the model initially sees each skill's name, short description, and path, then reads the full instructions only after selecting a skill. The Codex skill docs describe exactly this shape and explicitly warn that large skill sets compress or omit descriptions from the initial list.
+ Modern agent-skill systems commonly use progressive disclosure: the model initially sees each skill's name, short description, and path, then reads the full instructions only after selecting a skill. The [Codex skill docs](https://developers.openai.com/codex/skills) describe exactly this shape and explicitly warn that large skill sets compress or omit descriptions from the initial list.
 
  That means skill governance is not just documentation hygiene. It affects routing. If the short description is fuzzy, the skill may never load. If ten skills all sound adjacent, the wrong one may load. If an old alias remains as a separate skill, it can steal traffic from the real owner or keep a stale mental model alive.
 
  Not every agent host implements skill loading exactly the same way, but the interface lesson travels: the routing metadata is part of the product. Treating it as an afterthought is how a helpful catalog becomes a maze.
 
- Plugin architecture has the same old lesson in different clothing. A plugin should have clear boundaries, a stable interface, loose coupling, and a reason to exist outside the host. General plugin-design writeups emphasize separation of concerns, clear interfaces, and independent maintenance. Agent skills need the same discipline, plus one extra concern: the model has to choose the right one from a compressed catalog.
+ Plugin architecture has the same old lesson in different clothing. A plugin should have clear boundaries, a stable interface, loose coupling, and a reason to exist outside the host. General plugin-design writeups emphasize [separation of concerns, clear interfaces, and independent maintenance](https://arjancodes.com/blog/best-practices-for-decoupling-software-using-plugins/). Agent skills need the same discipline, plus one extra concern: the model has to choose the right one from a compressed catalog.
 
 
- Practical consequence: every skill carries a trigger tax. It must earn that tax by solving a repeated, stable problem better than a protocol note, script, config change, or ordinary memory entry would.
+ **Practical consequence:** every skill carries a trigger tax. It must earn that tax by solving a repeated, stable problem better than a protocol note, script, config change, or ordinary memory entry would.
 
 
 
- Caveat: size by itself is not the enemy. A large catalog with crisp ownership, unique triggers, and clean packaging is healthier than a small catalog with ambiguous overlaps. The danger is unmanaged growth, not ambition.
+ **Caveat:** size by itself is not the enemy. A large catalog with crisp ownership, unique triggers, and clean packaging is healthier than a small catalog with ambiguous overlaps. The danger is unmanaged growth, not ambition.
 
 
 
@@ -85,36 +85,13 @@ Summary: How I modernized agent skills with problem-first discovery, intake gate
 
 
 
+| Surface | Purpose | What it prevents |
+| --- | --- | --- |
+| **Problem-first skill map** | Find the current owner for a problem before creating anything new. | Alphabetical catalogs that look complete but do not answer “what should handle this?” |
+| **Intake gate** | Force the decision: skill, protocol, config, script, note, or no artifact. | Turning every one-off irritation into another permanent skill. |
+| **Bounded radar** | Look for external patterns occasionally and narrowly, after local evidence first. | Trend-following, blind installs, and community-skill collections becoming authority. |
 
- Surface
- Purpose
- What it prevents
-
-
-
-
-
- Problem-first skill map
- Find the current owner for a problem before creating anything new.
- Alphabetical catalogs that look complete but do not answer “what should handle this?”
-
-
-
- Intake gate
- Force the decision: skill, protocol, config, script, note, or no artifact.
- Turning every one-off irritation into another permanent skill.
-
-
-
- Bounded radar
- Look for external patterns occasionally and narrowly, after local evidence first.
- Trend-following, blind installs, and community-skill collections becoming authority.
-
-
-
-
-
- The important word is problem-first. A catalog that starts with skill names is convenient for inventory. A catalog that starts with repeated problems is useful for routing.
+ The important word is *problem-first*. A catalog that starts with skill names is convenient for inventory. A catalog that starts with repeated problems is useful for routing.
 
 
 ## Four Modernization Moves That Beat Skill Sprawl
@@ -126,8 +103,12 @@ Summary: How I modernized agent skills with problem-first discovery, intake gate
 
  That keeps the trigger surface concise while preserving the full procedure for the moment it is actually needed.
 
- Skill body: when this applies, when to skip it, and which protocol to load.
+
+
+```
+Skill body: when this applies, when to skip it, and which protocol to load.
 Reference protocol: detailed steps, thresholds, validation, rollback notes.
+```
 
  This is not just neat organization. It protects the progressive-disclosure path: the initial catalog stays short, and the long procedure only enters context after the skill is selected.
 
@@ -139,7 +120,7 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
  The right answer was not to modernize the old alias into a prettier standalone package. The right answer was to retire the standalone alias and preserve its trigger phrases inside the richer owner.
 
 
- Rule: if an old skill is only a route-in phrase for a stronger current workflow, merge the phrase into the current owner. Do not preserve a stale owner just because the folder exists.
+ **Rule:** if an old skill is only a route-in phrase for a stronger current workflow, merge the phrase into the current owner. Do not preserve a stale owner just because the folder exists.
 
 
 
@@ -192,40 +173,12 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 
 
 
-
- Gate
- Question
- Fail-closed behavior
-
-
-
-
-
- Input contract
- Are required assets, evidence anchors, and format obligations present?
- Stop before generation if the packet is incomplete.
-
-
-
- Route capability
- Can this route actually preserve the required input class?
- Declare degradation or choose a different authorized route.
-
-
-
- Generation config
- Is the needed generation lane configured for this tool?
- Report blocked; do not silently borrow unrelated credentials or routes.
-
-
-
- Artifact proof
- Did the final output contain what the packet required?
- Do not treat service startup or API success as artifact success.
-
-
-
-
+| Gate | Question | Fail-closed behavior |
+| --- | --- | --- |
+| **Input contract** | Are required assets, evidence anchors, and format obligations present? | Stop before generation if the packet is incomplete. |
+| **Route capability** | Can this route actually preserve the required input class? | Declare degradation or choose a different authorized route. |
+| **Generation config** | Is the needed generation lane configured for this tool? | Report blocked; do not silently borrow unrelated credentials or routes. |
+| **Artifact proof** | Did the final output contain what the packet required? | Do not treat service startup or API success as artifact success. |
 
  That lesson generalizes beyond decks. A skill should not hide missing capability behind agent optimism. It should make the capability gate visible.
 
@@ -247,10 +200,10 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 - mutate the canonical catalog only after explicit approval
 
 
- This is basically architecture governance at personal-agent scale. Good governance is the thin layer that spots drift, manages risk, and keeps shared decisions coherent without turning everything into bureaucracy. That aligns with broader architecture-governance framing: enough structure to prevent chaos, not enough ceremony to freeze useful change.
+ This is basically architecture governance at personal-agent scale. Good governance is the thin layer that spots drift, manages risk, and keeps shared decisions coherent without turning everything into bureaucracy. That aligns with broader [architecture-governance framing](https://software-architecture-guild.com/guide/architecture/validation/architecture-governance/): enough structure to prevent chaos, not enough ceremony to freeze useful change.
 
 
- Watchdog rule: a catalog-refresh watcher should be allowed to say “evidence degraded.” It should not convert partial evidence into silent documentation edits.
+ **Watchdog rule:** a catalog-refresh watcher should be allowed to say “evidence degraded.” It should not convert partial evidence into silent documentation edits.
 
 
 
@@ -284,29 +237,29 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 
 
 
-- Repeated problem: did this happen often enough to deserve a durable entry point?
+- **Repeated problem:** did this happen often enough to deserve a durable entry point?
 
-- Best artifact: is this really a skill, or would a protocol/script/config/note be cleaner?
+- **Best artifact:** is this really a skill, or would a protocol/script/config/note be cleaner?
 
-- Trigger stability: can I describe when it should and should not load in one short paragraph?
+- **Trigger stability:** can I describe when it should and should not load in one short paragraph?
 
-- Owner clarity: is there exactly one best home for this workflow?
+- **Owner clarity:** is there exactly one best home for this workflow?
 
-- Consolidation path: if a nearby owner already exists, can this become a trigger phrase, reference note, or merge instead of a new standalone skill?
+- **Consolidation path:** if a nearby owner already exists, can this become a trigger phrase, reference note, or merge instead of a new standalone skill?
 
-- Package hygiene: does the packaged artifact avoid local caches, virtual environments, secrets, and runtime residue?
+- **Package hygiene:** does the packaged artifact avoid local caches, virtual environments, secrets, and runtime residue?
 
-- Capability gate: does the skill fail closed when a required tool, route, credential class, or artifact is missing?
+- **Capability gate:** does the skill fail closed when a required tool, route, credential class, or artifact is missing?
 
-- Validation: did at least one realistic prompt hit the right skill and avoid the wrong neighbor?
+- **Validation:** did at least one realistic prompt hit the right skill and avoid the wrong neighbor?
 
-- Rollback: can I disable, retire, or merge it cleanly if reality changes?
+- **Rollback:** can I disable, retire, or merge it cleanly if reality changes?
 
 
 
 ## What I Would Not Build Yet
 
- The most useful part of this pass was what I did not build:
+ The most useful part of this pass was what I did *not* build:
 
 
 
@@ -329,7 +282,7 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
  Skill modernization is not about making every folder prettier. It is about reducing decision entropy.
 
 
- A healthy skill catalog should make the right workflow easier to find, not make the assistant look more capable by listing more names.
+ **A healthy skill catalog should make the right workflow easier to find, not make the assistant look more capable by listing more names.**
 
 
 
@@ -338,7 +291,7 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
  Fewer skills. Better owners. Sharper gates. Much less jungle.
 
 
- Sanitization note: this post intentionally keeps the skill-governance patterns and selected public references while generalizing deployment-specific paths, private channel/thread identifiers, exact helper filenames, live provider/model routes, internal schedules, and sensitive topology details.
+ **Sanitization note:** this post intentionally keeps the skill-governance patterns and selected public references while generalizing deployment-specific paths, private channel/thread identifiers, exact helper filenames, live provider/model routes, internal schedules, and sensitive topology details.
 
 
 
@@ -347,13 +300,13 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 
 
 
-- LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos
+- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
 
-- Building Fail-Closed Stage Environments for AI Agents on a Small VPS
+- [Building Fail-Closed Stage Environments for AI Agents on a Small VPS](/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html)
 
-- Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts
+- [Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts](/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html)
 
-- Troubleshooting AI Agent Skills
+- [Troubleshooting AI Agent Skills](/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html)
 
 
 
@@ -373,4 +326,4 @@ Reference protocol: detailed steps, thresholds, validation, rollback notes.
 
  Published on April 29, 2026 • Part of my ongoing OpenClaw operations and AI-agent workflow series
 
- ← Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

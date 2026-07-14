@@ -9,22 +9,22 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
 ---
 
-&larr; Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # An Idea Miner Should Be Allowed to Find Nothing
 
 
- July 11, 2026 | By Jingxiao Cai
+ **July 11, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, product-discovery, research, automation, agent-ops, validation
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped run a bounded public-source research pilot, separate human pain from generated noise, and turn the result into a reusable falsification workflow without contacting anyone or publishing private research artifacts.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped run a bounded public-source research pilot, separate human pain from generated noise, and turn the result into a reusable falsification workflow without contacting anyone or publishing private research artifacts.
 
 
 
- Boundary: this is a product-discovery method, not proof that any candidate deserves to be built. Public issue reports can establish pain; they do not establish willingness to switch, install, or pay.
+ **Boundary:** this is a product-discovery method, not proof that any candidate deserves to be built. Public issue reports can establish pain; they do not establish willingness to switch, install, or pay.
 
 
  Most automated idea workflows have a hidden failure condition: they are expected to find an idea.
@@ -32,16 +32,16 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
  That expectation quietly changes the objective. The agent stops asking, “Is there an evidence-qualified opportunity?” and starts asking, “Which candidate can I make sound exciting before the run ends?”
 
 
- An idea miner that cannot return zero advance candidates is a content generator, not a discovery system.
+ **An idea miner that cannot return zero advance candidates is a content generator, not a discovery system.**
 
 
 
- I ran a small, time-bounded pilot against problems reported by developers using coding agents and multi-agent systems. The most useful result was not a launch plan. It was one hold, several rejects, and zero advance decisions.
+ I ran a small, time-bounded pilot against problems reported by developers using coding agents and multi-agent systems. The most useful result was not a launch plan. It was one *hold*, several *rejects*, and zero *advance* decisions.
 
  That outcome made the workflow more credible. It also produced a repeatable method for operators who want agents to research product ideas without laundering noisy search results into a roadmap.
 
 
- Reader promise: by the end of this post, you will have a compact idea-card contract that forces independent evidence, existing-solution review, a narrow wedge, and explicit advance/kill thresholds before any build begins.
+ **Reader promise:** by the end of this post, you will have a compact idea-card contract that forces independent evidence, existing-solution review, a narrow wedge, and explicit advance/kill thresholds before any build begins.
 
 
 
@@ -60,79 +60,50 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 - it turns “interesting” into “build next” without a falsification test.
 
 
- The fix is not a more creative prompt. It is a workflow whose valid terminal states include advance, hold, reject, and none found.
+ The fix is not a more creative prompt. It is a workflow whose valid terminal states include **advance**, **hold**, **reject**, and **none found**.
 
 
 ## A Bounded Pilot Funnel
 
  One short pilot used a deliberately small search budget. Its public-safe funnel looked like this:
 
- 7 issue artifacts
- -> 5 human pain observations
- -> 3 clusters
- -> 2 portable clusters
- -> 2 externally corroborated clusters
- -> 1 hold card
- -> 0 advance cards
+
+
+```
+7 issue artifacts
+  -> 5 human pain observations
+  -> 3 clusters
+  -> 2 portable clusters
+  -> 2 externally corroborated clusters
+  -> 1 hold card
+  -> 0 advance cards
+```
 
  The numbers are one run's bookkeeping, not a conversion rate, prevalence estimate, or demand metric. They are useful only as a proof unit that the workflow discarded material at every gate instead of preserving every search hit as a candidate.
 
 
 
-
- Gate
- Question
- Failure means
-
-
-
-
-
- Human pain
- Is this a first-person problem report rather than an automated tracker or generated roadmap item?
- Reject as demand evidence.
-
-
-
- Independence
- Does the pain recur across unrelated tools, repositories, or communities?
- Keep as a local bug, not a portable opportunity.
-
-
-
- Supply
- Do existing products already solve the problem well enough?
- Reject or narrow the wedge.
-
-
-
- Control
- Can an independent product solve it, or is the behavior naturally owned by the upstream vendor?
- Reject as a product surface.
-
-
-
- Falsifiability
- Can a cheap test change the decision within days rather than months?
- Hold until a sharper test exists.
-
-
-
-
+| Gate | Question | Failure means |
+| --- | --- | --- |
+| **Human pain** | Is this a first-person problem report rather than an automated tracker or generated roadmap item? | Reject as demand evidence. |
+| **Independence** | Does the pain recur across unrelated tools, repositories, or communities? | Keep as a local bug, not a portable opportunity. |
+| **Supply** | Do existing products already solve the problem well enough? | Reject or narrow the wedge. |
+| **Control** | Can an independent product solve it, or is the behavior naturally owned by the upstream vendor? | Reject as a product surface. |
+| **Falsifiability** | Can a cheap test change the decision within days rather than months? | Hold until a sharper test exists. |
 
 
 ## Counterevidence Is a First-Class Deliverable
 
- The pilot found repeated symptom reports of agents stalling after partial work. Public issues document incomplete actions followed by no response in VS Code agent mode and long zero-progress hangs in Claude Code.
+ The pilot found repeated symptom reports of agents stalling after partial work. Public issues document incomplete actions followed by no response in [VS Code agent mode](https://github.com/microsoft/vscode/issues/253126) and long zero-progress hangs in [Claude Code](https://github.com/anthropics/claude-code/issues/26224).
 
  That is evidence that the pain can occur across more than one tool. It is not a prevalence estimate, proof of market-wide independent demand, or evidence of an empty market.
 
- The current public listing for AgentLens describes local agent-session observability, traces, file diffs, loop detection, and recommendations. Other local tools offer replay, rewind, or unified usage reporting. A generic dashboard would be duplicate supply.
+ The current public listing for [AgentLens](https://marketplace.visualstudio.com/items?itemName=agentlens.agentlens-dashboard) describes local agent-session observability, traces, file diffs, loop detection, and recommendations. Other local tools offer replay, rewind, or unified usage reporting. A generic dashboard would be duplicate supply.
 
  The surviving wedge was narrower: a local recovery capsule that turns a likely stalled run into an explicit resume, handoff, or rollback-review packet. Even that candidate remained a hold because the unresolved question is whether it is meaningfully better than observability plus version control.
 
 
- Discovery rule: pain evidence earns deeper investigation. Strong existing supply removes the right to keep the original idea unchanged.
+ **Discovery rule:** pain evidence earns deeper investigation. Strong existing supply removes the right to keep the original idea unchanged.
 
 
 
@@ -140,29 +111,33 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
  A useful idea card is designed to make rejection easy:
 
- idea_card:
- user:
- who_has_the_problem: specific
- buyer_if_different: explicit_or_unknown
- pain:
- independent_sources: listed
- recurrence: observed_not_assumed
- workaround: recorded
- counterevidence:
- existing_solutions: strongest_first
- upstream_owner: yes_or_no
- duplicate_supply_risk: low_medium_high
- wedge:
- narrower_than_existing_tools: yes_or_no
- unsafe_or_uncontrolled_behavior: absent
- falsification:
- cheapest_comparative_test: defined
- advance_threshold: numeric_or_observable
- kill_threshold: numeric_or_observable
- authority:
- outreach_approved: no_by_default
- install_or_build_approved: no_by_default
- verdict: advance | hold | reject
+
+
+```
+idea_card:
+  user:
+    who_has_the_problem: specific
+    buyer_if_different: explicit_or_unknown
+  pain:
+    independent_sources: listed
+    recurrence: observed_not_assumed
+    workaround: recorded
+  counterevidence:
+    existing_solutions: strongest_first
+    upstream_owner: yes_or_no
+    duplicate_supply_risk: low_medium_high
+  wedge:
+    narrower_than_existing_tools: yes_or_no
+    unsafe_or_uncontrolled_behavior: absent
+  falsification:
+    cheapest_comparative_test: defined
+    advance_threshold: numeric_or_observable
+    kill_threshold: numeric_or_observable
+  authority:
+    outreach_approved: no_by_default
+    install_or_build_approved: no_by_default
+  verdict: advance | hold | reject
+```
 
  The card should contain the strongest reason not to build. If the counterevidence section reads like a polite footnote, the miner is still pitching rather than investigating.
 
@@ -171,34 +146,11 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
 
 
-
- Candidate shape
- Why it looked attractive
- Why it was rejected or held
-
-
-
-
-
- Cross-agent usage tracker
- Unexpected token or cost consumption recurs across tools.
- Capable unified reporting already exists, including ccusage; an automatic circuit breaker also risks damaging partial work.
-
-
-
- Always-visible model thinking
- Users want feedback when an agent appears stuck.
- The requested behavior is tightly coupled to vendor UI and API policy, so it is naturally upstream.
-
-
-
- Generic no-op detector
- Automated issues and logs can look like evidence of broad frustration.
- Bot-generated artifacts are architecture output, not independent human demand; loop detection is already part of existing observability tools.
-
-
-
-
+| Candidate shape | Why it looked attractive | Why it was rejected or held |
+| --- | --- | --- |
+| **Cross-agent usage tracker** | Unexpected token or cost consumption recurs across tools. | Capable unified reporting already exists, including [ccusage](https://github.com/ccusage/ccusage); an automatic circuit breaker also risks damaging partial work. |
+| **Always-visible model thinking** | Users want feedback when an agent appears stuck. | The requested behavior is tightly coupled to vendor UI and API policy, so it is naturally upstream. |
+| **Generic no-op detector** | Automated issues and logs can look like evidence of broad frustration. | Bot-generated artifacts are architecture output, not independent human demand; loop detection is already part of existing observability tools. |
 
  Rejecting these candidates was not lost work. It prevented duplicate products, unsafe automation, and vendor-policy dependencies from entering the build queue.
 
@@ -211,17 +163,17 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
 
 
-- Recognition: do target users recognize a recent matching pain?
+- **Recognition:** do target users recognize a recent matching pain?
 
-- Switching: do enough users prefer the proposed wedge over their current workaround?
+- **Switching:** do enough users prefer the proposed wedge over their current workaround?
 
-- Commitment: will they take a costly next step such as sharing an anonymized trace, trying a local prototype, or accepting plausible pricing?
+- **Commitment:** will they take a costly next step such as sharing an anonymized trace, trying a local prototype, or accepting plausible pricing?
 
 
  The kill rule matters just as much. If users say existing tools plus ordinary retry are adequate, or safe integration requires capturing sensitive source content, the miner should retire the card.
 
 
- Authority boundary: research can prepare an outreach plan. Contacting users, posting in communities, collecting traces, installing integrations, or building a prototype remains a separate approved action.
+ **Authority boundary:** research can prepare an outreach plan. Contacting users, posting in communities, collecting traces, installing integrations, or building a prototype remains a separate approved action.
 
 
 
@@ -266,13 +218,13 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
 
 
-- Building a Pattern Scout That Does Not Chase Its Own Echoes
+- [Building a Pattern Scout That Does Not Chase Its Own Echoes](/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
 
-- Freshness Is Not Permission
+- [Freshness Is Not Permission](/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html)
 
-- Public-Safe Evidence Beats Private Debugging Dumps
+- [Public-Safe Evidence Beats Private Debugging Dumps](/jingxiao-cai-blog/public-safe-agent-pr-evidence-routing.html)
 
-- When a Dirty-Tree Alert Is Correct
+- [When a Dirty-Tree Alert Is Correct](/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html)
 
 
 
@@ -291,10 +243,10 @@ Summary: The useful output of an idea miner is not a pile of concepts. It is an 
 
 ### Feedback
 
- Questions, critiques, or examples of useful idea rejections? Open an issue in the blog repository or leave a comment below.
+ Questions, critiques, or examples of useful idea rejections? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or leave a comment below.
 
 
 
- Published on July 11, 2026 &bull; Part of my ongoing AI-agent research and workflow series
+ Published on July 11, 2026 • Part of my ongoing AI-agent research and workflow series
 
- &larr; Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

@@ -9,22 +9,22 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
 ---
 
-&larr; Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # An Executor Contract Is Not Production Activation
 
 
- July 5, 2026 | By Jingxiao Cai
+ **July 5, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, automation, reliability, security, tooling
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped turn a private executor-preparation checkpoint into a generalized public pattern and remove concrete package names, paths, host identifiers, hashes, command targets, logs, and operational details.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a private executor-preparation checkpoint into a generalized public pattern and remove concrete package names, paths, host identifiers, hashes, command targets, logs, and operational details.
 
 
 
- Boundary: this is an agent-operations pattern, not an implementation guide for a specific live system. The useful lesson is how to document an executor boundary offline while keeping live activation behind a separate approval gate.
+ **Boundary:** this is an agent-operations pattern, not an implementation guide for a specific live system. The useful lesson is how to document an executor boundary offline while keeping live activation behind a separate approval gate.
 
 
  There is a familiar moment in agent tooling where the next missing piece looks obvious: a narrow capability has a desired behavior, tests describe the expected boundary, and the next artifact looks like an executor.
@@ -34,7 +34,7 @@ Summary: A dependency-injected executor contract can document shape, policy, and
  An executor contract is useful because it lets you say what a future runner must be allowed to do, what it must refuse, what evidence it must record, and how it should fail. But that contract is not the same thing as wiring the live runner.
 
 
- An executor contract documents the shape of authority. It does not grant the authority.
+ **An executor contract documents the shape of authority. It does not grant the authority.**
 
 
 
@@ -69,52 +69,14 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
 
 
-
- Contract piece
- Question it answers
- Public-safe evidence
-
-
-
-
-
- Dependency injection
- Can tests supply a fake runner without importing a real process launcher?
- The executor accepts an injected runner and has no built-in path to spawn work by itself.
-
-
-
- Byte or artifact check
- Can the executor verify that the intended helper artifact is the one being used?
- A deterministic check is specified and fixture-tested before the fake runner is called, using sanitized expected metadata rather than trusting a path label.
-
-
-
- Argument policy
- Can the contract reject unexpected command shape, shell usage, environment injection, or stdin?
- Unit tests cover allowed and denied cases, including refusal paths.
-
-
-
- Resource caps
- Can timeout and output-limit requirements be specified before a future live path exists?
- The contract specifies caps and tests wrapper-boundary failure behavior when the fake runner violates them.
-
-
-
- Side-effect labels
- Can local subprocess simulation be separated from real remote execution?
- Evidence fields distinguish simulated/local execution from live remote side effects.
-
-
-
- Fail-closed registration
- Does the tested registration path require an explicit runtime dependency before execution can exist?
- The default path remains inert unless a separately reviewed runtime dependency is injected.
-
-
-
-
+| Contract piece | Question it answers | Public-safe evidence |
+| --- | --- | --- |
+| **Dependency injection** | Can tests supply a fake runner without importing a real process launcher? | The executor accepts an injected runner and has no built-in path to spawn work by itself. |
+| **Byte or artifact check** | Can the executor verify that the intended helper artifact is the one being used? | A deterministic check is specified and fixture-tested before the fake runner is called, using sanitized expected metadata rather than trusting a path label. |
+| **Argument policy** | Can the contract reject unexpected command shape, shell usage, environment injection, or stdin? | Unit tests cover allowed and denied cases, including refusal paths. |
+| **Resource caps** | Can timeout and output-limit requirements be specified before a future live path exists? | The contract specifies caps and tests wrapper-boundary failure behavior when the fake runner violates them. |
+| **Side-effect labels** | Can local subprocess simulation be separated from real remote execution? | Evidence fields distinguish simulated/local execution from live remote side effects. |
+| **Fail-closed registration** | Does the tested registration path require an explicit runtime dependency before execution can exist? | The default path remains inert unless a separately reviewed runtime dependency is injected. |
 
  The last row is the core safety property. If an ordinary configuration edit can suddenly make the executor live, the contract is not a harmless preparation artifact anymore. It is an activation surface.
 
@@ -129,19 +91,19 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
 
 
-- What exact authority would a future runner receive?
+- **What exact authority would a future runner receive?**
 
-- What input shape is allowed, and what input shape is refused?
+- **What input shape is allowed, and what input shape is refused?**
 
-- What validation runs before side effects become possible?
+- **What validation runs before side effects become possible?**
 
-- What evidence distinguishes simulated execution from live execution?
+- **What evidence distinguishes simulated execution from live execution?**
 
-- What remains impossible after the package is built?
+- **What remains impossible after the package is built?**
 
 
 
- Practical rule: if the offline package cannot state what remains out of scope, it is not ready to become an activation candidate.
+ **Practical rule:** if the offline package cannot state what remains out of scope, it is not ready to become an activation candidate.
 
 
 
@@ -149,30 +111,34 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
  Before I would accept an executor-preparation phase as complete, I want the closeout to include a card like this:
 
- executor_contract_evidence:
- contract:
- runner_injected: yes
- built_in_process_launcher: absent_in_tested_path
- shell_execution: denied
- unexpected_args: denied
- unexpected_env: denied
- stdin: denied
- timeout_cap: specified_and_tested_offline
- output_cap: specified_and_tested_offline
- artifact_integrity:
- pre_run_check: required
- trust_path_label_only: no
- side_effects:
- local_simulation_label: explicit
- live_remote_execution_label: explicit
- live_remote_execution_observed: no
- registration:
- default_state_in_tested_path: fail_closed
- explicit_runtime_dependency_required: yes
- next_gate:
- separate_activation_review_required: yes
- lifecycle_approval_required: yes
- live_runner_design_review_required: yes
+
+
+```
+executor_contract_evidence:
+  contract:
+    runner_injected: yes
+    built_in_process_launcher: absent_in_tested_path
+    shell_execution: denied
+    unexpected_args: denied
+    unexpected_env: denied
+    stdin: denied
+    timeout_cap: specified_and_tested_offline
+    output_cap: specified_and_tested_offline
+  artifact_integrity:
+    pre_run_check: required
+    trust_path_label_only: no
+  side_effects:
+    local_simulation_label: explicit
+    live_remote_execution_label: explicit
+    live_remote_execution_observed: no
+  registration:
+    default_state_in_tested_path: fail_closed
+    explicit_runtime_dependency_required: yes
+  next_gate:
+    separate_activation_review_required: yes
+    lifecycle_approval_required: yes
+    live_runner_design_review_required: yes
+```
 
  This card does two useful things. It records progress, and it prevents progress from being misread as permission.
 
@@ -208,7 +174,7 @@ Summary: A dependency-injected executor contract can document shape, policy, and
  A contract can be aggressive about design while conservative about authority. It can document the shape of the future runner while keeping the present system inert. It can leave a clean handoff for the next review without making the next review implicit.
 
 
- Prepare the interface. Preserve the stop point.
+ **Prepare the interface. Preserve the stop point.**
 
 
 
@@ -227,13 +193,13 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
 
 
-- Stop Points Are Deliverables
+- [Stop Points Are Deliverables](/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html)
 
-- Proof Without Touching Production
+- [Proof Without Touching Production](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- Synthetic Fanout Is Not Production Approval
+- [Synthetic Fanout Is Not Production Approval](/jingxiao-cai-blog/synthetic-fanout-not-production-approval-agent-probes.html)
 
-- Reachable Is Not Ready
+- [Reachable Is Not Ready](/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html)
 
 
 
@@ -252,10 +218,10 @@ Summary: A dependency-injected executor contract can document shape, policy, and
 
 ### Feedback
 
- Questions, critiques, or examples of executor approval gates? Open an issue in the blog repository or leave a comment below.
+ Questions, critiques, or examples of executor approval gates? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or leave a comment below.
 
 
 
- Published on July 5, 2026 &bull; Part of my ongoing agent operations and self-hosted AI workflow series
+ Published on July 5, 2026 • Part of my ongoing agent operations and self-hosted AI workflow series
 
- &larr; Back to Blog
+ [← Back to Blog](/jingxiao-cai-blog/)

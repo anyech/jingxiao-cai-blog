@@ -9,22 +9,22 @@ Summary: A bounded synthetic fanout can prove that an agent can coordinate a wor
 
 ---
 
-← Back to Blog
+[← Back to Blog](/jingxiao-cai-blog/)
 
 # Synthetic Fanout Is Not Production Approval: A Safer Pattern for Agent-Run Distributed Probes
 
 
- June 19, 2026 | By Jingxiao Cai
+ **June 19, 2026** | By Jingxiao Cai
 
  Tags: ai-agents, agent-ops, distributed-systems, automation, reliability, tooling
 
 
 
- This post was co-created with Clawsistant, my OpenClaw AI agent. It helped convert a private distributed-probe checkpoint into a generalized public pattern and remove deployment names, host identifiers, paths, job IDs, hashes, and operational logs.
+ This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped convert a private distributed-probe checkpoint into a generalized public pattern and remove deployment names, host identifiers, paths, job IDs, hashes, and operational logs.
 
 
 
- Boundary: this is an agent-operations pattern, not a production runbook for any specific system. The concrete example is intentionally anonymized. No private fleet names, service names, file paths, credentials, or sensitive datasets are needed for the lesson.
+ **Boundary:** this is an agent-operations pattern, not a production runbook for any specific system. The concrete example is intentionally anonymized. No private fleet names, service names, file paths, credentials, or sensitive datasets are needed for the lesson.
 
 
  A distributed probe can feel more conclusive than it really is.
@@ -34,7 +34,7 @@ Summary: A bounded synthetic fanout can prove that an agent can coordinate a wor
  It still does not mean production is approved.
 
 
- Synthetic fanout proves the control plane can ask. It does not prove the system is allowed to touch real data.
+ **Synthetic fanout proves the control plane can ask. It does not prove the system is allowed to touch real data.**
 
 
 
@@ -47,19 +47,19 @@ Summary: A bounded synthetic fanout can prove that an agent can coordinate a wor
 
 
 
-- Inventory old state first. Identify stale services, timers, scratch directories, databases, tunnels, and rollback artifacts before starting anything new.
+- **Inventory old state first.** Identify stale services, timers, scratch directories, databases, tunnels, and rollback artifacts before starting anything new.
 
-- Run a one-worker canary. Prove the harness on the smallest possible target with no secrets, no privileged changes, no service mutation, and no real corpus.
+- **Run a one-worker canary.** Prove the harness on the smallest possible target with no secrets, no privileged changes, no service mutation, and no real corpus.
 
-- Fan out synthetically. Expand to the approved worker set with strict time, CPU, output-size, and cleanup limits.
+- **Fan out synthetically.** Expand to the approved worker set with strict time, CPU, output-size, and cleanup limits.
 
-- Stop at the next gate. Treat the result as a routing and harness proof only. Real data, persistent services, scheduler changes, or production integration need separate approval.
+- **Stop at the next gate.** Treat the result as a routing and harness proof only. Real data, persistent services, scheduler changes, or production integration need separate approval.
 
 
  The point is not to be slow. The point is to keep each success from silently expanding its own authority.
 
 
- Conceptual example: an agent needs to validate whether a distributed worker plane can support later embedding or retrieval work. The public-safe probe writes small random artifacts, checks hashes, records elapsed time, and deletes scratch files. It does not copy a real memory corpus, install packages, start services, edit schedulers, or change the serving path.
+ **Conceptual example:** an agent needs to validate whether a distributed worker plane can support later embedding or retrieval work. The public-safe probe writes small random artifacts, checks hashes, records elapsed time, and deletes scratch files. It does not copy a real memory corpus, install packages, start services, edit schedulers, or change the serving path.
 
 
 
@@ -82,47 +82,22 @@ Summary: A bounded synthetic fanout can prove that an agent can coordinate a wor
 
 
 
-
- What passed
- What it proves
- What it does not prove
-
-
-
-
-
- One-worker synthetic canary
- The harness works on one target under tight limits.
- The fleet is ready, or the workload is representative.
-
-
-
- Multi-worker synthetic fanout
- The agent can coordinate approved targets and collect evidence.
- Real data is approved, persistent services are safe, or production paths are ready.
-
-
-
- Scratch cleanup
- The run can remove its own temporary residue.
- Old rollback artifacts should be deleted, or retention policy is settled.
-
-
-
- Fast elapsed time
- The toy workload was cheap.
- The real workload will fit the same latency, memory, cost, or failure envelope.
-
-
-
-
+| What passed | What it proves | What it does not prove |
+| --- | --- | --- |
+| **One-worker synthetic canary** | The harness works on one target under tight limits. | The fleet is ready, or the workload is representative. |
+| **Multi-worker synthetic fanout** | The agent can coordinate approved targets and collect evidence. | Real data is approved, persistent services are safe, or production paths are ready. |
+| **Scratch cleanup** | The run can remove its own temporary residue. | Old rollback artifacts should be deleted, or retention policy is settled. |
+| **Fast elapsed time** | The toy workload was cheap. | The real workload will fit the same latency, memory, cost, or failure envelope. |
 
 
 ## Bound the Probe Like a Contract
 
  A good synthetic fanout should be boringly explicit. Before the agent runs, define the contract in plain language:
 
- Allowed:
+
+
+```text
+Allowed:
 - connect to the approved worker list
 - create a run-scoped scratch directory
 - write a small synthetic artifact
@@ -136,6 +111,7 @@ Not allowed:
 - touching production serving endpoints
 - deleting old rollback/provenance artifacts
 - widening the worker list after launch
+```
 
  That kind of contract gives the agent a useful lane. It can move quickly inside the lane without treating success as permission to repaint the road.
 
@@ -145,7 +121,7 @@ Not allowed:
  The cleanup inventory step is not housekeeping theater. It answers a different question:
 
 
- Are we about to confuse old state with new proof?
+ **Are we about to confuse old state with new proof?**
 
 
 
@@ -155,11 +131,11 @@ Not allowed:
 
 
 
-- Active dependency: required for the current run.
+- **Active dependency:** required for the current run.
 
-- Rollback or provenance: not active, but intentionally retained until a later approval.
+- **Rollback or provenance:** not active, but intentionally retained until a later approval.
 
-- Disposable residue: owned by the current run and safe to remove after evidence is copied back.
+- **Disposable residue:** owned by the current run and safe to remove after evidence is copied back.
 
 
  Only the third bucket should disappear automatically.
@@ -176,7 +152,7 @@ Not allowed:
 
 ## The Stop Rule Is the Product
 
- The most important line in the closeout is often the one that says what the run does not authorize.
+ The most important line in the closeout is often the one that says what the run does *not* authorize.
 
  A healthy closeout might say:
 
@@ -206,35 +182,12 @@ Not allowed:
 
 
 
-
- Fast path
- Separate approval gate
-
-
-
-
-
- Run-scoped synthetic artifact
- Real user, memory, session, or business corpus
-
-
-
- Read-only inventory and status checks
- Deleting old provenance or rollback files
-
-
-
- Temporary scratch directory
- Persistent service, scheduler, or daemon
-
-
-
- Approved target list
- New hosts, new accounts, or broader network scope
-
-
-
-
+| Fast path | Separate approval gate |
+| --- | --- |
+| Run-scoped synthetic artifact | Real user, memory, session, or business corpus |
+| Read-only inventory and status checks | Deleting old provenance or rollback files |
+| Temporary scratch directory | Persistent service, scheduler, or daemon |
+| Approved target list | New hosts, new accounts, or broader network scope |
 
 
 ## The Checklist I Use
@@ -243,21 +196,21 @@ Not allowed:
 
 
 
-- Scope: was the target list fixed before launch?
+- **Scope:** was the target list fixed before launch?
 
-- Permissions: were privileged changes, service changes, scheduler changes, and installs explicitly forbidden?
+- **Permissions:** were privileged changes, service changes, scheduler changes, and installs explicitly forbidden?
 
-- Data: was the workload synthetic, with no secrets or real corpus movement?
+- **Data:** was the workload synthetic, with no secrets or real corpus movement?
 
-- Limits: were time, CPU, memory, output size, and write locations bounded?
+- **Limits:** were time, CPU, memory, output size, and write locations bounded?
 
-- Canary: did the one-worker run pass before fanout?
+- **Canary:** did the one-worker run pass before fanout?
 
-- Evidence: are per-target status, checksum, elapsed time, timeout state, and artifact size recorded?
+- **Evidence:** are per-target status, checksum, elapsed time, timeout state, and artifact size recorded?
 
-- Cleanup: was run-owned scratch removed, and were old rollback/provenance artifacts preserved unless separately approved?
+- **Cleanup:** was run-owned scratch removed, and were old rollback/provenance artifacts preserved unless separately approved?
 
-- Stop rule: does the closeout clearly say what the pass does not authorize?
+- **Stop rule:** does the closeout clearly say what the pass does not authorize?
 
 
  If those are green, the fanout result is valuable. It proves the next planning step is worth considering.
@@ -272,7 +225,7 @@ Not allowed:
  The key is to keep the answer narrow. A pass means the harness and transport are promising. It does not mean real data can move, old artifacts can be deleted, services can be started, or production paths can be changed.
 
 
- Let synthetic fanout earn the next gate. Do not let it impersonate the gate.
+ **Let synthetic fanout earn the next gate. Do not let it impersonate the gate.**
 
 
 
@@ -282,13 +235,13 @@ Not allowed:
 
 
 
-- Container-First Distributed Model Serving: Make Workers Disposable Before You Make Them Clever
+- [Container-First Distributed Model Serving: Make Workers Disposable Before You Make Them Clever](/jingxiao-cai-blog/container-first-distributed-model-serving-disposable-workers.html)
 
-- Mock First, Live When Proven: How to Keep Agent Demos Honest
+- [Mock First, Live When Proven: How to Keep Agent Demos Honest](/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html)
 
-- Proof Without Touching Production: A Boundary for Agent-Run PR Validation
+- [Proof Without Touching Production: A Boundary for Agent-Run PR Validation](/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html)
 
-- Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts
+- [Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts](/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html)
 
 
 
@@ -299,9 +252,9 @@ Not allowed:
 
 
 
-- Google SRE Workbook: Canarying Releases
+- [Google SRE Workbook: Canarying Releases](https://sre.google/workbook/canarying-releases/)
 
-- Google SRE Book: Monitoring Distributed Systems
+- [Google SRE Book: Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
 
 
 
@@ -310,7 +263,7 @@ Not allowed:
 
 ### About the Author
 
- Jingxiao Cai works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
+ **Jingxiao Cai** works on distributed ML runtime systems and backend execution reliability. This blog captures lessons from building, debugging, and operating self-hosted AI-agent workflows.
 
 
 
@@ -318,4 +271,4 @@ Not allowed:
 
 ### Feedback
 
- Questions, critiques, or war stories about bounded distributed probes? Open an issue in the blog repository or reach out through the linked channels.
+ Questions, critiques, or war stories about bounded distributed probes? Open an issue in the [blog repository](https://github.com/anyech/jingxiao-cai-blog) or reach out through the linked channels.
