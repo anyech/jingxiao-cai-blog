@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Multi-Agent Collaboration Needs One Owner per Effect</title>
+      <description>Reliable multi-agent work separates logical requests from delivery attempts and gives each mutable effect one fenced owner.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html</guid>
+      <pubDate>Thu, 16 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Stop Reviewing the Review: How Agent Workflows Drift Out of Scope</title>
+      <description>A practical way to stop assurance machinery from becoming the product: freeze the target, classify objections, and budget the review cycle.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html</guid>
+      <pubDate>Wed, 15 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Visible Message Does Not Prove an Agent Wake</title>

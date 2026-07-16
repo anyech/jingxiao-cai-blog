@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Multi-Agent Collaboration Needs One Owner per Effect](https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html.md
+  - Date: 2026-07-16
+  - Summary: More agents do not create coordination. Reliable collaboration gives each logical request stable identity, each effect one owner, and each request one authoritative terminal state.
+  - Tags: ai-agents, multi-agent, coordination, reliability, automation, distributed-systems
+- [Stop Reviewing the Review: How Agent Workflows Drift Out of Scope](https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html.md
+  - Date: 2026-07-15
+  - Summary: Agent work can drift when every review finding creates another validator, receipt, schema, and review cycle. Freeze the target, classify objections, and budget assurance.
+  - Tags: ai-agents, agent-ops, scope-creep, review, reliability, automation
 - [A Visible Message Does Not Prove an Agent Wake](https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html.md
   - Date: 2026-07-14
