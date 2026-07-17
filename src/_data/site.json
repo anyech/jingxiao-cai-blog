@@ -5,6 +5,7 @@
   "authorUrl": "https://anyech.github.io/jingxiao-cai/",
   "authorProfile": {
     "role": "Distributed ML runtime systems engineer",
+    "homepageBio": "I build distributed ML runtime systems and write about self-hosted AI agents, technical debugging, and evidence-driven engineering workflows.",
     "bio": "I build distributed ML runtime systems and backend execution reliability for production ML workloads. I also write about self-hosted AI agents, technical debugging, and evidence-driven engineering workflows.",
     "links": [
       { "label": "Personal website", "url": "https://anyech.github.io/jingxiao-cai/" },

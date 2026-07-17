@@ -6,6 +6,7 @@ description: "Technical blog by Jingxiao Cai about distributed ML runtime system
 canonicalPath: ""
 ---
 {% from "post-card.njk" import postCard %}
+{% set latestPost = collections.postsByPublished[0] %}
 <section class="home-hero" aria-labelledby="site-title">
   <div class="hero hero--home">
     <p class="eyebrow">distributed ML runtime systems · agent ops · self-hosted AI</p>
@@ -18,18 +19,29 @@ canonicalPath: ""
   </div>
 
   <aside class="author-card" aria-labelledby="author-card-title" data-pagefind-ignore>
-    <div class="author-card__monogram" aria-hidden="true">JC</div>
-    <p class="eyebrow">About the author</p>
-    <h2 id="author-card-title">{{ site.author }}</h2>
-    <p class="author-card__role">{{ site.authorProfile.role }}</p>
-    <p>{{ site.authorProfile.bio }}</p>
+    <div class="author-card__identity">
+      <div class="author-card__monogram" aria-hidden="true">JC</div>
+      <div>
+        <p class="eyebrow">About the author</p>
+        <h2 id="author-card-title">{{ site.author }}</h2>
+        <p class="author-card__role">{{ site.authorProfile.role }}</p>
+      </div>
+    </div>
+    <p>{{ site.authorProfile.homepageBio or site.authorProfile.bio }}</p>
     <ul class="profile-links" aria-label="Jingxiao Cai profiles">
       {% for link in site.authorProfile.links %}<li><a href="{{ link.url }}">{{ link.label }}</a></li>{% endfor %}
     </ul>
+    {% if latestPost %}
+    <div class="author-card__latest">
+      <p class="eyebrow">Latest publication</p>
+      <a href="{{ site.basePath }}{{ latestPost.data.slug }}.html">{{ latestPost.data.title | safe }}</a>
+      <span>{{ latestPost.data.date | dateDisplay }}</span>
+    </div>
+    {% endif %}
   </aside>
 </section>
 
-<section aria-labelledby="topics-title">
+<section class="home-topics" aria-labelledby="topics-title">
   <div class="section-heading section-heading--split">
     <div><p class="eyebrow">Start with a subject</p><h2 id="topics-title">Browse by topic</h2></div>
     <a class="text-link" href="{{ site.basePath }}topics.html">View topic archive →</a>

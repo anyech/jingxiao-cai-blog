@@ -13,6 +13,7 @@
   --code-text: #e5edf7;
   --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
   --radius: 18px;
+  --content-width: 1280px;
 }
 
 * { box-sizing: border-box; }
@@ -61,7 +62,7 @@ img { max-width: 100%; height: auto; border-radius: 14px; }
   border-bottom: 1px solid rgba(219, 227, 239, 0.9);
 }
 .site-header__inner {
-  max-width: 1120px;
+  max-width: var(--content-width);
   margin: 0 auto;
   padding: .85rem 1.2rem;
   display: flex;
@@ -92,7 +93,7 @@ img { max-width: 100%; height: auto; border-radius: 14px; }
 .site-nav a:hover { background: #eaf0ff; color: var(--brand-dark); }
 
 .site-main {
-  width: min(100%, 1120px);
+  width: min(100%, var(--content-width));
   margin: 0 auto;
   padding: 3.2rem 1rem 5rem;
 }
@@ -142,6 +143,8 @@ article h1 {
 .author-card {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   padding: clamp(1.4rem, 3vw, 2rem);
   background: linear-gradient(145deg, #0f172a, #16295f);
   color: #e5edf7;
@@ -171,12 +174,33 @@ article h1 {
   font-weight: 850;
   letter-spacing: -.05em;
 }
+.author-card__identity { position: relative; z-index: 1; display: flex; align-items: flex-start; gap: .9rem; }
+.author-card__identity > div:last-child { min-width: 0; }
+.author-card__identity .author-card__monogram { flex: 0 0 auto; margin-bottom: 0; }
+.author-card__identity .eyebrow { margin-bottom: .3rem; }
 .author-card h2 { margin: 0; color: white; font-size: 1.8rem; letter-spacing: -.035em; }
 .author-card p { color: #cbd5e1; line-height: 1.58; }
 .author-card__role { margin: .2rem 0 1rem; color: #5eead4 !important; font-weight: 750; }
 .profile-links { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1.3rem 0 0; list-style: none; }
 .profile-links a { display: inline-flex; padding: .38rem .7rem; border: 1px solid #3d5486; border-radius: 999px; color: #e0e7ff; text-decoration: none; font-weight: 700; font-size: .88rem; }
 .profile-links a:hover { color: white; background: #243a70; }
+.author-card__latest {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding-top: 1.15rem;
+  border-top: 1px solid rgba(148, 163, 184, .28);
+}
+.author-card__latest .eyebrow { margin-bottom: .35rem; color: #93c5fd; }
+.author-card__latest a {
+  display: block;
+  color: white;
+  font-weight: 760;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.author-card__latest a:hover { color: #bfdbfe; text-decoration: underline; }
+.author-card__latest span { display: block; margin-top: .35rem; color: #94a3b8; font-size: .8rem; }
 .button {
   display: inline-flex;
   align-items: center;
@@ -453,8 +477,47 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 }
 
 @media (min-width: 1200px) {
-  .home-hero { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(20rem, .8fr); gap: 1rem; align-items: stretch; }
-  .hero--home { display: flex; flex-direction: column; justify-content: center; margin-bottom: 0; }
+  .site-main { padding-top: 2rem; }
+  .home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(21rem, .8fr);
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 0;
+  }
+  .hero--home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 0;
+    padding: clamp(2.35rem, 3vw, 3.25rem);
+  }
+  .hero--home h1 {
+    max-width: 18ch;
+    font-size: clamp(3.05rem, 4.15vw, 4rem);
+    line-height: .98;
+  }
+  .hero--home .hero__lede { max-width: 64ch; font-size: 1.08rem; }
+  .author-card { padding: 1.45rem 1.55rem; }
+  .author-card__monogram { width: 3.1rem; height: 3.1rem; border-radius: 15px; }
+  .author-card h2 { font-size: 1.55rem; }
+  .author-card p { margin-block: .6rem; font-size: .9rem; line-height: 1.44; }
+  .author-card__identity .eyebrow { margin: 0 0 .2rem; font-size: .69rem; }
+  .author-card__role { margin: .08rem 0 0 !important; font-size: .84rem !important; line-height: 1.35 !important; }
+  .profile-links { margin-top: .75rem; }
+  .profile-links a { padding: .3rem .58rem; font-size: .78rem; }
+  .home-topics .section-heading { margin-top: 1.65rem; }
+  .home-topics .topic-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
+  .home-topics .topic-card { min-height: 9.5rem; padding: 1rem; }
+  .home-topics .topic-card strong { margin: .75rem 0 .3rem; font-size: 1rem; }
+  .home-topics .topic-card > span:last-child {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font-size: .82rem;
+    line-height: 1.42;
+  }
 }
 
 @media (max-width: 1050px) and (min-width: 721px) {
