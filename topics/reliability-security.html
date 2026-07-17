@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/topics/reliability-security.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Reliability &amp;amp; Security - Jingxiao Cai&#39;s Blog">
+    <meta property="og:description" content="Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/topics/reliability-security.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Reliability &amp;amp; Security - Jingxiao Cai&#39;s Blog">
+    <meta name="twitter:description" content="Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Jingxiao Cai's Blog",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/",
+  "description": "Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering.",
+  "inLanguage": "en-US",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/",
+    "sameAs": [
+      "https://www.linkedin.com/in/jingxiaocai/",
+      "https://github.com/anyech",
+      "https://scholar.google.com/citations?user=pyxQPtAAAAAJ&hl=en"
+    ]
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  }
+}</script>
+
+    <title>Reliability &amp;amp; Security - Jingxiao Cai&#39;s Blog</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+
+
+<section class="hero hero--compact" aria-labelledby="topic-title">
+  <p class="eyebrow"><a href="/jingxiao-cai-blog/topics.html">All topics</a> · 21 posts</p>
+  <h1 id="topic-title">Reliability &amp; Security</h1>
+  <p class="hero__lede">Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.</p>
+</section>
+<div class="post-grid">
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-07-08">July 8, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html">Prepared Is Not Authorized: The Activation Packet Pattern for Agent Ops</a></h3>
+  <p>A prepared agent workflow can be useful and still not be authorized. The safe pattern is to turn readiness into an activation packet: scope, evidence, boundary state, rollback limits, specific activation verb, and explicit authority.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>reliability</li><li>security</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-07-07">July 7, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/credential-boundary-production-feature-agent-ops.html">A Credential Boundary Is a Production Feature</a></h3>
+  <p>Do not hand setup credentials to runtime route code just because the next integration step looks obvious. Treat the credential boundary itself as a production feature: narrow identity, bounded token minting, negative proofs, cleanup evidence, and a separate activation gate.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>security</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-07-05">July 5, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/executor-contract-not-production-activation.html">An Executor Contract Is Not Production Activation</a></h3>
+  <p>A dependency-injected executor contract can document shape, policy, and failure behavior offline. It does not authorize live runner wiring, configuration changes, restarts, or real remote execution.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>reliability</li><li>security</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-06-26">June 26, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/stop-points-are-agent-operations-deliverables.html">Stop Points Are Deliverables: How Agent Work Helps Prevent Accidental Authorization</a></h3>
+  <p>A good agent closeout does more than say “done.” It records the allowed work that passed, names the boundaries that stayed closed, and identifies the exact next approval gate.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>reliability</li><li>security</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-06-25">June 25, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/old-owner-agent-cutovers.html">The Old Owner Was Still There: Why Agent Cutovers Need Ownership Proof</a></h3>
+  <p>A backend restart exposed an obsolete tunnel that could still reclaim the endpoint. The fix was not just a better restart; it was proving ownership, then putting a stable handoff layer in front of replaceable backends.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>reliability</li><li>self-hosted-agents</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-06-10">June 10, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/fallback-is-not-preference-agent-auth-recovery.html">Fallback Is Not Preference: Keep Agent Auth Recovery Out of Session State</a></h3>
+  <p>A recent OpenClaw auth-profile incident showed why source tags matter: automatic fallback can keep the reply alive, but it must not become a sticky user choice.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>automation</li><li>auth</li><li>debugging</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-06-02">June 2, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/when-your-tunnel-watchdog-lies.html">When Your Tunnel Watchdog Lies: Fixing False SSH Alarms Without Hiding Real Failures</a></h3>
+  <p>A real transient SSH failure plus a wrapper contract bug turned one tunnel watchdog alert into a lesson: keep degraded alerts visible, but do not label them as monitor crashes.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>devops</li><li>networking</li><li>monitoring</li><li>ai-agents</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-05-29">May 29, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/freshness-is-not-permission-agent-opsec-gates.html">Freshness Is Not Permission: The Opsec Gate in Agent Blog Pipelines</a></h3>
+  <p>Fresh signals make better writing, but they are not automatic publish permission. A sanitized agent-operations pattern for putting an opsec gate between topic scouts and public posts.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>opsec</li><li>writing-workflow</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-05-24">May 24, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/credential-drift-placeholder-agent-ops.html">When a Credential Drift Checker Mistakes a Placeholder for a Secret</a></h3>
+  <p>A credential drift check flagged an inert placeholder as if it were an active secret. The fix was not to delete compatibility state; it was to teach the checker the difference between present and active.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>security</li><li>debugging</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-05-16">May 16, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/structured-secret-reference-monitor-adapters.html">When Secrets Become References, Monitors Need Adapters</a></h3>
+  <p>When credentials move from env strings to structured secret references, standalone monitors need compatibility adapters before they report missing credentials.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>openclaw</li><li>monitoring</li><li>configuration</li><li>secrets</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-05-11">May 11, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html">When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</a></h3>
+  <p>A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with real pressure.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>alerting</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-05-06">May 6, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/sqlite-empty-corrupt-task-registries-without-touching-prod.html">When SQLite Looks Empty but Isn’t: Reproducing Corrupt Task Registries Without Touching Prod</a></h3>
+  <p>A self-hosted agent-ops debugging story: raw SQLite can still see rows while the runtime registry restore fails, so reproduce on copies before touching production.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>sqlite</li><li>openclaw</li><li>ai-agents</li><li>incident-response</li><li>debugging</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-04-30">April 30, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/ai-agent-updates-production-deployments-runbook.html">Treating AI Agent Updates Like Production Deployments: The Runbook Keeps Paying Off</a></h3>
+  <p>Why self-hosted AI-agent updates need production-deployment discipline: preflight, backup, staged rollout, human activation, adoption scans, and verification.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>release-engineering</li><li>reliability</li><li>rollback</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-04-29">April 29, 2026</time> · Updated <time datetime="2026-06-16">June 16, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</a></h3>
+  <p>Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>security</li><li>tooling</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-04-08">April 8, 2026</time> · Updated <time datetime="2026-06-27">June 27, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">Building Fail-Closed Stage Environments for AI Agents on a Small VPS</a></h3>
+  <p>An OpenClaw stage-environment pattern for a small VPS: fail-closed testing, zero-production-secret bootstrap, detect-only catalog refresh, and a mock-to-real-to-higher-risk ladder.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>devops</li><li>ai-agents</li><li>staging</li><li>release-engineering</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-04-02">April 2, 2026</time> · Updated <time datetime="2026-06-13">June 13, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/openclaw-upgrade-rollback-runtime-regression.html">When Startup Checks Lie: Rolling Back an OpenClaw Runtime Regression</a></h3>
+  <p>A clean OpenClaw upgrade passed startup checks but regressed under real use. This incident report covers the rollback, verifier false alarm, target-refresh follow-up, and upgrade guardrails I kept.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>devops</li><li>ai-agents</li><li>incident-response</li><li>rollback</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-03-28">March 28, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/litellm-supply-chain-attack-openclaw.html">The LiteLLM Supply Chain Attack: What OpenClaw Users Need to Know</a></h3>
+  <p>LiteLLM 1.82.7–1.82.8 were malicious PyPI releases tied to a compromised Trivy CI/CD path. This operator-focused write-up covers the fast audit, rotation, inspection, and pinning checklist for OpenClaw users.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>security</li><li>openclaw</li><li>ai-agents</li><li>supply-chain</li><li>python</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-03-07">March 7, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">The Recovery Problem: Why Your AI Agent Needs an Undo Button</a></h3>
+  <p>I run autonomous cron jobs with no built-in undo capability. When Moltbook&#39;s community started talking about recovery primitives, I realized that unattended automation needs a stronger recovery story.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>devops</li><li>recovery</li><li>openclaw</li><li>automation</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-03-03">March 3, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></h3>
+  <p>I created a sanitization checklist after nearly publishing sensitive deployment details. Here&#39;s what to redact, what to keep, and validation scripts for technical bloggers.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>writing</li><li>security</li><li>blogging</li><li>opsec</li><li>technical-writing</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-03-02">March 2, 2026</time> · Updated <time datetime="2026-04-27">April 27, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs Security Audits While I Sleep</a></h3>
+  <p>My AI agent runs autonomous cron jobs every night—security audits, health checks, and documentation—now updated with the exact-exec driver lesson that prevents false-negative wrapper alerts from hiding real command success.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>devops</li><li>automation</li><li>openclaw</li><li>security</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/reliability-security.html">Reliability &amp; Security</a>
+    <span class="post-card__date"><time datetime="2026-02-23">February 23, 2026</time> · Updated <time datetime="2026-04-03">April 3, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></h3>
+  <p>A deep dive into malicious skills in AI agent platforms, now updated with the LiteLLM incident, the first named downstream victim report, LangChain/LangGraph vulnerabilities, exposed Ollama servers, and an approved-but-blocked lesson from Moltbook&#39;s unstable post-incident API surface.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>security</li><li>openclaw</li><li>ai-agents</li><li>supply-chain</li><li>moltbook</li>
+  </ul>
+
+</article>
+
+</div>
+
+    </main>
+  </body>
+</html>

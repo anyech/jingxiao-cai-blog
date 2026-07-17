@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/topics/agent-architecture-operations.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Agent Architecture &amp;amp; Operations - Jingxiao Cai&#39;s Blog">
+    <meta property="og:description" content="Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/topics/agent-architecture-operations.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Agent Architecture &amp;amp; Operations - Jingxiao Cai&#39;s Blog">
+    <meta name="twitter:description" content="Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Jingxiao Cai's Blog",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/",
+  "description": "Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering.",
+  "inLanguage": "en-US",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/",
+    "sameAs": [
+      "https://www.linkedin.com/in/jingxiaocai/",
+      "https://github.com/anyech",
+      "https://scholar.google.com/citations?user=pyxQPtAAAAAJ&hl=en"
+    ]
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  }
+}</script>
+
+    <title>Agent Architecture &amp;amp; Operations - Jingxiao Cai&#39;s Blog</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+
+
+<section class="hero hero--compact" aria-labelledby="topic-title">
+  <p class="eyebrow"><a href="/jingxiao-cai-blog/topics.html">All topics</a> · 31 posts</p>
+  <h1 id="topic-title">Agent Architecture &amp; Operations</h1>
+  <p class="hero__lede">Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.</p>
+</section>
+<div class="post-grid">
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-16">July 16, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html">Multi-Agent Collaboration Needs One Owner per Effect</a></h3>
+  <p>More agents do not create coordination. Reliable collaboration gives each logical request stable identity, each effect one owner, and each request one authoritative terminal state.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>multi-agent</li><li>coordination</li><li>reliability</li><li>automation</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-15">July 15, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html">Stop Reviewing the Review: How Agent Workflows Drift Out of Scope</a></h3>
+  <p>Agent work can drift when every review finding creates another validator, receipt, schema, and review cycle. Freeze the target, classify objections, and budget assurance.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>scope-creep</li><li>review</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-14">July 14, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html">A Visible Message Does Not Prove an Agent Wake</a></h3>
+  <p>A handoff can be visible without proving that another agent began a turn. Treat observability, inter-session transport, and completion as separate contracts.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>agent-ops</li><li>multi-agent</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-11">July 11, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a></h3>
+  <p>The useful output of an idea miner is not a pile of concepts. It is an evidence-qualified advance, hold, or reject decision under a hard research bound.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>product-discovery</li><li>research</li><li>automation</li><li>agent-ops</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-06">July 6, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html">A Final Summary Needs a Delivery Receipt</a></h3>
+  <p>A final summary can exist internally while the user-facing thread still lacks proof of delivery. Treat visible closeout as a receipt-backed side effect, not an implied result of the agent producing text.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>reliability</li><li>delivery</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-07-02">July 2, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/thread-closable-when-no-local-blocker-remains.html">A Thread Is Closable When No Local Blocker Remains</a></h3>
+  <p>A thread is not closable because it feels quiet. It is closable when the objective and delivery are complete, evidence is checked, no local blocker remains, and residual obligations have accepted owners or factual reopen triggers.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>debugging</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-29">June 29, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/panel-results-need-panelist-evaluation.html">Panel Results Are Not Finished Until You Grade the Panelists</a></h3>
+  <p>A panel result is not complete when the reviewers answer. It is complete when the parent workflow evaluates coverage, dissent, degraded lanes, and whether each panelist actually judged the target.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>debugging</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-27">June 27, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/role-split-artifact-qa-panels-agent-deliverables.html">Role Split Is Not Model Diversity: Artifact QA Panels for Agent Deliverables</a></h3>
+  <p>Artifact QA panels are useful when reviewers hold different jobs: first-time reader, skeptic, acceptance gate, cleanup editor. That is role diversity, not model diversity.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>automation</li><li>debugging</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-24">June 24, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html">Thread Affinity Is a Safety Boundary for Agent Work</a></h3>
+  <p>When an agent sees “continue,” the safest answer is not always to pick the most recent task. Thread affinity turns ambiguous continuation into an explicit routing decision.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>openclaw</li><li>agent-ops</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-23">June 23, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html">A Canary Is a Boundary, Not a Launch Button</a></h3>
+  <p>When an agent-run canary passes on a real component, the safest interpretation is not “ship it.” It is “the boundary held; now decide the next gate deliberately.”</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>reliability</li><li>canary-testing</li><li>automation</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-22">June 22, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/agent-threads-context-compaction-reliability-boundary.html">When Agent Threads Get Too Fat: Treat Context Compaction Like a Reliability Boundary</a></h3>
+  <p>Context compaction is not just token housekeeping. For long-running agent work, it is a reliability boundary that needs durable checkpoints, scoped continuations, and explicit final-delivery contracts.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>reliability</li><li>workflow</li><li>context-engineering</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-20">June 20, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html">The Screenshot Was Green. The Page Was Wrong: Semantic Validation for Agent Artifacts</a></h3>
+  <p>A screenshot can have the right size, path, and timestamp while showing the wrong page. Agent artifact checks need semantic validation, not just existence checks.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>debugging</li><li>automation</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-18">June 18, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/patch-the-thing-you-changed-narrow-config-validation.html">Patch the Thing You Changed: Why Config Validators Should Stay Narrow</a></h3>
+  <p>Config patch tools should not turn a tiny, reversible edit into a full-system interrogation. Validate the touched path, report unrelated drift separately, and keep dry-run evidence distinct from live activation.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>configuration</li><li>reliability</li><li>tooling</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-17">June 17, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/mock-first-live-when-proven-agent-demos.html">Mock First, Live When Proven: How to Keep Agent Demos Honest</a></h3>
+  <p>Mock paths make agent demos safe to build, but they should never pretend to be live. Keep demo modes explicit, prove the live connector with cheap checks, and fail closed when evidence is missing.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>tooling</li><li>demo-safety</li><li>reliability</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-16">June 16, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned: Let Routers Produce Contracts, Not Side Effects</a></h3>
+  <p>Routers can make agent work safer by producing exact-scope dispatch contracts instead of launching workers themselves. The parent workflow should own launch authority, evidence checks, and closeout.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>agent-ops</li><li>routing</li><li>workflow-design</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-12">June 12, 2026</time> · Updated <time datetime="2026-07-11">July 11, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html">Building a Pattern Scout That Does Not Chase Its Own Echoes</a></h3>
+  <p>Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>workflow</li><li>reliability</li><li>automation</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-11">June 11, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html">Nothing Ran, and That Was the Proof: Negative Smokes for Agent Runtime Offload</a></h3>
+  <p>A post-restart offload smoke passed because the runtime loaded, the safe facades answered, and every unsafe execution path stayed deliberately blocked.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>automation</li><li>runtime</li><li>testing</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-09">June 9, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/do-not-teach-app-worker-agent-offload-status.html">Do Not Teach the App About the Worker: Status Facades for Agent Runtime Offload</a></h3>
+  <p>A dry-run offload checkpoint showed why the application layer should see a stable status contract, not worker routes, transport details, or live execution mechanics.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>automation</li><li>runtime</li><li>debugging</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-07">June 7, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html">Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory</a></h3>
+  <p>An assistant accidentally replaced a daily memory note instead of appending to it. A shrink guard caught the damage before publish, and the fix became an append-only rule.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>automation</li><li>debugging</li><li>memory</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-06-01">June 1, 2026</time> · Updated <time datetime="2026-07-02">July 2, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/thread-checkpoints-agent-ops.html">Thread Checkpoints Are Not Summaries: Making Agent Work Resume Safely</a></h3>
+  <p>A thread checkpoint is not a diary entry. For long-running agent work, it is the compact interface that lets the next session resume safely without replaying the whole conversation or inheriting residual obligations from the wrong lane.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>openclaw</li><li>agent-ops</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-28">May 28, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/monitor-is-not-contract-agent-handoffs.html">The Monitor Is Not the Contract: Durable Handoffs for Long-Running Agents</a></h3>
+  <p>Progress monitors are useful, but they are not the contract. A sanitized agent-operations lesson on why long-running work needs durable handoff artifacts, explicit delivery targets, and a final bridge-back gate.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-27">May 27, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/cleanup-reveals-agent-delivery-contracts.html">When Cleanup Reveals the Real Contract: Bridge Gaps, Watchdogs, and Agent Delivery</a></h3>
+  <p>A sanitized OpenClaw agent-operations pattern: cleanup work exposed the difference between removing stale workflow state and proving that bridge-back, progress watchdog, and final delivery contracts were explicit.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-26">May 26, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/checkpoint-is-the-interface-agent-handoffs.html">The Checkpoint Is the Interface: Durable Handoffs for Long-Running Agent Work</a></h3>
+  <p>Long-running agent work should not depend on chat memory alone. Treat the checkpoint as the interface: status, result, evidence, owner, and final-delivery target.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>reliability</li><li>workflow</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-13">May 13, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html">When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</a></h3>
+  <p>A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>discord</li><li>automation</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-09">May 9, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed: An Agent-Ops Triage Pattern</a></h3>
+  <p>A daily scan job generated its report, but the final delivery side effect failed; the recovery pattern was to replay the saved artifact instead of rerunning the whole workflow.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>debugging</li><li>reliability</li><li>openclaw</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-07">May 7, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back, Not Just a Background Thread</a></h3>
+  <p>Detaching long-running agent work is useful only when admission, work ownership, and final delivery all have explicit contracts.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>discord</li><li>reliability</li><li>workflow</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-05-01">May 1, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/closing-external-threads-cleanly-agent-ops.html">Closing External Threads Cleanly: An Agent-Ops Pattern</a></h3>
+  <p>A lightweight agent-operations pattern for closing external threads cleanly: make constraints explicit, record the decision, finish the action, and define reopen criteria.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>workflow</li><li>human-in-the-loop</li><li>decision-making</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-04-30">April 30, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/design-tool-integrations-capability-gates-llm-config.html">Design-Tool Integrations Need Capability Gates: Lessons from a Missing LLM Config</a></h3>
+  <p>Why design-tool integrations need capability gates before LLM generation: validate inputs, route readiness, model config, and artifact proof early.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>tooling</li><li>ai-agents</li><li>workflow</li><li>design-tools</li><li>llm-ops</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-04-29">April 29, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></h3>
+  <p>How I modernized agent skills with problem-first discovery, intake gates, thin wrappers, package hygiene, capability gates, and consolidation instead of skill sprawl.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>openclaw</li><li>skills</li><li>workflow</li><li>maintenance</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-04-27">April 27, 2026</time> · Updated <time datetime="2026-05-14">May 14, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></h3>
+  <p>AI cron reliability needs deterministic helpers, layered timeout budgets, silent-success monitor semantics, and follow-up checks that can actually observe their targets.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>ai-agents</li><li>automation</li><li>reliability</li><li>cron</li><li>devops</li>
+  </ul>
+
+</article>
+
+<article class="post-card"
+  >
+  <p class="post-card__meta">
+    <a class="topic-badge" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">Agent Architecture &amp; Operations</a>
+    <span class="post-card__date"><time datetime="2026-04-03">April 3, 2026</time> · Updated <time datetime="2026-07-04">July 4, 2026</time></span>
+  </p>
+  <h3><a href="/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</a></h3>
+  <p>How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, local-lane promotion gates, bridge-back delivery contracts, and user-visible dissent.</p>
+
+  <ul class="tag-list" aria-label="Tags">
+    <li>openclaw</li><li>ai-agents</li><li>llm</li><li>orchestration</li><li>devops</li>
+  </ul>
+
+</article>
+
+</div>
+
+    </main>
+  </body>
+</html>
