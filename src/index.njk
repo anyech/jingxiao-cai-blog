@@ -35,6 +35,24 @@ canonicalPath: ""
       <div><dt>{{ collections.postsByPublished.length }}</dt><dd>technical notes</dd></div>
       <div><dt>{{ topics.length }}</dt><dd>topic archives</dd></div>
     </dl>
+    <section class="author-card__upstream" aria-labelledby="openclaw-upstream-title">
+      <div class="upstream-heading">
+        <p class="eyebrow" id="openclaw-upstream-title">OpenClaw upstream</p>
+        <span>Verified <time datetime="{{ openclawContrib.verifiedDate }}">{{ openclawContrib.verifiedDate | dateDisplay }}</time></span>
+      </div>
+      <div class="upstream-proof">
+        <strong>{{ openclawContrib.mergedPrCount }}</strong>
+        <span>merged upstream PRs</span>
+      </div>
+      <p class="upstream-scope">{{ openclawContrib.scope }}</p>
+      <a class="upstream-latest" href="{{ openclawContrib.latest.url }}" aria-label="Latest merged OpenClaw contribution: PR {{ openclawContrib.latest.number }}, {{ openclawContrib.latest.label }}">
+        <span>Latest</span> #{{ openclawContrib.latest.number }} · {{ openclawContrib.latest.label }} ↗
+      </a>
+      <nav class="upstream-links" aria-label="OpenClaw contributions and writing">
+        <a href="{{ openclawContrib.contributionsUrl }}">View contributions ↗</a>
+        <a href="{{ openclawContrib.writingUrl }}">OpenClaw writing →</a>
+      </nav>
+    </section>
     {% if latestPost %}
     <div class="author-card__latest">
       <p class="eyebrow">Latest publication</p>

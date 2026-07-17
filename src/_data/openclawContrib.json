@@ -1,0 +1,14 @@
+{
+  "mergedPrCount": 13,
+  "scope": "Runtime reliability · delivery · document tooling",
+  "latest": {
+    "number": 98021,
+    "label": "GPT-5.6 Ultra cross-runtime integration",
+    "url": "https://github.com/openclaw/openclaw/pull/98021",
+    "mergedAt": "2026-07-10T14:23:25Z"
+  },
+  "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
+  "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
+  "verifiedDate": "2026-07-17",
+  "source": "personal-site OpenClaw contribution updater"
+}
