@@ -1,0 +1,309 @@
+---
+layout: post.njk
+permalink: 'harness-passed-claim-did-not-independent-evidence.html'
+title: 'The Harness Passed. The Claim Did Not: Why Independent Evidence Matters'
+slug: 'harness-passed-claim-did-not-independent-evidence'
+description: 'A synthetic agent harness can pass every local check yet fail to prove its runtime claim when the observation is derived from the same scripted input.'
+summary: 'A green harness is not enough when its “observation” merely repeats the input. Runtime claims need an independent evidence path and a real stop rule.'
+date: '2026-07-17'
+updated: ''
+topic: 'agent-architecture-operations'
+tags: ['ai-agents', 'agent-ops', 'testing', 'evidence', 'review', 'reliability']
+keywords: ['AI agent testing', 'independent evidence', 'synthetic harness', 'runtime observation', 'agent review stop rule', 'evidence provenance', 'agent operations', 'measurement independence']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'The Harness Passed. The Claim Did Not: Why Independent Evidence Matters'
+feedDescription: 'A practical test for whether a synthetic harness independently observes the runtime claim or merely repeats its own scripted input.'
+feedPubDate: 'Fri, 17 Jul 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-07-17'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>The Harness Passed. The Claim Did Not: Why Independent Evidence Matters</h1>
+    <div class="meta">
+        <strong>July 17, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, testing, evidence, review, reliability</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a bounded final-review stop into a public evidence pattern while removing private implementation details, operational identifiers, and provider-specific fingerprints.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a conceptual agent-testing pattern, not a description of a live deployment or a specific model-routing implementation. The problem is not that a harness is synthetic; it is that a self-referential measurement cannot support a stronger runtime claim. The examples are deliberately small.
+    </div>
+</header>
+
+<main>
+    <p>A synthetic qualification harness passed its tests. Its snapshot was stable. Its validator rejected malformed inputs. Its result record was well-typed. The local evidence looked impressively complete.</p>
+
+    <p>Then final review asked a narrower question: where did the claimed runtime observation come from?</p>
+
+    <p>The answer changed the verdict. The field labeled as an observation was derived from the same scripted input that expressed the intended result. The harness had proved that it could preserve and compare its own data. It had not proved that a runtime independently attempted or observed the claimed behavior.</p>
+
+    <blockquote>
+        <p><strong>A test can be internally consistent and still lack an independent measurement.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a compact way to distinguish intended, attempted, and observed behavior; test whether the evidence path is independent; and stop a review cycle when the central claim remains unproven.
+    </div>
+
+    <h2>The Three-Layer Claim</h2>
+
+    <p>Many agent-runtime claims quietly combine three different facts:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Question</th>
+                <th>Typical evidence owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Intended</strong></td>
+                <td>What did policy, configuration, or the test case request?</td>
+                <td>Fixture, router decision, or control-plane record</td>
+            </tr>
+            <tr>
+                <td><strong>Attempted</strong></td>
+                <td>What action did the runtime actually try to perform?</td>
+                <td>Dispatch boundary, adapter, or invocation event</td>
+            </tr>
+            <tr>
+                <td><strong>Observed</strong></td>
+                <td>What independently measured outcome occurred?</td>
+                <td>Runtime-owned event, response provenance, or external readback</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>A policy unit test may establish <em>intended</em>. A mocked adapter may establish the shape of <em>attempted</em>. Neither automatically establishes <em>observed</em>.</p>
+
+    <div class="success">
+        <strong>Claim invariant:</strong> when the public or operational claim is “the runtime selected and used the intended path,” the evidence must connect intended, attempted, and observed values without deriving all three from one source.
+    </div>
+
+    <h2>How a Harness Accidentally Observes Itself</h2>
+
+    <p>Consider this simplified anti-pattern:</p>
+
+    <pre><code class="language-javascript">const expected = testCase.requestedRoute;
+const decision = chooseRoute(testCase);
+
+return {
+  intended: expected,
+  attempted: decision.route,
+  observed: testCase.requestedRoute
+};</code></pre>
+
+    <p>The result may satisfy <code>intended === attempted === observed</code>. But the equality is circular. The “observed” value came from the fixture, not from a runtime-owned observation boundary.</p>
+
+    <p>A stronger shape keeps the sources separate:</p>
+
+    <pre><code class="language-javascript">const intended = policyDecision(testCase);
+const attempt = await dispatchBoundary.invoke(intended);
+const observed = await observationBoundary.read(attempt.id);
+
+assertEqual(intended.route, attempt.route);
+assertEqual(attempt.route, observed.route);</code></pre>
+
+    <p>This pseudocode is a design sketch, not a universal implementation recipe. The important property is source independence: mutating the fixture alone must not be able to manufacture the runtime observation.</p>
+
+    <p>An attempt ID is a correlation handle, not proof of independence. If the observation store merely copies the dispatch envelope, the second interface still reads the same claim-producing data path. A stronger measurement is produced by the downstream component that performed—or failed to perform—the behavior, then correlated to the specific attempt with freshness and request-identity checks. A mock can preserve that producer separation, but a mock that returns the fixture value proves only the simulated contract.</p>
+
+    <h2>Use an Evidence-Independence Matrix</h2>
+
+    <p>Before trusting a polished qualification packet, map each claim to its producer and ask what would falsify it.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Claim</th>
+                <th>Evidence producer</th>
+                <th>Independent?</th>
+                <th>Falsification test</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>The policy chose route B</td>
+                <td>Policy result</td>
+                <td>Yes for policy behavior</td>
+                <td>Change eligibility input; decision should change predictably</td>
+            </tr>
+            <tr>
+                <td>The runtime attempted route B</td>
+                <td>Dispatch event</td>
+                <td>Only if runtime-owned and attempt-correlated</td>
+                <td>Break the dispatch seam; attempt evidence should fail or differ</td>
+            </tr>
+            <tr>
+                <td>The runtime observed route B</td>
+                <td>Response or runtime readback</td>
+                <td>Only if downstream-owned, fresh, and not copied from intent or dispatch</td>
+                <td>Fail downstream behavior while intent and dispatch metadata remain intact; the observation must differ, disappear, or report failure</td>
+            </tr>
+            <tr>
+                <td>Disabled mode restores the fixed route</td>
+                <td>Negative control</td>
+                <td>Useful only if it uses the same runtime seam and an independent producer</td>
+                <td>Disable routing; the fixed path must be observed</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The last row matters. A test suite that proves only the enabled path may miss restoration defects. A negative control shows whether the system can distinguish “the feature selected this path” from “the fixture always says this path.”</p>
+
+    <p>Mismatch injection and disabled-mode controls are necessary falsification checks, not sufficient proof of independent provenance. Two interfaces over one underlying envelope can pass both. The evidence still needs a trustworthy producer, correct attempt correlation, and a freshness boundary that rejects stale, replayed, or cross-request readback.</p>
+
+    <h2>Validate the Measurement, Not Just the Result</h2>
+
+    <p>Agent workflows often spend most of their effort validating artifacts:</p>
+
+    <ul>
+        <li>snapshot hashes;</li>
+        <li>file-set and mode checks;</li>
+        <li>schema validation;</li>
+        <li>symlink and path protections;</li>
+        <li>negative fixtures; and</li>
+        <li>non-interference tests.</li>
+    </ul>
+
+    <p>Those controls can be valuable. They establish integrity of the qualification machinery. They do not establish that the machinery observes the system under test.</p>
+
+    <p>Add four measurement questions to the review:</p>
+
+    <ol>
+        <li><strong>Producer:</strong> which component produced this field?</li>
+        <li><strong>Independence:</strong> can the test input or dispatch envelope directly determine it without the claimed downstream behavior occurring?</li>
+        <li><strong>Correlation and freshness:</strong> does the readback belong to this exact attempt, or could it be stale, replayed, or attached to another request?</li>
+        <li><strong>Mismatch:</strong> has the harness demonstrated that it can detect intended, attempted, and observed values diverging?</li>
+    </ol>
+
+    <p>If the answer to the mismatch question is no, a green equality check may be a tautology.</p>
+
+    <h2>Let Final Review Produce a Real Stop</h2>
+
+    <p>The clean response to an unproven central claim is not always another harness revision. Sometimes the workflow already promised:</p>
+
+    <pre><code>one final independent review
+at most one bounded execution if accepted
+any decision-changing review failure =&gt; terminal stop</code></pre>
+
+    <p>That rule changes incentives. The reviewer can say no without automatically creating a successor phase. The builder cannot keep adding proof machinery until the packet becomes too expensive to reject. The operator receives an honest outcome: useful offline evidence exists, but the runtime claim did not cross its evidence boundary.</p>
+
+    <p>A terminal stop record should contain:</p>
+
+    <ul>
+        <li>the exact claim that remained unproven;</li>
+        <li>the decision-changing findings and their evidence;</li>
+        <li>what the completed harness still proves;</li>
+        <li>what was explicitly not executed or changed;</li>
+        <li>the authority boundary that prevents automatic continuation; and</li>
+        <li>the separate decisions available later: accept the narrower evidence, pause, or authorize a clean-sheet design.</li>
+    </ul>
+
+    <p>This is not failure theater. It preserves both the value of the completed work and the truth about its limits.</p>
+
+    <h2>When To Repair, Re-Anchor, or Stop</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Finding</th>
+                <th>Disposition</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Formatting or metadata defect</td>
+                <td>Repair in place</td>
+                <td>The evidence claim is unchanged</td>
+            </tr>
+            <tr>
+                <td>Missing negative case inside the declared harness scope</td>
+                <td>Repair only if the review budget permits</td>
+                <td>The target may still be the same</td>
+            </tr>
+            <tr>
+                <td>Observation is derived from the fixture</td>
+                <td>Block the runtime claim</td>
+                <td>The measurement is not independent</td>
+            </tr>
+            <tr>
+                <td>Real observation requires a new runtime path or new authority</td>
+                <td>Explicit re-anchor</td>
+                <td>The decision object and risk surface changed</td>
+            </tr>
+            <tr>
+                <td>Final-review stop condition is triggered</td>
+                <td>Stop the cycle</td>
+                <td>Continuing would violate the agreed review contract</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>When Not To Demand Runtime Evidence</h2>
+
+    <p>Not every useful claim needs a live or end-to-end runtime observation. Keep the proof proportional:</p>
+
+    <ul>
+        <li>a pure policy function can be proven with deterministic unit tests;</li>
+        <li>a parser contract may need fixtures, not a live service;</li>
+        <li>a schema migration may be adequately tested against an isolated copy;</li>
+        <li>an exploratory prototype may explicitly claim only structural feasibility; and</li>
+        <li>a high-risk live probe may be unjustified when the narrower offline evidence is enough for the current decision.</li>
+    </ul>
+
+    <p>The mistake is not using synthetic evidence. A synthetic harness can preserve independent seams and detect a downstream mismatch. The mistake is attaching a stronger runtime claim to evidence that never crossed the relevant behavior boundary or came back through an independent producer.</p>
+
+    <h2>Conclusion</h2>
+
+    <p>A disciplined harness can prove many important things: deterministic policy behavior, artifact integrity, negative-input handling, non-interference, and a bounded execution contract.</p>
+
+    <p>It cannot prove an independent runtime observation by copying the intended value into an observation field.</p>
+
+    <p>Separate intended, attempted, and observed evidence. Name the producer of each field. Prove attempt correlation and freshness. Demonstrate that the measurement catches downstream mismatches while intent and dispatch metadata remain intact. And when final review falsifies the central claim, let the stop rule stop the workflow.</p>
+
+    <blockquote>
+        <p><strong>A green harness is evidence. It is not permission to claim more than the harness observed.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html">Stop Reviewing the Review</a></li>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Prove the Change Without Touching Production</a></li>
+            <li><a href="/jingxiao-cai-blog/screenshot-green-page-wrong-agent-artifact-validation.html">The Screenshot Was Green. The Page Was Wrong</a></li>
+            <li><a href="/jingxiao-cai-blog/agent-pr-proof-expiration-refresh-window.html">Agent PR Proof Expires</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, evidence-driven workflows, and operational decision boundaries.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A passing test is only as strong as the independence of its measurement.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Where have you seen a test accidentally observe its own fixture? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 17, 2026 &bull; Part of my ongoing AI-agent operations and reliability series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
