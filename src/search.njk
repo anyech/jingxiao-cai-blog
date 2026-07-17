@@ -1,34 +1,86 @@
 ---
 layout: base.njk
 permalink: search.html
-title: "Search - Jingxiao Cai's Blog"
-description: "Static Pagefind search for Jingxiao Cai's Blog."
+title: "Explore - Jingxiao Cai's Blog"
+description: "Search and filter Jingxiao Cai's technical writing by topic, tag, date, and publication order."
 canonicalPath: "search.html"
 ---
-<section class="hero hero--compact" aria-labelledby="search-title">
-  <p class="eyebrow">Static search</p>
-  <h1 id="search-title">Search the archive</h1>
-  <p class="hero__lede">Pagefind builds this index from static HTML after generation. There is no server-side search service and no client-rendered content dependency.</p>
+{% from "post-card.njk" import postCard %}
+{% set allTags = collections.postsByPublished | uniqueTags %}
+{% set allYears = collections.postsByPublished | uniqueYears %}
+<section class="hero hero--compact" aria-labelledby="explore-title">
+  <p class="eyebrow">Search · filter · sort</p>
+  <h1 id="explore-title">Explore the archive</h1>
+  <p class="hero__lede">Find a specific idea with Pagefind, or narrow all {{ collections.postsByPublished.length }} posts by primary topic, tag, year, and month.</p>
 </section>
 
-<section class="search-panel" aria-label="Search form">
-  <link href="{{ site.basePath }}pagefind/pagefind-ui.css" rel="stylesheet">
-  <div id="search">
-    <noscript>
-      <p class="search-noscript">Search needs JavaScript to run locally in your browser. You can still browse the <a href="{{ site.basePath }}llms.txt">agent-readable index</a>, <a href="{{ site.basePath }}sitemap.xml">sitemap</a>, or <a href="{{ site.basePath }}feed.xml">RSS feed</a>.</p>
-    </noscript>
+<section class="explore" data-explore-root data-base-path="{{ site.basePath }}" aria-labelledby="explore-controls-title">
+  <div class="explore-controls" data-explore-controls hidden>
+    <div class="explore-controls__heading">
+      <div><p class="eyebrow">Archive controls</p><h2 id="explore-controls-title">Refine the posts</h2></div>
+      <button class="reset-button" type="button" data-explore-reset>Reset all</button>
+    </div>
+    <div class="filter-grid">
+      <label class="filter-field filter-field--query">
+        <span>Keyword</span>
+        <input type="search" name="q" data-filter="q" placeholder="Search titles and full post text" autocomplete="off">
+      </label>
+      <label class="filter-field">
+        <span>Primary topic</span>
+        <select name="topic" data-filter="topic">
+          <option value="">All topics</option>
+          {% for topic in topics %}<option value="{{ topic.slug }}">{{ topic.label }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Tag</span>
+        <select name="tag" data-filter="tag">
+          <option value="">All tags</option>
+          {% for tag in allTags %}<option value="{{ tag }}">{{ tag }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Year</span>
+        <select name="year" data-filter="year">
+          <option value="">All years</option>
+          {% for year in allYears %}<option value="{{ year }}">{{ year }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Month</span>
+        <select name="month" data-filter="month" disabled>
+          <option value="">All months</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Sort</span>
+        <select name="sort" data-filter="sort">
+          <option value="published-desc">Newest published</option>
+          <option value="updated-desc">Recently updated</option>
+          <option value="published-asc">Oldest published</option>
+          <option value="title-asc">Title A–Z</option>
+          <option value="relevance">Search relevance</option>
+        </select>
+      </label>
+    </div>
+    <div class="active-filters" data-active-filters aria-label="Active filters"></div>
+    <p class="explore-status" data-explore-status role="status" aria-live="polite"></p>
+    <p class="explore-error" data-explore-error role="alert" hidden></p>
   </div>
-  <div class="search-hints" data-pagefind-ignore>
-    <p class="eyebrow">Try these queries</p>
-    <ul>
-      <li><a href="{{ site.basePath }}search.html?q=OpenClaw%20memory%20search">OpenClaw memory search</a></li>
-      <li><a href="{{ site.basePath }}search.html?q=gateway%20restart">gateway restart</a></li>
-      <li><a href="{{ site.basePath }}search.html?q=Moltbook">Moltbook</a></li>
-      <li><a href="{{ site.basePath }}search.html?q=GitHub%20Pages">GitHub Pages</a></li>
-    </ul>
+
+  <noscript><p class="search-noscript">Interactive search and filters need JavaScript, but the complete archive remains available below in newest-first order. You can also browse the <a href="{{ site.basePath }}topics.html">static topic archive</a>.</p></noscript>
+
+  <div class="explore-results-heading">
+    <h2>All posts</h2>
+    <span>{{ collections.postsByPublished.length }} total</span>
   </div>
-  <script src="{{ site.basePath }}pagefind/pagefind-ui.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => new PagefindUI({ element: '#search', showSubResults: true, showImages: false }));
-  </script>
+  <div class="post-grid" data-explore-results>
+  {% for post in collections.postsByPublished %}{{ postCard(post, site, topics, true) }}{% endfor %}
+  </div>
+  <div class="empty-state" data-explore-empty hidden>
+    <h2>No posts match those filters</h2>
+    <p>Remove a filter or try a broader keyword.</p>
+    <button class="button" type="button" data-explore-reset>Reset all</button>
+  </div>
 </section>
+<script type="module" src="{{ site.basePath }}assets/explore.js"></script>

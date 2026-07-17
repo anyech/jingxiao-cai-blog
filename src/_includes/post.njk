@@ -2,5 +2,17 @@
 layout: base.njk
 ---
 <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">{{ topic }}</span>
+  {% for tag in tags or [] %}<span data-pagefind-filter="tag">{{ tag }}</span>{% endfor %}
+  <span data-pagefind-filter="year">{{ date | dateYear }}</span>
+  <span data-pagefind-filter="month">{{ date | dateMonth }}</span>
+  <span data-pagefind-sort="published">{{ date }}</span>
+  <span data-pagefind-sort="updated">{{ updated or date }}</span>
+  <span data-pagefind-sort="title">{{ title | striptags }}</span>
+  <span data-pagefind-meta="topic">{{ topic }}</span>
+  <span data-pagefind-meta="published">{{ date }}</span>
+  <span data-pagefind-meta="updated">{{ updated or '' }}</span>
+</div>
 {{ content | safe }}
 </article>

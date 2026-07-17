@@ -1,0 +1,22 @@
+---
+layout: base.njk
+pagination:
+  data: topics
+  size: 1
+  alias: topicEntry
+permalink: "topics/{{ topicEntry.slug }}.html"
+eleventyComputed:
+  title: "{{ topicEntry.label }} - Jingxiao Cai's Blog"
+  description: "{{ topicEntry.description }}"
+  canonicalPath: "topics/{{ topicEntry.slug }}.html"
+---
+{% from "post-card.njk" import postCard %}
+{% set topicPosts = collections.postsByPublished | byTopic(topicEntry.slug) %}
+<section class="hero hero--compact" aria-labelledby="topic-title">
+  <p class="eyebrow"><a href="{{ site.basePath }}topics.html">All topics</a> · {{ topicPosts.length }} post{% if topicPosts.length != 1 %}s{% endif %}</p>
+  <h1 id="topic-title">{{ topicEntry.label }}</h1>
+  <p class="hero__lede">{{ topicEntry.description }}</p>
+</section>
+<div class="post-grid">
+{% for post in topicPosts %}{{ postCard(post, site, topics) }}{% endfor %}
+</div>

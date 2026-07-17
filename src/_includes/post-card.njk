@@ -1,0 +1,27 @@
+{% macro postCard(post, site, topics, searchable=false) %}
+<article class="post-card{% if searchable %} post-card--explore{% endif %}"
+  {% if searchable %}
+  data-explore-card
+  data-title="{{ post.data.title | striptags }}"
+  data-summary="{{ post.data.summary or post.data.description }}"
+  data-topic="{{ post.data.topic }}"
+  data-tags="{{ post.data.tags | join(',') }}"
+  data-published="{{ post.data.date }}"
+  data-updated="{{ post.data.updated or '' }}"
+  data-year="{{ post.data.date | dateYear }}"
+  data-month="{{ post.data.date | dateMonth }}"
+  data-url="{{ site.basePath }}{{ post.data.slug }}.html"
+  {% endif %}>
+  <p class="post-card__meta">
+    <a class="topic-badge" href="{{ site.basePath }}topics/{{ post.data.topic }}.html">{{ post.data.topic | topicLabel(topics) }}</a>
+    <span class="post-card__date"><time datetime="{{ post.data.date }}">{{ post.data.date | dateDisplay }}</time>{% if post.data.updated %} · Updated <time datetime="{{ post.data.updated }}">{{ post.data.updated | dateDisplay }}</time>{% endif %}</span>
+  </p>
+  <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title | safe }}</a></h3>
+  <p>{{ post.data.summary or post.data.description }}</p>
+  {% if post.data.tags and post.data.tags.length %}
+  <ul class="tag-list" aria-label="Tags">
+    {% for tag in post.data.tags.slice(0, 5) %}<li>{{ tag }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+</article>
+{% endmacro %}

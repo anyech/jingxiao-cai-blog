@@ -5,43 +5,73 @@ title: "Jingxiao Cai's Blog | Distributed ML Runtime Systems, Agent Ops, Self-Ho
 description: "Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering."
 canonicalPath: ""
 ---
-<section class="hero" aria-labelledby="site-title">
-  <p class="eyebrow">distributed ML runtime systems · agent ops · self-hosted AI</p>
-  <h1 id="site-title">Jingxiao Cai's Blog</h1>
-  <p class="hero__lede">Engineering notes on backend/runtime systems for production ML workloads, agent ops, debugging, automation, and the sharp edges of self-hosted AI systems.</p>
-  <div class="hero__actions" data-pagefind-ignore>
-    <a class="button button--primary" href="{{ site.basePath }}search.html">Search the archive</a>
-    <a class="button" href="{{ site.basePath }}feed.xml">RSS feed</a>
-    <a class="button" href="{{ site.basePath }}llms.txt">Agent-readable index</a>
+{% from "post-card.njk" import postCard %}
+<section class="home-hero" aria-labelledby="site-title">
+  <div class="hero hero--home">
+    <p class="eyebrow">distributed ML runtime systems · agent ops · self-hosted AI</p>
+    <h1 id="site-title">Engineering notes from systems that have to work</h1>
+    <p class="hero__lede">Deep dives on distributed execution, backend/runtime reliability, self-hosted AI agents, debugging, and evidence-driven engineering workflows.</p>
+    <div class="hero__actions" data-pagefind-ignore>
+      <a class="button button--primary" href="{{ site.basePath }}search.html">Explore all posts</a>
+      <a class="button" href="{{ site.basePath }}feed.xml">RSS feed</a>
+    </div>
   </div>
+
+  <aside class="author-card" aria-labelledby="author-card-title" data-pagefind-ignore>
+    <div class="author-card__monogram" aria-hidden="true">JC</div>
+    <p class="eyebrow">About the author</p>
+    <h2 id="author-card-title">{{ site.author }}</h2>
+    <p class="author-card__role">{{ site.authorProfile.role }}</p>
+    <p>{{ site.authorProfile.bio }}</p>
+    <ul class="profile-links" aria-label="Jingxiao Cai profiles">
+      {% for link in site.authorProfile.links %}<li><a href="{{ link.url }}">{{ link.label }}</a></li>{% endfor %}
+    </ul>
+  </aside>
 </section>
 
-<section class="agent-note" aria-labelledby="agent-note-title">
-  <h2 id="agent-note-title">Agent-friendly by design</h2>
-  <p>Static HTML, stable <code>*.html</code> URLs, RSS, sitemap, Pagefind search, and a generated <code>llms.txt</code> index. No client-rendered content is required for crawlers or AI agents to read the posts.</p>
+<section aria-labelledby="topics-title">
+  <div class="section-heading section-heading--split">
+    <div><p class="eyebrow">Start with a subject</p><h2 id="topics-title">Browse by topic</h2></div>
+    <a class="text-link" href="{{ site.basePath }}topics.html">View topic archive →</a>
+  </div>
+  <div class="topic-grid">
+    {% for topic in topics %}
+    {% set topicPosts = collections.postsByPublished | byTopic(topic.slug) %}
+    <a class="topic-card" href="{{ site.basePath }}topics/{{ topic.slug }}.html">
+      <span class="topic-card__count">{{ topicPosts.length }} post{% if topicPosts.length != 1 %}s{% endif %}</span>
+      <strong>{{ topic.label }}</strong>
+      <span>{{ topic.description }}</span>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 
 <section class="post-list" aria-labelledby="posts-title">
-  <div class="section-heading">
-    <p class="eyebrow">Archive</p>
-    <h2 id="posts-title">Latest posts</h2>
+  <div class="section-heading section-heading--split">
+    <div><p class="eyebrow">Newest by publication date</p><h2 id="posts-title">Latest publications</h2></div>
+    <a class="text-link" href="{{ site.basePath }}search.html">Search and filter →</a>
   </div>
   <div class="post-grid">
-  {% for post in collections.posts %}
-    <article class="post-card">
-      <p class="post-card__date"><time datetime="{{ post.data.date }}">{{ post.data.date | dateDisplay }}</time>{% if post.data.updated %} · Updated <time datetime="{{ post.data.updated }}">{{ post.data.updated | dateDisplay }}</time>{% endif %}</p>
-      <h3><a href="{{ site.basePath }}{{ post.data.slug }}.html">{{ post.data.title | safe }}</a></h3>
-      <p>{{ post.data.summary or post.data.description }}</p>
-      {% if post.data.tags and post.data.tags.length %}
-      <ul class="tag-list" aria-label="Tags">
-        {% for tag in post.data.tags.slice(0, 5) %}<li>{{ tag }}</li>{% endfor %}
-      </ul>
-      {% endif %}
-    </article>
-  {% endfor %}
+  {% for post in collections.postsByPublished | limit(9) %}{{ postCard(post, site, topics) }}{% endfor %}
   </div>
 </section>
 
+{% if collections.recentlyUpdated.length %}
+<section class="updated-strip" aria-labelledby="updated-title">
+  <div class="section-heading"><p class="eyebrow">Meaningful revisions</p><h2 id="updated-title">Recently updated</h2></div>
+  <div class="updated-list">
+  {% for post in collections.recentlyUpdated | limit(4) %}
+    <a href="{{ site.basePath }}{{ post.data.slug }}.html"><strong>{{ post.data.title | safe }}</strong><span>Updated {{ post.data.updated | dateDisplay }}</span></a>
+  {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="agent-note" aria-labelledby="agent-note-title">
+  <h2 id="agent-note-title">Built for readers, crawlers, and agents</h2>
+  <p>Every post is readable as static HTML with a stable URL. The site also publishes <a href="{{ site.basePath }}feed.xml">RSS</a>, a <a href="{{ site.basePath }}sitemap.xml">sitemap</a>, Markdown mirrors, Pagefind search, and an <a href="{{ site.basePath }}llms.txt"><code>llms.txt</code> index</a>.</p>
+</section>
+
 <footer class="page-footer" data-pagefind-ignore>
-  <p><a href="https://github.com/anyech/jingxiao-cai-blog">GitHub Repository</a></p>
+  <p><a href="https://github.com/anyech/jingxiao-cai-blog">Source on GitHub</a> · <a href="{{ site.basePath }}llms.txt">llms.txt</a></p>
 </footer>

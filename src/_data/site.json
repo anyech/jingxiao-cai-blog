@@ -3,6 +3,16 @@
   "description": "Technical blog by Jingxiao Cai about distributed ML runtime systems, backend execution reliability, self-hosted AI agents, debugging, automation, and production engineering.",
   "author": "Jingxiao Cai",
   "authorUrl": "https://anyech.github.io/jingxiao-cai/",
+  "authorProfile": {
+    "role": "Distributed ML runtime systems engineer",
+    "bio": "I build distributed ML runtime systems and backend execution reliability for production ML workloads. I also write about self-hosted AI agents, technical debugging, and evidence-driven engineering workflows.",
+    "links": [
+      { "label": "Personal website", "url": "https://anyech.github.io/jingxiao-cai/" },
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/jingxiaocai/" },
+      { "label": "GitHub", "url": "https://github.com/anyech" },
+      { "label": "Google Scholar", "url": "https://scholar.google.com/citations?user=pyxQPtAAAAAJ&hl=en" }
+    ]
+  },
   "url": "https://anyech.github.io",
   "basePath": "/jingxiao-cai-blog/",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",

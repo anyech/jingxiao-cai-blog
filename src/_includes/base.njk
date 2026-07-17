@@ -13,6 +13,7 @@
     <link rel="alternate" type="text/plain" title="LLMs text overview" href="{{ site.url }}{{ site.basePath }}llms.txt">
     {% if slug %}<link rel="alternate" type="text/markdown" title="Markdown mirror" href="{{ site.url }}{{ site.basePath }}{{ slug }}.html.md">{% endif %}
     <link rel="sitemap" type="application/xml" href="{{ site.url }}{{ site.basePath }}sitemap.xml">
+    <link rel="icon" href="{{ site.basePath }}favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="{{ site.basePath }}assets/site.css">
     <meta property="og:type" content="{{ ogType or ('article' if slug else 'website') }}">
     <meta property="og:title" content="{{ title or site.title }}">
@@ -61,10 +62,11 @@
           <span class="brand__text">Jingxiao Cai</span>
         </a>
         <nav class="site-nav" aria-label="Primary navigation">
-          <a href="{{ site.basePath }}">Posts</a>
-          <a href="{{ site.basePath }}search.html">Search</a>
+          <a href="{{ site.basePath }}">Home</a>
+          <a href="{{ site.basePath }}search.html">Explore</a>
+          <a href="{{ site.basePath }}topics.html">Topics</a>
+          <a href="{{ site.authorUrl }}">About</a>
           <a href="{{ site.basePath }}feed.xml">RSS</a>
-          <a href="{{ site.basePath }}llms.txt">llms.txt</a>
         </nav>
       </div>
     </header>

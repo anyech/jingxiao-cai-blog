@@ -113,13 +113,50 @@ module.exports = function(eleventyConfig) {
       const db = String(b.data.updated || b.data.date || '');
       const ua = Boolean(a.data.updated && a.data.updated !== a.data.date);
       const ub = Boolean(b.data.updated && b.data.updated !== b.data.date);
-      return db.localeCompare(da) || Number(ua) - Number(ub) || String(a.data.title).localeCompare(String(b.data.title));
+      return db.localeCompare(da)
+        || Number(ua) - Number(ub)
+        || String(a.data.title).localeCompare(String(b.data.title))
+        || String(a.data.slug || '').localeCompare(String(b.data.slug || ''));
     });
+  });
+  eleventyConfig.addCollection('postsByPublished', function(collectionApi) {
+    return collectionApi.getFilteredByGlob(['src/posts/*.md', 'src/posts/*.html']).sort((a, b) => {
+      return String(b.data.date || '').localeCompare(String(a.data.date || ''))
+        || String(a.data.title || '').localeCompare(String(b.data.title || ''))
+        || String(a.data.slug || '').localeCompare(String(b.data.slug || ''));
+    });
+  });
+  eleventyConfig.addCollection('recentlyUpdated', function(collectionApi) {
+    return collectionApi.getFilteredByGlob(['src/posts/*.md', 'src/posts/*.html'])
+      .filter(post => post.data.updated && String(post.data.updated) > String(post.data.date || ''))
+      .sort((a, b) => String(b.data.updated).localeCompare(String(a.data.updated))
+        || String(b.data.date || '').localeCompare(String(a.data.date || ''))
+        || String(a.data.title || '').localeCompare(String(b.data.title || ''))
+        || String(a.data.slug || '').localeCompare(String(b.data.slug || '')));
   });
   eleventyConfig.addFilter('dateDisplay', function(value) {
     if (!value) return '';
     const d = new Date(String(value) + 'T00:00:00Z');
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+  });
+  eleventyConfig.addFilter('dateYear', value => String(value || '').slice(0, 4));
+  eleventyConfig.addFilter('dateMonth', value => String(value || '').slice(5, 7));
+  eleventyConfig.addFilter('topicLabel', function(slug, topics) {
+    return (topics || []).find(topic => topic.slug === slug)?.label || slug || 'Uncategorized';
+  });
+  eleventyConfig.addFilter('byTopic', function(posts, topicSlug) {
+    return (posts || []).filter(post => post.data.topic === topicSlug);
+  });
+  eleventyConfig.addFilter('uniqueTags', function(posts) {
+    return [...new Set((posts || []).flatMap(post => post.data.tags || []))]
+      .sort((a, b) => String(a).localeCompare(String(b)));
+  });
+  eleventyConfig.addFilter('uniqueYears', function(posts) {
+    return [...new Set((posts || []).map(post => String(post.data.date || '').slice(0, 4)).filter(Boolean))]
+      .sort((a, b) => b.localeCompare(a));
+  });
+  eleventyConfig.addFilter('limit', function(items, count) {
+    return (items || []).slice(0, Number(count));
   });
   eleventyConfig.addFilter('rfc822', function(value) {
     return new Date(String(value) + 'T00:00:00Z').toUTCString();

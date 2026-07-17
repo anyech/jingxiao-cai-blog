@@ -1,0 +1,22 @@
+---
+layout: base.njk
+permalink: topics.html
+title: "Topics - Jingxiao Cai's Blog"
+description: "Browse Jingxiao Cai's technical writing by primary topic."
+canonicalPath: "topics.html"
+---
+<section class="hero hero--compact" aria-labelledby="topics-title">
+  <p class="eyebrow">Six reader-oriented paths</p>
+  <h1 id="topics-title">Topics</h1>
+  <p class="hero__lede">Each post has one primary topic for predictable browsing, while tags preserve the detailed vocabulary.</p>
+</section>
+<div class="topic-grid topic-grid--archive">
+{% for topic in topics %}
+  {% set topicPosts = collections.postsByPublished | byTopic(topic.slug) %}
+  <a class="topic-card" href="{{ site.basePath }}topics/{{ topic.slug }}.html">
+    <span class="topic-card__count">{{ topicPosts.length }} post{% if topicPosts.length != 1 %}s{% endif %}</span>
+    <strong>{{ topic.label }}</strong>
+    <span>{{ topic.description }}</span>
+  </a>
+{% endfor %}
+</div>

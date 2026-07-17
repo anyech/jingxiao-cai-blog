@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "openclaw-self-hosting",
+    "label": "OpenClaw & Self-Hosting",
+    "description": "Operating, upgrading, and debugging self-hosted OpenClaw and adjacent agent tooling."
+  },
+  {
+    "slug": "agent-architecture-operations",
+    "label": "Agent Architecture & Operations",
+    "description": "Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts."
+  },
+  {
+    "slug": "reliability-security",
+    "label": "Reliability & Security",
+    "description": "Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering."
+  },
+  {
+    "slug": "developer-workflow-open-source",
+    "label": "Developer Workflow & Open Source",
+    "description": "PR evidence, review discipline, GitHub workflows, and public-safe engineering collaboration."
+  },
+  {
+    "slug": "distributed-runtime-systems",
+    "label": "Distributed Runtime Systems",
+    "description": "Distributed execution, model serving, performance, capacity, and runtime debugging."
+  },
+  {
+    "slug": "personal-automation-tutorials",
+    "label": "Personal Automation & Tutorials",
+    "description": "Practical setup guides, personal automation, migrations, and lessons from building in public."
+  }
+]
