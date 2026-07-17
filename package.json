@@ -9,8 +9,8 @@
     "check:positioning": "node scripts/check-positioning-drift.js",
     "check:metadata": "node scripts/check-blog-metadata.js",
     "check:openclaw-contrib": "node scripts/check-openclaw-contrib.js",
-    "check:openclaw-contrib-updater": "python3 scripts/test-update-openclaw-contrib.py",
-    "refresh:openclaw-contrib": "python3 scripts/update-openclaw-contrib.py",
+    "check:openclaw-contrib-updater": "python3 -B scripts/test-update-openclaw-contrib.py",
+    "refresh:openclaw-contrib": "python3 -B scripts/update-openclaw-contrib.py",
     "check:explore": "node scripts/check-explore-contract.js"
   },
   "dependencies": {

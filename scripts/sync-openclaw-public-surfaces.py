@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.request
@@ -37,6 +38,7 @@ def load_module(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"could not load updater: {path}")
+    sys.dont_write_bytecode = True
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
