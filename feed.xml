@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>The Harness Passed. The Claim Did Not: Why Independent Evidence Matters</title>
+      <description>A practical test for whether a synthetic harness independently observes the runtime claim or merely repeats its own scripted input.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html</guid>
+      <pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Multi-Agent Collaboration Needs One Owner per Effect</title>

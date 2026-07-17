@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Harness Passed. The Claim Did Not: Why Independent Evidence Matters](https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html.md
+  - Date: 2026-07-17
+  - Summary: A green harness is not enough when its “observation” merely repeats the input. Runtime claims need an independent evidence path and a real stop rule.
+  - Tags: ai-agents, agent-ops, testing, evidence, review, reliability
 - [Multi-Agent Collaboration Needs One Owner per Effect](https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html.md
   - Date: 2026-07-16
