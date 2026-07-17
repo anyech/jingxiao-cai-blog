@@ -71,8 +71,9 @@
     </header>
     <main id="content" class="site-main">
 
-<section class="home-hero" aria-labelledby="site-title">
-  <div class="hero hero--home">
+
+<div class="home-intro-grid">
+  <section class="hero hero--home" aria-labelledby="site-title">
     <p class="eyebrow">distributed ML runtime systems · agent ops · self-hosted AI</p>
     <h1 id="site-title">Engineering notes from systems that have to work</h1>
     <p class="hero__lede">Deep dives on distributed execution, backend/runtime reliability, self-hosted AI agents, debugging, and evidence-driven engineering workflows.</p>
@@ -80,71 +81,104 @@
       <a class="button button--primary" href="/jingxiao-cai-blog/search.html">Explore all posts</a>
       <a class="button" href="/jingxiao-cai-blog/feed.xml">RSS feed</a>
     </div>
-  </div>
+  </section>
 
   <aside class="author-card" aria-labelledby="author-card-title" data-pagefind-ignore>
-    <div class="author-card__monogram" aria-hidden="true">JC</div>
-    <p class="eyebrow">About the author</p>
-    <h2 id="author-card-title">Jingxiao Cai</h2>
-    <p class="author-card__role">Distributed ML runtime systems engineer</p>
-    <p>I build distributed ML runtime systems and backend execution reliability for production ML workloads. I also write about self-hosted AI agents, technical debugging, and evidence-driven engineering workflows.</p>
+    <div class="author-card__identity">
+      <div class="author-card__monogram" aria-hidden="true">JC</div>
+      <div>
+        <p class="eyebrow">About the author</p>
+        <h2 id="author-card-title">Jingxiao Cai</h2>
+        <p class="author-card__role">Distributed ML runtime systems engineer</p>
+      </div>
+    </div>
+    <p>I build distributed ML runtime systems and write about self-hosted AI agents, technical debugging, and evidence-driven engineering workflows.</p>
     <ul class="profile-links" aria-label="Jingxiao Cai profiles">
       <li><a href="https://anyech.github.io/jingxiao-cai/">Personal website</a></li><li><a href="https://www.linkedin.com/in/jingxiaocai/">LinkedIn</a></li><li><a href="https://github.com/anyech">GitHub</a></li><li><a href="https://scholar.google.com/citations?user=pyxQPtAAAAAJ&amp;hl=en">Google Scholar</a></li>
     </ul>
+    <dl class="author-card__stats" aria-label="Blog archive summary">
+      <div><dt>90</dt><dd>technical notes</dd></div>
+      <div><dt>6</dt><dd>topic archives</dd></div>
+    </dl>
+    <section class="author-card__upstream" aria-labelledby="openclaw-upstream-title">
+      <div class="upstream-heading">
+        <p class="eyebrow" id="openclaw-upstream-title">OpenClaw upstream</p>
+        <span>Verified <time datetime="2026-07-17">July 17, 2026</time></span>
+      </div>
+      <div class="upstream-proof">
+        <strong>13</strong>
+        <span>merged upstream PRs</span>
+      </div>
+      <p class="upstream-scope">Runtime reliability · delivery · document tooling</p>
+      <a class="upstream-latest" href="https://github.com/openclaw/openclaw/pull/98021" aria-label="Latest merged OpenClaw contribution: PR 98021, GPT-5.6 Ultra cross-runtime integration">
+        <span>Latest</span> #98021 · GPT-5.6 Ultra cross-runtime integration ↗
+      </a>
+      <nav class="upstream-links" aria-label="OpenClaw contributions and writing">
+        <a href="https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged">View contributions ↗</a>
+        <a href="/jingxiao-cai-blog/topics/openclaw-self-hosting.html">OpenClaw writing →</a>
+      </nav>
+    </section>
+
+    <div class="author-card__latest">
+      <p class="eyebrow">Latest publication</p>
+      <a href="/jingxiao-cai-blog/multi-agent-collaboration-needs-one-owner-per-effect.html">Multi-Agent Collaboration Needs One Owner per Effect</a>
+      <span>July 16, 2026</span>
+    </div>
+
   </aside>
-</section>
 
-<section aria-labelledby="topics-title">
-  <div class="section-heading section-heading--split">
-    <div><p class="eyebrow">Start with a subject</p><h2 id="topics-title">Browse by topic</h2></div>
-    <a class="text-link" href="/jingxiao-cai-blog/topics.html">View topic archive →</a>
+  <section class="home-topics" aria-labelledby="topics-title">
+    <div class="section-heading section-heading--split">
+      <div><p class="eyebrow">Start with a subject</p><h2 id="topics-title">Browse by topic</h2></div>
+      <a class="text-link" href="/jingxiao-cai-blog/topics.html">View topic archive →</a>
+    </div>
+    <div class="topic-grid">
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/openclaw-self-hosting.html">
+        <span class="topic-card__count">14 posts</span>
+        <strong>OpenClaw &amp; Self-Hosting</strong>
+        <span>Operating, upgrading, and debugging self-hosted OpenClaw and adjacent agent tooling.</span>
+      </a>
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">
+        <span class="topic-card__count">31 posts</span>
+        <strong>Agent Architecture &amp; Operations</strong>
+        <span>Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.</span>
+      </a>
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/reliability-security.html">
+        <span class="topic-card__count">21 posts</span>
+        <strong>Reliability &amp; Security</strong>
+        <span>Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.</span>
+      </a>
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/developer-workflow-open-source.html">
+        <span class="topic-card__count">10 posts</span>
+        <strong>Developer Workflow &amp; Open Source</strong>
+        <span>PR evidence, review discipline, GitHub workflows, and public-safe engineering collaboration.</span>
+      </a>
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/distributed-runtime-systems.html">
+        <span class="topic-card__count">8 posts</span>
+        <strong>Distributed Runtime Systems</strong>
+        <span>Distributed execution, model serving, performance, capacity, and runtime debugging.</span>
+      </a>
+
+
+      <a class="topic-card" href="/jingxiao-cai-blog/topics/personal-automation-tutorials.html">
+        <span class="topic-card__count">6 posts</span>
+        <strong>Personal Automation &amp; Tutorials</strong>
+        <span>Practical setup guides, personal automation, migrations, and lessons from building in public.</span>
+      </a>
+
+    </div>
+  </section>
   </div>
-  <div class="topic-grid">
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/openclaw-self-hosting.html">
-      <span class="topic-card__count">14 posts</span>
-      <strong>OpenClaw &amp; Self-Hosting</strong>
-      <span>Operating, upgrading, and debugging self-hosted OpenClaw and adjacent agent tooling.</span>
-    </a>
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/agent-architecture-operations.html">
-      <span class="topic-card__count">31 posts</span>
-      <strong>Agent Architecture &amp; Operations</strong>
-      <span>Reusable patterns for agent orchestration, handoffs, panels, memory, and operational contracts.</span>
-    </a>
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/reliability-security.html">
-      <span class="topic-card__count">21 posts</span>
-      <strong>Reliability &amp; Security</strong>
-      <span>Incidents, recovery, authorization boundaries, supply-chain risk, and fail-closed engineering.</span>
-    </a>
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/developer-workflow-open-source.html">
-      <span class="topic-card__count">10 posts</span>
-      <strong>Developer Workflow &amp; Open Source</strong>
-      <span>PR evidence, review discipline, GitHub workflows, and public-safe engineering collaboration.</span>
-    </a>
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/distributed-runtime-systems.html">
-      <span class="topic-card__count">8 posts</span>
-      <strong>Distributed Runtime Systems</strong>
-      <span>Distributed execution, model serving, performance, capacity, and runtime debugging.</span>
-    </a>
-
-
-    <a class="topic-card" href="/jingxiao-cai-blog/topics/personal-automation-tutorials.html">
-      <span class="topic-card__count">6 posts</span>
-      <strong>Personal Automation &amp; Tutorials</strong>
-      <span>Practical setup guides, personal automation, migrations, and lessons from building in public.</span>
-    </a>
-
-  </div>
-</section>
 
 <section class="post-list" aria-labelledby="posts-title">
   <div class="section-heading section-heading--split">
