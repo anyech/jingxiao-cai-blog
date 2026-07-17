@@ -5,10 +5,11 @@
   "scripts": {
     "build": "rm -rf dist && eleventy",
     "pagefind": "pagefind --site dist --output-subdir pagefind",
-    "verify": "npm run check:metadata && npm run check:openclaw-contrib && npm run build && npm run check:positioning && npm run pagefind && npm run check:explore",
+    "verify": "npm run check:metadata && npm run check:openclaw-contrib && npm run check:openclaw-contrib-updater && npm run build && npm run check:positioning && npm run pagefind && npm run check:explore",
     "check:positioning": "node scripts/check-positioning-drift.js",
     "check:metadata": "node scripts/check-blog-metadata.js",
     "check:openclaw-contrib": "node scripts/check-openclaw-contrib.js",
+    "check:openclaw-contrib-updater": "python3 scripts/test-update-openclaw-contrib.py",
     "refresh:openclaw-contrib": "python3 scripts/update-openclaw-contrib.py",
     "check:explore": "node scripts/check-explore-contract.js"
   },

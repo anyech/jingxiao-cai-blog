@@ -9,7 +9,7 @@ Eleventy data file; unknown PRs fail closed before public copy can change.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import importlib.util
 import json
 from pathlib import Path
@@ -24,6 +24,7 @@ CONTRIBUTIONS_URL = (
 )
 WRITING_URL = "/jingxiao-cai-blog/topics/openclaw-self-hosting.html"
 SCOPE = "Runtime reliability · delivery · document tooling"
+DEFAULT_MAX_AGE_DAYS = 30
 
 
 def load_source(path: Path):
@@ -37,8 +38,13 @@ def load_source(path: Path):
     return module
 
 
-def build_snapshot(source) -> dict[str, object]:
-    prs = source.fetch_merged_prs()
+def build_snapshot(
+    source,
+    *,
+    prs: list[dict[str, object]] | None = None,
+    verified_date: str | None = None,
+) -> dict[str, object]:
+    prs = source.fetch_merged_prs() if prs is None else prs
     if not prs:
         raise RuntimeError("GitHub returned zero merged OpenClaw PRs; refusing to replace snapshot")
     unknown = source.unknown_scope_prs(prs)
@@ -59,9 +65,66 @@ def build_snapshot(source) -> dict[str, object]:
         },
         "contributionsUrl": CONTRIBUTIONS_URL,
         "writingUrl": WRITING_URL,
-        "verifiedDate": datetime.now(timezone.utc).date().isoformat(),
+        "verifiedDate": verified_date or datetime.now(timezone.utc).date().isoformat(),
         "source": "personal-site OpenClaw contribution updater",
     }
+
+
+def load_existing() -> dict[str, object] | None:
+    if not OUTPUT.exists():
+        return None
+    try:
+        value = json.loads(OUTPUT.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def semantic_snapshot(snapshot: dict[str, object]) -> dict[str, object]:
+    return {key: value for key, value in snapshot.items() if key != "verifiedDate"}
+
+
+def choose_verified_date(
+    candidate: dict[str, object],
+    existing: dict[str, object] | None,
+    *,
+    today: date,
+    max_age_days: int,
+) -> str:
+    """Avoid daily republishing while bounding public snapshot staleness."""
+
+    if existing and semantic_snapshot(existing) == semantic_snapshot(candidate):
+        raw = existing.get("verifiedDate")
+        if isinstance(raw, str):
+            try:
+                previous = date.fromisoformat(raw)
+            except ValueError:
+                previous = None
+            if previous is not None:
+                age = (today - previous).days
+                if 0 <= age < max_age_days:
+                    return raw
+    return today.isoformat()
+
+
+def refreshed_snapshot(
+    source,
+    *,
+    prs: list[dict[str, object]] | None = None,
+    today: date | None = None,
+    max_age_days: int = DEFAULT_MAX_AGE_DAYS,
+) -> dict[str, object]:
+    if max_age_days < 1:
+        raise ValueError("max_age_days must be at least 1")
+    current_day = today or datetime.now(timezone.utc).date()
+    candidate = build_snapshot(source, prs=prs, verified_date=current_day.isoformat())
+    candidate["verifiedDate"] = choose_verified_date(
+        candidate,
+        load_existing(),
+        today=current_day,
+        max_age_days=max_age_days,
+    )
+    return candidate
 
 
 def rendered(snapshot: dict[str, object]) -> str:
@@ -73,9 +136,13 @@ def main() -> int:
     parser.add_argument("--source-script", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--check", action="store_true", help="exit nonzero when the committed snapshot differs")
     parser.add_argument("--json", action="store_true", help="print the refreshed snapshot")
+    parser.add_argument("--max-age-days", type=int, default=DEFAULT_MAX_AGE_DAYS)
     args = parser.parse_args()
 
-    snapshot = build_snapshot(load_source(args.source_script.resolve()))
+    snapshot = refreshed_snapshot(
+        load_source(args.source_script.resolve()),
+        max_age_days=args.max_age_days,
+    )
     content = rendered(snapshot)
     changed = not OUTPUT.exists() or OUTPUT.read_text() != content
 
