@@ -137,7 +137,6 @@ article h1 {
   font-size: clamp(1.05rem, 2.2vw, 1.32rem);
 }
 .hero__actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.65rem; }
-.home-hero { margin-bottom: 2.5rem; }
 .hero--home { margin-bottom: 1rem; }
 .hero--home h1 { font-size: clamp(2.35rem, 6vw, 4.8rem); }
 .author-card {
@@ -184,6 +183,7 @@ article h1 {
 .profile-links { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1.3rem 0 0; list-style: none; }
 .profile-links a { display: inline-flex; padding: .38rem .7rem; border: 1px solid #3d5486; border-radius: 999px; color: #e0e7ff; text-decoration: none; font-weight: 700; font-size: .88rem; }
 .profile-links a:hover { color: white; background: #243a70; }
+.author-card__stats { display: none; }
 .author-card__latest {
   position: relative;
   z-index: 1;
@@ -478,27 +478,33 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
 @media (min-width: 1200px) {
   .site-main { padding-top: 2rem; }
-  .home-hero {
+  .home-intro-grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(21rem, .8fr);
+    grid-template-areas:
+      "intro author"
+      "topics author";
     gap: 1rem;
     align-items: stretch;
-    margin-bottom: 0;
   }
   .hero--home {
+    grid-area: intro;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-bottom: 0;
-    padding: clamp(2.35rem, 3vw, 3.25rem);
+    padding: clamp(1.8rem, 2.4vw, 2.4rem);
   }
   .hero--home h1 {
-    max-width: 18ch;
-    font-size: clamp(3.05rem, 4.15vw, 4rem);
-    line-height: .98;
+    max-width: 28ch;
+    font-size: clamp(2.1rem, 2.55vw, 2.5rem);
+    line-height: 1.06;
+    letter-spacing: -.04em;
   }
-  .hero--home .hero__lede { max-width: 64ch; font-size: 1.08rem; }
-  .author-card { padding: 1.45rem 1.55rem; }
+  .hero--home .hero__lede { max-width: 70ch; font-size: 1rem; line-height: 1.58; }
+  .hero--home .hero__actions { margin-top: 1.15rem; }
+  .hero--home .button { padding: .58rem .85rem; font-size: .9rem; }
+  .author-card { grid-area: author; height: 100%; padding: 1.45rem 1.55rem; }
   .author-card__monogram { width: 3.1rem; height: 3.1rem; border-radius: 15px; }
   .author-card h2 { font-size: 1.55rem; }
   .author-card p { margin-block: .6rem; font-size: .9rem; line-height: 1.44; }
@@ -506,15 +512,28 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   .author-card__role { margin: .08rem 0 0 !important; font-size: .84rem !important; line-height: 1.35 !important; }
   .profile-links { margin-top: .75rem; }
   .profile-links a { padding: .3rem .58rem; font-size: .78rem; }
-  .home-topics .section-heading { margin-top: 1.65rem; }
-  .home-topics .topic-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
-  .home-topics .topic-card { min-height: 9.5rem; padding: 1rem; }
-  .home-topics .topic-card strong { margin: .75rem 0 .3rem; font-size: 1rem; }
+  .author-card__stats {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .6rem;
+    margin: 1.4rem 0 0;
+  }
+  .author-card__stats div { padding: .8rem; background: rgba(15, 23, 42, .32); border: 1px solid rgba(96, 165, 250, .22); border-radius: 14px; }
+  .author-card__stats dt { color: white; font-size: 1.45rem; font-weight: 820; line-height: 1; }
+  .author-card__stats dd { margin: .35rem 0 0; color: #94a3b8; font-size: .74rem; line-height: 1.3; }
+  .home-topics { grid-area: topics; min-width: 0; }
+  .home-topics .section-heading { margin: 0 0 .85rem; }
+  .home-topics .section-heading h2 { font-size: clamp(1.75rem, 2.6vw, 2.35rem); }
+  .home-topics .topic-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+  .home-topics .topic-card { min-height: 8.25rem; padding: .9rem 1rem; }
+  .home-topics .topic-card strong { margin: .6rem 0 .25rem; font-size: .98rem; }
   .home-topics .topic-card > span:last-child {
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     font-size: .82rem;
     line-height: 1.42;
   }
