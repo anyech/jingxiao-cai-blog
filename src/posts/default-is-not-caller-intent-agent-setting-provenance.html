@@ -1,0 +1,328 @@
+---
+layout: post.njk
+permalink: 'default-is-not-caller-intent-agent-setting-provenance.html'
+title: 'A Default Is Not Caller Intent: Preserve Provenance in Agent Settings'
+slug: 'default-is-not-caller-intent-agent-setting-provenance'
+description: 'Agent runtimes must preserve who selected each setting, or defaults can impersonate caller intent while mandatory constraints disappear across adapters.'
+summary: 'A resolved value is not enough. Agent runtimes must preserve request provenance, selection authority, constraints, and rejection reasons across every adapter.'
+date: '2026-07-18'
+updated: ''
+topic: 'agent-architecture-operations'
+tags: ['ai-agents', 'agent-ops', 'configuration', 'routing', 'provenance', 'testing']
+keywords: ['AI agent configuration', 'default provenance', 'caller intent', 'agent routing', 'authority precedence', 'configuration constraints', 'runtime integration testing', 'agent operations']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html'
+inFeed: true
+inSitemap: true
+feedTitle: 'A Default Is Not Caller Intent: Preserve Provenance in Agent Settings'
+feedDescription: 'Why agent runtimes must preserve request provenance, selection authority, constraints, and rejection reasons across layered settings.'
+feedPubDate: 'Sat, 18 Jul 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-07-18'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>A Default Is Not Caller Intent: Preserve Provenance in Agent Settings</h1>
+    <div class="meta">
+        <strong>July 18, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, configuration, routing, provenance, testing</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn an isolated integration failure into a reusable configuration pattern while removing private routes, model names, source paths, test counts, and deployment fingerprints.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is a composite, conceptual runtime-integration pattern, not a description of a named or current deployment. The examples use a generic response-mode preference because the bug class applies equally to timeouts, tool permissions, output modes, retry policies, and other layered defaults.
+    </div>
+</header>
+
+<main>
+    <p>Consider a composite example: an agent runtime receives a request with no explicit response-mode setting. An early integration layer fills the missing field with the system default: <code>compact</code>. A later advisory policy selects <code>detailed</code> for the task. The final runner still uses <code>compact</code>.</p>
+
+    <p>Every individual value looked valid. The defect lived in the missing provenance. By the time the request reached the runner, it carried a scalar but no longer carried the fact that the scalar had been defaulted. The runner interpreted the value as caller authority and correctly refused to override it.</p>
+
+    <blockquote>
+        <p><strong>A resolved value tells you what the value is. It does not tell you who chose it.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a compact representation for explicitness, a precedence rule for layered agent settings, and a small test matrix that catches defaults masquerading as caller intent.
+    </div>
+
+    <h2>The Bug Is Not the Default</h2>
+
+    <p><code>compact</code> can be a sensible conservative default. The mistake is treating a defaulted value as if a caller explicitly requested it.</p>
+
+    <p>These two inputs are semantically different:</p>
+
+    <pre><code class="language-javascript">// Caller explicitly chose the compact response mode.
+{ responseMode: "compact", responseModeExplicit: true }
+
+// No caller choice; an earlier layer supplied a fallback.
+{ responseMode: "compact", responseModeExplicit: false }</code></pre>
+
+    <p>If a transport, request normalizer, or direct-execution path drops <code>responseModeExplicit</code>, both requests collapse to the same object. No downstream precedence rule can reconstruct the lost intent reliably. The boolean form illustrates the minimum distinction; the structured envelope below is the stronger representation used by the proof matrix.</p>
+
+    <h2>Carry a Value Envelope, Not Just a Scalar</h2>
+
+    <p>A useful setting contract preserves the original request separately from the final selection:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Field group</th>
+                <th>Question answered</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>requested</code></td>
+                <td>What did the caller or operator explicitly request, if anything?</td>
+                <td><code>{ value: "compact", source: "caller" }</code></td>
+            </tr>
+            <tr>
+                <td><code>selected</code></td>
+                <td>What final value will the runtime use, and which authority selected it?</td>
+                <td><code>{ value: "detailed", source: "advisory-policy" }</code></td>
+            </tr>
+            <tr>
+                <td><code>constraints</code></td>
+                <td>Which mandatory safety, capability, budget, or operator limits were applied?</td>
+                <td><code>["capability-limit"]</code></td>
+            </tr>
+            <tr>
+                <td><code>validation</code></td>
+                <td>Was the request accepted, rejected, or replaced—and why?</td>
+                <td><code>{ status: "passed" }</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The exact schema can vary. A structured envelope makes the authority tiers explicit:</p>
+
+    <pre><code class="language-typescript">type ResolvedSetting&lt;T&gt; = {
+  requested?: {
+    value: T;
+    source: "caller" | "operator";
+    explicit: true;
+  };
+  selected: {
+    value: T;
+    source: "mandatory-constraint" | "operator-mandate"
+      | "caller" | "advisory-policy" | "system-default";
+  };
+  constraints: string[];
+  validation: {
+    status: "passed" | "rejected" | "replaced";
+    reason?: string;
+  };
+};
+</code></pre>
+
+    <p>The important property is not the field name. It is that an early resolver cannot erase the distinction between “the caller chose this” and “the system needed a temporary value.”</p>
+
+    <h2>Make Precedence About Authority</h2>
+
+    <p>A naïve preference-resolution rule compares only whether a value exists:</p>
+
+    <pre><code class="language-javascript">const finalMode = request.responseMode
+  ?? advisoryPolicy.responseMode
+  ?? systemDefault;</code></pre>
+
+    <p>That is safe only when presence implies authority. In layered agent systems, it often does not.</p>
+
+    <p>A stronger rule evaluates source, explicitness, and authority. Mandatory safety, legal, capability, budget, and operator constraints are a higher tier than caller preference. The table below describes preference resolution only after those constraints have admitted the request.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Incoming state</th>
+                <th>Competing authority</th>
+                <th>Disposition</th>
+                <th>Why</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mandatory constraint or operator mandate</td>
+                <td>Any caller preference</td>
+                <td>Enforce the constraint or reject</td>
+                <td>Hard boundaries outrank preference</td>
+            </tr>
+            <tr>
+                <td>Validated explicit caller preference</td>
+                <td>Different advisory preference</td>
+                <td>Preserve caller value</td>
+                <td>Advisory policy must not silently override admitted intent</td>
+            </tr>
+            <tr>
+                <td>System default</td>
+                <td>Valid advisory preference</td>
+                <td>Use advisory value</td>
+                <td>The default is fallback, not authority</td>
+            </tr>
+            <tr>
+                <td>No value</td>
+                <td>No advisory value</td>
+                <td>Use system default</td>
+                <td>The fallback is now the best available choice</td>
+            </tr>
+            <tr>
+                <td>Unsupported execution-affecting value</td>
+                <td>Any value</td>
+                <td>Reject before dispatch</td>
+                <td>The caller receives an observable error; no silent clamp or fallback occurs</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success">
+        <strong>Authority invariant:</strong> enforce mandatory constraints first; preserve valid explicit caller preference over advisory policy; let advisory policy replace defaults; and reject unsupported execution-affecting input before dispatch.
+    </div>
+
+    <h2>Test the Cross-Product, Not the Happy Path</h2>
+
+    <p>A unit test of the advisory function can prove that it returns <code>detailed</code>. It cannot prove that the integration path carries that choice to the runner. The useful proof unit covers four semantic cases, then repeats them across transport and serialization boundaries:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Case</th>
+                <th>Input</th>
+                <th>Expected runner state</th>
+                <th>Failure caught</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Explicit preserve</td>
+                <td>Caller sets a valid value</td>
+                <td>Caller value + caller provenance</td>
+                <td>Advisory-policy overreach</td>
+            </tr>
+            <tr>
+                <td>Default replace</td>
+                <td>Earlier layer fills a default</td>
+                <td>Advisory value + advisory provenance</td>
+                <td>Default mistaken for intent</td>
+            </tr>
+            <tr>
+                <td>Default retain</td>
+                <td>No applicable policy decision</td>
+                <td>Default value + default provenance</td>
+                <td>Uninitialized setting</td>
+            </tr>
+            <tr>
+                <td>Constraint or invalid-input reject</td>
+                <td>Caller conflicts with a hard constraint or supplies an unsupported value</td>
+                <td>Observable pre-dispatch rejection</td>
+                <td>Safety bypass or fail-open normalization</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Run those four cases through every relevant entry path and serialization hop: interactive sessions, direct execution, scheduled work, delegated workers, network payloads, retries, caches, or test harnesses. Shared policy code does not guarantee shared request semantics. Every adapter must schema-validate and preserve the same authority envelope.</p>
+
+    <h2>Observe Provenance at the Runner Boundary</h2>
+
+    <p>Do not stop verification at the policy result. Capture a sanitized runner-boundary record that can answer:</p>
+
+    <ul>
+        <li>what final value was used;</li>
+        <li>which layer selected it;</li>
+        <li>whether the originating input was explicit;</li>
+        <li>whether validation happened before dispatch; and</li>
+        <li>whether the execution path received the same semantics the policy produced.</li>
+    </ul>
+
+    <p>This does not require logging private prompts, model names, or full request payloads. A small typed record is enough:</p>
+
+    <pre><code class="language-json">{
+  "setting": "response-mode",
+  "requestedClass": "omitted",
+  "selectedClass": "expanded",
+  "sourceClass": "advisory-policy",
+  "constraintsApplied": 0,
+  "validation": "passed",
+  "dispatch": "allowed"
+}</code></pre>
+
+    <p>For public artifacts, even those classes may be more detail than necessary. For local qualification, however, the record turns “the router chose correctly” into a checkable integration claim.</p>
+
+    <h2>Stop Rerunning After a Real Integration Failure</h2>
+
+    <p>A failing isolated integration check is useful evidence. It is not an invitation to keep rerunning until the expected value appears.</p>
+
+    <p>When a narrow integration check shows that policy output and runner state diverge:</p>
+
+    <ol>
+        <li>preserve the failing test result;</li>
+        <li>classify whether the defect is policy, transport, precedence, validation, or observation;</li>
+        <li>fix the smallest source seam;</li>
+        <li>run focused regression tests in isolation; and</li>
+        <li>do not repeat the integration check until those regressions pass.</li>
+    </ol>
+
+    <p>The same stop rule applies after repeated equivalent test failures. At that point, prove which fixture, adapter, compiled artifact, or test project actually owns the observed behavior before trying again. Otherwise the workflow starts optimizing for a green rerun instead of understanding the live code path.</p>
+
+    <h2>When a Plain Scalar Is Fine</h2>
+
+    <p>Provenance envelopes have a cost. They add types, serialization rules, migration work, and tests. Do not add them mechanically to every local variable.</p>
+
+    <p>A plain scalar is usually enough when:</p>
+
+    <ul>
+        <li>one authority owns the value from input to use;</li>
+        <li>the value is resolved exactly once;</li>
+        <li>presence and explicit intent are genuinely equivalent;</li>
+        <li>no adapter, advisory policy, constraint layer, or fallback may replace it; and</li>
+        <li>invalid input cannot cross an execution boundary.</li>
+    </ul>
+
+    <p>Use a provenance-bearing setting when multiple authorities can act, a default may later be replaced, or the value controls a meaningful execution decision.</p>
+
+    <h2>Conclusion</h2>
+
+    <p>Layered agent systems do not merely resolve values. They reconcile authority.</p>
+
+    <p>If an early layer converts “missing” into <code>compact</code> and discards the fact that it was a default, a later layer cannot distinguish fallback from caller intent. The runtime may faithfully preserve the wrong authority.</p>
+
+    <p>Carry the original request, selection source, constraints, validation, and replacement reason across every adapter. Define precedence in terms of authority. Reject unsupported execution-affecting input before dispatch. Test semantic cases across every transport boundary. And when integration evidence diverges from policy output, stop rerunning until the owning seam is understood.</p>
+
+    <blockquote>
+        <p><strong>Defaults should keep a request safe. They should not impersonate the caller.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/fallback-is-not-preference-agent-auth-recovery.html">Fallback Is Not Preference</a></li>
+            <li><a href="/jingxiao-cai-blog/patch-the-thing-you-changed-narrow-config-validation.html">Patch the Thing You Changed</a></li>
+            <li><a href="/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html">The Harness Passed. The Claim Did Not</a></li>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Prove the Change Without Touching Production</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, evidence-driven workflows, and operational decision boundaries.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">Configuration precedence is an authority problem disguised as a value problem.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Where has a default been mistaken for explicit intent in your systems? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on July 18, 2026 &bull; Part of my ongoing AI-agent operations and reliability series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
