@@ -3,10 +3,10 @@ layout: post.njk
 permalink: 'building-pattern-scout-does-not-chase-own-echoes.html'
 title: "Building a Pattern Scout That Does Not Chase Its Own Echoes"
 slug: 'building-pattern-scout-does-not-chase-own-echoes'
-description: 'A sanitized agent-operations pattern for building scouts that find new workflow signals without recycling their own summaries.'
-summary: 'Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.'
+description: 'Build pattern scouts with source hygiene, novelty gates, evidence cards, and separate submission metrics so strict admission does not hide pipeline starvation.'
+summary: 'Pattern scouts need source hygiene, novelty gates, opsec filters, evidence cards, and separate submission metrics so no-candidate does not hide a starved pipeline.'
 date: '2026-06-12'
-updated: '2026-07-11'
+updated: '2026-08-06'
 topic: 'agent-architecture-operations'
 tags: ['openclaw', 'ai-agents', 'workflow', 'reliability', 'automation', 'source-hygiene']
 keywords: ['pattern scout', 'AI trend radar', 'agent source hygiene', 'novelty gating', 'workflow automation', 'OpenClaw operations']
@@ -14,16 +14,16 @@ canonical: 'https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-do
 inFeed: true
 inSitemap: true
 feedTitle: 'Building a Pattern Scout That Does Not Chase Its Own Echoes'
-feedDescription: 'A pattern scout must prove novelty; an idea miner must then survive counterevidence, falsification, and the possibility that nothing should advance.'
+feedDescription: 'A pattern scout must prove novelty without echoing itself, then distinguish genuine no-candidate results from a starved evidence-card producer.'
 feedPubDate: 'Fri, 12 Jun 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-07-11'
+sitemapLastmod: '2026-08-06'
 ---
 <header>
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>Building a Pattern Scout That Does Not Chase Its Own Echoes</h1>
     <div class="meta">
-        <strong>June 12, 2026</strong> | By Jingxiao Cai | <strong>Updated July 11, 2026</strong><br>
+        <strong>June 12, 2026</strong> | By Jingxiao Cai | <strong>Updated August 6, 2026</strong><br>
         <span class="tags">Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene</span>
     </div>
     <div class="disclaimer">
@@ -33,7 +33,7 @@ sitemapLastmod: '2026-07-11'
         <strong>Short version:</strong> a scout that ranks ideas from its own prior reports is not doing discovery anymore. It is doing echo amplification.
     </div>
     <div class="update-banner">
-        <strong>Update, July 11, 2026:</strong> Added the handoff from source novelty to idea falsification. A scout can nominate a fresh signal; it cannot decide that a product deserves to be built.
+        <strong>Update, August 6, 2026:</strong> Added the missing producer-side metric. A strict evidence gate can report no candidate forever when nobody submits evidence cards, even while publishable leads are waiting for review.
     </div>
 </header>
 
@@ -236,6 +236,67 @@ sitemapLastmod: '2026-07-11'
 
     <p>The important delta is the terminal state: the miner can return hold, reject, or none found without forcing the scout's candidate into the build queue. See <a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a> for the evidence-card and falsification contract.</p>
 
+    <h2>August 2026 Follow-Up: A Strict Gate Can Still Starve</h2>
+
+    <p>A later failure exposed the other side of evidence-first admission. The qualification gate was behaving exactly as designed: no candidate could advance without a reader job, bounded claim, resolvable evidence, practical artifact, limitations, falsification condition, public auditability, and disclosure review.</p>
+
+    <p>But the upstream producer had submitted no complete cards. Evidence-rich leads accumulated in free-form notes, so the daily result kept saying <em>no candidate</em>. That label was technically true at the admission boundary and operationally misleading for the whole pipeline.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Observed state</th>
+                <th>Misleading interpretation</th>
+                <th>Honest interpretation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Zero submitted evidence cards</td>
+                <td>No evidence exists.</td>
+                <td>The producer may be inactive, failing, or never reaching the submission threshold.</td>
+            </tr>
+            <tr>
+                <td>Zero qualified cards</td>
+                <td>The qualification gate rejected everything.</td>
+                <td>Qualification rate is undefined when submission rate is zero.</td>
+            </tr>
+            <tr>
+                <td>Evidence-rich leads are waiting</td>
+                <td>Lower the gate and publish one.</td>
+                <td>Route them to explicit card review without admitting them automatically.</td>
+            </tr>
+            <tr>
+                <td>A reviewed card becomes complete</td>
+                <td>The scout changed its standards.</td>
+                <td>The same standard can now evaluate a real submission.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The smallest repair was not another ranking model and not a weaker evidence contract. It was a visible pre-admission lane plus two separate counters:</p>
+
+    <pre><code>evidence-rich lead
+    -&gt; promote for card review
+    -&gt; human-reviewed evidence card
+    -&gt; qualification gate
+    -&gt; new post, update, hold, or reject</code></pre>
+
+    <ul>
+        <li><strong>Submission rate</strong> asks whether anyone is feeding the gate.</li>
+        <li><strong>Qualification rate</strong> asks whether submitted cards satisfy the contract.</li>
+        <li><strong>Pipeline-starved</strong> means submissions are absent while reviewable evidence is waiting.</li>
+        <li><strong>No candidate</strong> should describe a real evaluated set, not hide an empty producer queue.</li>
+    </ul>
+
+    <p>The pre-admission lane remains review-only. Its draft values are deliberately non-admissible until a human verifies the evidence and disclosure boundary. That preserves the fail-closed gate while making the missing work visible.</p>
+
+    <div class="success">
+        <strong>Producer/qualifier rule:</strong> when the denominator is zero, report starvation before debating gate strictness.
+    </div>
+
+    <p>This is the same distinction I use in <a href="/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html">When Reasoning Eats the Answer</a>: an empty visible surface is a symptom. Preserve the hidden state needed to distinguish “nothing happened” from “work happened but never crossed the next boundary.”</p>
+
     <h2>My Take</h2>
     <p>The best pattern scout is not the one with the cleverest scoring rubric. It is the one that can explain why this signal is new, why it is safe to talk about, and why it is not merely yesterday's output wearing a new title.</p>
 
@@ -251,8 +312,8 @@ sitemapLastmod: '2026-07-11'
             <li><a href="/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html">Local Semantic Memory on a 4-Core ARM VPS</a></li>
             <li><a href="/jingxiao-cai-blog/modernizing-agent-skills-without-growing-skill-jungle.html">Modernizing Agent Skills Without Growing a Skill Jungle</a></li>
             <li><a href="/jingxiao-cai-blog/thread-checkpoints-agent-ops.html">Thread Checkpoints Are Not Summaries</a></li>
-            <li><a href="/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html">Nothing Ran, and That Was the Proof</a></li>
             <li><a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a></li>
+            <li><a href="/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html">When Reasoning Eats the Answer</a></li>
         </ul>
     </div>
 

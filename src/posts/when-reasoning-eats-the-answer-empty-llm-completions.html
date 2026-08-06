@@ -1,0 +1,296 @@
+---
+layout: post.njk
+permalink: 'when-reasoning-eats-the-answer-empty-llm-completions.html'
+title: 'When Reasoning Eats the Answer: Debugging Empty LLM Completions'
+slug: 'when-reasoning-eats-the-answer-empty-llm-completions'
+description: 'An empty LLM response can be a token-budget failure, not a broken model. Diagnose it with finish reasons, paired caps, path isolation, and timeouts.'
+summary: 'Empty final content with finish_reason=length can be consistent with reasoning exhausting a shared completion budget. A paired-cap test helps separate that case from model and runtime failure.'
+date: '2026-08-06'
+updated: ''
+topic: 'agent-architecture-operations'
+tags: ['llm-debugging', 'ai-agents', 'token-budgets', 'reasoning-models', 'reliability', 'self-hosted-ai']
+keywords: ['empty LLM response', 'reasoning token budget', 'finish reason length', 'completion budget exhaustion', 'LLM debugging', 'self-hosted LLM', 'inference timeout', 'AI agent reliability']
+canonical: 'https://anyech.github.io/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html'
+image: 'https://anyech.github.io/jingxiao-cai-blog/assets/reasoning-eats-answer-empty-completion-hero.webp'
+imageAlt: 'Abstract token stream spiraling through a reasoning budget before reaching an empty answer panel.'
+inFeed: true
+inSitemap: true
+feedTitle: 'When Reasoning Eats the Answer: Debugging Empty LLM Completions'
+feedDescription: 'How paired completion caps, finish reasons, direct-path checks, and timeout evidence distinguish budget exhaustion from a broken LLM runtime.'
+feedPubDate: 'Thu, 06 Aug 2026 00:00:00 +0000'
+sitemapPriority: '0.9'
+sitemapLastmod: '2026-08-06'
+---
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>When Reasoning Eats the Answer: Debugging Empty LLM Completions</h1>
+    <div class="meta">
+        <strong>August 6, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: llm-debugging, ai-agents, token-budgets, reasoning-models, reliability, self-hosted-ai</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private debugging trace into a public paired-budget experiment while removing model names, routes, paths, credentials, deployment values, and live configuration details.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> an empty final answer does not always mean the model failed. In runtimes where reasoning and final output share a completion budget, generation can end with <code>finish_reason=length</code> before final content begins.
+    </div>
+</header>
+
+<main>
+    <figure data-pagefind-ignore>
+        <img src="/jingxiao-cai-blog/assets/reasoning-eats-answer-empty-completion-hero.webp" width="1200" height="630" alt="Abstract token stream spiraling through a reasoning budget before reaching an empty answer panel." loading="eager" decoding="async">
+        <figcaption>On runtimes with a shared completion budget, reasoning can leave too little headroom for the final answer.</figcaption>
+    </figure>
+
+    <p>The request returned successfully. The model server was reachable. The proxy was reachable. The response even reported reasoning activity.</p>
+
+    <p>The final answer was empty.</p>
+
+    <p>That symptom invites an early diagnosis of broken model weights, a bad serving runtime, a proxy that dropped content, or a request option that disabled the answer. In the case I investigated, a shared-budget explanation fit the controlled evidence better: generation reached a reasoning phase, hit a length limit, and produced final content only in the higher-cap run.</p>
+
+    <blockquote>
+        <p><strong>An empty answer can be a length-terminated response, not an empty computation.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small diagnostic ladder for distinguishing completion-budget exhaustion from model, proxy, streaming, timeout, and parsing failures.
+    </div>
+
+    <h2>The Response Has More Than One Surface</h2>
+
+    <p>A reasoning-capable model can expose at least three useful signals:</p>
+
+    <ul>
+        <li><strong>reasoning activity</strong> &mdash; evidence that generation progressed inside a reasoning phase;</li>
+        <li><strong>final content</strong> &mdash; the answer intended for the user; and</li>
+        <li><strong>termination state</strong> &mdash; why generation stopped.</li>
+    </ul>
+
+    <p>If the first is non-empty, the second is empty, and the third is <code>length</code>, the model did not simply return nothing. Generation reached a reasoning phase and then hit a length boundary before a final answer appeared. A paired test is still needed to identify which effective budget caused that boundary.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Observed signal</th>
+                <th>What it supports</th>
+                <th>What it does not prove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Reasoning present</td>
+                <td>Generation reached and progressed through a reasoning phase.</td>
+                <td>That a usable final answer will fit inside the remaining budget.</td>
+            </tr>
+            <tr>
+                <td>Final content empty</td>
+                <td>The caller received no user-facing answer.</td>
+                <td>That model inference never happened.</td>
+            </tr>
+            <tr>
+                <td><code>finish_reason=length</code></td>
+                <td>The configured completion limit stopped generation.</td>
+                <td>Whether the limit was consumed by reasoning, final content, or both.</td>
+            </tr>
+            <tr>
+                <td><code>finish_reason=stop</code></td>
+                <td>The model reached a stop condition.</td>
+                <td>That every adapter preserved or displayed the returned content correctly.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>The Smallest Useful Experiment: Change One Budget</h2>
+
+    <p>The strongest evidence came from a paired run. I preserved the prompt and request shape, then changed only the completion cap.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Run</th>
+                <th>Completion cap</th>
+                <th>Reasoning observed</th>
+                <th>Final content</th>
+                <th>Finish reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>A</td>
+                <td>64 tokens</td>
+                <td>Present</td>
+                <td>Empty</td>
+                <td><code>length</code></td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>256 tokens</td>
+                <td>Present</td>
+                <td>Expected answer</td>
+                <td><code>stop</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>A separate, longer workload produced an illustrative observation at a different scale: an approximately four-thousand-token completion cap ended with reasoning activity and no final content, while an approximately twenty-five-thousand-token control reached a non-empty answer and a normal stop. These rounded values describe one controlled workload, not a portable threshold or reproducibility promise.</p>
+
+    <p>The small-cap pair was a single controlled observation, and its response telemetry did not provide stable reasoning-token accounting. It is therefore strong evidence consistent with completion-budget exhaustion in the tested runtime, not proof that reasoning consumed a precisely measured number of tokens or that every empty completion has the same cause. Some stacks also scale reasoning effort with the advertised cap, so a larger cap is a diagnostic probe rather than a linear headroom guarantee.</p>
+
+    <div class="success">
+        <strong>Diagnostic unit:</strong> same prompt, same path, one changed completion cap, different termination state, and a non-empty answer only in the higher-cap run.
+    </div>
+
+    <h2>Isolate the Model Path From the Integration Path</h2>
+
+    <p>A paired cap is stronger when basic health is established on both sides of the integration boundary.</p>
+
+    <p>In this case, simple prompts returned non-empty answers through both the direct model server and the proxy route. That made several broad explanations less likely:</p>
+
+    <ul>
+        <li>the model artifact was loadable;</li>
+        <li>the server could produce final content;</li>
+        <li>the proxy could preserve final content for a simple request; and</li>
+        <li>the basic authentication and routing path worked.</li>
+    </ul>
+
+    <p>The failure remained prompt-sensitive and cap-sensitive. That is very different from a dead server or a proxy that always strips the answer.</p>
+
+    <pre><code>simple prompt, direct path  -&gt; content + stop
+simple prompt, proxy path   -&gt; content + stop
+complex prompt, low cap     -&gt; reasoning + empty content + length
+same prompt, higher cap     -&gt; reasoning + content + stop</code></pre>
+
+    <p>This four-row matrix is small enough to run during triage and strong enough to prevent a restart-first debugging ritual. The simple-prompt rows establish basic path health; for a full path comparison, run the reproducing prompt through both direct and proxy routes at the same cap.</p>
+
+    <h2>Request Flags May Not Override the Chat Template</h2>
+
+    <p>One tempting workaround is to disable reasoning for the request. That only works if the serving stack and chat template honor the control.</p>
+
+    <p>The model in this experiment entered a reasoning block because the template started every assistant turn there. Request-level controls intended to reduce or disable reasoning did not change that template behavior.</p>
+
+    <p>The general lesson is not that reasoning controls never work. It is that a caller flag is not proof of effective behavior. Verify the rendered template or the observed response. If the template owns the transition into reasoning, a request option may be advisory, unsupported, or ignored.</p>
+
+    <h2>Completion, Context, and Timeout Are Different Budgets</h2>
+
+    <p>Raising the completion cap can expose a second failure mode: the request now has enough tokens to finish, but not enough wall-clock time.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Budget</th>
+                <th>Failure signature</th>
+                <th>Diagnostic question</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Completion/output tokens</td>
+                <td><code>finish_reason=length</code>, often with partial reasoning or content.</td>
+                <td>Did the cap exceed observed reasoning plus answer demand?</td>
+            </tr>
+            <tr>
+                <td>Request timeout</td>
+                <td>The caller or proxy terminates before a model stop is returned.</td>
+                <td>Is the outer timeout larger than representative long-completion latency?</td>
+            </tr>
+            <tr>
+                <td>Context window</td>
+                <td>Input and requested completion cannot fit together.</td>
+                <td>Does prompt length plus completion allowance remain within the model context?</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Do not solve all three with one giant number. Measure them separately: the completion/output cap limits generated work, the context window limits prompt plus generation, and the wall-clock timeout limits elapsed time. Some runtimes expose a separate reasoning budget, while others combine or rename these controls. Verify the effective semantics before changing a value. A higher-cap falsification test needs headroom for observed reasoning activity and the expected answer while the combined request still fits inside the context window and the resource envelope you are willing to support.</p>
+
+    <h2>A Diagnostic Ladder That Avoids Guessing</h2>
+
+    <ol>
+        <li><strong>Preserve the full response envelope.</strong> Record final-content length, reasoning presence or aggregate usage, termination state, and elapsed time. Keep metrics, not raw reasoning text.</li>
+        <li><strong>Classify the termination.</strong> <code>length</code>, <code>stop</code>, timeout, safety refusal, tool call, and transport error are different failures.</li>
+        <li><strong>Run a paired-cap test.</strong> Keep the prompt and path fixed; increase only the completion allowance.</li>
+        <li><strong>Compare direct and proxy paths.</strong> Use a simple prompt first, then the reproducing prompt.</li>
+        <li><strong>Compare streaming with non-streaming.</strong> Inspect raw chunks and the aggregated response so a stream assembler cannot turn returned content into an empty string.</li>
+        <li><strong>Check the parser and field mapping.</strong> Verify that the client or proxy did not drop populated content, reasoning, tool-call, structured-output, or safety fields.</li>
+        <li><strong>Inspect effective template behavior.</strong> Do not assume a reasoning-control flag changed the assistant preamble.</li>
+        <li><strong>Check timeout separately.</strong> A token-budget fix can make the request longer than an inherited proxy or client timeout.</li>
+        <li><strong>Run one semantic canary.</strong> Success means a non-empty final answer with the expected meaning, not merely an HTTP success code.</li>
+    </ol>
+
+    <h2>When This Diagnosis Does Not Apply</h2>
+
+    <p>Budget exhaustion is a strong candidate only when the evidence fits. Look elsewhere when:</p>
+
+    <ul>
+        <li>the response ends with <code>stop</code> but final content disappears after stream aggregation;</li>
+        <li>the model returns a tool call or structured object that the client mistakes for empty text;</li>
+        <li>a safety or policy field explains the missing content;</li>
+        <li>the direct path succeeds but the proxy consistently drops the final-content field;</li>
+        <li>the request times out before the model returns a termination state; or</li>
+        <li>the same prompt remains empty after the cap comfortably exceeds observed reasoning use.</li>
+    </ul>
+
+    <p>That last condition is the falsification test. If a completion cap with reasonable headroom does not change the termination or produce final content, budget exhaustion no longer explains enough. This test is diagnostic, not a general remedy for empty responses.</p>
+
+    <h2>Fix the Proven Seam, Then Prove Meaning</h2>
+
+    <p>Once the paired experiment produces evidence consistent with budget exhaustion, the candidate mitigation should remain narrow:</p>
+
+    <ul>
+        <li>raise the completion cap for the affected route, not every model;</li>
+        <li>align the route timeout with measured long-completion latency, not a global guess;</li>
+        <li>keep the total request inside the context and resource envelope;</li>
+        <li>run the original semantic prompt through the real integration path; and</li>
+        <li>roll back if the response is still empty, times out, or violates the intended serving boundary.</li>
+    </ul>
+
+    <p>Do not copy hidden reasoning into final content as a workaround. That leaks internal reasoning, changes the response contract, and still does not prove that the model produced a proper answer.</p>
+
+    <div class="note">
+        <strong>Boundary:</strong> the experiment above diagnoses a failure mechanism. It does not claim that any particular live configuration change has been activated, proven safe, or promoted to a default route.
+    </div>
+
+    <h2>Conclusion</h2>
+
+    <p>“Empty response” is a symptom, not a root cause.</p>
+
+    <p>Reasoning-capable models make that distinction more important because the visible answer and the hidden work can compete for the same completion budget. Preserve the termination state. Compare caps with one variable changed. Check direct and proxy paths. Treat timeout as a separate budget. Then prove the final answer semantically through the real path.</p>
+
+    <blockquote>
+        <p><strong>Before blaming the model, ask where the tokens went.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts</a></li>
+            <li><a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">A Local LLM Router Is Not a Panel Lane Yet</a></li>
+            <li><a href="/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">A Cold-Start Canary Is Not a Serving SLA</a></li>
+            <li><a href="/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html">A Default Is Not Caller Intent</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, technical debugging, and evidence-driven engineering workflows.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">The answer can be empty even when the model did a great deal of work.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Which response fields have been most useful in your LLM debugging? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on August 6, 2026 &bull; Part of my ongoing AI-agent operations and reliability series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>

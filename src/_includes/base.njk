@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% set socialImage = image or site.image %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="{{ site.author }}">
@@ -20,11 +21,11 @@
     <meta property="og:description" content="{{ description or summary or site.description }}">
     <meta property="og:url" content="{{ site.url }}{{ site.basePath }}{{ canonicalPath or (slug + '.html' if slug else '') }}">
     <meta property="og:site_name" content="{{ site.title }}">
-    <meta property="og:image" content="{{ site.image }}">
+    <meta property="og:image" content="{{ socialImage }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ title or site.title }}">
     <meta name="twitter:description" content="{{ description or summary or site.description }}">
-    <meta name="twitter:image" content="{{ site.image }}">
+    <meta name="twitter:image" content="{{ socialImage }}">
     {% if slug %}
     <script type="application/ld+json">{{ {
       "@context": "https://schema.org",
@@ -36,7 +37,7 @@
       "datePublished": date,
       "dateModified": updated or date,
       "url": site.url + site.basePath + slug + '.html',
-      "image": site.image,
+      "image": socialImage,
       "mainEntityOfPage": site.url + site.basePath + slug + '.html'
     } | json | safe }}</script>
     {% else %}
