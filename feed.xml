@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sat, 18 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 06 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>When Reasoning Eats the Answer: Debugging Empty LLM Completions</title>
+      <description>How paired completion caps, finish reasons, direct-path checks, and timeout evidence distinguish budget exhaustion from a broken LLM runtime.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html</guid>
+      <pubDate>Thu, 06 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
+      <description>A pattern scout must prove novelty without echoing itself, then distinguish genuine no-candidate results from a starved evidence-card producer.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Default Is Not Caller Intent: Preserve Provenance in Agent Settings</title>
@@ -54,14 +70,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html</guid>
       <pubDate>Sat, 11 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Building a Pattern Scout That Does Not Chase Its Own Echoes</title>
-      <description>A pattern scout must prove novelty; an idea miner must then survive counterevidence, falsification, and the possibility that nothing should advance.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html</guid>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

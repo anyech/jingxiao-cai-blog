@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [When Reasoning Eats the Answer: Debugging Empty LLM Completions](https://anyech.github.io/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html.md
+  - Date: 2026-08-06
+  - Summary: Empty final content with finish_reason=length can be consistent with reasoning exhausting a shared completion budget. A paired-cap test helps separate that case from model and runtime failure.
+  - Tags: llm-debugging, ai-agents, token-budgets, reasoning-models, reliability, self-hosted-ai
+- [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
+  - Date: 2026-06-12; updated: 2026-08-06
+  - Summary: Pattern scouts need source hygiene, novelty gates, opsec filters, evidence cards, and separate submission metrics so no-candidate does not hide a starved pipeline.
+  - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 - [A Default Is Not Caller Intent: Preserve Provenance in Agent Settings](https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html.md
   - Date: 2026-07-18
@@ -47,11 +57,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-07-11
   - Summary: The useful output of an idea miner is not a pile of concepts. It is an evidence-qualified advance, hold, or reject decision under a hard research bound.
   - Tags: ai-agents, product-discovery, research, automation, agent-ops, validation
-- [Building a Pattern Scout That Does Not Chase Its Own Echoes](https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
-  - Date: 2026-06-12; updated: 2026-07-11
-  - Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
-  - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 - [A Cold-Start Canary Is Not a Serving SLA](https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html.md
   - Date: 2026-07-10

@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/building-pattern-scout-does-not-chase-own-echoes.html.md
 Date: 2026-06-12
-Updated: 2026-07-11
+Updated: 2026-08-06
 Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 
-Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence, and opsec filters before their rankings become useful.
+Summary: Pattern scouts need source hygiene, novelty gates, opsec filters, evidence cards, and separate submission metrics so no-candidate does not hide a starved pipeline.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 # Building a Pattern Scout That Does Not Chase Its Own Echoes
 
 
- **June 12, 2026** | By Jingxiao Cai | **Updated July 11, 2026**
+ **June 12, 2026** | By Jingxiao Cai | **Updated August 6, 2026**
 
  Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
 
@@ -29,7 +29,7 @@ Summary: Pattern scouts need source hygiene, novelty gates, anti-repeat evidence
 
 
 
- **Update, July 11, 2026:** Added the handoff from source novelty to idea falsification. A scout can nominate a fresh signal; it cannot decide that a product deserves to be built.
+ **Update, August 6, 2026:** Added the missing producer-side metric. A strict evidence gate can report no candidate forever when nobody submits evidence cards, even while publishable leads are waiting for review.
 
 
  I like having a daily pattern scout.
@@ -185,6 +185,53 @@ candidate = fresh direct signal
  The important delta is the terminal state: the miner can return hold, reject, or none found without forcing the scout's candidate into the build queue. See [An Idea Miner Should Be Allowed to Find Nothing](/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html) for the evidence-card and falsification contract.
 
 
+## August 2026 Follow-Up: A Strict Gate Can Still Starve
+
+ A later failure exposed the other side of evidence-first admission. The qualification gate was behaving exactly as designed: no candidate could advance without a reader job, bounded claim, resolvable evidence, practical artifact, limitations, falsification condition, public auditability, and disclosure review.
+
+ But the upstream producer had submitted no complete cards. Evidence-rich leads accumulated in free-form notes, so the daily result kept saying *no candidate*. That label was technically true at the admission boundary and operationally misleading for the whole pipeline.
+
+
+
+| Observed state | Misleading interpretation | Honest interpretation |
+| --- | --- | --- |
+| Zero submitted evidence cards | No evidence exists. | The producer may be inactive, failing, or never reaching the submission threshold. |
+| Zero qualified cards | The qualification gate rejected everything. | Qualification rate is undefined when submission rate is zero. |
+| Evidence-rich leads are waiting | Lower the gate and publish one. | Route them to explicit card review without admitting them automatically. |
+| A reviewed card becomes complete | The scout changed its standards. | The same standard can now evaluate a real submission. |
+
+ The smallest repair was not another ranking model and not a weaker evidence contract. It was a visible pre-admission lane plus two separate counters:
+
+
+
+```
+evidence-rich lead
+    -> promote for card review
+    -> human-reviewed evidence card
+    -> qualification gate
+    -> new post, update, hold, or reject
+```
+
+
+
+- **Submission rate** asks whether anyone is feeding the gate.
+
+- **Qualification rate** asks whether submitted cards satisfy the contract.
+
+- **Pipeline-starved** means submissions are absent while reviewable evidence is waiting.
+
+- **No candidate** should describe a real evaluated set, not hide an empty producer queue.
+
+
+ The pre-admission lane remains review-only. Its draft values are deliberately non-admissible until a human verifies the evidence and disclosure boundary. That preserves the fail-closed gate while making the missing work visible.
+
+
+ **Producer/qualifier rule:** when the denominator is zero, report starvation before debating gate strictness.
+
+
+ This is the same distinction I use in [When Reasoning Eats the Answer](/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html): an empty visible surface is a symptom. Preserve the hidden state needed to distinguish “nothing happened” from “work happened but never crossed the next boundary.”
+
+
 ## My Take
 
  The best pattern scout is not the one with the cleverest scoring rubric. It is the one that can explain why this signal is new, why it is safe to talk about, and why it is not merely yesterday's output wearing a new title.
@@ -207,9 +254,9 @@ candidate = fresh direct signal
 
 - [Thread Checkpoints Are Not Summaries](/jingxiao-cai-blog/thread-checkpoints-agent-ops.html)
 
-- [Nothing Ran, and That Was the Proof](/jingxiao-cai-blog/nothing-ran-negative-smoke-agent-runtime-offload.html)
-
 - [An Idea Miner Should Be Allowed to Find Nothing](/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html)
+
+- [When Reasoning Eats the Answer](/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html)
 
 
 
