@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 11 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane</title>
+      <description>A bounded design for continuing safe preparation while external effects remain deferred behind native action approval and the existing guarded dispatcher.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html</guid>
+      <pubDate>Tue, 11 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
+      <description>Manifest-driven cron updates, stage-validation gates, and terminal one-shot accounting that reconciles active state while retaining terminal evidence under policy.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</guid>
+      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>When Reasoning Eats the Answer: Debugging Empty LLM Completions</title>
@@ -630,14 +646,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/nightly-build-security-audits.html</guid>
       <pubDate>Mon, 02 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Declarative Change Propagation: How I Built a Self-Documenting Cron System</title>
-      <description>How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with a stage-validation ladder from mock to real to a narrow higher-risk lane.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html</guid>
-      <pubDate>Fri, 27 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

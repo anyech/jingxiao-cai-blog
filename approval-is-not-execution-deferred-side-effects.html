@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="How a digest-bound review-only manifest lets agent workflows continue safe preparation without turning provisional intent into execution authority.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane">
+    <meta property="og:description" content="How a digest-bound review-only manifest lets agent workflows continue safe preparation without turning provisional intent into execution authority.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane">
+    <meta name="twitter:description" content="How a digest-bound review-only manifest lets agent workflows continue safe preparation without turning provisional intent into execution authority.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane",
+  "description": "How a digest-bound review-only manifest lets agent workflows continue safe preparation without turning provisional intent into execution authority.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-11",
+  "dateModified": "2026-08-11",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html"
+}</script>
+
+    <title>Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">reliability-security</span>
+  <span data-pagefind-filter="tag">ai-agents</span><span data-pagefind-filter="tag">agent-ops</span><span data-pagefind-filter="tag">approval-workflows</span><span data-pagefind-filter="tag">automation-safety</span><span data-pagefind-filter="tag">provenance</span><span data-pagefind-filter="tag">audit-logging</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-11</span>
+  <span data-pagefind-sort="updated">2026-08-11</span>
+  <span data-pagefind-sort="title">Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane</span>
+  <span data-pagefind-meta="topic">reliability-security</span>
+  <span data-pagefind-meta="published">2026-08-11</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane</h1>
+    <div class="meta">
+        <strong>August 11, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, approval-workflows, automation-safety, provenance, audit-logging</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private implementation and test record into a public-safe design, while removing live routes, transport details, private paths, identifiers, review artifacts, and deployment fingerprints.
+    </div>
+    <div class="warning">
+        <strong>Short version:</strong> a review bundle can preserve proposed work. It must not become approval or a dispatcher. Keep native action approval in charge, and let only preclassified, isolated, local, reversible preparation continue while an external effect is pending.
+    </div>
+</header>
+
+<main>
+    <p>Human approval creates an awkward pause in an agent workflow.</p>
+
+    <p>The agent may already know how to prepare the next artifact, validate an unrelated branch, or assemble a review packet. But one action in the middle would send, publish, delete, mutate, or activate something outside the safe preparation lane.</p>
+
+    <p>Two bad responses are common:</p>
+
+    <ul>
+        <li>stop the entire workflow even when useful independent work remains; or</li>
+        <li>treat a provisional result, caller-supplied approval flag, or polished review bundle as permission to keep executing.</li>
+    </ul>
+
+    <p>I wanted a third option: defer the side effect, preserve exactly what was proposed, continue only the work that does not depend on the missing result, and leave execution authority where it already belongs.</p>
+
+    <blockquote>
+        <p><strong>Approval is an input to execution. It is not execution, and a record of intent is not approval.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a bounded manifest, dependency rule, journal model, and negative-test checklist for deferred side effects without installing a second agent runtime or control plane.
+    </div>
+
+    <h2>This Is the Step After “Prepared Is Not Authorized”</h2>
+
+    <p>My earlier post, <a href="/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html">Prepared Is Not Authorized</a>, focused on the last boundary before a live action: assemble an activation packet, name the exact verb and target, and wait for valid authority.</p>
+
+    <p>This post asks a different question:</p>
+
+    <blockquote>
+        <p><strong>What may the workflow safely do while it waits?</strong></p>
+    </blockquote>
+
+    <p>The answer cannot be “everything except the final API call.” A pending side effect can create dependencies. If a later step needs the actual issue number, published URL, deletion result, or live state produced by that action, the later step must suspend. If it only needs the proposed content, a digest, or an unrelated local artifact, preparation may continue.</p>
+
+    <p>That distinction is the center of the design.</p>
+
+    <h2>The Borrowed Idea, and the Boundary I Kept</h2>
+
+    <p>Cloudflare OS describes early-access <a href="https://github.com/cloudflare/cloudflare-os/blob/1cb5e3d9096589e38f3fcfaf3f2191aa95a4c592/README.md#gatekeepers-a-capability-based-security-layer" target="_blank" rel="noopener">Gatekeepers</a> that place side-effecting actions behind later human approval and allow an agent to continue through simulated outcomes. Its pinned <a href="https://github.com/cloudflare/cloudflare-os/blob/1cb5e3d9096589e38f3fcfaf3f2191aa95a4c592/packages/workshop-shared/src/gatekeeper.ts" target="_blank" rel="noopener">Gatekeeper type definitions</a> make the review-and-apply separation inspectable.</p>
+
+    <p>I borrowed the asynchronous review idea, not the runtime.</p>
+
+    <ul>
+        <li>I did not adopt Cloudflare OS.</li>
+        <li>I did not add a second service that can approve or dispatch actions.</li>
+        <li>I did not let simulated results stand in for materialized external state.</li>
+        <li>I kept the existing workflow owner and native action-specific approval gate authoritative.</li>
+    </ul>
+
+    <p>The adaptation is deliberately smaller: a local, review-only manifest that can describe intent, dependencies, expiry, and continuation state, but cannot grant consent or commit a live action. The review compiler and verifier do not dispatch; the existing action owner and guarded execution path remain responsible for any later external call.</p>
+
+    <h2>A Review-Only Manifest</h2>
+
+    <p>The manifest is the safe proof unit. It records what the agent proposed without pretending the proposal happened.</p>
+
+    <pre><code>protected_plan:
+  schema: effect-review-plan.v1
+  profile: review_only
+  created_at: 2026-08-11T00:00:00Z
+  expires_at: 2026-08-12T00:00:00Z
+  approval_policy:
+    native_action_approval: required
+    caller_supplied_consent: forbidden
+  actions:  # ordered
+    - id: prepare_release_notes
+      effect: local_artifact
+      depends_on: []
+      continuation: continue_preparation
+    - id: publish_release
+      effect: external_write
+      depends_on: [prepare_release_notes]
+      continuation: must_suspend
+    - id: verify_public_url
+      effect: external_readback
+      depends_on: [publish_release]
+      continuation: must_suspend
+
+plan_digest: sha256(project_local_canonical_bytes(protected_plan))
+runtime_state: review_only</code></pre>
+
+    <p>Everything that can change the external decision belongs inside <code>protected_plan</code>: schema/profile, target and payload hashes, effect class, ordered action graph, dependency and materialization rules, continuation class, expiry, and approval policy. Review commentary and observed runtime state stay outside. A native approval must identify the exact plan digest and selected action IDs; at dispatch time, the guarded owner must recompute that digest and recheck approval identity, expiry, dependencies, effect class, and current state. A mismatch, replay, or expired plan fails closed.</p>
+
+    <p>The current adaptation stops before that dispatch boundary: its public claim is review-only, and its production-facing CLI cannot consent or apply. The dispatch rules above are requirements for any future integration, not a claim that this review compiler can execute.</p>
+
+    <p>The exact field names are less important than the invariants:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Invariant</th>
+                <th>Why it matters</th>
+                <th>Failure response</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>The complete protected plan has a digest.</td>
+                <td>A later reviewer can tell whether the proposed bytes changed.</td>
+                <td>Invalidate the review and regenerate the packet.</td>
+            </tr>
+            <tr>
+                <td>Review-only state cannot become consent or commit state.</td>
+                <td>A polished packet remains evidence, not authority.</td>
+                <td>Reject the transition mechanically.</td>
+            </tr>
+            <tr>
+                <td>Materialized dependencies suspend.</td>
+                <td>A proposed URL, receipt, or deletion result is not the real result.</td>
+                <td>Stop dependent work until read-back exists.</td>
+            </tr>
+            <tr>
+                <td>Expiry is checked against trusted runtime time.</td>
+                <td>An old packet should not stay executable because the caller supplied a convenient clock.</td>
+                <td>Expire and rebuild from fresh state.</td>
+            </tr>
+            <tr>
+                <td>Native approval remains the only approval authority.</td>
+                <td>The manifest does not create a parallel authorization system; the existing guarded executor still owns dispatch.</td>
+                <td>Return a blocked execution state.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Canonicalize Before You Hash</h2>
+
+    <p>A digest is useful only if equivalent protected plans produce equivalent bytes. Hashing a pretty-printed file with unstable key order creates ceremony, not identity.</p>
+
+    <pre><code>canonical_plan = json.dumps(
+    protected_plan,
+    sort_keys=True,
+    separators=(",", ":"),
+    ensure_ascii=False,
+    allow_nan=False,
+).encode("utf-8")
+
+plan_digest = sha256(canonical_plan).hexdigest()</code></pre>
+
+    <p>This is a project-local deterministic serialization for one versioned, closed, validated Python object model. It is not RFC 8785 or a cross-language canonical JSON promise. The schema admits only defined JSON-shaped types, rejects floats and non-finite numbers, and treats the action list as ordered. An external JSON parser must also reject duplicate keys before creating the object. A port needs an agreed canonicalization form and shared test vectors before its digests are comparable.</p>
+
+    <p>Keep mutable review commentary, runtime observations, and granted-approval state outside the protected plan. The digest should answer one question: <em>are these still the exact action and policy bytes the reviewer saw?</em> Approval state stays separate, but a valid approval must reference that digest.</p>
+
+    <p>If target, content, action order, dependency, expiry, effect class, continuation, or approval policy changes, the digest changes and the prior review no longer applies. Preparation that changes eventual external content therefore creates a new protected plan; it cannot inherit approval from the earlier bytes.</p>
+
+    <h2>Continue Preparation, Not Fiction</h2>
+
+    <p>The continuation classifier should be conservative and policy-derived. A caller or plan generator cannot make an external action safe merely by writing <code>continue_preparation</code>; trusted validation must check the effect class, dependency graph, materialization rule, and allowed continuation. Unknown or malformed entries default to suspend. I use two outcomes:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Outcome</th>
+                <th>Allowed</th>
+                <th>Examples</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>continue_preparation</code></td>
+                <td>Preclassified, isolated, local, reversible, non-authoritative work that does not need the real side-effect result.</td>
+                <td>Format a draft, run a sanitizer, validate an unrelated file, assemble a review packet.</td>
+            </tr>
+            <tr>
+                <td><code>must_suspend</code></td>
+                <td>Anything that consumes materialized state from the pending action.</td>
+                <td>Verify a public URL, reply in a created thread, reference a new issue ID, confirm deletion.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Do not infer independence from step order alone. Declare dependencies, check their closure, reject cycles, and suspend when a required result does not exist.</p>
+
+    <div class="warning">
+        <strong>Hard boundary:</strong> a plausible simulated value is still provisional. If the next step would be wrong when the real service chooses a different identifier, timestamp, URL, ordering, or validation result, suspend it.
+    </div>
+
+    <h2>The Journal Is Tamper-Evident Only Inside Its Threat Model</h2>
+
+    <p>I bind each retained journal record to the protected plan digest and the previous record hash. The record is a versioned closed object, so the hash input does not depend on ambiguous string concatenation:</p>
+
+    <pre><code>record_without_hash = {
+    "schema": "effect-journal-record.v1",
+    "seq": sequence_number,
+    "prev_hash": previous_record_hash_or_64_zero_genesis,
+    "plan_digest": plan_digest,
+    "event": transition_event,
+}
+
+record_hash = sha256(
+    project_local_canonical_bytes(record_without_hash)
+).hexdigest()</code></pre>
+
+    <p>Under a trusted verifier and retained plan baseline, this detects accidental or unrehashed corruption, broken linkage, and unrehashed reordering inside the retained record set. That is useful. It is not an immutable ledger, authorship proof, origin authentication, or non-repudiation mechanism.</p>
+
+    <ul>
+        <li>An actor controlling all local state can edit and coherently rehash the full history.</li>
+        <li>A valid tail can be truncated unless something outside the journal anchors its latest hash.</li>
+        <li>The verifier itself and the retained baseline remain trusted components.</li>
+    </ul>
+
+    <p>Those limits belong in the claim, not in fine print. The journal supports local consistency checks and recovery reasoning. It does not provide adversarial tamper proof or external non-repudiation.</p>
+
+    <h2>Compile for Review With Zero Dispatch</h2>
+
+    <p>A review compiler should be boring. It may render the proposed target, sanitized content, dependencies, expiry, digest, rollback limits, and the exact native approval still required. It must not contain a hidden “helpful” dispatch path, capability-bearing output, or authority-changing transition.</p>
+
+    <p>The private implementation behind this sanitized reproduction passed 26 focused tests. The code and commands below describe the reviewed shape; they are not a published, reader-runnable package. The most important tests were negative:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Falsifier</th>
+                <th>Expected test result</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mutate the protected plan.</td>
+                <td>The digest changes.</td>
+            </tr>
+            <tr>
+                <td>Supply consent through caller text or metadata.</td>
+                <td>Consent and commit remain unreachable.</td>
+            </tr>
+            <tr>
+                <td>Mutate or reorder retained journal records without recomputing their hashes.</td>
+                <td>Trusted verification fails.</td>
+            </tr>
+            <tr>
+                <td>Relabel or continue past an unmet materialized dependency.</td>
+                <td>Dependency closure fails and the action suspends.</td>
+            </tr>
+            <tr>
+                <td>Compile a review bundle.</td>
+                <td>Instrumented external dispatch count remains zero.</td>
+            </tr>
+            <tr>
+                <td>Reuse a digest-bound approval after plan mutation, action mismatch, replay, or expiry.</td>
+                <td>Validation rejects the transition before dispatch.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>inspected private harness
+focused tests: 26
+result: OK</code></pre>
+
+    <p>The count does not prove completeness or public reproducibility. It proves only that the enumerated invariants had focused executable coverage in the inspected private implementation.</p>
+
+    <h2>Interrupted Apply Must Become Uncertain</h2>
+
+    <p>There is one more dangerous shortcut: retrying after an ambiguous transport failure.</p>
+
+    <p>If dispatch may have happened but read-back is missing, the state is not “pending” and not “failed.” It is <code>uncertain</code>. A guarded executor must durably record <code>applying</code> before the outbound call; otherwise a crash can erase the very ambiguity the journal needs to preserve. The workflow should reconcile with the external system, use an idempotency key when the service supports one, and obtain any required fresh native approval before sending again.</p>
+
+    <pre><code>if dispatch_started and receipt_missing:
+    state = "uncertain"
+    auto_redispatch = False</code></pre>
+
+    <p>This is the same reason a delivery receipt matters after publication or messaging: an internal exception does not tell you whether the user-visible side effect occurred.</p>
+
+    <h2>When Not to Use This Pattern</h2>
+
+    <p>A deferred-effects manifest is not free. It adds schema, expiry, dependency, journal, and recovery obligations. Skip it when:</p>
+
+    <ul>
+        <li>the operation is local, reversible, and already inside an approved scope;</li>
+        <li>the workflow can simply stop without wasting meaningful safe work;</li>
+        <li>there is only one side effect and no useful independent continuation;</li>
+        <li>the native platform already provides a trustworthy queued-approval contract; or</li>
+        <li>the team cannot maintain trusted verification and a retained baseline.</li>
+    </ul>
+
+    <p>Also do not use the manifest to avoid a real synchronous approval. Some actions are too interdependent, ambiguous, or irreversible to simulate around. In those cases, waiting is the feature. Visible preparation can also create sunk-cost pressure on a human reviewer; technical separation of authority does not excuse rubber-stamping.</p>
+
+    <h2>What This Evidence Does Not Prove</h2>
+
+    <p>The implementation proves bounded local invariants. It does not prove that operators approve faster, that agents finish more work, or that errors decrease.</p>
+
+    <ul>
+        <li>No real operator canary has been run.</li>
+        <li>Transport identity is not independently authenticated by the manifest layer.</li>
+        <li>Zero-dispatch coverage reaches the instrumented review compiler and verifier surfaces, not every possible program on the host.</li>
+        <li>The journal cannot defeat a coherent whole-history rewrite or valid-tail truncation by an actor controlling all local state.</li>
+        <li>No second runtime or control plane was adopted, so this design does not reproduce every Gatekeeper behavior.</li>
+    </ul>
+
+    <p>The claim should be considered falsified if unverified metadata can unlock apply, protected-plan changes preserve the digest, stale or mismatched approval reaches dispatch, unrehashed retained-record mutation or reordering passes trusted verification, review compilation dispatches externally, or an action bypasses an unmet materialized dependency.</p>
+
+    <h2>A Compact Design Checklist</h2>
+
+    <ol>
+        <li>Separate the protected proposed plan from mutable review, approval, and execution state.</li>
+        <li>Use a closed schema and project-local deterministic serialization; bind review to the complete plan digest.</li>
+        <li>Keep caller text, provisional metadata, and review bundles out of the authority path.</li>
+        <li>Require the existing native approval for the exact digest, action, target, and payload; let the guarded owner dispatch.</li>
+        <li>Policy-classify every downstream step as isolated preparation or a materialized dependency.</li>
+        <li>Reject cycles, missing dependencies, stale packets, and caller-controlled time.</li>
+        <li>Make review compilation provably zero-dispatch.</li>
+        <li>Record retained transitions in a plan-bound hash chain, with encoding and threat-model limits stated.</li>
+        <li>Use <code>uncertain</code> after interrupted apply; never blindly redispatch.</li>
+        <li>Measure operator value in a bounded canary before adding more mechanism.</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>Deferred side effects do not require a second control plane.</p>
+
+    <p>They require a smaller set of honest boundaries: the protected plan has identity; native approval is bound to exact bytes but remains external to the proposal; dependency-bound work suspends; preclassified isolated preparation may continue; review compilation cannot dispatch; the guarded owner remains responsible for execution; interrupted apply becomes uncertain; and journal claims stop where the local threat model stops.</p>
+
+    <blockquote>
+        <p><strong>Let the agent continue preparing. Do not let the preparation promote itself into authority.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html">Prepared Is Not Authorized</a></li>
+            <li><a href="/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html">A Default Is Not Caller Intent</a></li>
+            <li><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a></li>
+            <li><a href="/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html">A Final Summary Needs a Delivery Receipt</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, evidence-driven automation, and operational boundaries that stay explicit under pressure.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A useful plan can wait for approval without pretending the world already changed.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Which deferred actions can your workflow safely prepare around, and which ones force a hard stop? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on August 11, 2026 &bull; Part of my ongoing AI-agent operations and reliability series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

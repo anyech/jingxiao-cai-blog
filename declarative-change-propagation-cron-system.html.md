@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/declarative-change-propagation-cron-system.html.md
 Date: 2026-03-27
-Updated: 2026-04-08
+Updated: 2026-08-11
 Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw
 
-Summary: How I built a declarative change propagation system for cron automation: manifest-driven updates, contract-derived documentation blocks, and validation that keeps desired state from quietly drifting — now with a stage-validation ladder from mock to real to a narrow higher-risk lane.
+Summary: Manifest-driven cron updates keep desired state and documentation aligned. A later update separates active-set equality, retirement by design, and terminal-evidence retention.
 
 ---
 
@@ -15,7 +15,7 @@ Summary: How I built a declarative change propagation system for cron automation
 # Declarative Change Propagation: How I Built a Self-Documenting Cron System
 
 
- **March 27, 2026** | By Jingxiao Cai | **Updated April 8, 2026**
+ **March 27, 2026** | By Jingxiao Cai | **Updated August 11, 2026**
 
  Tags: devops, automation, cron, infrastructure-as-code, drift-detection, openclaw
 
@@ -25,6 +25,8 @@ Summary: How I built a declarative change propagation system for cron automation
 
 
  **April 8 follow-up:** I added a stage-validation section covering the promotion ladder from mock → real → higher-risk lane, plus the two hard boundaries that made the stage work believable: zero-secret bootstrap and isolation with no production secrets or ambient environment inheritance.
+
+ **August 11 follow-up:** I added the terminal one-shot accounting that the original active-state model was missing: reconcile equality only across active inventories, assert retired work as absent by design, and retain terminal evidence separately under policy.
 
 
 
@@ -240,6 +242,10 @@ python3 .github/scripts/validate-change-propagation.py
 ```
 
  No drama. No magic. Just a clean statement that the declared contract and the tracked projections still match.
+
+
+ **August 11 scope correction:** this equality claim applies to the normalized active inventory after convergence. Completed one-shots use a separate retirement-and-retention invariant; see [the terminal accounting follow-up](#terminal-one-shot-accounting) below.
+
 
  If I bypassed the workflow and hand-edited one managed target instead, I would expect the failure to look more like this:
 
@@ -459,6 +465,55 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
  **Pattern I trust now:** recurring policy belongs in the manifest; thread-local checkpoint reminders do not. The moment a temporary runtime artifact is promoted into durable policy just to quiet a validator, the validator has stopped protecting the right boundary.
 
 
+
+## A Completed One-Shot Should Leave the Active Set, Not the Audit Trail
+
+ A later reconciliation exposed a lifecycle hole in the original design. One-shot work had completed, its user-visible closeout had been verified, and it no longer belonged in the live portfolio. But one active registry still described it as active, while the scheduler retained disabled residue and the terminal archive did not yet tell the complete story.
+
+ The fix was not “delete everything that looks old.” It was to separate three accounting dimensions that may overlap for one retired item: active membership, absence-by-design, and terminal-evidence retention.
+
+
+
+| Dimension | Meaning | Validator expectation |
+| --- | --- | --- |
+| **Active membership** | The automation should exist and remain eligible to run. | Live, desired-state, and active-registry ID sets agree. |
+| **Retired / absent by design** | Bounded work is complete and must not remain in an active inventory. | Targeted absence is asserted rather than treated as missing state. |
+| **Terminal evidence retained** | Completion, delivery, and retirement evidence must survive after active removal. | History exists outside the active set, with its retention limits stated. |
+
+ This changes the reconciliation equation. Equality belongs only to normalized immutable identifiers in one coherent post-convergence snapshot. Retirement absence and evidence retention are separate predicates:
+
+
+
+```
+active_live_ids == active_desired_ids == active_registry_ids
+
+retired_ids ∩ active_live_ids == ∅
+retired_ids ∩ active_desired_ids == ∅
+retired_ids ∩ active_registry_ids == ∅
+
+for every retired_id in retired_ids:
+  terminal_evidence(retired_id) is retained under policy
+```
+
+ The transition order is part of the invariant: first record authenticated completion, delivery, and retirement evidence durably; then remove active membership; then verify active-set disjointness and retained evidence. If that sequence is interrupted, classify the item as `retirement_pending` or `uncertain` and reconcile it instead of claiming either active equality or completed retirement.
+
+ The evidence order matters too. A red aggregate job status did not authorize a resend after destination read-back proved that the expected closeout was already visible. Conversely, successful delivery did not authorize deleting runtime state by itself. Delivery truth, live membership, desired state, semantic registry membership, terminal history, and Git integration are separate questions.
+
+
+
+| Question | Evidence | Decision |
+| --- | --- | --- |
+| Did the closeout arrive? | Destination read-back plus an expected payload marker. | Do not resend an already delivered result. |
+| Should the job still be live? | Schedule kind, completion state, and approved lifecycle. | Remove only approved terminal residue. |
+| What remains active? | Set comparison across live, desired, and semantic inventories. | Reconcile the active contract. |
+| What history survives? | Terminal archive plus receipt and provenance. | Retire while preserving terminal evidence under the stated retention policy. |
+
+ The delivery branch is covered in more depth by [A Final Summary Needs a Delivery Receipt](/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html). The new lesson here is narrower: a completed one-shot is neither active nor nonexistent. It is absent from active inventories by design while its terminal evidence remains represented subject to the stated retention policy.
+
+
+ **Boundary:** one bounded repair does not justify an automatic reaper, deletion-capable validator, recurring cleanup job, or runtime status patch. A second materially similar case would reopen that design question; one case supports an expiring watch, not permanent mechanism growth.
+
+
  That edge case made the whole post more real for me. The system was not just generating clean examples anymore. It was learning where strictness helped, where narrow exceptions were justified, and how to preserve both without turning the contract into mush.
 
 
@@ -584,6 +639,8 @@ Exported …/.github/config/cron-jobs.desired.json (skipped 1 ephemeral reminder
 - [Local Semantic Memory on a 4-Core ARM VPS: How I Got OpenClaw Memory Search Working Without External APIs](/jingxiao-cai-blog/local-semantic-memory-openclaw-arm-vps.html)
 
 - [Why AI Agent Skills Break in Production (and How to Troubleshoot Them)](/jingxiao-cai-blog/troubleshooting-ai-agent-skills.html)
+
+- [A Final Summary Needs a Delivery Receipt](/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html)
 
 
 
