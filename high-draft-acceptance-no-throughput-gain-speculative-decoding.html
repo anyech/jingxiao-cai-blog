@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A CPU-only N=3 test shows why high speculative-decoding acceptance can still reduce generation throughput and increase end-to-end request time on one runtime.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test">
+    <meta property="og:description" content="A CPU-only N=3 test shows why high speculative-decoding acceptance can still reduce generation throughput and increase end-to-end request time on one runtime.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test">
+    <meta name="twitter:description" content="A CPU-only N=3 test shows why high speculative-decoding acceptance can still reduce generation throughput and increase end-to-end request time on one runtime.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test",
+  "description": "A CPU-only N=3 test shows why high speculative-decoding acceptance can still reduce generation throughput and increase end-to-end request time on one runtime.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-12",
+  "dateModified": "2026-08-12",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html"
+}</script>
+
+    <title>High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">llm-inference</span><span data-pagefind-filter="tag">speculative-decoding</span><span data-pagefind-filter="tag">benchmarking</span><span data-pagefind-filter="tag">performance</span><span data-pagefind-filter="tag">cpu</span><span data-pagefind-filter="tag">measurement</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-12</span>
+  <span data-pagefind-sort="updated">2026-08-12</span>
+  <span data-pagefind-sort="title">High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-08-12</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
+    <h1>High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test</h1>
+    <div class="meta">
+        <strong>August 12, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: llm-inference, speculative-decoding, benchmarking, performance, cpu, measurement</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private benchmark into a recomputable public-safe evidence unit while removing model identities, host labels, paths, hashes, and deployment details.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is one CPU-only target/drafter pair, one fixed prompt, two forced output lengths, and three runs per cell. It is a local enablement decision, not a general verdict on speculative decoding, other models, other quantizations, or accelerator-backed serving.
+    </div>
+</header>
+
+<main>
+    <p>The draft model was working. It proposed tokens, the target accepted many of them, and the acceptance counter looked healthy.</p>
+
+    <p>The request still got slower.</p>
+
+    <p>That is the trap in speculative-decoding evaluation: acceptance is easy to celebrate because it proves that some target work was skipped. But the skipped work is only one side of the ledger. The drafter also consumes compute and memory bandwidth, and the target still has to verify its proposals. The operational question is not “Were tokens accepted?” It is “Did the complete request finish faster?”</p>
+
+    <blockquote>
+        <p><strong>Draft acceptance is a mechanism metric. Throughput and wall time are outcome metrics.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small measurement protocol, the public-safe recomputable values from one N=3 test, and a bounded decision rule for enabling or rejecting a speculative path.
+    </div>
+
+    <h2>The Bounded Result</h2>
+
+    <p>I compared speculative drafting disabled with draft depths <code>n=1</code>, <code>n=2</code>, and <code>n=3</code> at two decode-heavy output lengths. Every cell contains three serial runs with the same fixed prompt, generated-token count, sampling controls, target/drafter pair, runtime, and CPU host class.</p>
+
+    <p>The runs used a fixed variant order. No dedicated warm-up, interleaving, or randomization was recorded, so cache, thermal, background-load, and order drift remain possible confounders. That makes this a bounded local enablement test rather than a production-grade benchmark.</p>
+
+    <p>Every tested draft depth lost on both outcome metrics. Mean runtime-reported generation throughput fell by 5.7% to 18.3%, while mean request wall time increased by 5.7% to 18.8%. Yet pooled draft acceptance ranged from 48.6% to 80.4%.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Draft depth</th>
+                <th>Output tokens</th>
+                <th>Draft acceptance</th>
+                <th>Mean generation tokens/s</th>
+                <th>Change vs off</th>
+                <th>Mean wall time (s)</th>
+                <th>Change vs off</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>off</td><td>512</td><td>&mdash;</td><td>24.033</td><td>&mdash;</td><td>26.522</td><td>&mdash;</td></tr>
+            <tr><td>n=1</td><td>512</td><td>75.9%</td><td>22.655</td><td>-5.7%</td><td>28.041</td><td>+5.7%</td></tr>
+            <tr><td>n=2</td><td>512</td><td>59.0%</td><td>21.597</td><td>-10.1%</td><td>29.085</td><td>+9.7%</td></tr>
+            <tr><td>n=3</td><td>512</td><td>48.6%</td><td>19.626</td><td>-18.3%</td><td>31.497</td><td>+18.8%</td></tr>
+            <tr><td>off</td><td>2,048</td><td>&mdash;</td><td>23.023</td><td>&mdash;</td><td>94.165</td><td>&mdash;</td></tr>
+            <tr><td>n=1</td><td>2,048</td><td>80.4%</td><td>21.403</td><td>-7.0%</td><td>101.050</td><td>+7.3%</td></tr>
+            <tr><td>n=2</td><td>2,048</td><td>65.8%</td><td>21.436</td><td>-6.9%</td><td>100.953</td><td>+7.2%</td></tr>
+            <tr><td>n=3</td><td>2,048</td><td>53.1%</td><td>19.449</td><td>-15.5%</td><td>110.705</td><td>+17.6%</td></tr>
+        </tbody>
+    </table>
+
+    <p>The bounded decision was straightforward: keep drafting disabled on this runtime. The result does not say speculative decoding is ineffective. It says this target/drafter/runtime combination did not earn enablement under this workload.</p>
+
+    <h2>Define the Metrics Before Comparing Them</h2>
+
+    <p><strong>Draft acceptance</strong> here is the pooled number of accepted draft tokens divided by the pooled number of proposed draft tokens across all three runs in a cell. It is not the arithmetic mean of three per-run percentages.</p>
+
+    <p><strong>Generation tokens/s</strong> is the runtime's backend-specific generation-rate field; it was not independently instrumented. <strong>Wall time</strong> is measured separately around the request, so the conclusion does not depend on treating the runtime metric as an end-to-end timer.</p>
+
+    <p>The generated-token count was fixed within each output-length comparison. The same requests underpin both generation rate and wall time, so those metrics are two differently scoped views of each run, not independent replications.</p>
+
+    <p>Keeping those surfaces separate prevents two common mistakes:</p>
+
+    <ul>
+        <li>using a high acceptance ratio as a proxy for speedup; and</li>
+        <li>using an internal decode metric as though it captured every request cost.</li>
+    </ul>
+
+    <h2>The Acceptance Arithmetic Is Publicly Recomputable</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Draft depth</th>
+                <th>Output tokens</th>
+                <th>Accepted / proposed, runs 1 / 2 / 3</th>
+                <th>Pooled total</th>
+                <th>Pooled acceptance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>n=1</td><td>512</td><td>220/290 &middot; 220/290 &middot; 220/290</td><td>660/870</td><td>75.8621%</td></tr>
+            <tr><td>n=1</td><td>2,048</td><td>911/1,135 &middot; 912/1,134 &middot; 912/1,134</td><td>2,735/3,403</td><td>80.3703%</td></tr>
+            <tr><td>n=2</td><td>512</td><td>276/468 &middot; 276/468 &middot; 276/468</td><td>828/1,404</td><td>58.9744%</td></tr>
+            <tr><td>n=2</td><td>2,048</td><td>1,163/1,767 &middot; 1,163/1,767 &middot; 1,163/1,767</td><td>3,489/5,301</td><td>65.8178%</td></tr>
+            <tr><td>n=3</td><td>512</td><td>303/623 &middot; 303/623 &middot; 303/623</td><td>909/1,869</td><td>48.6356%</td></tr>
+            <tr><td>n=3</td><td>2,048</td><td>1,257/2,367 &middot; 1,257/2,367 &middot; 1,257/2,367</td><td>3,771/7,101</td><td>53.1052%</td></tr>
+        </tbody>
+    </table>
+
+    <p>The exact percentages matter less than the contradiction they expose: the highest observed pooled acceptance, 80.4%, still came with 7.0% lower reported generation throughput and 7.3% higher wall time.</p>
+
+    <h2>The Means Are Not Hiding One Bad Run</h2>
+
+    <p>Here are all three per-run timing values in every cell, shown to six decimal places. The means and deltas above were calculated from the full-precision source measurements rather than from these displayed values.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Draft depth</th>
+                <th>Output tokens</th>
+                <th>Generation tokens/s, runs 1 / 2 / 3</th>
+                <th>Wall time seconds, runs 1 / 2 / 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>off</td><td>512</td><td>24.032745 / 24.031547 / 24.033537</td><td>26.517395 / 26.553268 / 26.493878</td></tr>
+            <tr><td>n=1</td><td>512</td><td>22.645722 / 22.641171 / 22.677490</td><td>28.072329 / 28.085832 / 27.963858</td></tr>
+            <tr><td>n=2</td><td>512</td><td>21.598684 / 21.591714 / 21.600749</td><td>29.078755 / 29.109895 / 29.066425</td></tr>
+            <tr><td>n=3</td><td>512</td><td>19.615974 / 19.602590 / 19.659833</td><td>31.514876 / 31.551388 / 31.424818</td></tr>
+            <tr><td>off</td><td>2,048</td><td>23.030269 / 23.015419 / 23.023529</td><td>94.106198 / 94.224299 / 94.164788</td></tr>
+            <tr><td>n=1</td><td>2,048</td><td>21.401632 / 21.415856 / 21.391437</td><td>101.044526 / 100.996842 / 101.109659</td></tr>
+            <tr><td>n=2</td><td>2,048</td><td>21.427522 / 21.418181 / 21.461086</td><td>100.980612 / 101.088023 / 100.791037</td></tr>
+            <tr><td>n=3</td><td>2,048</td><td>19.464551 / 19.444808 / 19.439072</td><td>110.711190 / 110.661473 / 110.742313</td></tr>
+        </tbody>
+    </table>
+
+    <p>Every drafting run was slower than every corresponding drafting-off run in this sample on both reported generation rate and wall time. With only three runs per cell, this is still not a population estimate or a tail-latency study. It does show that the arithmetic means were not flipped by one isolated outlier.</p>
+
+    <h2>Why Acceptance Can Lose</h2>
+
+    <p>Speculative decoding trades target-model work for a different bundle of work:</p>
+
+    <ul>
+        <li>run the draft model;</li>
+        <li>materialize proposed tokens;</li>
+        <li>verify them with the target;</li>
+        <li>discard or repair rejected proposals; and</li>
+        <li>coordinate the extra state and memory traffic.</li>
+    </ul>
+
+    <p>Accepted tokens are the benefit side. Drafting and verification are the cost side. A high acceptance rate can coexist with a net loss when the drafter is too expensive relative to the target work it saves, especially on a CPU path with a comparatively heavy draft artifact.</p>
+
+    <p>This test did not separately instrument compute, verification, cache, or memory-bandwidth attribution. The result is consistent with draft overhead exceeding saved target work; it does not identify one microarchitectural bottleneck as the proven cause.</p>
+
+    <h2>A Small Enablement Scorecard</h2>
+
+    <p>For a lean first pass, I would record at least these five fields per cell:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Role</th>
+                <th>Decision use</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Accepted / proposed tokens</td><td>Mechanism diagnostic</td><td>Confirms that drafting is active and shows proposal quality</td></tr>
+            <tr><td>Runtime-reported generation tokens/s</td><td>Engine outcome</td><td>Measures reported decode-rate change</td></tr>
+            <tr><td>End-to-end request wall time</td><td>User-visible outcome</td><td>Checks whether the complete request actually gets faster</td></tr>
+            <tr><td>All per-run timing values</td><td>Stability evidence</td><td>Shows spread and whether a mean hides an outlier</td></tr>
+            <tr><td>Fixed controls</td><td>Comparison integrity</td><td>Keeps target, draft, prompt, runtime, host class, and execution mode aligned</td></tr>
+        </tbody>
+    </table>
+
+    <div class="success">
+        <strong>Practical rule:</strong> enable drafting only when the outcome metric that matters to your workload improves reproducibly. Use acceptance to explain and tune the mechanism, not to overrule a slower request.
+    </div>
+
+    <h2>When Not to Use This Test as a Final Answer</h2>
+
+    <ul>
+        <li><strong>Interactive traffic:</strong> test time-to-first-token and tail latency, not only forced long outputs.</li>
+        <li><strong>Concurrent serving:</strong> test queueing, batch shape, throughput under load, and interference.</li>
+        <li><strong>Accelerators:</strong> remeasure on the actual GPU or other backend; CPU cost balance does not transfer automatically.</li>
+        <li><strong>Quality-sensitive workloads:</strong> add output-quality and task-success checks where the decoding configuration can change behavior.</li>
+        <li><strong>Capacity decisions:</strong> include memory use, energy, concurrency, and cost per completed request.</li>
+    </ul>
+
+    <p>Also do not compare a new drafter against an unmatched baseline with different prompts, token caps, sampling, cache state, runtime build, or host pressure. The cleaner the claimed delta, the stricter the control surface should be.</p>
+
+    <h2>Limitations and Falsification</h2>
+
+    <p>This evidence covers one target/drafter pair on one CPU runtime and host class, with a fixed prompt, forced-length generation, two output lengths, and N=3. The fixed serial variant order and absence of a recorded warm-up, interleaving, or randomization leave order and system-drift confounders unresolved. It does not establish a general result for other models, quantizations, backends, accelerators, prompts, concurrency levels, or workloads.</p>
+
+    <p>This is a sanitized reproduction: exact runtime/build identity, model artifacts, host label and specification, private paths, and hashes are deliberately withheld. The published arithmetic is independently checkable, but reproducing the environment requires an internal same-class run rather than a reader-runnable public package.</p>
+
+    <p>The transcription claim fails if recomputing the published per-run values at their stated precision does not reproduce the displayed means, deltas, and pooled acceptance percentages. The bounded operational decision would be weakened by a same-protocol replication on the same target/drafter/runtime class in which one draft depth reproducibly improves both runtime-reported generation throughput and wall time by more than 5%.</p>
+
+    <p>A smaller or cheaper draft artifact, a backend optimization, or materially different hardware would be a new hypothesis, not a contradiction by itself.</p>
+
+    <h2>Conclusion</h2>
+
+    <p>The draft path was active. It accepted many proposals. It still made every tested request slower.</p>
+
+    <p>That is why speculative-decoding qualification needs both mechanism and outcome metrics. Publish the accepted/proposed counts. Publish the per-run timing values. Define pooled arithmetic. Keep an end-to-end timer beside the engine's throughput counter. Then make the decision from the workload outcome, not from the most flattering internal ratio.</p>
+
+    <blockquote>
+        <p><strong>High draft acceptance can explain a speculative path. It cannot, by itself, justify enabling one.</strong></p>
+    </blockquote>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html">The Harness Passed. The Claim Did Not</a></li>
+            <li><a href="/jingxiao-cai-blog/when-reasoning-eats-the-answer-empty-llm-completions.html">When Reasoning Eats the Answer</a></li>
+            <li><a href="/jingxiao-cai-blog/reachable-is-not-ready-agent-runtime-offload.html">Reachable Is Not Ready</a></li>
+            <li><a href="/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html">An Idea Miner Should Be Allowed to Find Nothing</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about inference measurement, self-hosted agents, and evidence-driven automation.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A mechanism earns deployment through workload outcomes, not through one attractive counter.</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Feedback</h3>
+        <p>Which metric has overturned an apparently promising inference optimization in your own tests? Open an issue in the <a href="https://github.com/anyech/jingxiao-cai-blog">blog repository</a> or leave a comment below.</p>
+    </div>
+</main>
+
+<footer>
+    <p>Published on August 12, 2026 &bull; Part of my ongoing distributed-runtime and evidence-driven performance series</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

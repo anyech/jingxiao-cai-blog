@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test](https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html.md
+  - Date: 2026-08-12
+  - Summary: Across two output lengths, every tested draft depth accepted many proposed tokens but still lost on both runtime-reported generation throughput and request wall time.
+  - Tags: llm-inference, speculative-decoding, benchmarking, performance, cpu, measurement
 - [Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane](https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html.md
   - Date: 2026-08-11

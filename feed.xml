@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test</title>
+      <description>A bounded CPU-only comparison showing why accepted draft tokens are a diagnostic signal, not proof of a net throughput or wall-time gain.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Approval Is Not Execution: Deferred Side Effects Without a Second Control Plane</title>
