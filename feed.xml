@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 15 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Archive Before You Retire: A Transaction Model for Git Worktree Backlogs</title>
+      <description>Retire stale Git worktrees with recovery anchors, checkout-before-ref ordering, dirty-state digests, compare-and-swap checks, and protected-tip closeout mismatch checks.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</guid>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Thread Affinity Is a Safety Boundary for Agent Work</title>
+      <description>Vague continuation is eligible only after exact origin identity and one unambiguous target are known; unknown, different, conflicting, or multiply plausible ownership must stop for clarification.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</guid>
+      <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test</title>
@@ -214,14 +230,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/old-owner-agent-cutovers.html</guid>
       <pubDate>Thu, 25 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Thread Affinity Is a Safety Boundary for Agent Work</title>
-      <description>Vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html</guid>
-      <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

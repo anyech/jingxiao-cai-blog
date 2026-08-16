@@ -17,6 +17,16 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Archive Before You Retire: A Transaction Model for Git Worktree Backlogs](https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html.md
+  - Date: 2026-08-15
+  - Summary: Stale worktrees are not safe to delete just because they look old. Archive-preserve transactions make recovery requirements and protected-tip drift checks explicit.
+  - Tags: git, devops, agent-ops, recovery, automation, reliability
+- [Thread Affinity Is a Safety Boundary for Agent Work](https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
+  - Date: 2026-06-24; updated: 2026-08-15
+  - Summary: When an agent sees “continue,” exact origin identity separates a same-workstream continuation eligible for normal validation from an unknown, different, or conflicting target.
+  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 - [High Draft Acceptance Does Not Guarantee a Throughput Gain: A Lean CPU Speculative-Decoding Test](https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/high-draft-acceptance-no-throughput-gain-speculative-decoding.html.md
   - Date: 2026-08-12
@@ -147,11 +157,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-06-25
   - Summary: A backend restart exposed an obsolete tunnel that could still reclaim the endpoint. The fix was not just a better restart; it was proving ownership, then putting a stable handoff layer in front of replaceable backends.
   - Tags: ai-agents, automation, debugging, reliability, self-hosted-agents
-- [Thread Affinity Is a Safety Boundary for Agent Work](https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
-  - Date: 2026-06-24
-  - Summary: When an agent sees “continue,” the safest answer is not always to pick the most recent task. Thread affinity turns ambiguous continuation into an explicit routing decision.
-  - Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 - [A Canary Is a Boundary, Not a Launch Button](https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/canary-boundary-not-launch-button-agent-ops.html.md
   - Date: 2026-06-23

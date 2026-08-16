@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
 Date: 2026-06-24
+Updated: 2026-08-15
 Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 
-Summary: When an agent sees “continue,” the safest answer is not always to pick the most recent task. Thread affinity turns ambiguous continuation into an explicit routing decision.
+Summary: When an agent sees “continue,” exact origin identity separates a same-workstream continuation eligible for normal validation from an unknown, different, or conflicting target.
 
 ---
 
@@ -14,7 +15,7 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 # Thread Affinity Is a Safety Boundary for Agent Work
 
 
- **June 24, 2026** | By Jingxiao Cai
+ **June 24, 2026** | By Jingxiao Cai | **Updated August 15, 2026**
 
  Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability
 
@@ -25,6 +26,10 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
 
  **Short version:** when an operator says “continue,” an agent should not silently choose an old workstream just because it has a plausible unfinished task. If the current thread, label, or origin does not match, the safe move is to ask which target to continue.
+
+
+
+ **August 15 follow-up:** I tightened the guard around exact origin identity. Same-origin and unambiguous is eligible for normal continuation validation, not automatically authorized; unknown, different, or conflicting origin must stop for clarification or ownership reconciliation.
 
 
  “Continue” looks harmless. It is short, natural, and often exactly what a human wants to type after an agent has been working for a while.
@@ -71,10 +76,31 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 | --- | --- | --- |
 | **Recent worker activity** | A workstream may still matter. | That the current message is about that workstream. |
 | **Old process or session handle** | There may be resumable state. | That resuming it would be visible in the right thread. |
-| **Matching thread or channel origin** | The continuation target is likely aligned with the current conversation. | That every side effect is safe without normal checks. |
+| **Matching thread or channel origin** | The routing surface matches the current conversation. | Which task is intended, who the requester is, or that any side effect is safe without normal checks. |
 | **User names the target explicitly** | The routing ambiguity is resolved. | That destructive or external actions no longer need their own approvals. |
 
  The key point is in the first row: freshness is not authority. A recent dangling task can be a good candidate, but it cannot automatically override the current conversation’s origin.
+
+
+## Five Routes, One Origin Invariant
+
+ The original article described the ambiguity. A later focused proof made the decision boundary more exact: the guard should compare the trusted current origin with the persisted workstream origin and route through five cases.
+
+
+
+| Origin evidence | Default action | Why |
+| --- | --- | --- |
+| **Same exact origin** and one unambiguous continuation | Eligible for continuation validation; not authorized by origin alone. | The routing identity matches; requester identity, task scope, current intent, approvals, and effect checks remain separate. |
+| **Same exact origin** with more than one plausible continuation | Ask for the exact target. | A matched origin narrows ownership; it does not select among competing tasks. |
+| **Unknown origin** | Ask for the exact target. | Missing identity is not permission to infer ownership. |
+| **Different origin** | Ask for an explicit redirect or linked handoff. | A plausible old workstream cannot borrow authority from the current surface. |
+| **Conflicting persisted ownership** | Stop and reconcile. | Proceeding could produce a risk-bearing closeout or mutation for the wrong owner. |
+
+ An explicit, verified bridge can connect two origins, but the bridge must name source and destination rather than treating nearby context as an implied redirect. A matched origin removes an objection; it does not supply authority. The invariant is about routing identity, not proof that the resumed task is correct, a waiver of approval gates, or authentication of every messaging provider.
+
+
+ **Falsifier:** the affinity boundary has failed if a different-origin “continue” resumes a risk-bearing closeout without an explicit, verified source-to-destination bridge and required authorization; if unknown origin is silently guessed; if conflicting ownership is ignored; or if an out-of-scope edit is reported as applied.
+
 
 
 ## The Guard I Want
@@ -131,7 +157,7 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 | Situation | Default |
 | --- | --- |
 | One active task in the current thread. | Continue. |
-| Multiple candidates, same origin, clear latest checkpoint. | Continue, but cite the target briefly. |
+| Multiple plausible candidates, same exact origin, even with a clear latest checkpoint. | Ask for the exact target; recency is evidence of order, not selection. |
 | Best candidate belongs to a different thread or label. | Ask which workstream to continue. |
 | User explicitly names the target. | Proceed on that target, preserving other approval gates. |
 
@@ -154,7 +180,7 @@ Summary: When an agent sees “continue,” the safest answer is not always to p
 
  The word “continue” is convenient because humans share context. Agents do not automatically share the same context boundary, especially after handoff, compaction, or parallel work.
 
- So I want the system to be conservative in exactly one place: before it maps a vague continuation command onto a specific workstream. If the origin matches, keep going. If the origin is unclear, ask. If the user redirects explicitly, proceed.
+ So I want the system to be conservative in exactly one place: before it maps a vague continuation command onto a specific workstream. If the exact origin matches and exactly one continuation is unambiguous, route that target into normal continuation validation. Origin alone neither selects among plausible tasks nor grants authority; otherwise ask, bridge, or reconcile as the table requires.
 
  That is not hesitation. It is how an agent avoids being confidently helpful in the wrong thread.
 

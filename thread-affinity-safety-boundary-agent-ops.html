@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="A sanitized agent-operations lesson: vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.">
+    <meta name="description" content="A thread-affinity safety pattern: compare exact origin identity before vague continuation, and stop on unknown, different, or conflicting workstream ownership.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -17,20 +17,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Thread Affinity Is a Safety Boundary for Agent Work">
-    <meta property="og:description" content="A sanitized agent-operations lesson: vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.">
+    <meta property="og:description" content="A thread-affinity safety pattern: compare exact origin identity before vague continuation, and stop on unknown, different, or conflicting workstream ownership.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Thread Affinity Is a Safety Boundary for Agent Work">
-    <meta name="twitter:description" content="A sanitized agent-operations lesson: vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.">
+    <meta name="twitter:description" content="A thread-affinity safety pattern: compare exact origin identity before vague continuation, and stop on unknown, different, or conflicting workstream ownership.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Thread Affinity Is a Safety Boundary for Agent Work",
-  "description": "A sanitized agent-operations lesson: vague continuation commands should not automatically resume old work when multiple threads or workstreams are active.",
+  "description": "A thread-affinity safety pattern: compare exact origin identity before vague continuation, and stop on unknown, different, or conflicting workstream ownership.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -42,7 +42,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-06-24",
-  "dateModified": "2026-06-24",
+  "dateModified": "2026-08-15",
   "url": "https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html"
@@ -75,17 +75,17 @@
   <span data-pagefind-filter="year">2026</span>
   <span data-pagefind-filter="month">06</span>
   <span data-pagefind-sort="published">2026-06-24</span>
-  <span data-pagefind-sort="updated">2026-06-24</span>
+  <span data-pagefind-sort="updated">2026-08-15</span>
   <span data-pagefind-sort="title">Thread Affinity Is a Safety Boundary for Agent Work</span>
   <span data-pagefind-meta="topic">agent-architecture-operations</span>
   <span data-pagefind-meta="published">2026-06-24</span>
-  <span data-pagefind-meta="updated"></span>
+  <span data-pagefind-meta="updated">2026-08-15</span>
 </div>
 <header>
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>Thread Affinity Is a Safety Boundary for Agent Work</h1>
     <div class="meta">
-        <strong>June 24, 2026</strong> | By Jingxiao Cai<br>
+        <strong>June 24, 2026</strong> | By Jingxiao Cai | <strong>Updated August 15, 2026</strong><br>
         <span class="tags">Tags: ai-agents, automation, debugging, openclaw, agent-ops, reliability</span>
     </div>
     <div class="disclaimer">
@@ -93,6 +93,9 @@
     </div>
     <div class="warning">
         <strong>Short version:</strong> when an operator says “continue,” an agent should not silently choose an old workstream just because it has a plausible unfinished task. If the current thread, label, or origin does not match, the safe move is to ask which target to continue.
+    </div>
+    <div class="note">
+        <strong>August 15 follow-up:</strong> I tightened the guard around exact origin identity. Same-origin and unambiguous is eligible for normal continuation validation, not automatically authorized; unknown, different, or conflicting origin must stop for clarification or ownership reconciliation.
     </div>
 </header>
 
@@ -148,8 +151,8 @@
             </tr>
             <tr>
                 <td><strong>Matching thread or channel origin</strong></td>
-                <td>The continuation target is likely aligned with the current conversation.</td>
-                <td>That every side effect is safe without normal checks.</td>
+                <td>The routing surface matches the current conversation.</td>
+                <td>Which task is intended, who the requester is, or that any side effect is safe without normal checks.</td>
             </tr>
             <tr>
                 <td><strong>User names the target explicitly</strong></td>
@@ -160,6 +163,53 @@
     </table>
 
     <p>The key point is in the first row: freshness is not authority. A recent dangling task can be a good candidate, but it cannot automatically override the current conversation’s origin.</p>
+
+    <h2>Five Routes, One Origin Invariant</h2>
+
+    <p>The original article described the ambiguity. A later focused proof made the decision boundary more exact: the guard should compare the trusted current origin with the persisted workstream origin and route through five cases.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Origin evidence</th>
+                <th>Default action</th>
+                <th>Why</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Same exact origin</strong> and one unambiguous continuation</td>
+                <td>Eligible for continuation validation; not authorized by origin alone.</td>
+                <td>The routing identity matches; requester identity, task scope, current intent, approvals, and effect checks remain separate.</td>
+            </tr>
+            <tr>
+                <td><strong>Same exact origin</strong> with more than one plausible continuation</td>
+                <td>Ask for the exact target.</td>
+                <td>A matched origin narrows ownership; it does not select among competing tasks.</td>
+            </tr>
+            <tr>
+                <td><strong>Unknown origin</strong></td>
+                <td>Ask for the exact target.</td>
+                <td>Missing identity is not permission to infer ownership.</td>
+            </tr>
+            <tr>
+                <td><strong>Different origin</strong></td>
+                <td>Ask for an explicit redirect or linked handoff.</td>
+                <td>A plausible old workstream cannot borrow authority from the current surface.</td>
+            </tr>
+            <tr>
+                <td><strong>Conflicting persisted ownership</strong></td>
+                <td>Stop and reconcile.</td>
+                <td>Proceeding could produce a risk-bearing closeout or mutation for the wrong owner.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>An explicit, verified bridge can connect two origins, but the bridge must name source and destination rather than treating nearby context as an implied redirect. A matched origin removes an objection; it does not supply authority. The invariant is about routing identity, not proof that the resumed task is correct, a waiver of approval gates, or authentication of every messaging provider.</p>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> the affinity boundary has failed if a different-origin “continue” resumes a risk-bearing closeout without an explicit, verified source-to-destination bridge and required authorization; if unknown origin is silently guessed; if conflicting ownership is ignored; or if an out-of-scope edit is reported as applied.
+    </div>
 
     <h2>The Guard I Want</h2>
     <p>For vague continuation commands, I want the agent to run a tiny routing check before acting:</p>
@@ -210,8 +260,8 @@
                 <td>Continue.</td>
             </tr>
             <tr>
-                <td>Multiple candidates, same origin, clear latest checkpoint.</td>
-                <td>Continue, but cite the target briefly.</td>
+                <td>Multiple plausible candidates, same exact origin, even with a clear latest checkpoint.</td>
+                <td>Ask for the exact target; recency is evidence of order, not selection.</td>
             </tr>
             <tr>
                 <td>Best candidate belongs to a different thread or label.</td>
@@ -238,7 +288,7 @@
     <h2>Conclusion</h2>
     <p>The word “continue” is convenient because humans share context. Agents do not automatically share the same context boundary, especially after handoff, compaction, or parallel work.</p>
 
-    <p>So I want the system to be conservative in exactly one place: before it maps a vague continuation command onto a specific workstream. If the origin matches, keep going. If the origin is unclear, ask. If the user redirects explicitly, proceed.</p>
+    <p>So I want the system to be conservative in exactly one place: before it maps a vague continuation command onto a specific workstream. If the exact origin matches and exactly one continuation is unambiguous, route that target into normal continuation validation. Origin alone neither selects among plausible tasks nor grants authority; otherwise ask, bridge, or reconcile as the table requires.</p>
 
     <p>That is not hesitation. It is how an agent avoids being confidently helpful in the wrong thread.</p>
 
