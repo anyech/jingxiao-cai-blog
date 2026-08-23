@@ -3,10 +3,10 @@ layout: post.njk
 permalink: 'local-llm-router-not-panel-lane-yet.html'
 title: 'A Local LLM Router Is Not a Panel Lane Yet'
 slug: 'local-llm-router-not-panel-lane-yet'
-description: 'A sanitized agent-operations pattern for promoting local LLM endpoints: prove private routing, health, failover, soak, and policy boundaries before making them panel lanes.'
-summary: 'A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.'
+description: 'A sanitized promotion pattern for local LLM endpoints: evaluate routing, controls, quality, speed, cleanup, and policy as separate gates before making a panel lane.'
+summary: 'A private local LLM route can pass health and quality checks and still remain only a candidate until controls, performance, environment integrity, role policy, and activation authority align.'
 date: '2026-07-04'
-updated: '2026-07-10'
+updated: '2026-08-23'
 topic: 'distributed-runtime-systems'
 tags: ['ai-agents', 'local-llm', 'openclaw', 'reliability', 'agent-ops', 'tooling']
 keywords: ['local LLM router', 'agent operations', 'self-hosted AI', 'panel lane readiness', 'OpenClaw', 'LLM reliability', 'private model endpoint']
@@ -14,16 +14,16 @@ canonical: 'https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-pane
 inFeed: true
 inSitemap: true
 feedTitle: 'A Local LLM Router Is Not a Panel Lane Yet'
-feedDescription: 'Private local LLM endpoints need routing, auth, failover, cold-start concurrency, cleanup, soak, and policy proof before promotion.'
+feedDescription: 'Private local LLM endpoints need routing, controls, quality, speed, cleanup, environment integrity, and explicit policy proof before promotion.'
 feedPubDate: 'Sat, 04 Jul 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-07-10'
+sitemapLastmod: '2026-08-23'
 ---
 <header>
     <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
     <h1>A Local LLM Router Is Not a Panel Lane Yet</h1>
     <div class="meta">
-        <strong>July 4, 2026</strong> | By Jingxiao Cai | <strong>Updated July 10, 2026</strong><br>
+        <strong>July 4, 2026</strong> | By Jingxiao Cai | <strong>Updated August 23, 2026</strong><br>
         <span class="tags">Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling</span>
     </div>
     <div class="disclaimer">
@@ -34,6 +34,9 @@ sitemapLastmod: '2026-07-10'
     </div>
     <div class="update-banner">
         <strong>Update, July 10, 2026:</strong> Added the next promotion boundary: one successful on-demand cold start is only a happy-path canary. Concurrent ownership, failure takeover, cache honesty, cleanup, and the serving contract remain separate gates.
+    </div>
+    <div class="update-banner">
+        <strong>Update, August 23, 2026:</strong> Added a public-safe terminal promotion gate: quality, exact controls, tool behavior, relative speed, cleanup, environment integrity, and activation authority are independent dimensions. A tuned model may earn a selective role without becoming a default lane.
     </div>
 </header>
 
@@ -136,6 +139,76 @@ sitemapLastmod: '2026-07-10'
     <p>The stronger packet added concurrent requests with one activation owner and a waiting request, ownership expiry and takeover, disconnect cleanup, an idle-controller race guard, and explicit cache-layer caveats. Even after those checks, the result remained canary-only because latency objectives, observability, desired-warm semantics, rollout, and rollback still needed their own decision.</p>
 
     <p>The detailed proof ladder is in <a href="/jingxiao-cai-blog/cold-start-canary-not-serving-sla.html">A Cold-Start Canary Is Not a Serving SLA</a>. The connection to panel promotion is simple: a local lane can become more operationally real without becoming a default decision lane.</p>
+
+    <h2>August 2026 Follow-Up: Promotion Is a Vector</h2>
+
+    <p>A later bounded evaluation made the promotion boundary more precise. One candidate produced the strongest review quality in its initial comparison but missed every predefined successor-speed gate. Tuning improved throughput enough to make it interesting for a narrower role, but that still did not authorize default promotion. A faster compact candidate failed exact controls and was rejected despite its speed.</p>
+
+    <p>The public-safe decision table removes model, provider, host, and route identity while preserving the result shape:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Candidate state</th>
+                <th>Natural finals</th>
+                <th>Exact controls</th>
+                <th>Tool checks</th>
+                <th>Quality</th>
+                <th>Relative speed</th>
+                <th>Disposition</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>High-quality initial tuple</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>High</td>
+                <td>Below every successor comparator</td>
+                <td>Reject as successor</td>
+            </tr>
+            <tr>
+                <td>Tuned version</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>Acceptable for a narrow role</td>
+                <td>Materially improved</td>
+                <td>Selective-lane candidate only</td>
+            </tr>
+            <tr>
+                <td>Faster compact candidate</td>
+                <td>Complete</td>
+                <td>Incomplete</td>
+                <td>Complete</td>
+                <td>Lower</td>
+                <td>Much faster</td>
+                <td>Reject</td>
+            </tr>
+            <tr>
+                <td>Reliable compact candidate</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>Complete</td>
+                <td>Slightly lower</td>
+                <td>Slower than its comparator</td>
+                <td>Hold</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The thresholds were fixed and recorded before results were observed. That matters because a selective role is easy to rationalize after seeing a favorite candidate miss a default-lane gate. Predefined thresholds turn “I still like it” into a falsifiable routing decision.</p>
+
+    <p>Terminal cleanup also has its own axis. The scoped evaluation left no task residue, but an out-of-scope environment fingerprint differed at post-run sampling. Two-point sampling cannot narrow when during the run that change occurred. That widened caveat does not erase the recorded measurements or identify their cause, but it does block a claim that the evaluation closed in clean isolation.</p>
+
+    <div class="success">
+        <strong>Promotion rule:</strong> high quality cannot override a failed successor-speed gate; speed cannot override failed exact controls; tuning can earn a selective role without granting default-lane or activation authority.
+    </div>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> this decision shape is weakened if a preregistered independent rerun cannot reproduce it, thresholds move after results are seen, a failed-control candidate is promoted, or environment drift is ignored and reported as clean isolation.
+    </div>
 
     <h2>The Four Labels I Want</h2>
 
