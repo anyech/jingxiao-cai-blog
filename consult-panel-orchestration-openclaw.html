@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
+    <meta name="description" content="How I run a config-backed multi-model panel in OpenClaw: blind-first evidence, artifact-backed completion, terminal state, quorum, and honest dissent.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -17,20 +17,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
+    <meta property="og:description" content="How I run a config-backed multi-model panel in OpenClaw: blind-first evidence, artifact-backed completion, terminal state, quorum, and honest dissent.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos">
-    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.">
+    <meta name="twitter:description" content="How I run a config-backed multi-model panel in OpenClaw: blind-first evidence, artifact-backed completion, terminal state, quorum, and honest dissent.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos",
-  "description": "How I run a config-backed multi-model panel in OpenClaw: launch guards, artifact-backed completion, local-lane promotion gates, and honest dissent safely.",
+  "description": "How I run a config-backed multi-model panel in OpenClaw: blind-first evidence, artifact-backed completion, terminal state, quorum, and honest dissent.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -42,7 +42,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-03",
-  "dateModified": "2026-07-04",
+  "dateModified": "2026-08-23",
   "url": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html"
@@ -75,17 +75,17 @@
   <span data-pagefind-filter="year">2026</span>
   <span data-pagefind-filter="month">04</span>
   <span data-pagefind-sort="published">2026-04-03</span>
-  <span data-pagefind-sort="updated">2026-07-04</span>
+  <span data-pagefind-sort="updated">2026-08-23</span>
   <span data-pagefind-sort="title">LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</span>
   <span data-pagefind-meta="topic">agent-architecture-operations</span>
   <span data-pagefind-meta="published">2026-04-03</span>
-  <span data-pagefind-meta="updated">2026-07-04</span>
+  <span data-pagefind-meta="updated">2026-08-23</span>
 </div>
 <header>
         <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
         <h1>LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos</h1>
         <div class="meta">
-            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated July 4, 2026</strong><br>
+            <strong>April 3, 2026</strong> | By Jingxiao Cai | <strong>Updated August 23, 2026</strong><br>
             <span class="tags">Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review</span>
         </div>
         <div class="disclaimer">
@@ -103,13 +103,16 @@
         <div class="note">
             <strong>July 4 follow-up:</strong> a private local-model router can be available before it is eligible for the default panel. Local lanes still need soak, role assignment, timeout and weighting policy, and explicit config/Gateway approval before promotion. I expanded that boundary in <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">A Local LLM Router Is Not a Panel Lane Yet</a>.
         </div>
+        <div class="update-banner">
+            <strong>Update, August 23, 2026:</strong> as documented in August 2026, the public surface is one config-backed Standard review mode. I added blind-first evidence, authority-family quorum, source-snapshot drift handling, and terminal-state accounting—including why operational degradation can coexist with an effective result.
+        </div>
         <div class="note">
-            <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best. The point is how to run a full panel, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
+            <strong>Scope note:</strong> this post is about the <em>orchestration pattern</em>, not about proving one model is universally best or disclosing the live roster. The point is how to run one review, finish cleanly, surface dissent honestly, and keep routing policy in the right layer.
         </div>
         <div class="warning">
-            <strong>Another boundary up front:</strong> a full jury panel is expensive and is <strong>not</strong> my default for routine queries. I use it for worthwhile ambiguity, higher-cost decisions, explicit panel requests, or cases where dissent is actually worth the latency.
+            <strong>Another boundary up front:</strong> a full Standard panel is expensive and is <strong>not</strong> my default for routine queries. I use it for worthwhile ambiguity, higher-cost decisions, explicit panel requests, or cases where independent evidence and dissent are worth the latency.
         </div>
-        <p>The same routing policy also supports lighter consultation modes. I am focusing on the full jury here because that is where orchestration bugs, weighting mistakes, and async handoff failures become easiest to see.</p>
+        <p>The current public workflow exposes one config-backed Standard mode. Routine questions skip the panel rather than inventing a second public tier.</p>
     </header>
 
     <main>
@@ -118,26 +121,26 @@
         <p>The failures I kept hitting were never glamorous:</p>
         <ul>
             <li>one expected panelist quietly did not get launched</li>
-            <li>an ACP-backed lane finished, but the answer did not auto-surface to the parent thread</li>
+            <li>a distinct executor lane finished, but the answer did not auto-surface to the parent thread</li>
             <li>a partial result arrived, then the orchestrator went silent</li>
             <li>a slow non-core model held the whole panel hostage</li>
-            <li>a wildcard dissent looked louder than it deserved because the weighting rules stayed implicit</li>
+            <li>a zero-quorum dissent looked louder than it deserved because the authority rules stayed implicit</li>
             <li>late completions arrived after the real answer was already delivered</li>
         </ul>
 
         <blockquote>
-            <p><strong>The real unit of work is not “query 8 models.” It is “finish one user-visible review exactly once, with lineup integrity, visible weighting, and bounded latency.”</strong></p>
+            <p><strong>The real unit of work is not “query many models.” It is “finish one user-visible review exactly once, with lineup integrity, evidence provenance, visible weighting, and bounded latency.”</strong></p>
         </blockquote>
 
         <p>That is the problem the <code>consult-panel</code> workflow now solves inside my OpenClaw setup.</p>
 
         <div class="success">
-            <strong>Current live full-jury shape:</strong> the default active panel currently resolves to <strong>7 voices</strong> — a primary reasoning consultant, three additional stable-core critics, a diversity critic, a fixed experimental panelist, and a rotating wildcard endpoint — with explicit lineup resolution, timeout classes, dissent visibility, and degradation rules. The old Gemini ACP lane still exists as a dormant route definition, but it is no longer part of the default lineup.
+            <strong>Current public shape:</strong> one Standard mode resolves its exact authority families, direct lanes, and nonblocking local corroborators from config at runtime. The article keeps the reusable role classes and quorum rules; it intentionally does not freeze a mutable provider/model roster into public prose.
         </div>
 
         <h2>The Design Decision That Saved the Whole Thing</h2>
         <p>The best decision was architectural, not prompt-related.</p>
-        <p>The public invocation surface stays deliberately small. Natural requests like <em>consult the panel</em>, <em>panel review</em>, <em>have the consultants weigh in</em>, or <em>run jury mode</em> map into the same orchestration layer, while the routing truth stays in durable config and ops docs rather than inside the prompt wrapper.</p>
+        <p>The public invocation surface stays deliberately small. Natural requests like <em>consult the panel</em>, <em>panel review</em>, or <em>have the consultants weigh in</em> map into the same Standard orchestration layer, while the routing truth stays in durable config and ops docs rather than inside the prompt wrapper.</p>
         <p>The canonical grounding for current behavior lives in three places: the routing config, the consult-panel skill, and the routing operations guide. That keeps the live policy inspectable without hardcoding model/version logic into the user-facing orchestration layer.</p>
         <blockquote>
             <p><strong>Keep the skill thin. Keep the routing truth in config and ops docs.</strong></p>
@@ -161,123 +164,92 @@
             <li><code>packet-size gate</code></li>
         </ul>
 
-        <p>That split matters because it keeps model churn from leaking into workflow prose. If the primary lane changes, or the ACP secondary policy changes, or the fixed experimental lane gets replaced, I want to edit config—not rewrite orchestration logic in six places.</p>
+        <p>That split matters because it keeps model churn from leaking into workflow prose. If a route, authority family, local corroborator, or timeout policy changes, I want to edit and validate config—not rewrite orchestration logic in six places.</p>
 
         <div class="note">
-            <strong>Naming lesson:</strong> the skill is called <code>consult-panel</code>, not <code>jury</code>. “Jury” is a useful mode name, but it is a bad public skill name because it leaks internal taxonomy into the invocation surface.
+            <strong>Naming lesson:</strong> the skill is called <code>consult-panel</code>. The only public config-backed mode is <code>standard</code>; retired or internal labels do not create extra public tiers.
         </div>
 
-        <h2>What the Current Panel Actually Looks Like</h2>
-        <p>The live jury lineup is not “eight random models.” The default active panel is currently seven voices with different jobs, different timeout leashes, and different interpretive weight.</p>
+        <h2>What the Current Panel Exposes Publicly</h2>
+        <p>The exact roster is mutable config, not article content. The stable public contract is a set of role classes with different authority and blocking behavior.</p>
 
         <table>
             <thead>
                 <tr>
-                    <th>Panelist</th>
-                    <th>Role</th>
-                    <th>Class</th>
-                    <th>Why it exists</th>
+                    <th>Role class</th>
+                    <th>Quorum effect</th>
+                    <th>Blocking behavior</th>
+                    <th>Public meaning</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Primary reasoning consultant</strong></td>
-                    <td>Primary consultant</td>
-                    <td><code>stable_core</code></td>
-                    <td>Main decision anchor for full-panel review.</td>
+                    <td><strong>Authority-family lane</strong></td>
+                    <td>At most one credit per configured family</td>
+                    <td>Counts toward the minimum family quorum</td>
+                    <td>Independent decision evidence with verified route/model identity.</td>
                 </tr>
                 <tr>
-                    <td><strong>Compact-packet challenger</strong></td>
-                    <td>Challenger consultant</td>
-                    <td><code>stable_core</code></td>
-                    <td>First stable-core challenger when the packet is compact enough.</td>
+                    <td><strong>Attested direct lane</strong></td>
+                    <td>Only through its configured family</td>
+                    <td>Must carry a receipt bound to task, model, and report bytes</td>
+                    <td>A non-session executor can contribute without weakening provenance.</td>
                 </tr>
                 <tr>
-                    <td><strong>Stable core critic A</strong></td>
-                    <td>Core critic</td>
-                    <td><code>stable_core</code></td>
-                    <td>Reliable large-context core voice and oversize fallback for the challenger.</td>
+                    <td><strong>Nonblocking local corroborator</strong></td>
+                    <td>Zero authority quorum</td>
+                    <td>May be cancelled after its opportunity window</td>
+                    <td>Can add evidence or dissent but cannot manufacture validity.</td>
                 </tr>
                 <tr>
-                    <td><strong>Stable core critic B</strong></td>
-                    <td>Core critic</td>
-                    <td><code>stable_core</code></td>
-                    <td>Independent strong core voice.</td>
-                </tr>
-                <tr>
-                    <td><strong>Diversity critic</strong></td>
-                    <td>Diversity critic</td>
-                    <td><code>stable_core</code></td>
-                    <td>Semantic diversity lane without inventing a second wildcard slot.</td>
-                </tr>
-                <tr>
-                    <td><strong>Fixed experimental panelist</strong></td>
-                    <td>Fixed experimental panelist</td>
-                    <td><code>fixed_experimental</code></td>
-                    <td>Meaningful non-core lane with stable identity that can corroborate consensus or widen a real split.</td>
-                </tr>
-                <tr>
-                    <td><strong>Rotating wildcard endpoint</strong></td>
-                    <td>Rotating wildcard panelist</td>
-                    <td><code>rotating_wildcard</code></td>
-                    <td>Exploratory dissent / novelty lane, never decisive by itself.</td>
+                    <td><strong>Degraded or unusable lane</strong></td>
+                    <td>No credit</td>
+                    <td>Recorded with an operational reason code</td>
+                    <td>Missing evidence, timeout, or shape failure is degradation—not a substantive vote.</td>
                 </tr>
             </tbody>
         </table>
 
-        <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. That is how I stopped “full panel” from quietly meaning four models one week and seven the next.</p>
-        <p>I also stopped pretending a dormant route definition was the same thing as an active default lane. The Gemini ACP path still exists in config, but it is intentionally <strong>not</strong> part of the default active jury lineup right now because that route became too finicky to treat as a routine full-weight core lane. If it comes back later, it returns explicitly as a nonblocking external lane rather than a hidden substitute.</p>
-        <p>If the resolved lineup and the accepted spawn set do not match, the run is degraded immediately instead of being presented as a successful full panel. That one rule fixed a surprising amount of quiet orchestration dishonesty.</p>
+        <p>The important thing is that <strong>the current lineup is config-resolved</strong>, not reconstructed from memory. A dormant route definition is not an active lane, and several models from the same provider family do not create several independent quorum credits.</p>
+        <p>If the resolved lineup and the accepted launch set differ, the run is degraded immediately. Here, the configured minima are the minimum usable evidence families and the minimum independent authority-family quorum. If both minima still pass, the result may remain effective; if either fails, the run cannot promote partial evidence into a valid panel.</p>
 
-        <pre><code>resolve_panel_shape(mode="jury")</code></pre>
+        <pre><code>resolve_panel_shape(mode="standard")</code></pre>
 
-        <p>If the expected lineup and the actual spawn set differ, the run is degraded. I do not pretend it was a full panel.</p>
+        <p>That distinction matters: <code>degraded</code> describes missing or unusable operational evidence. <code>effective</code> answers whether the configured evidence and authority-family gates still passed. They are related, not opposites.</p>
 
         <div class="note">
-            <strong>Local-lane promotion note:</strong> the same rule now applies to private local model routes. A local router can pass auth, model-list, chat, streaming, failover, and short-soak checks and still remain a candidate lane rather than a default panel voice. Promotion needs an explicit role, timeout class, weighting policy, rollback plan, and a reviewed config/Gateway activation step; the standalone follow-up is <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">here</a>.
+            <strong>Local-lane promotion note:</strong> the same rule applies to private local model routes. A local router can pass health and quality checks and still remain a zero-quorum corroborator or candidate rather than an authority lane. Promotion needs controls, performance, role, failure policy, rollback, and separately reviewed activation; the standalone follow-up is <a href="/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html">here</a>.
         </div>
 
         <h2>The Schema That Matters More Than the Prompt</h2>
         <p>The routing config now carries three layers of truth:</p>
         <ol>
             <li><strong>role mapping</strong> — what each semantic lane currently points to</li>
-            <li><strong>mode shape</strong> — which panelists belong to <code>standard</code>, <code>jury</code>, and compatibility aliases like <code>deepJury</code></li>
-            <li><strong>panel heuristics</strong> — timeout classes, weight bands, checkpoint timing, and benchmark reference guidance</li>
+            <li><strong>Standard shape</strong> — authority families, minimum usable family quorum, direct executors, and nonblocking corroborators</li>
+            <li><strong>panel policy</strong> — timeouts, evidence requirements, opportunity windows, completion, and degraded behavior</li>
         </ol>
 
         <p>A simplified shape looks like this:</p>
         <pre><code>{
-  "roles": {
-    "primary_consultant": { "preferred": "&lt;primary-reasoning-model&gt;" },
-    "optional_external_lane": { "agentId": "&lt;secondary-agent&gt;", "modelAlias": "&lt;stable-secondary-lane&gt;" },
-    "fixed_experimental_panelist": { "preferred": "&lt;fixed-experimental-model&gt;" },
-    "rotating_wildcard_panelist": { "preferred": "&lt;rotating-wildcard-endpoint&gt;" }
-  },
-  "modes": {
-    "jury": {
-      "panelists": [
-        "primary_consultant",
-        "stable_core_challenger",
-        "stable_core_critic_a",
-        "stable_core_critic_b",
-        "diversity_critic",
-        "fixed_experimental_panelist",
-        "rotating_wildcard_panelist"
-      ]
+  "publicModes": ["standard"],
+  "standard": {
+    "authorityFamilies": ["&lt;family-a&gt;", "&lt;family-b&gt;", "&lt;family-c&gt;"],
+    "minimumUsableFamilies": "&lt;configured quorum&gt;",
+    "directExecutors": ["&lt;attested direct lane&gt;"],
+    "localCorroborators": {
+      "quorumCredit": 0,
+      "blocking": false
     }
   },
-  "panelHeuristics": {
-    "classes": {
-      "stable_core": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
-      "stable_external_nonblocking": { "nominalWeight": 1.0, "softTimeoutSeconds": 150 },
-      "fixed_experimental": { "nominalWeight": 0.75, "softTimeoutSeconds": 120 },
-      "rotating_wildcard": { "nominalWeight": 0.4, "softTimeoutSeconds": 90 }
-    }
+  "evidencePolicy": {
+    "requestedAndServedIdentityRequired": true,
+    "atomicLaneArtifactsRequired": true,
+    "effectiveStatusDerivedFromConfiguredGates": true
   }
 }</code></pre>
 
         <div class="note">
-            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of the live file. I keep the reusable design, class logic, and role split; I leave out the local debris nobody else needs. The <code>diversity_critic</code> role shown in the schema resolves to the active diversity lane in the live panel.
+            <strong>Important boundary:</strong> this is a sanitized explanatory sketch, not a byte-for-byte dump of live config. It keeps the reusable family/quorum/evidence semantics while omitting mutable models, providers, route labels, counts, and timeouts.
         </div>
 
         <h2>Why Timeout Policy Had To Change</h2>
@@ -287,59 +259,59 @@
         </blockquote>
 
         <p>That sounds obvious once you say it. But it matters operationally.</p>
-        <p>If seven lanes are done and the only remaining holdout is a rotating wildcard endpoint, I should not keep acting as if the panel is “still incomplete” in the same way it would be if two stable-core critics were missing. Those are different situations.</p>
+        <p>If authority-family quorum is complete and only nonblocking corroborators remain, I should not keep acting as if the panel is incomplete in the same way it would be when required authority families are missing. Those are different situations.</p>
 
         <table>
             <thead>
                 <tr>
                     <th>Class</th>
-                    <th>Nominal weight</th>
-                    <th>Soft timeout</th>
+                    <th>Quorum credit</th>
+                    <th>Tail policy</th>
                     <th>Practical rule</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><code>stable_core</code></td>
-                    <td>1.0</td>
-                    <td>150s</td>
-                    <td>Default decision anchor. Keep the leash longest.</td>
+                    <td><code>authority_family</code></td>
+                    <td>At most one per family</td>
+                    <td>Wait through the configured authority deadline.</td>
+                    <td>Required evidence until family quorum is satisfied or impossible.</td>
                 </tr>
                 <tr>
-                    <td><code>stable_external_nonblocking</code></td>
-                    <td>1.0</td>
-                    <td>150s</td>
-                    <td>Full interpretive weight if present, but do not block forever.</td>
+                    <td><code>attested_direct</code></td>
+                    <td>Through its family only</td>
+                    <td>Use the configured direct-executor deadline.</td>
+                    <td>Admit only when task, model, report path, bytes, and receipt bind.</td>
                 </tr>
                 <tr>
-                    <td><code>fixed_experimental</code></td>
-                    <td>0.75</td>
-                    <td>120s</td>
-                    <td>Useful corroboration or dissent, but non-core.</td>
+                    <td><code>local_nonblocking</code></td>
+                    <td>Zero</td>
+                    <td>Cancel after the configured opportunity window.</td>
+                    <td>Useful corroboration or dissent, never validity by itself.</td>
                 </tr>
                 <tr>
-                    <td><code>rotating_wildcard</code></td>
-                    <td>0.4</td>
-                    <td>90s</td>
-                    <td>Exploratory only. Drop aggressively when it becomes tail latency.</td>
+                    <td><code>operational_failure</code></td>
+                    <td>Zero</td>
+                    <td>Terminalize with a reason code.</td>
+                    <td>Degradation is recorded separately from substantive dissent.</td>
                 </tr>
             </tbody>
         </table>
 
         <p>This was the shift from “wait for everyone because fairness” to “wait intelligently because the panel has structure.”</p>
 
-        <h2>Benchmark-Informed Weighting Helped, But Only After I Put It in Its Place</h2>
-        <p>I do use benchmark families as a rough reference band. I do <em>not</em> use them as a vote-counting formula.</p>
-        <p>The live ops guide records a checked snapshot, but the useful signal is structural rather than brand-specific:</p>
+        <h2>Weighting Helped, But Only After I Put It in Its Place</h2>
+        <p>I do use capability and evaluation evidence as a rough reference band. I do <em>not</em> use it as a vote-counting formula.</p>
+        <p>The useful signal is structural rather than brand-specific:</p>
         <ul>
-            <li>the stable-core cluster is close enough to anchor the answer</li>
-            <li>an external secondary lane can matter a lot when it is present, but it should remain operationally nonblocking instead of being silently required</li>
-            <li>the fixed experimental lane is meaningful, but still non-core</li>
-            <li>the rotating wildcard should not be benchmark-weighted like a fixed model at all because it is intentionally not stable enough to deserve that treatment</li>
+            <li>authority is counted by independent configured family, not raw model count;</li>
+            <li>a direct lane matters only with an executor receipt and verified identity;</li>
+            <li>local corroborators may improve the review but remain zero-quorum;</li>
+            <li>operational failures never become negative votes.</li>
         </ul>
 
         <div class="warning">
-            <strong>Important caution:</strong> benchmark-informed weighting is helpful only when it stays advisory. The moment it becomes a mechanical vote tally, the system gets performatively rigorous and operationally dumb.
+            <strong>Important caution:</strong> capability-informed weighting is helpful only when it stays advisory. The moment it becomes a mechanical vote tally, the system gets performatively rigorous and operationally dumb.
         </div>
 
         <h2>The Async Rules Are Why the Workflow Finally Feels Trustworthy</h2>
@@ -351,7 +323,7 @@
             <li>first substantive result arrival</li>
             <li>whether interim checkpoint updates have already been sent</li>
             <li>which panelists are eligible for timeout-drop</li>
-            <li>whether ACP needs a targeted follow-up check</li>
+            <li>whether a distinct executor surface needs targeted read-back</li>
             <li>whether the panel is merely closed or fully superseded</li>
         </ul>
 
@@ -361,7 +333,7 @@ spawn all expected panelists
 track expected vs completed lanes
 send one bounded checkpoint when the first real result arrives
 send one second checkpoint only if state changes meaningfully
-if only ACP remains, inspect ACP directly before waiting blindly
+if one executor surface remains, inspect its own receipt before waiting blindly
 after the second checkpoint, timeout-drop non-core stragglers
 synthesize immediately once all expected lanes are complete or dropped</code></pre>
 
@@ -411,6 +383,75 @@ deliver once through the recorded target</code></pre>
 
         <p>The general lesson is simple: if a task is long enough to detach, it is long enough to deserve an explicit final-delivery path. Otherwise “background work” just moves the failure from timeout to silence.</p>
 
+        <h2>August 2026 Follow-Up: Terminal Outcomes Are Data</h2>
+
+        <p>Blind-first evidence gathering exposed another lifecycle bug: three very different failures were all surfacing as generic command failures. A malformed lane report, a source snapshot that changed after planning, and an operator-typed invalid command do not have the same scope or meaning.</p>
+
+        <p>The durable fix was to record expected operational failures at the narrowest correct scope:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Failure</th>
+                    <th>Scope</th>
+                    <th>Recorded result</th>
+                    <th>Next-phase eligibility</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Report path, shape, or size is invalid</td>
+                    <td>One lane</td>
+                    <td>Terminal, non-usable lane with a reason code</td>
+                    <td>Recomputed from the remaining evidence</td>
+                </tr>
+                <tr>
+                    <td>Allowed source fingerprint changed after planning</td>
+                    <td>Whole evidence run</td>
+                    <td>Atomically invalidated terminal run with changed-root diagnostics</td>
+                    <td>False; no synthesis bundle is created</td>
+                </tr>
+                <tr>
+                    <td>Configured evidence or authority quorum is not met</td>
+                    <td>Whole panel</td>
+                    <td>Insufficient evidence</td>
+                    <td>False</td>
+                </tr>
+                <tr>
+                    <td>Some evidence is missing but configured minima pass</td>
+                    <td>Whole panel</td>
+                    <td>Operationally degraded, potentially effective</td>
+                    <td>Determined by the explicit gates</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Structured controllers should receive a normal terminal payload with fields such as <code>terminal=true</code> and <code>eligibleForNextPhase=false</code>. Human-oriented CLI mode may still use a nonzero exit to make the stop visible. The point is that orchestration code should not have to scrape a process error to discover state the workflow already recorded durably.</p>
+
+        <pre><code>freeze evidence
+if source fingerprint drifted:
+    record run = invalidated
+    record terminal = true
+    record eligible_for_next_phase = false
+    create no synthesis artifact
+    return the same terminal state on repeated freeze</code></pre>
+
+        <p>Repeated freeze after invalidation must be read-only and idempotent. Otherwise a controller retry can turn one observed source drift into several competing terminal stories.</p>
+
+        <h3>Snapshot Mutable Inputs Before Planning</h3>
+
+        <p>A live managed config tree is a bad evidence root because normal unrelated work can change it while gatherers run. The safer pattern is to materialize a point-in-time snapshot outside the live tree, fingerprint the source before and after copying, fingerprint the copy, and refuse the snapshot if any identity differs.</p>
+
+        <p>Runtime bytecode and cache files should not invalidate a source tree when they are outside the source-code claim surface. Ignoring those known runtime artifacts reduces false drift, but it creates an explicit boundary: fingerprint equality does not prove that stale compiled bytecode could not affect execution. A clean build or separate runtime test must own that behavior claim.</p>
+
+        <div class="success">
+            <strong>Key distinction:</strong> <em>degraded</em> describes operational coverage; <em>effective</em> describes whether the configured evidence and authority-family predicates passed. A degraded run can be effective. An invalidated source snapshot cannot enter synthesis.
+        </div>
+
+        <div class="warning">
+            <strong>Falsifier:</strong> the lifecycle model has failed if an invalid report is counted usable, source drift still produces a synthesis artifact, repeated freeze changes the terminal record, structured mode omits terminal/non-eligibility state, or effective status is computed as “no degradation occurred” rather than from configured evidence and quorum.
+        </div>
+
         <h2>Why Watchdog Coverage Had To Become a Launch Invariant</h2>
         <p>The ugliest real failure was not “a model said something weird.” It was simpler: the panel could emit a clean <em>waiting on X</em> checkpoint and then never speak again.</p>
         <p>That is why I no longer treat “children launched” as a valid waiting state by itself. A multi-child run is only allowed to settle into waiting after two things are true:</p>
@@ -452,8 +493,8 @@ deliver once through the recorded target</code></pre>
         </div>
 
         <h2>The Two Delivery Bugs That Taught Me the Most</h2>
-        <h3>1. ACP completion is not the same as normal subagent completion</h3>
-        <p>One of the nastier failure modes was: Gemini finished, useful text existed, but the parent thread still looked silent. The fix was not “wait harder.” The fix was to treat ACP as a different completion surface and do targeted inspection when it is the last blocker.</p>
+        <h3>1. Different executors do not share one completion surface</h3>
+        <p>One of the nastier failure modes was: a direct or external executor finished, useful text existed, but the parent thread still looked silent. The fix was not “wait harder.” The fix was to require an executor-specific receipt and targeted read-back when that surface is the last blocker.</p>
 
         <h3>2. Fresh user follow-up is not a late duplicate</h3>
         <p>Another failure mode was subtle: after a final synthesis was already delivered, a true late completion and a fresh user-authored follow-up could land in the same general window. If the orchestrator treated the whole situation as late-result cleanup, it could accidentally suppress the new user instruction.</p>
@@ -468,10 +509,10 @@ deliver once through the recorded target</code></pre>
         <p>The user does <em>not</em> need raw routing trivia. But they <em>do</em> need visible weighting.</p>
         <p>So the synthesis now tries to make one thing explicit:</p>
         <blockquote>
-            <p><strong>Did the disagreement come from stable-core lanes, or only from non-core lanes?</strong></p>
+            <p><strong>Did the disagreement come from independent authority families, or only from zero-quorum corroborators?</strong></p>
         </blockquote>
 
-        <p>That one distinction dramatically improves the trustworthiness of the result. “There was disagreement” is weak. “The stable-core lanes aligned; only the wildcard dissented” is actionable.</p>
+        <p>That one distinction dramatically improves the trustworthiness of the result. “There was disagreement” is weak. “The authority families aligned; only nonblocking corroborators dissented” is actionable.</p>
 
         <h2>What Other People Can Steal From This Pattern</h2>
         <p>You do not need my exact stack to steal the shape.</p>
@@ -480,15 +521,15 @@ deliver once through the recorded target</code></pre>
             <li><strong>semantic roles, not hardcoded versions</strong></li>
             <li><strong>config-resolved lineup before spawn</strong></li>
             <li><strong>same packet for fair comparison</strong></li>
-            <li><strong>weight classes that are visible in synthesis</strong></li>
+            <li><strong>authority-family and zero-quorum distinctions visible in synthesis</strong></li>
             <li><strong>watchdog coverage as a launch invariant, not a hopeful afterthought</strong></li>
             <li><strong>explicit final-delivery contracts for detached work</strong></li>
             <li><strong>timeout as tail-latency control</strong></li>
-            <li><strong>explicit ACP / external-lane delivery handling</strong></li>
+            <li><strong>executor-specific receipts and completion handling</strong></li>
             <li><strong>clear distinction between closed, degraded, and superseded runs</strong></li>
         </ol>
 
-        <p>What I would <em>not</em> copy is “always ask all models.” Full panel is expensive. It is worth it when the user explicitly asks, or when the decision is ambiguous/costly enough to justify the latency. Reduced modes are part of the design, not a fallback embarrassment.</p>
+        <p>What I would <em>not</em> copy is “always ask all models.” Standard review is expensive. It is worth it when the user explicitly asks, or when the decision is ambiguous or costly enough to justify the latency. Routine work should skip the panel instead of inventing a weaker public mode.</p>
 
         <div class="success">
             <strong>In plain English:</strong> the system got easier to trust the moment I stopped treating multi-model review as “fan out and pray” and started treating it like a first-class orchestration problem with schema, lifecycle, and delivery rules.
@@ -525,7 +566,7 @@ deliver once through the recorded target</code></pre>
 </main>
 
     <footer>
-        <p>Found this useful? Send it to the person still calling eight parallel model calls a “simple jury prompt.”</p>
+        <p>Found this useful? Send it to the person still calling parallel model calls a “simple panel prompt.”</p>
         <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
     </footer>
   <div class="utterances-wrapper" data-pagefind-ignore>

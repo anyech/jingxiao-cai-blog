@@ -17,6 +17,21 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git](https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html.md
+  - Date: 2026-08-23
+  - Summary: A yielded Git command can remain alive and materialize missing history. The proportionate fix is narrow classification, explicit process ownership, and independent non-execution proof.
+  - Tags: git, ai-agents, reliability, agent-ops, tooling, debugging
+- [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
+  - Date: 2026-07-04; updated: 2026-08-23
+  - Summary: A private local LLM route can pass health and quality checks and still remain only a candidate until controls, performance, environment integrity, role policy, and activation authority align.
+  - Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
+- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
+  - Date: 2026-04-03; updated: 2026-08-23
+  - Summary: A config-backed OpenClaw review workflow with blind-first evidence, authority-family quorum, source snapshots, artifact-backed completion, bridge-back delivery, and honest degradation.
+  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Archive Before You Retire: A Transaction Model for Git Worktree Backlogs](https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html.md
   - Date: 2026-08-15
@@ -87,11 +102,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-07-10
   - Summary: One successful cold start proves a path. It does not prove concurrent safety, cache independence, recovery, cleanup, or a production serving SLA.
   - Tags: ai-agents, local-llm, agent-ops, reliability, kubernetes, self-hosted-ai
-- [A Local LLM Router Is Not a Panel Lane Yet](https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/local-llm-router-not-panel-lane-yet.html.md
-  - Date: 2026-07-04; updated: 2026-07-10
-  - Summary: A private local LLM router can pass health, auth, failover, and soak checks and still remain only a candidate lane until policy, weighting, and Gateway integration are approved.
-  - Tags: ai-agents, local-llm, openclaw, reliability, agent-ops, tooling
 - [Prepared Is Not Authorized: The Activation Packet Pattern for Agent Ops](https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html.md
   - Date: 2026-07-08
@@ -112,11 +122,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-07-05
   - Summary: A dependency-injected executor contract can document shape, policy, and failure behavior offline. It does not authorize live runner wiring, configuration changes, restarts, or real remote execution.
   - Tags: ai-agents, agent-ops, automation, reliability, security, tooling
-- [LLM Panel Orchestration in OpenClaw: Config-Backed Routing, Timeout Classes, and Honest Dissent Without Chaos](https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html.md
-  - Date: 2026-04-03; updated: 2026-07-04
-  - Summary: How I turned multi-model consultation into a config-backed OpenClaw workflow with launch guards, artifact-backed completion ledgers, local-lane promotion gates, bridge-back delivery contracts, and user-visible dissent.
-  - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
 - [Before Raising Reindex Concurrency, Prove the Memory Lane](https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html.md
   - Date: 2026-07-03

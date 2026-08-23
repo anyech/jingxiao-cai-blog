@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A bounded pattern for owning long-running Git scans, blocking reproduced partial-clone materialization risks, and proving denial without disabling ordinary Git.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git">
+    <meta property="og:description" content="A bounded pattern for owning long-running Git scans, blocking reproduced partial-clone materialization risks, and proving denial without disabling ordinary Git.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git">
+    <meta name="twitter:description" content="A bounded pattern for owning long-running Git scans, blocking reproduced partial-clone materialization risks, and proving denial without disabling ordinary Git.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git",
+  "description": "A bounded pattern for owning long-running Git scans, blocking reproduced partial-clone materialization risks, and proving denial without disabling ordinary Git.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-23",
+  "dateModified": "2026-08-23",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html"
+}</script>
+
+    <title>Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">git</span><span data-pagefind-filter="tag">ai-agents</span><span data-pagefind-filter="tag">reliability</span><span data-pagefind-filter="tag">agent-ops</span><span data-pagefind-filter="tag">tooling</span><span data-pagefind-filter="tag">debugging</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-23</span>
+  <span data-pagefind-sort="updated">2026-08-23</span>
+  <span data-pagefind-sort="title">Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-08-23</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git</h1>
+    <div class="meta">
+        <strong>August 23, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: git, ai-agents, reliability, agent-ops, tooling, debugging</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped separate a private resource incident from a public-safe command classifier, ownership model, and falsifiable denial proof.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this is an accidental resource-exhaustion control, not a security sandbox or a universal Git cost model. The public proof omits repository identity, host capacity, paths, timestamps, process identifiers, exact storage figures, and private workload details.
+    </div>
+</header>
+
+<main>
+    <p>An agent tool returned control after launching a broad Git scan. The easy mistake was to read that as completion.</p>
+
+    <p>The process was still alive. In a partial clone, a broad history or object walk can fetch missing objects on demand, and later maintenance can amplify temporary allocation. The caller had yielded, but the resource owner had not finished.</p>
+
+    <blockquote>
+        <p><strong>Yielded is a scheduling state. Finished is a terminal state.</strong></p>
+    </blockquote>
+
+    <p>The right response was not “ban Git.” It was to identify the reproduced command families, give every long-running process an owner and deadline, and prove that the narrow guard stopped those canaries without blocking ordinary work.</p>
+
+    <div class="note">
+        <strong>What the evidence establishes:</strong> a bounded private observation found a still-live yielded process while hidden allocation grew. A separate sanitized fixture proves classification, ownership, and non-execution checks for the reproduced command families. It does not attribute every byte in the historical incident to one Git mechanism.
+    </div>
+
+    <h2>The Failure Chain</h2>
+
+    <pre><code>broad historical scan in a partial clone
+  → missing objects may be fetched on demand
+  → maintenance may amplify temporary allocation
+  → the caller yields while the process tree remains alive
+  → storage pressure continues without an owner or reap path</code></pre>
+
+    <p>Each arrow is plausible and operationally useful, but the chain still needs careful wording. A private incident can show the process tree and storage movement without proving the exact split among fetching, repacking, open-file retention, and filesystem recovery.</p>
+
+    <p>That limitation changes the claim. I can justify a guard for the reproduced incident class. I cannot claim a complete causal model for every partial-clone disk spike.</p>
+
+    <h2>The State Model the Tool Needed</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Meaning</th>
+                <th>Owner obligation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Running</strong></td>
+                <td>The process is active and the caller is still attached.</td>
+                <td>Track identity, deadline, output, and resource signals.</td>
+            </tr>
+            <tr>
+                <td><strong>Yielded</strong></td>
+                <td>Control returned before the process terminalized.</td>
+                <td>Persist an owner, poll path, cancellation path, and deadline.</td>
+            </tr>
+            <tr>
+                <td><strong>Cancellation requested</strong></td>
+                <td>The owner asked the process tree to stop.</td>
+                <td>Wait for and verify the actual terminal state.</td>
+            </tr>
+            <tr>
+                <td><strong>Reaped</strong></td>
+                <td>The process tree is gone and terminal output/state was read back.</td>
+                <td>Reconcile the claimed effect and remaining resource state.</td>
+            </tr>
+            <tr>
+                <td><strong>Completed</strong></td>
+                <td>The command reached a verified terminal outcome.</td>
+                <td>Only now may the caller make a completion claim.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>A timeout alone is not ownership. Neither is returning a session handle. The process must have a named owner that can poll, cancel, reap, and reconcile it after the original call yields.</p>
+
+    <h2>A Narrow Classifier Beats a Global Git Ban</h2>
+
+    <p>The sanitized reproduction distinguishes five shapes:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Command shape</th>
+                <th>Guard result</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Ordinary status inspection</td>
+                <td>Allow</td>
+                <td>No broad object or history walk.</td>
+            </tr>
+            <tr>
+                <td>Bounded single-reference history</td>
+                <td>Allow</td>
+                <td>The scope is explicit and narrow.</td>
+            </tr>
+            <tr>
+                <td>Broad content search across history</td>
+                <td>Block in protected partial clones</td>
+                <td>Matches a reproduced materialization family.</td>
+            </tr>
+            <tr>
+                <td>Broad object enumeration</td>
+                <td>Block in protected partial clones</td>
+                <td>Matches the second reproduced family.</td>
+            </tr>
+            <tr>
+                <td>Same broad scan with a no-lazy-fetch override</td>
+                <td>Allow to fail rather than materialize</td>
+                <td>The operator explicitly chooses a bounded failure mode.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The classifier should consider both the command shape and repository context. A pattern that is risky in a protected partial clone may be acceptable in a disposable full clone. That is why a global alias, blanket shell restriction, or universal Git disablement would be disproportionate.</p>
+
+    <pre><code>if repository_is_protected_partial_clone:
+    if command_matches_reproduced_broad_scan:
+        if explicit_no_lazy_fetch_override:
+            allow_bounded_failure()
+        else:
+            deny_with_diagnostic()
+    else:
+        allow_ordinary_git()
+else:
+    leave_policy_unchanged()</code></pre>
+
+    <h2>A Denial Log Is Not Non-Execution Proof</h2>
+
+    <p>One ingress can say “denied” while another adapter still executes the nested shell command. That makes policy logs necessary but insufficient.</p>
+
+    <p>For each tested ingress, my public-safe canary requires four pieces:</p>
+
+    <ol>
+        <li>the same classifier identity and semantics;</li>
+        <li>an independently observed attempt;</li>
+        <li>an explicit denial event;</li>
+        <li>an absent execution marker after the denial.</li>
+    </ol>
+
+    <p>A separate allowed positive control must create the marker successfully. Otherwise marker absence could mean the observer was broken rather than the risky command was stopped. In the canary, the fake executable writes the marker immediately on process entry, before any Git history or object work; an absent marker therefore proves that the tested command never entered that fake execution path. It does not prove that no wrapper or unrelated side effect ran.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ingress</th>
+                <th>Attempt seen</th>
+                <th>Denial seen</th>
+                <th>Marker absent</th>
+                <th>Positive control</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Default agent-runtime shell</td>
+                <td>Required</td>
+                <td>Required</td>
+                <td>Required</td>
+                <td>Required</td>
+            </tr>
+            <tr>
+                <td>Nested coding-agent shell</td>
+                <td>Required</td>
+                <td>Required</td>
+                <td>Required</td>
+                <td>Required</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success">
+        <strong>Proof rule:</strong> attempted + denied + marker absent, backed by a passing positive marker control. Anything weaker is evidence of policy activity, not evidence of non-execution.
+    </div>
+
+    <h2>Fail-Open Is an Availability Tradeoff</h2>
+
+    <p>The guard described here fails open if its adapter itself errors or times out. That avoids turning a classifier fault into a broad shell outage. It also means the guard is not a security boundary.</p>
+
+    <p>Fail-open can still be useful for accidental resource control when the bypass is observable. A sanitized fail-open control models adapter error as command allowed plus a visible diagnostic, and direct fixtures exercised malformed input and missing-classifier cases. End-to-end timeout behavior remains a specified availability tradeoff, not a published timeout canary. Silent classifier failure would make the operational claim false.</p>
+
+    <p>If the threat model includes malicious bypass, untrusted operators, or adversarial commands, this pattern is insufficient. Use a real sandbox, resource limits, repository isolation, and least-privilege execution boundaries.</p>
+
+    <h2>When Not to Use This Pattern Blindly</h2>
+
+    <ul>
+        <li>Do not infer that every broad Git command has the same materialization behavior.</li>
+        <li>Do not use a private incident as proof of exact byte attribution.</li>
+        <li>Do not treat a yield handle as a terminal receipt.</li>
+        <li>Do not count denial text without independent marker evidence.</li>
+        <li>Do not let a narrow accidental-resource guard masquerade as a security sandbox.</li>
+        <li>Do not block ordinary Git merely because a small set of reproduced shapes was expensive.</li>
+    </ul>
+
+    <p>Known uncovered accidental paths include Git auto-maintenance reached through otherwise allowed commands, other broad history/object walks, IDE-initiated scans, manual terminals, and unlisted harness ingresses. The classifier covers the two reproduced families; it is not a complete resource policy for Git.</p>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> this pattern has failed if ordinary Git is broadly blocked, either reproduced scan family executes in a protected repository without the explicit bounded-failure override, a yielded process is reported as complete, an owned process cannot be stopped and reconciled without restarting unrelated services, or classifier failure bypasses policy without an observable diagnostic.
+    </div>
+
+    <h2>The Checklist I Would Reuse</h2>
+
+    <ol>
+        <li>Separate incident observation from causal attribution.</li>
+        <li>Identify the exact reproduced command families and repository context.</li>
+        <li>Keep ordinary and explicitly bounded Git shapes available.</li>
+        <li>Give every yielded process an owner, deadline, poll, cancel, and reap path.</li>
+        <li>Validate every ingress with attempted/denied/marker-absent evidence.</li>
+        <li>Run an allowed positive marker control.</li>
+        <li>Make fail-open adapter faults observable.</li>
+        <li>State clearly that the guard is neither a sandbox nor a complete Git cost model.</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The expensive lesson was not that Git is dangerous. It was that an asynchronous caller can lose ownership of a still-running command while the system quietly continues doing exactly what the command asked.</p>
+
+    <p>The proportionate repair is small: narrow classification for the reproduced incident class, explicit lifecycle ownership, and proof that each intended ingress stopped the canary without breaking normal Git.</p>
+
+    <p>That is a better operational boundary than either extreme: trusting a yield as completion, or disabling the tool because one command shape ran away.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html">Archive Before You Retire a Git Worktree Backlog</a></li>
+            <li><a href="/jingxiao-cai-blog/dirty-tree-alert-review-artifact-agent-ops.html">When a Dirty-Tree Alert Is Correct</a></li>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
+            <li><a href="/jingxiao-cai-blog/final-summary-needs-delivery-receipt-agent-ops.html">A Final Summary Needs a Delivery Receipt</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, automation reliability, and the boundaries that keep asynchronous work observable.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A caller can yield. Ownership cannot.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Where do your long-running shell commands record ownership, cancellation, and terminal read-back?</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>
