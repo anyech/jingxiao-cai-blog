@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="Agent runtimes must preserve who selected each setting, or defaults can impersonate caller intent while mandatory constraints disappear across adapters.">
+    <meta name="description" content="Agent runtimes must preserve requested, selected, and runtime-reported settings, or defaults and fallbacks can impersonate caller intent at adapter boundaries.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -17,20 +17,20 @@
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
     <meta property="og:title" content="A Default Is Not Caller Intent: Preserve Provenance in Agent Settings">
-    <meta property="og:description" content="Agent runtimes must preserve who selected each setting, or defaults can impersonate caller intent while mandatory constraints disappear across adapters.">
+    <meta property="og:description" content="Agent runtimes must preserve requested, selected, and runtime-reported settings, or defaults and fallbacks can impersonate caller intent at adapter boundaries.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="A Default Is Not Caller Intent: Preserve Provenance in Agent Settings">
-    <meta name="twitter:description" content="Agent runtimes must preserve who selected each setting, or defaults can impersonate caller intent while mandatory constraints disappear across adapters.">
+    <meta name="twitter:description" content="Agent runtimes must preserve requested, selected, and runtime-reported settings, or defaults and fallbacks can impersonate caller intent at adapter boundaries.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "A Default Is Not Caller Intent: Preserve Provenance in Agent Settings",
-  "description": "Agent runtimes must preserve who selected each setting, or defaults can impersonate caller intent while mandatory constraints disappear across adapters.",
+  "description": "Agent runtimes must preserve requested, selected, and runtime-reported settings, or defaults and fallbacks can impersonate caller intent at adapter boundaries.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -42,7 +42,7 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-07-18",
-  "dateModified": "2026-07-18",
+  "dateModified": "2026-08-24",
   "url": "https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html"
@@ -75,11 +75,11 @@
   <span data-pagefind-filter="year">2026</span>
   <span data-pagefind-filter="month">07</span>
   <span data-pagefind-sort="published">2026-07-18</span>
-  <span data-pagefind-sort="updated">2026-07-18</span>
+  <span data-pagefind-sort="updated">2026-08-24</span>
   <span data-pagefind-sort="title">A Default Is Not Caller Intent: Preserve Provenance in Agent Settings</span>
   <span data-pagefind-meta="topic">agent-architecture-operations</span>
   <span data-pagefind-meta="published">2026-07-18</span>
-  <span data-pagefind-meta="updated"></span>
+  <span data-pagefind-meta="updated">2026-08-24</span>
 </div>
 <header>
     <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
@@ -90,6 +90,9 @@
     </div>
     <div class="disclaimer">
         This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn an isolated integration failure into a reusable configuration pattern while removing private routes, model names, source paths, test counts, and deployment fingerprints.
+    </div>
+    <div class="note">
+        <strong>Update, August 24, 2026:</strong> I extended the provenance envelope from requested and selected values to runtime-reported evidence. A configured choice is still only intent until an attempt-bound, runtime-owned read-back records what the runtime reports at execution start.
     </div>
     <div class="warning">
         <strong>Boundary:</strong> this is a composite, conceptual runtime-integration pattern, not a description of a named or current deployment. The examples use a generic response-mode preference because the bug class applies equally to timeouts, tool permissions, output modes, retry policies, and other layered defaults.
@@ -310,6 +313,81 @@
 
     <p>For public artifacts, even those classes may be more detail than necessary. For local qualification, however, the record turns “the router chose correctly” into a checkable integration claim.</p>
 
+    <h2>Requested, Selected, and Runtime-Actual Are Three Facts</h2>
+
+    <p>A setting can survive policy resolution and still drift at the adapter or provider boundary. The caller requests a semantic worker class. The router selects an implementation. The runtime may report or execute something else because of a default, alias, fallback, stale process, or unsupported option.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Question</th>
+                <th>Required evidence</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Requested</strong></td>
+                <td>What semantic worker class, reasoning class, tools, and effect boundary did the caller ask for?</td>
+                <td>Immutable request or intent digest.</td>
+            </tr>
+            <tr>
+                <td><strong>Selected</strong></td>
+                <td>Which adapter/runtime configuration did policy choose?</td>
+                <td>Resolver output plus fallback policy.</td>
+            </tr>
+            <tr>
+                <td><strong>Runtime-actual</strong></td>
+                <td>What did the runtime itself report at execution start?</td>
+                <td>Runtime-owned read-back bound to the attempt.</td>
+            </tr>
+            <tr>
+                <td><strong>Observed effects</strong></td>
+                <td>Were tools, writes, mutations, or external effects observed?</td>
+                <td>Bounded event and workdir audit.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code class="language-json">{
+  "requested": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "toolClass": "none",
+    "effectClass": "read-only"
+  },
+  "selected": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "fallbackAllowed": false
+  },
+  "runtimeActual": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "evidenceSource": "runtime-start-readback"
+  },
+  "observed": {
+    "strictResultMatch": true,
+    "toolEvents": 0,
+    "workdirWrites": 0,
+    "mutations": false
+  }
+}</code></pre>
+
+    <p>Here <em>runtime-actual</em> means the runtime's own read-back at attempt start. It binds that instant, not the whole attempt, and it is not independent proof of the physical serving identity. If a runtime can reroute or change configuration after read-back, require completion/result-bound attestation or reject the comparison.</p>
+
+    <p>A conformance gate should reject the record if runtime-actual evidence is missing, requested/selected/actual values disagree, silent fallback remains enabled, strict output misses the expected result, or observed tool/write/mutation evidence violates the intent.</p>
+
+    <div class="note">
+        <strong>Negative-evidence boundary:</strong> zero observed tool events and an empty isolated workdir are useful observations. They do not prove that the runtime enforced a semantic “no tools” policy. The audit covers only its enumerated event and workdir surfaces; it does not establish the absence of network egress, out-of-band effects, or non-workdir writes. Enforcement needs its own capability proof; observation must not be upgraded into authority.
+    </div>
+
+    <p>One adapter passing this gate does not establish cross-runtime parity or authorize automatic delegation. It establishes only that this adapter produced enough bound evidence to enter a later quality, latency, or cost comparison.</p>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> the attestation claim fails if a runtime-actual mismatch or missing actual record passes, fallback can happen silently, a result mismatch is accepted, or observed effects are ignored because the selected configuration looked correct.
+    </div>
+
     <h2>Stop Rerunning After a Real Integration Failure</h2>
 
     <p>A failing isolated integration check is useful evidence. It is not an invitation to keep rerunning until the expected value appears.</p>
@@ -348,7 +426,7 @@
 
     <p>If an early layer converts “missing” into <code>compact</code> and discards the fact that it was a default, a later layer cannot distinguish fallback from caller intent. The runtime may faithfully preserve the wrong authority.</p>
 
-    <p>Carry the original request, selection source, constraints, validation, and replacement reason across every adapter. Define precedence in terms of authority. Reject unsupported execution-affecting input before dispatch. Test semantic cases across every transport boundary. And when integration evidence diverges from policy output, stop rerunning until the owning seam is understood.</p>
+    <p>Carry the original request, selection source, runtime-actual read-back, constraints, validation, and replacement reason across every adapter. Define precedence in terms of authority. Reject unsupported execution-affecting input before dispatch. Test semantic cases across every transport boundary. And when integration evidence diverges from policy output, stop rerunning until the owning seam is understood.</p>
 
     <blockquote>
         <p><strong>Defaults should keep a request safe. They should not impersonate the caller.</strong></p>

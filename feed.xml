@@ -6,7 +6,31 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 23 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 24 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Cheaper Agent Is Not a Cheaper Workflow: Delegate by Workload Class</title>
+      <description>Tiny-task savings can earn broader shadow testing, but a larger exact-quality failure should lock that workload class before live delegation.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html</guid>
+      <pubDate>Mon, 24 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>A Default Is Not Caller Intent: Preserve Provenance in Agent Settings</title>
+      <description>Why agent runtimes must preserve requested, selected, and runtime-reported evidence across layered settings and adapters.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html</guid>
+      <pubDate>Sat, 18 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>A Visible Message Does Not Prove an Agent Wake</title>
+      <description>Human-visible chat, session control, immutable result delivery, and broader-workflow continuation are separate contracts.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</guid>
+      <pubDate>Tue, 14 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git</title>
@@ -89,14 +113,6 @@
     </item>
 
     <item>
-      <title>A Default Is Not Caller Intent: Preserve Provenance in Agent Settings</title>
-      <description>Why agent runtimes must preserve request provenance, selection authority, constraints, and rejection reasons across layered settings.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html</guid>
-      <pubDate>Sat, 18 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
       <title>The Harness Passed. The Claim Did Not: Why Independent Evidence Matters</title>
       <description>A practical test for whether a synthetic harness independently observes the runtime claim or merely repeats its own scripted input.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html</link>
@@ -118,14 +134,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/stop-reviewing-the-review-agent-scope-creep.html</guid>
       <pubDate>Wed, 15 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>A Visible Message Does Not Prove an Agent Wake</title>
-      <description>Human-visible chat, inter-session turn requests, and durable completion are three different contracts in a reliable multi-agent workflow.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html</guid>
-      <pubDate>Tue, 14 Jul 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

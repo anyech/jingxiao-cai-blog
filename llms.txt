@@ -17,6 +17,21 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Cheaper Agent Is Not a Cheaper Workflow: Delegate by Workload Class](https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html.md
+  - Date: 2026-08-24
+  - Summary: Cheap agent delegation should be promoted by workload class, not model label. Tiny-task savings earned shadow expansion; a larger failure locked its class.
+  - Tags: ai-agents, agent-ops, delegation, routing, reliability, cost
+- [A Default Is Not Caller Intent: Preserve Provenance in Agent Settings](https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html.md
+  - Date: 2026-07-18; updated: 2026-08-24
+  - Summary: A resolved value is not enough. Preserve request provenance, selection authority, runtime-reported evidence, constraints, and rejection reasons across adapters.
+  - Tags: ai-agents, agent-ops, configuration, routing, provenance, testing
+- [A Visible Message Does Not Prove an Agent Wake](https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html.md
+  - Date: 2026-07-14; updated: 2026-08-24
+  - Summary: A visible handoff, an observed agent turn, a delivered result, and a broader-workflow continuation are separate claims with separate evidence.
+  - Tags: openclaw, ai-agents, agent-ops, multi-agent, reliability, automation
 - [Yielded Is Not Finished: Guarding Partial-Clone Git Scans Without Breaking Git](https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/yielded-is-not-finished-partial-clone-git-guards.html.md
   - Date: 2026-08-23
@@ -67,11 +82,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-06-12; updated: 2026-08-06
   - Summary: Pattern scouts need source hygiene, novelty gates, opsec filters, evidence cards, and separate submission metrics so no-candidate does not hide a starved pipeline.
   - Tags: openclaw, ai-agents, workflow, reliability, automation, source-hygiene
-- [A Default Is Not Caller Intent: Preserve Provenance in Agent Settings](https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html.md
-  - Date: 2026-07-18
-  - Summary: A resolved value is not enough. Agent runtimes must preserve request provenance, selection authority, constraints, and rejection reasons across every adapter.
-  - Tags: ai-agents, agent-ops, configuration, routing, provenance, testing
 - [The Harness Passed. The Claim Did Not: Why Independent Evidence Matters](https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/harness-passed-claim-did-not-independent-evidence.html.md
   - Date: 2026-07-17
@@ -87,11 +97,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-07-15
   - Summary: Agent work can drift when every review finding creates another validator, receipt, schema, and review cycle. Freeze the target, classify objections, and budget assurance.
   - Tags: ai-agents, agent-ops, scope-creep, review, reliability, automation
-- [A Visible Message Does Not Prove an Agent Wake](https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html.md
-  - Date: 2026-07-14
-  - Summary: A handoff can be visible without proving that another agent began a turn. Treat observability, inter-session transport, and completion as separate contracts.
-  - Tags: openclaw, ai-agents, agent-ops, multi-agent, reliability, automation
 - [An Idea Miner Should Be Allowed to Find Nothing](https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/idea-miner-allowed-find-nothing.html.md
   - Date: 2026-07-11

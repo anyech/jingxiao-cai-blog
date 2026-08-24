@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html.md
 Date: 2026-07-14
+Updated: 2026-08-24
 Tags: openclaw, ai-agents, agent-ops, multi-agent, reliability, automation
 
-Summary: A handoff can be visible without proving that another agent began a turn. Treat observability, inter-session transport, and completion as separate contracts.
+Summary: A visible handoff, an observed agent turn, a delivered result, and a broader-workflow continuation are separate claims with separate evidence.
 
 ---
 
@@ -21,6 +22,10 @@ Summary: A handoff can be visible without proving that another agent began a tur
 
 
  This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn a bounded cross-session test into a public coordination pattern while keeping the underlying conversations and deployment details out of the article.
+
+
+
+ **Update, August 24, 2026:** I added the next lifecycle boundary: even an immutably delivered result does not prove that the broader parent workflow is running. A separate launch-time continuation snapshot can describe that relationship without reopening delivery proof.
 
 
 
@@ -144,6 +149,54 @@ Summary: A handoff can be visible without proving that another agent began a tur
 
 
 
+## A Delivered Closeout Still Does Not Prove Continuation
+
+ The same separation applies after a long-running worker or review panel has finished. An immutable delivery receipt can prove that its closeout reached the intended human-visible target. It still cannot answer whether a broader parent workflow is continuing, waiting for the user, or intentionally absent.
+
+ Do not solve that gap by adding broader-workflow states to the delivery receipt. Delivery has its own terminal invariant: one frozen result, one delivery owner, one read-back, and no reopening after success. Continuation is a different lifecycle with a different owner.
+
+
+
+| Continuation snapshot | Truthful meaning | What it does not prove |
+| --- | --- | --- |
+| **Absent** | No broader continuation was declared for this launch. | Future user instructions, parent idleness, or that no parent work exists. |
+| **Running** | The parent declared itself active when the durable work was armed; freshness must be bounded. | A live heartbeat, later progress, or completion. |
+| **Running, stale snapshot** | The launch-time declaration exists but is older than its evidence window. | That the parent is still alive. |
+| **Awaiting user** | The next broader step honestly requires another user action. | Permission to wake or resume automatically. |
+| **Legacy or invalid** | The declaration is missing, unsupported, or fails its binding checks. | Absence, success, or a safe default. |
+
+
+ **State-shape boundary:** `running`, `awaiting-user`, and `absent` are the only stored values in this example. “Running, stale” is a reader-side freshness interpretation; “legacy or invalid” is a validation outcome. Neither is another wire-state enum member.
+
+
+ A minimal public-safe shape keeps the relationship additive:
+
+
+
+```json
+{
+  "resultDelivery": {
+    "state": "delivered",
+    "receipt": "immutable-correlation"
+  },
+  "continuationSnapshot": {
+    "mode": "parent | user-activation | none",
+    "state": "running | awaiting-user | absent",
+    "boundToReceipt": "immutable-correlation",
+    "observedAtLaunch": "bounded timestamp"
+  }
+}
+```
+
+ The snapshot must fail closed on binding mismatch, illegal state, declared artifact loss, or stale freshness. It must not invent `completed` or `failed` when no transition writer observes those outcomes.
+
+
+ **Phase boundary:** a launch-time snapshot is status transparency, not a durable continuation outbox. It provides no wake, queue claim, consumer acknowledgement, heartbeat refresh, restart-persistent resumption, or second result delivery. Those require a separately reviewed machine with its own idempotency and ownership proof.
+
+
+ The falsifier is simple: if rendering broader-workflow status mutates the delivered receipt, treats a missing declared artifact as ordinary omission, presents stale launch state as current execution, or asserts an unobserved terminal outcome, the separation has failed.
+
+
 ## Keep the Chat Mirror Observability-Only
 
  The chat surface remains valuable. It should show enough for a human to understand what happened:
@@ -262,7 +315,7 @@ artifact: durable result pointer when available
 
  A multi-agent system becomes easier to reason about when it stops using one surface for three jobs.
 
- Let the human-facing channel show the work. Use the documented inter-session path to request the receiver's turn, then verify that the turn occurred. Let the durable record prove who claimed the request, what evidence was produced, and how the attempt ended.
+ Let the human-facing channel show the work. Use the documented inter-session path to request the receiver's turn, then verify that the turn occurred. Let the durable record prove who claimed the request, what evidence was produced, and how the attempt ended. If a broader workflow may continue after result delivery, describe that relationship in a separate, truthfully bounded snapshot.
 
  When those contracts are separate, a visible message can be honestly described as visible—and nothing more.
 

@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/default-is-not-caller-intent-agent-setting-provenance.html.md
 Date: 2026-07-18
+Updated: 2026-08-24
 Tags: ai-agents, agent-ops, configuration, routing, provenance, testing
 
-Summary: A resolved value is not enough. Agent runtimes must preserve request provenance, selection authority, constraints, and rejection reasons across every adapter.
+Summary: A resolved value is not enough. Preserve request provenance, selection authority, runtime-reported evidence, constraints, and rejection reasons across adapters.
 
 ---
 
@@ -21,6 +22,10 @@ Summary: A resolved value is not enough. Agent runtimes must preserve request pr
 
 
  This post was co-created with **Clawsistant**, my OpenClaw AI agent. It helped turn an isolated integration failure into a reusable configuration pattern while removing private routes, model names, source paths, test counts, and deployment fingerprints.
+
+
+
+ **Update, August 24, 2026:** I extended the provenance envelope from requested and selected values to runtime-reported evidence. A configured choice is still only intent until an attempt-bound, runtime-owned read-back records what the runtime reports at execution start.
 
 
 
@@ -183,6 +188,63 @@ const finalMode = request.responseMode
  For public artifacts, even those classes may be more detail than necessary. For local qualification, however, the record turns “the router chose correctly” into a checkable integration claim.
 
 
+## Requested, Selected, and Runtime-Actual Are Three Facts
+
+ A setting can survive policy resolution and still drift at the adapter or provider boundary. The caller requests a semantic worker class. The router selects an implementation. The runtime may report or execute something else because of a default, alias, fallback, stale process, or unsupported option.
+
+
+
+| Layer | Question | Required evidence |
+| --- | --- | --- |
+| **Requested** | What semantic worker class, reasoning class, tools, and effect boundary did the caller ask for? | Immutable request or intent digest. |
+| **Selected** | Which adapter/runtime configuration did policy choose? | Resolver output plus fallback policy. |
+| **Runtime-actual** | What did the runtime itself report at execution start? | Runtime-owned read-back bound to the attempt. |
+| **Observed effects** | Were tools, writes, mutations, or external effects observed? | Bounded event and workdir audit. |
+
+
+
+```json
+{
+  "requested": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "toolClass": "none",
+    "effectClass": "read-only"
+  },
+  "selected": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "fallbackAllowed": false
+  },
+  "runtimeActual": {
+    "workerClass": "light",
+    "reasoningClass": "low",
+    "evidenceSource": "runtime-start-readback"
+  },
+  "observed": {
+    "strictResultMatch": true,
+    "toolEvents": 0,
+    "workdirWrites": 0,
+    "mutations": false
+  }
+}
+```
+
+ Here *runtime-actual* means the runtime's own read-back at attempt start. It binds that instant, not the whole attempt, and it is not independent proof of the physical serving identity. If a runtime can reroute or change configuration after read-back, require completion/result-bound attestation or reject the comparison.
+
+ A conformance gate should reject the record if runtime-actual evidence is missing, requested/selected/actual values disagree, silent fallback remains enabled, strict output misses the expected result, or observed tool/write/mutation evidence violates the intent.
+
+
+ **Negative-evidence boundary:** zero observed tool events and an empty isolated workdir are useful observations. They do not prove that the runtime enforced a semantic “no tools” policy. The audit covers only its enumerated event and workdir surfaces; it does not establish the absence of network egress, out-of-band effects, or non-workdir writes. Enforcement needs its own capability proof; observation must not be upgraded into authority.
+
+
+ One adapter passing this gate does not establish cross-runtime parity or authorize automatic delegation. It establishes only that this adapter produced enough bound evidence to enter a later quality, latency, or cost comparison.
+
+
+ **Falsifier:** the attestation claim fails if a runtime-actual mismatch or missing actual record passes, fallback can happen silently, a result mismatch is accepted, or observed effects are ignored because the selected configuration looked correct.
+
+
+
 ## Stop Rerunning After a Real Integration Failure
 
  A failing isolated integration check is useful evidence. It is not an invitation to keep rerunning until the expected value appears.
@@ -233,7 +295,7 @@ const finalMode = request.responseMode
 
  If an early layer converts “missing” into `compact` and discards the fact that it was a default, a later layer cannot distinguish fallback from caller intent. The runtime may faithfully preserve the wrong authority.
 
- Carry the original request, selection source, constraints, validation, and replacement reason across every adapter. Define precedence in terms of authority. Reject unsupported execution-affecting input before dispatch. Test semantic cases across every transport boundary. And when integration evidence diverges from policy output, stop rerunning until the owning seam is understood.
+ Carry the original request, selection source, runtime-actual read-back, constraints, validation, and replacement reason across every adapter. Define precedence in terms of authority. Reject unsupported execution-affecting input before dispatch. Test semantic cases across every transport boundary. And when integration evidence diverges from policy output, stop rerunning until the owning seam is understood.
 
 
  **Defaults should keep a request safe. They should not impersonate the caller.**
