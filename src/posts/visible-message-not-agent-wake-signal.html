@@ -3,21 +3,21 @@ layout: post.njk
 permalink: 'visible-message-does-not-prove-agent-wake.html'
 title: 'A Visible Message Does Not Prove an Agent Wake'
 slug: 'visible-message-does-not-prove-agent-wake'
-description: 'A public-safe OpenClaw pattern for separating visible chat mirrors from inter-session turn requests, dedupe, evidence, and bounded handoffs.'
-summary: 'A handoff can be visible without proving that another agent began a turn. Treat observability, inter-session transport, and completion as separate contracts.'
+description: 'A public-safe pattern for separating visible chat, session control, immutable result delivery, and bounded continuation snapshots in reliable agent workflows.'
+summary: 'A visible handoff, an observed agent turn, a delivered result, and a broader-workflow continuation are separate claims with separate evidence.'
 date: '2026-07-14'
-updated: ''
+updated: '2026-08-24'
 topic: 'agent-architecture-operations'
 tags: ['openclaw', 'ai-agents', 'agent-ops', 'multi-agent', 'reliability', 'automation']
-keywords: ['OpenClaw sessions_send', 'agent wake signal', 'inter-agent messaging', 'multi-agent coordination', 'agent handoff', 'idempotency', 'agent operations', 'CloudEvents']
+keywords: ['OpenClaw sessions_send', 'agent wake signal', 'workflow continuation snapshot', 'inter-agent messaging', 'multi-agent coordination', 'agent handoff', 'idempotency', 'CloudEvents']
 canonical: 'https://anyech.github.io/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html'
 inFeed: true
 inSitemap: true
 feedTitle: 'A Visible Message Does Not Prove an Agent Wake'
-feedDescription: 'Human-visible chat, inter-session turn requests, and durable completion are three different contracts in a reliable multi-agent workflow.'
+feedDescription: 'Human-visible chat, session control, immutable result delivery, and broader-workflow continuation are separate contracts.'
 feedPubDate: 'Tue, 14 Jul 2026 00:00:00 +0000'
 sitemapPriority: '0.9'
-sitemapLastmod: '2026-07-14'
+sitemapLastmod: '2026-08-24'
 ---
 <header>
     <a href="/jingxiao-cai-blog/" class="back-link">&larr; Back to Blog</a>
@@ -28,6 +28,9 @@ sitemapLastmod: '2026-07-14'
     </div>
     <div class="disclaimer">
         This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a bounded cross-session test into a public coordination pattern while keeping the underlying conversations and deployment details out of the article.
+    </div>
+    <div class="note">
+        <strong>Update, August 24, 2026:</strong> I added the next lifecycle boundary: even an immutably delivered result does not prove that the broader parent workflow is running. A separate launch-time continuation snapshot can describe that relationship without reopening delivery proof.
     </div>
     <div class="warning">
         <strong>Boundary:</strong> this is a conceptual agent-operations pattern, not a claim that every chat platform or agent runtime has identical wake behavior. Verify the control path on the exact runtime you operate.
@@ -173,6 +176,76 @@ sitemapLastmod: '2026-07-14'
         <strong>Evidence boundary:</strong> the observation supports only the distinction between visible delivery and an observed inter-session turn. The ledger, fencing, and coordinator sections are design guidance, not a description of the tested deployment.
     </div>
 
+    <h2>A Delivered Closeout Still Does Not Prove Continuation</h2>
+
+    <p>The same separation applies after a long-running worker or review panel has finished. An immutable delivery receipt can prove that its closeout reached the intended human-visible target. It still cannot answer whether a broader parent workflow is continuing, waiting for the user, or intentionally absent.</p>
+
+    <p>Do not solve that gap by adding broader-workflow states to the delivery receipt. Delivery has its own terminal invariant: one frozen result, one delivery owner, one read-back, and no reopening after success. Continuation is a different lifecycle with a different owner.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Continuation snapshot</th>
+                <th>Truthful meaning</th>
+                <th>What it does not prove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Absent</strong></td>
+                <td>No broader continuation was declared for this launch.</td>
+                <td>Future user instructions, parent idleness, or that no parent work exists.</td>
+            </tr>
+            <tr>
+                <td><strong>Running</strong></td>
+                <td>The parent declared itself active when the durable work was armed; freshness must be bounded.</td>
+                <td>A live heartbeat, later progress, or completion.</td>
+            </tr>
+            <tr>
+                <td><strong>Running, stale snapshot</strong></td>
+                <td>The launch-time declaration exists but is older than its evidence window.</td>
+                <td>That the parent is still alive.</td>
+            </tr>
+            <tr>
+                <td><strong>Awaiting user</strong></td>
+                <td>The next broader step honestly requires another user action.</td>
+                <td>Permission to wake or resume automatically.</td>
+            </tr>
+            <tr>
+                <td><strong>Legacy or invalid</strong></td>
+                <td>The declaration is missing, unsupported, or fails its binding checks.</td>
+                <td>Absence, success, or a safe default.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>State-shape boundary:</strong> <code>running</code>, <code>awaiting-user</code>, and <code>absent</code> are the only stored values in this example. “Running, stale” is a reader-side freshness interpretation; “legacy or invalid” is a validation outcome. Neither is another wire-state enum member.
+    </div>
+
+    <p>A minimal public-safe shape keeps the relationship additive:</p>
+
+    <pre><code class="language-json">{
+  "resultDelivery": {
+    "state": "delivered",
+    "receipt": "immutable-correlation"
+  },
+  "continuationSnapshot": {
+    "mode": "parent | user-activation | none",
+    "state": "running | awaiting-user | absent",
+    "boundToReceipt": "immutable-correlation",
+    "observedAtLaunch": "bounded timestamp"
+  }
+}</code></pre>
+
+    <p>The snapshot must fail closed on binding mismatch, illegal state, declared artifact loss, or stale freshness. It must not invent <code>completed</code> or <code>failed</code> when no transition writer observes those outcomes.</p>
+
+    <div class="warning">
+        <strong>Phase boundary:</strong> a launch-time snapshot is status transparency, not a durable continuation outbox. It provides no wake, queue claim, consumer acknowledgement, heartbeat refresh, restart-persistent resumption, or second result delivery. Those require a separately reviewed machine with its own idempotency and ownership proof.
+    </div>
+
+    <p>The falsifier is simple: if rendering broader-workflow status mutates the delivered receipt, treats a missing declared artifact as ordinary omission, presents stale launch state as current execution, or asserts an unobserved terminal outcome, the separation has failed.</p>
+
     <h2>Keep the Chat Mirror Observability-Only</h2>
 
     <p>The chat surface remains valuable. It should show enough for a human to understand what happened:</p>
@@ -291,7 +364,7 @@ artifact: durable result pointer when available</code></pre>
 
     <p>A multi-agent system becomes easier to reason about when it stops using one surface for three jobs.</p>
 
-    <p>Let the human-facing channel show the work. Use the documented inter-session path to request the receiver's turn, then verify that the turn occurred. Let the durable record prove who claimed the request, what evidence was produced, and how the attempt ended.</p>
+    <p>Let the human-facing channel show the work. Use the documented inter-session path to request the receiver's turn, then verify that the turn occurred. Let the durable record prove who claimed the request, what evidence was produced, and how the attempt ended. If a broader workflow may continue after result delivery, describe that relationship in a separate, truthfully bounded snapshot.</p>
 
     <p>When those contracts are separate, a visible message can be honestly described as visible—and nothing more.</p>
 
