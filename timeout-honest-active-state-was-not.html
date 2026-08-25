@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A coding-agent turn timed out while an in-flight provider tool item was invisible downstream. The durable repair is lifecycle projection, not just a larger timer.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="The Timeout Was Honest. The Active State Was Not.">
+    <meta property="og:description" content="A coding-agent turn timed out while an in-flight provider tool item was invisible downstream. The durable repair is lifecycle projection, not just a larger timer.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Timeout Was Honest. The Active State Was Not.">
+    <meta name="twitter:description" content="A coding-agent turn timed out while an in-flight provider tool item was invisible downstream. The durable repair is lifecycle projection, not just a larger timer.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Timeout Was Honest. The Active State Was Not.",
+  "description": "A coding-agent turn timed out while an in-flight provider tool item was invisible downstream. The durable repair is lifecycle projection, not just a larger timer.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-25",
+  "dateModified": "2026-08-25",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html"
+}</script>
+
+    <title>The Timeout Was Honest. The Active State Was Not.</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">ai-agents</span><span data-pagefind-filter="tag">agent-ops</span><span data-pagefind-filter="tag">debugging</span><span data-pagefind-filter="tag">lifecycles</span><span data-pagefind-filter="tag">timeouts</span><span data-pagefind-filter="tag">tool-calls</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-25</span>
+  <span data-pagefind-sort="updated">2026-08-25</span>
+  <span data-pagefind-sort="title">The Timeout Was Honest. The Active State Was Not.</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-08-25</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>The Timeout Was Honest. The Active State Was Not.</h1>
+    <div class="meta">
+        <strong>August 25, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, debugging, lifecycles, timeouts, tool-calls</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped separate a private incident trace from a public-safe lifecycle reproduction, verify the producer/consumer boundary, and keep unreleased implementation evidence out of production claims.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this post combines public upstream reports with a sanitized local reproduction and isolated source tests. It omits private prompts, logs, identifiers, paths, routes, model details, and deployment fingerprints. The paired implementation described below is not merged, released, or production-canary evidence.
+    </div>
+</header>
+
+<main>
+    <p>A coding-agent turn entered a failure mode in which it went quiet after several normal reasoning and tool cycles. The downstream watchdog waited for terminal completion, saw no active item, and eventually interrupted the turn.</p>
+
+    <p>The obvious fix was to increase the timeout. That would have reduced the chance that this particular watchdog fired first. It would not have repaired the state that made the timeout decision.</p>
+
+    <blockquote>
+        <p><strong>A watchdog can make a correct decision from an incomplete lifecycle.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small diagnostic test for distinguishing slow continuation from missing lifecycle projection, a paired producer/consumer repair pattern, and explicit conditions that keep timeout tuning in the containment lane.
+    </div>
+
+    <h2>The False Zero</h2>
+
+    <p>The upstream provider had already added a custom tool item. Its arguments were not complete, so the tool had not been dispatched. The adapter exposed completed raw items, but it did not expose this nonterminal start as an active downstream item.</p>
+
+    <p>That created two simultaneously true views:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>What it knew</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Provider/core</td>
+                <td>A tool item had been added and was still incomplete.</td>
+                <td>Nonterminal work exists</td>
+            </tr>
+            <tr>
+                <td>Downstream client</td>
+                <td>No projected item was active and no terminal event had arrived.</td>
+                <td>Active item count is zero</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The downstream counter was not stale. It accurately counted the lifecycle events it had received. The defect was that the producer-owned start fact never crossed the adapter boundary.</p>
+
+    <p>This distinction matters because the same visible timeout can come from very different mechanisms:</p>
+
+    <ul>
+        <li>a genuinely slow but observable continuation;</li>
+        <li>a provider stream that stalled between item start and completion;</li>
+        <li>a projected item whose completion was lost;</li>
+        <li>a terminal event that was emitted but dropped downstream; or</li>
+        <li>a local watchdog whose budget is simply too short.</li>
+    </ul>
+
+    <p>Changing a timer before separating those cases turns diagnosis into policy guesswork.</p>
+
+    <h2>The Smallest Useful Reproduction</h2>
+
+    <p>A public-safe reproduction does not need the private transcript. It needs only two projections with identical completion behavior and one stable correlation key:</p>
+
+    <pre><code class="language-javascript">const activeItems = new Set();
+
+function completeTool(event) {
+  activeItems.delete(event.callId);
+  persistAndDispatch(event);          // completion-owned effect
+}
+
+function completionOnly(event) {
+  if (event.kind === "item_done") {
+    completeTool(event);
+  }
+}
+
+function pairedLifecycle(event) {
+  if (event.kind === "item_added") {
+    activeItems.add(event.callId);      // observational only
+  }
+  if (event.kind === "item_done") {
+    completeTool(event);
+  }
+}</code></pre>
+
+    <p>The reproduction checks three boundaries:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Boundary</th>
+                <th>Completion-only projection</th>
+                <th>Paired projection</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Provider adds tool item</td>
+                <td>Active count remains zero</td>
+                <td>Stable call ID becomes active</td>
+            </tr>
+            <tr>
+                <td>Before item completion</td>
+                <td>Completion watch may fire</td>
+                <td>Completion watch is blocked</td>
+            </tr>
+            <tr>
+                <td>Provider completes item</td>
+                <td>No active item to clear</td>
+                <td>Blocker clears; persistence and dispatch may proceed</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success">
+        <strong>Core invariant:</strong> start is observational; completion owns persistence and dispatch. The signal makes work visible without pretending that partial arguments are executable.
+    </div>
+
+    <h2>The Repair Must Be Paired</h2>
+
+    <p>A producer-only change can emit a start event that nobody uses. A consumer-only change can wait for a signal that its bundled producer never emits. The repair therefore has an explicit landing order.</p>
+
+    <ol>
+        <li><strong>Producer:</strong> emit a nonterminal raw-item start for provider-added function and custom-tool items.</li>
+        <li><strong>Identity:</strong> preserve a stable correlation key across start and completion, even if provider item shapes or fallback IDs differ.</li>
+        <li><strong>Consumer:</strong> count that item as a completion blocker while it is active.</li>
+        <li><strong>Cleanup:</strong> clear it on matching raw completion and on terminal/error cleanup.</li>
+        <li><strong>Effects:</strong> keep persistence, dispatch, assistant-content projection, and completion semantics owned by later authoritative events.</li>
+    </ol>
+
+    <p>The isolated producer tests covered start/completion identity reuse and a dynamic-tool round trip. The isolated consumer tests covered start/completion correlation, waiting while a start is present, and an explicit no-start timeout control. Broader source checks passed in those isolated trees.</p>
+
+    <div class="warning">
+        <strong>Release boundary:</strong> the current bundled producer does not emit the new start signal. That makes the consumer half intentionally dormant until a released producer provides the contract. A tested local pair is implementation evidence, not a production fix.
+    </div>
+
+    <p>The falsification checks below assume that a future producer first satisfies that start-event contract. They test the behavior of the pair under that precondition; they do not claim that the currently bundled producer already does so.</p>
+
+    <h2>Why a Larger Timeout Is Still Useful</h2>
+
+    <p>Timeout containment is not useless. When an inner stream has its own retry or failure classification, a larger outer budget can let that inner mechanism act first. That can produce a more precise error and reduce premature interruption.</p>
+
+    <p>But containment and repair answer different questions:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Change</th>
+                <th>What it improves</th>
+                <th>What it does not prove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Increase outer quiet window</td>
+                <td>Changes which bounded watchdog gets to classify the silence first</td>
+                <td>That downstream state now includes the active provider item</td>
+            </tr>
+            <tr>
+                <td>Project item start</td>
+                <td>Restores visibility of nonterminal provider work</td>
+                <td>That the provider will eventually complete successfully</td>
+            </tr>
+            <tr>
+                <td>Track start through completion</td>
+                <td>Prevents false-zero completion timeout while the item is active</td>
+                <td>That unbounded waiting is safe</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Keep a terminal backstop. A visible active item can still hang forever. The point is not to remove timeouts; it is to make their inputs truthful.</p>
+
+    <h2>A Diagnostic Ladder for Silent Turns</h2>
+
+    <ol>
+        <li><strong>Reconcile effects first.</strong> Determine whether a tool was dispatched, completed, or never left the provider stream before retrying anything.</li>
+        <li><strong>Locate the last authoritative lifecycle event.</strong> Separate provider item-added, item-completed, assistant output, and terminal turn events.</li>
+        <li><strong>Compare layer views.</strong> Did the producer know about an item the downstream client could not count?</li>
+        <li><strong>Prove the projection path.</strong> Check whether an app-server or adapter notification actually existed before blaming forwarding or the host.</li>
+        <li><strong>Classify deadline coupling.</strong> Which watchdog fired first, and which progress anchor reset each budget?</li>
+        <li><strong>Test start, done, and no-start controls.</strong> A useful regression must prove both correct waiting and bounded failure.</li>
+        <li><strong>Preserve landing order.</strong> Do not ship a consumer contract against a producer version that cannot emit it.</li>
+    </ol>
+
+    <p>Public reports such as <a href="https://github.com/openai/codex/issues/32659">openai/codex#32659</a> and <a href="https://github.com/openclaw/openclaw/issues/125287">openclaw/openclaw#125287</a> establish the broader incomplete-turn failure family. The open timeout-only mitigation in <a href="https://github.com/openclaw/openclaw/pull/111646">openclaw/openclaw#111646</a> illustrates the containment lane. None of those public records alone proves this paired implementation; the bounded reproduction and isolated tests supply that narrower evidence.</p>
+
+    <h2>When Not to Use This Pattern</h2>
+
+    <ul>
+        <li>Do not synthesize fake activity from a local timer or heartbeat when the producer owns the real lifecycle fact.</li>
+        <li>Do not treat reasoning progress, partial tool arguments, or a start signal as a final answer.</li>
+        <li>Do not persist or dispatch a tool from an incomplete start event.</li>
+        <li>Do not replay uncertain side effects merely because the outer turn timed out.</li>
+        <li>Do not remove the terminal backstop after making active work visible.</li>
+        <li>Do not claim a paired fix is live when one released side of the contract is still missing.</li>
+    </ul>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> this claim fails if a provider-added tool item still leaves downstream active count at zero under the paired contract; a start event persists or dispatches the tool; stable call-ID correlation fails; completion or terminal cleanup leaks a blocker; or the no-start control cannot reach the bounded timeout path.
+    </div>
+
+    <h2>Conclusion</h2>
+
+    <p>In the investigated incident, the timeout was not the diagnosed root cause. It was the layer that finally made an invisible state disagreement user-visible.</p>
+
+    <p>The durable lesson is broader than one coding-agent adapter: if a downstream controller makes lifecycle decisions, every producer-owned nonterminal state that blocks completion needs a truthful, correlated projection. Tune timers for containment, but repair missing facts at the boundary that owns them.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/coding-agent-route-drift-without-premature-fixes.html">When a Coding-Agent Route Drifts</a></li>
+            <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers</a></li>
+            <li><a href="/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html">A Visible Message Does Not Prove an Agent Wake</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, technical debugging, and evidence-driven engineering workflows.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A timeout is only as truthful as the lifecycle state it can observe.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Which lifecycle facts does your agent watchdog actually observe—and which ones are still implicit upstream?</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

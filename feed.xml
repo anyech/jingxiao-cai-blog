@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 25 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>The Timeout Was Honest. The Active State Was Not.</title>
+      <description>How an unprojected provider tool start can leave a downstream watchdog with false-zero activity—and why a larger timeout is only containment.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html</guid>
+      <pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Cheaper Agent Is Not a Cheaper Workflow: Delegate by Workload Class</title>

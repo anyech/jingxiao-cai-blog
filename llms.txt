@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Timeout Was Honest. The Active State Was Not.](https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html.md
+  - Date: 2026-08-25
+  - Summary: When an adapter exposes tool items only at completion, a watchdog can see zero active work during a real upstream continuation. Fix the missing lifecycle fact first.
+  - Tags: ai-agents, agent-ops, debugging, lifecycles, timeouts, tool-calls
 - [A Cheaper Agent Is Not a Cheaper Workflow: Delegate by Workload Class](https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/cheaper-agent-not-cheaper-workflow-delegate-by-class.html.md
   - Date: 2026-08-24
