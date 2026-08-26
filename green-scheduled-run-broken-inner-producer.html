@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A green scheduled run hid an inner producer whose artifact stopped advancing. A bounded reproduction shows how component health and receipts reject false green.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="A Green Scheduled Run Can Still Hide a Broken Inner Producer">
+    <meta property="og:description" content="A green scheduled run hid an inner producer whose artifact stopped advancing. A bounded reproduction shows how component health and receipts reject false green.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A Green Scheduled Run Can Still Hide a Broken Inner Producer">
+    <meta name="twitter:description" content="A green scheduled run hid an inner producer whose artifact stopped advancing. A bounded reproduction shows how component health and receipts reject false green.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "A Green Scheduled Run Can Still Hide a Broken Inner Producer",
+  "description": "A green scheduled run hid an inner producer whose artifact stopped advancing. A bounded reproduction shows how component health and receipts reject false green.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html"
+}</script>
+
+    <title>A Green Scheduled Run Can Still Hide a Broken Inner Producer</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">ai-agents</span><span data-pagefind-filter="tag">agent-ops</span><span data-pagefind-filter="tag">automation</span><span data-pagefind-filter="tag">debugging</span><span data-pagefind-filter="tag">observability</span><span data-pagefind-filter="tag">reliability</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-26</span>
+  <span data-pagefind-sort="updated">2026-08-26</span>
+  <span data-pagefind-sort="title">A Green Scheduled Run Can Still Hide a Broken Inner Producer</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-08-26</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>A Green Scheduled Run Can Still Hide a Broken Inner Producer</h1>
+    <div class="meta">
+        <strong>August 26, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, automation, debugging, observability, reliability</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped separate a private failure trace from a public-safe state-machine reproduction, challenge the causal wording, and keep an isolated candidate from becoming a live-fix claim.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this post combines one sanitized installed-snapshot observation, a deterministic toy reproduction, and isolated offline tests. It omits private diary text, exact counts, schedules, identifiers, paths, routes, logs, and deployment topology. The candidate described here is not an upstream merge, live installation, or production recovery result.
+    </div>
+</header>
+
+<main>
+    <p>One of my unattended agent workflows looked healthy from the outside.</p>
+
+    <p>The scheduler had a successful outer result. A core phase still completed useful work. The report itself rendered. But one inner producer had stopped writing the durable artifact that made the workflow complete.</p>
+
+    <blockquote>
+        <p><strong>A green envelope can prove that the wrapper finished while saying almost nothing about a required inner producer.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small test for separating reporting defects from producer failures, a component-health rule that rejects outer false green, and a bounded same-sweep receipt pattern for reconciling work with its artifact.
+    </div>
+
+    <h2>Two Bugs, Only One Broken Producer</h2>
+
+    <p>The first bug was easy to see: the report parser recognized a date-only label, while the actual artifact used a full timestamp. The reporter could miss a valid entry even when the entry existed.</p>
+
+    <p>That was a real reporting defect. It was not the whole incident.</p>
+
+    <p>After fixing the parser, the artifact was still stale. The inner producer itself was no longer completing. This distinction changed the repair:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Observed problem</th>
+                <th>What a fix can prove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Reporter</td>
+                <td>Valid timestamp shape was not recognized</td>
+                <td>The report can read the artifact correctly</td>
+            </tr>
+            <tr>
+                <td>Producer</td>
+                <td>Required artifact stopped advancing</td>
+                <td>The producer needs its own lifecycle evidence</td>
+            </tr>
+            <tr>
+                <td>Outer job</td>
+                <td>Wrapper still returned success</td>
+                <td>Only that the outer execution path terminated</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>A parser repair can make a report honest. It cannot create output that the producer never wrote.</p>
+
+    <h2>The Bounded Failure Mechanism</h2>
+
+    <p>In the installed snapshot I examined, durable conversation pointers were protected from ordinary retention cleanup. That protection was intentional: continuity should not disappear merely because a maintenance pass needed room.</p>
+
+    <p>The problem appeared at the boundary. Protected durable pointers had already exhausted ordinary capacity under the retention budget. A newly admitted ephemeral producer session was not yet leased as active work. Maintenance preserved the protected rows and removed the ordinary new row while the producer was starting.</p>
+
+    <p>The result was a strange but coherent state:</p>
+
+    <ul>
+        <li>the protected conversations survived;</li>
+        <li>the outer scheduled path completed;</li>
+        <li>a core phase could still report progress;</li>
+        <li>the ephemeral producer disappeared; and</li>
+        <li>the durable artifact stopped advancing.</li>
+    </ul>
+
+    <div class="warning">
+        <strong>Scope:</strong> this is one observed installed-snapshot mechanism, reproduced with toy state. It is not a claim that retention pressure explains every missing artifact or that current releases require the same repair.
+    </div>
+
+    <h2>A Public-Safe Reproduction</h2>
+
+    <p>The smallest useful model needs only protected rows, one ordinary producer, a budget, and a bounded lease:</p>
+
+    <pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Row:
+    name: str
+    protected: bool = False
+    leased: bool = False
+
+def names(rows):
+    return {row.name for row in rows}
+
+def enforce_budget(rows, budget):
+    durable = [row for row in rows if row.protected or row.leased]
+    ordinary = [row for row in rows if not row.protected and not row.leased]
+    available = max(0, budget - len(durable))
+    return durable + ordinary[-available:] if available else durable
+
+protected = [Row("durable-a", protected=True),
+             Row("durable-b", protected=True),
+             Row("durable-c", protected=True)]
+
+unleased = protected + [Row("ephemeral-producer")]
+assert "ephemeral-producer" not in names(enforce_budget(unleased, budget=3))
+
+leased = protected + [Row("ephemeral-producer", leased=True)]
+assert "ephemeral-producer" in names(enforce_budget(leased, budget=3))</code></pre>
+
+    <p>This model establishes a bounded mechanism: under protected-state saturation, an unleased ordinary producer can be the only removable row; leasing admitted work preserves it through startup without deleting or unprotecting durable continuity.</p>
+
+    <p>It does <em>not</em> establish that a lease is the unique repair, that a global budget change could never help, or that every retention implementation behaves this way.</p>
+
+    <h2>Outer Success Is One Component, Not the Verdict</h2>
+
+    <p>The report originally compressed several different facts into one friendly status. The repair I wanted was a vector:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Question</th>
+                <th>Failure meaning</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Outer envelope</td>
+                <td>Did the scheduled wrapper terminate?</td>
+                <td>Execution or wrapper failure</td>
+            </tr>
+            <tr>
+                <td>Core phase</td>
+                <td>Did the primary transformation complete?</td>
+                <td>Core work failure</td>
+            </tr>
+            <tr>
+                <td>Inner producer</td>
+                <td>Did narrative/artifact production complete?</td>
+                <td>Producer failure</td>
+            </tr>
+            <tr>
+                <td>Artifact freshness</td>
+                <td>Did the durable output advance?</td>
+                <td>Missing or stale evidence</td>
+            </tr>
+            <tr>
+                <td>Provenance</td>
+                <td>Can the result be bound to this sweep?</td>
+                <td>Ambiguous or stale attribution</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre><code>overall = OK only if:
+    outer_envelope_ok
+    and core_phase_ok
+    and inner_producer_ok
+    and artifact_is_fresh
+    and artifact_matches_sweep
+    and same_sweep_receipt_is_terminal</code></pre>
+
+    <p>That rule intentionally lets a job be partly successful and globally degraded at the same time. Honest partial failure is more useful than a single green status that erases which component needs work.</p>
+
+    <h2>Why the Receipt Must Be Sweep-Scoped</h2>
+
+    <p>Artifact freshness alone is not enough. A recently modified file could belong to an earlier run. A new receipt without an artifact could report intent rather than effect.</p>
+
+    <p>The bounded candidate therefore records one sweep identity and moves it once from pending to terminal:</p>
+
+    <pre><code class="language-json">{
+  "sweep": "stable-correlation-key",
+  "outcome": "degraded",
+  "phases": [
+    {"name": "core", "outcome": "completed"},
+    {"name": "producer", "outcome": "failed", "fallback": 1}
+  ],
+  "artifactWrites": 0
+}</code></pre>
+
+    <p>Here, <code>fallback: 1</code> records one bounded fallback action for the failed producer. It is not a successful write of the required artifact, so <code>artifactWrites</code> remains zero.</p>
+
+    <p>The monitor then reconciles four things:</p>
+
+    <ol>
+        <li>the expected sweep identity;</li>
+        <li>one terminal receipt for that sweep;</li>
+        <li>the per-component outcome; and</li>
+        <li>the artifact write/freshness evidence.</li>
+    </ol>
+
+    <p>A failed producer may emit one bounded fallback, but the terminal receipt is immutable. A second completion attempt must not manufacture a second fallback or rewrite history.</p>
+
+    <h2>Archive Before Trimming</h2>
+
+    <p>The same isolated candidate applies one additional durability boundary to the artifact itself: archive the old material before trimming the live file.</p>
+
+    <p>This was not the observed startup-eviction root cause. It is adjacent hardening for a producer that may resume writing after a long outage.</p>
+
+    <pre><code>if archive_creation_succeeds:
+    replace_live_file_with_bounded_tail()
+else:
+    leave_original_bytes_unchanged()</code></pre>
+
+    <p>The public-safe control checks byte identity on archive failure. A retention helper that shortens the source before it knows the archive exists has converted housekeeping into data loss.</p>
+
+    <h2>Tempting Changes Are Separate Experiments</h2>
+
+    <ul>
+        <li><strong>Parser-only repair:</strong> necessary for truthful observation, insufficient to prove producer recovery.</li>
+        <li><strong>Raise the global retention budget:</strong> may change pressure, but the public proof does not compare its safety, cost, or long-term behavior.</li>
+        <li><strong>Remove durable protection:</strong> may create removable rows, but risks trading a producer failure for lost continuity.</li>
+        <li><strong>Tune alert thresholds:</strong> changes when the system complains, not whether the artifact exists.</li>
+    </ul>
+
+    <p>I did not need to claim that every alternative fails. I needed one candidate that preserved the boundary I cared about: admitted ephemeral work should survive startup without weakening the durable state it depends on.</p>
+
+    <h2>When Not to Use This Pattern</h2>
+
+    <ul>
+        <li>Do not blame retention pressure before reproducing the relevant state shape.</li>
+        <li>Do not use a lease as an unbounded pin; hung and crashed producers still need cleanup and terminal failure semantics.</li>
+        <li>Do not infer health from a fresh timestamp without binding it to the expected sweep.</li>
+        <li>Do not infer exactly-once execution from one immutable receipt; receipt/write atomicity, retry identity, crash windows, and late completion remain outside this proof.</li>
+        <li>Do not treat the outer scheduler status as a component-health aggregate.</li>
+        <li>Do not claim an isolated candidate is current upstream behavior or a live recovery.</li>
+        <li>Do not trim a durable artifact before archive success is proven.</li>
+    </ul>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> the bounded mechanism/candidate claim fails if the recorded protected-saturation shape does not remove the unleased toy producer; the bounded lease does not preserve admitted work in that same reproduction; required artifact loss leaves overall health green; a sweep lacks one terminal receipt; a failed phase creates duplicate fallbacks; or archive failure changes the original bytes.
+    </div>
+
+    <h2>A Small Review Checklist</h2>
+
+    <ol>
+        <li>List required components instead of trusting the outer status.</li>
+        <li>Separate parser/readback bugs from producer execution failures.</li>
+        <li>Bind artifact evidence to the same run or sweep.</li>
+        <li>Protect admitted work only for a bounded lifecycle window.</li>
+        <li>Preserve durable continuity; do not “fix” pressure by deleting the evidence you need.</li>
+        <li>Require one immutable terminal receipt and idempotent fallback behavior.</li>
+        <li>Keep live/upstream claims behind actual live/upstream evidence.</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The useful lesson was not merely that a green status can lie. It was that the word <em>success</em> belonged to the wrong scope.</p>
+
+    <p>The outer wrapper succeeded. One core component succeeded. The inner producer failed, the artifact stayed stale, and the workflow was degraded.</p>
+
+    <p>In the isolated offline candidate, component-scoped health and sweep-scoped receipts could tell that truth without sacrificing durable conversation state or pretending the candidate was already live.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers</a></li>
+            <li><a href="/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html">When the Report Exists but Delivery Failed</a></li>
+            <li><a href="/jingxiao-cai-blog/when-live-state-moves-agent-validators.html">When Live State Moves but Validators Do Not</a></li>
+            <li><a href="/jingxiao-cai-blog/visible-message-does-not-prove-agent-wake.html">A Visible Message Does Not Prove an Agent Wake</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, technical debugging, and evidence-driven engineering workflows.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A green envelope is a component fact, not an end-to-end verdict.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Which inner producer can fail inside your greenest scheduled job—and what same-run evidence would expose it?</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>

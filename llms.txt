@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Green Scheduled Run Can Still Hide a Broken Inner Producer](https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html.md
+  - Date: 2026-08-26
+  - Summary: Outer success is not end-to-end health. One bounded reproduction shows how an ephemeral producer can disappear while durable state stays protected.
+  - Tags: ai-agents, agent-ops, automation, debugging, observability, reliability
 - [The Timeout Was Honest. The Active State Was Not.](https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/timeout-honest-active-state-was-not.html.md
   - Date: 2026-08-25

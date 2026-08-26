@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 26 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Green Scheduled Run Can Still Hide a Broken Inner Producer</title>
+      <description>A bounded reproduction of an inner producer lost under protected-state saturation, with component health and same-sweep receipts that reject outer false green.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html</guid>
+      <pubDate>Wed, 26 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Timeout Was Honest. The Active State Was Not.</title>
