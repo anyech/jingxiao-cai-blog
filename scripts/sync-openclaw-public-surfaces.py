@@ -27,6 +27,7 @@ PERSONAL_SCRIPT = PERSONAL_REPO / "scripts" / "update_openclaw_contrib.py"
 BLOG_UPDATER = BLOG_REPO / "scripts" / "update-openclaw-contrib.py"
 BLOG_SOURCE_BRANCH = "eleventy-migration-hardening-20260520"
 BLOG_SNAPSHOT = BLOG_REPO / "src" / "_data" / "openclawContrib.json"
+BLOG_BUILD_INPUT_ROOT = "src"
 BLOG_URL = "https://anyech.github.io/jingxiao-cai-blog/"
 LOCK_PATH = Path("/tmp/jingxiao-cai-openclaw-public-surfaces.lock")
 PRESERVED_MAIN_PATHS = (".github", "DEPLOYMENT.md", "LICENSE")
@@ -79,6 +80,27 @@ def ensure_repo_ready(repo: Path, branch: str, *, pull: bool) -> None:
     counts = git(repo, "rev-list", "--left-right", "--count", f"HEAD...origin/{branch}").split()
     if counts != ["0", "0"]:
         raise RuntimeError(f"{repo}: branch is not synchronized with origin/{branch}: {counts}")
+
+
+def ensure_blog_build_inputs_tracked(repo: Path = BLOG_REPO) -> None:
+    """Reject non-tracked files that Eleventy can copy or render publicly."""
+    pathspec = BLOG_BUILD_INPUT_ROOT
+    candidates: set[str] = set()
+    for args in (
+        ("ls-files", "--others", "--exclude-standard", "--", pathspec),
+        ("ls-files", "--others", "--ignored", "--exclude-standard", "--", pathspec),
+    ):
+        candidates.update(path for path in git(repo, *args).splitlines() if path)
+    if not candidates:
+        return
+
+    ordered = sorted(candidates)
+    preview = ", ".join(ordered[:10])
+    remainder = f" (+{len(ordered) - 10} more)" if len(ordered) > 10 else ""
+    raise RuntimeError(
+        f"{repo}: non-tracked Eleventy inputs under {pathspec}/; "
+        f"refusing automated publish: {preview}{remainder}"
+    )
 
 
 def write_blog_snapshot(blog_updater, snapshot: dict[str, object]) -> bool:
@@ -230,6 +252,7 @@ def verify_blog_live(snapshot: dict[str, object], timeout_seconds: int = 150) ->
 def synchronize(*, pull: bool, commit_push: bool, max_age_days: int) -> dict[str, object]:
     ensure_repo_ready(PERSONAL_REPO, "main", pull=pull)
     ensure_repo_ready(BLOG_REPO, BLOG_SOURCE_BRANCH, pull=pull)
+    ensure_blog_build_inputs_tracked()
     personal = load_module("personal_site_openclaw_contrib", PERSONAL_SCRIPT)
     blog_updater = load_module("blog_openclaw_contrib", BLOG_UPDATER)
 
