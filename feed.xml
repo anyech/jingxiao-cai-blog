@@ -6,7 +6,15 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Wed, 26 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 27 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Bound Before You Serialize: When a Correct Child Result Becomes No Result</title>
+      <description>A file-backed regression shows why a valid oversized child result must be bounded before serialization, not after the parent receives it.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html</guid>
+      <pubDate>Thu, 27 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>A Green Scheduled Run Can Still Hide a Broken Inner Producer</title>

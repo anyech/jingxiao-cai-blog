@@ -17,6 +17,11 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [Bound Before You Serialize: When a Correct Child Result Becomes No Result](https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html.md
+  - Date: 2026-08-27
+  - Summary: A correct child-process result can disappear if it exceeds the transport before the parent applies its semantic cap. Bound it before serialization.
+  - Tags: ai-agents, agent-ops, memory-search, ipc, debugging, reliability
 - [A Green Scheduled Run Can Still Hide a Broken Inner Producer](https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html.md
   - Date: 2026-08-26

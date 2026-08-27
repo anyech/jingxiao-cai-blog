@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A serialized child response exceeded its protocol cap before parent-side truncation could run. UTF-16-safe producer bounds preserved the valid vector hit.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Bound Before You Serialize: When a Correct Child Result Becomes No Result">
+    <meta property="og:description" content="A serialized child response exceeded its protocol cap before parent-side truncation could run. UTF-16-safe producer bounds preserved the valid vector hit.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bound Before You Serialize: When a Correct Child Result Becomes No Result">
+    <meta name="twitter:description" content="A serialized child response exceeded its protocol cap before parent-side truncation could run. UTF-16-safe producer bounds preserved the valid vector hit.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Bound Before You Serialize: When a Correct Child Result Becomes No Result",
+  "description": "A serialized child response exceeded its protocol cap before parent-side truncation could run. UTF-16-safe producer bounds preserved the valid vector hit.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-08-27",
+  "dateModified": "2026-08-27",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html"
+}</script>
+
+    <title>Bound Before You Serialize: When a Correct Child Result Becomes No Result</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">ai-agents</span><span data-pagefind-filter="tag">agent-ops</span><span data-pagefind-filter="tag">memory-search</span><span data-pagefind-filter="tag">ipc</span><span data-pagefind-filter="tag">debugging</span><span data-pagefind-filter="tag">reliability</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">08</span>
+  <span data-pagefind-sort="published">2026-08-27</span>
+  <span data-pagefind-sort="updated">2026-08-27</span>
+  <span data-pagefind-sort="title">Bound Before You Serialize: When a Correct Child Result Becomes No Result</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-08-27</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+    <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+    <h1>Bound Before You Serialize: When a Correct Child Result Becomes No Result</h1>
+    <div class="meta">
+        <strong>August 27, 2026</strong> | By Jingxiao Cai<br>
+        <span class="tags">Tags: ai-agents, agent-ops, memory-search, ipc, debugging, reliability</span>
+    </div>
+    <div class="disclaimer">
+        This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped separate one public payload-boundary proof from a much broader merged change, check nearby article ownership, and keep the conclusion narrower than the pull request.
+    </div>
+    <div class="warning">
+        <strong>Boundary:</strong> this post analyzes one public, merged OpenClaw regression and its landed source. It does not claim that every child-process failure is a payload problem, that character limits are byte limits, or that this narrow proof establishes every lifecycle and platform claim in the larger pull request.
+    </div>
+</header>
+
+<main>
+    <p>The child process computed the right answer. The parent still received no usable result.</p>
+
+    <p>That sounds contradictory until the protocol boundary enters the picture. A serialized child response containing a valid vector-search row exceeded the bounded stdout protocol. The parent already knew how to truncate snippets—but only <em>after</em> it received the response. The transport rejected the response first.</p>
+
+    <blockquote>
+        <p><strong>A downstream size limit cannot protect a result that never crosses the transport.</strong></p>
+    </blockquote>
+
+    <div class="note">
+        <strong>Reader promise:</strong> by the end of this post, you will have a small ordering test for bounded child protocols, a two-cap design that preserves useful results without trusting the child, and a regression pattern that catches valid oversized rows rather than only malformed output.
+    </div>
+
+    <h2>The Result Was Correct Until It Became Bytes</h2>
+
+    <p>The affected path isolated synchronous vector work in a child process so native database calls could not monopolize the parent event loop. The child returned structured rows over a bounded JSON stdout protocol.</p>
+
+    <p>The semantic contract already said that each returned text snippet should be capped. But the cap lived on the parent side:</p>
+
+    <pre><code>child computes a valid hit with full text
+child serializes a response containing the full row
+bounded stdout rejects the oversized serialized response
+parent never receives a row to truncate
+correct recall becomes unavailable</code></pre>
+
+    <p>Nothing was wrong with the vector match. The failure was an ordering bug between the semantic result bound and the transport bound.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Boundary</th>
+                <th>Question</th>
+                <th>Why it matters</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Query semantics</td>
+                <td>Was the correct row selected?</td>
+                <td>A valid hit should not be relabeled as missing.</td>
+            </tr>
+            <tr>
+                <td>Result semantics</td>
+                <td>How much text may one row expose?</td>
+                <td>The producer needs the same bounded snippet contract as the consumer.</td>
+            </tr>
+            <tr>
+                <td>Transport</td>
+                <td>How many bytes may cross stdout?</td>
+                <td>The independent hard cap contains bugs and adversarial output.</td>
+            </tr>
+            <tr>
+                <td>Parent validation</td>
+                <td>Is the received envelope still well formed?</td>
+                <td>Producer-side bounding must not turn into trust.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Move the Semantic Bound Upstream</h2>
+
+    <p>The repair carried the requested snippet limit into the child request, validated it at the query boundary, and truncated every validated row before serialization:</p>
+
+    <pre><code>parent sends a validated snippet limit
+child executes the same vector query
+child validates each returned row
+child truncates text without splitting a UTF-16 surrogate pair
+for this one-row regression, bounded JSON crosses stdout
+parent validates the envelope and receives the correct hit</code></pre>
+
+    <p>The important change was not “add truncation.” Truncation already existed. The change was <strong>place the semantic bound before the first hard transport boundary that depends on it</strong>.</p>
+
+    <p>The landed implementation keeps the transport cap too. That gives the protocol two different protections:</p>
+
+    <ol>
+        <li><strong>Semantic producer cap:</strong> shapes valid results to the consumer contract before serialization.</li>
+        <li><strong>Independent transport cap:</strong> rejects oversized serialized responses caused by buggy, adversarial, or aggregate growth. Parent-side envelope and schema validation separately reject malformed responses.</li>
+    </ol>
+
+    <p>Those caps are not duplicates. One preserves expected results; the other contains unexpected behavior.</p>
+
+    <h2>The Regression Needed a Valid Oversized Row</h2>
+
+    <p>A malformed-output fixture can prove that the protocol fails closed. It cannot prove that valid recall survives the size boundary.</p>
+
+    <p>The useful public regression created a real file-backed SQLite/sqlite-vec database, inserted a valid text row larger than the child stdout limit, and executed the child-process KNN path. The text deliberately placed an emoji at the truncation edge:</p>
+
+    <pre><code>stored text = 63 single-code-unit ASCII characters + one emoji + a 3 MiB tail
+requested snippet limit = 64 UTF-16 code units
+
+expected hit id = the oversized row
+expected text = the first 63 ASCII characters
+expected serialized response = below the 2 MiB child stdout limit</code></pre>
+
+    <p>The emoji is not decoration. In JavaScript, each preceding ASCII character uses one UTF-16 code unit and the emoji uses two, so <code>63 + 2 = 65</code> cannot fit wholly under a 64-code-unit limit. A naive slice can leave half a surrogate; the UTF-16-safe helper drops that dangling half and returns the first 63 ASCII characters. This is an implementation-level code-unit bound, not a UTF-8-byte, Unicode-code-point, grapheme-cluster, or display-width guarantee.</p>
+
+    <div class="note">
+        <strong>Public proof:</strong> the merged <a href="https://github.com/openclaw/openclaw/pull/128078">OpenClaw pull request</a> and its <a href="https://github.com/openclaw/openclaw/blob/8a0cf730530a1cbc20dda8970051fae12c53c39a/extensions/memory-core/src/memory/manager-search-knn-subprocess.test.ts#L258-L285">file-backed oversized-row regression</a> are inspectable. The <a href="https://github.com/openclaw/openclaw/blob/8a0cf730530a1cbc20dda8970051fae12c53c39a/extensions/memory-core/src/memory/manager-search-knn.ts#L95-L145">landed query body</a> shows request validation and UTF-16-safe producer-side truncation.
+    </div>
+
+    <h2>Four Controls Make the Claim Useful</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Control</th>
+                <th>What it distinguishes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Valid oversized database row</td>
+                <td>Real result loss from malformed-child rejection</td>
+            </tr>
+            <tr>
+                <td>Producer-side snippet request</td>
+                <td>Pre-serialization shaping from post-receipt cleanup</td>
+            </tr>
+            <tr>
+                <td>Surrogate-pair boundary</td>
+                <td>Valid text truncation from arbitrary code-unit slicing</td>
+            </tr>
+            <tr>
+                <td>Independent stdout rejection</td>
+                <td>Expected bounded rows from unexpected protocol output</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Without the first control, the test can pass while every large valid hit still disappears. Without the last, a trusted-looking semantic cap can weaken the protocol's defense in depth.</p>
+
+    <h2>Character Limits Are Not Byte Limits</h2>
+
+    <p>This repair preserves one result contract; it does not solve every payload-budget problem.</p>
+
+    <p>Here the semantic cap applies to each row's text field, while the transport cap applies to the complete serialized response. UTF-16 code-unit counts and UTF-8 byte counts can diverge. Multiple individually bounded rows can still exceed an aggregate response cap. Metadata—including any truncation marker or original-length field needed by the consumer—can grow. Future schema fields can change the envelope size. That is why the hard stdout limit remains authoritative even after each row is shaped.</p>
+
+    <p>For protocols with tight budgets, add an aggregate preflight as a separate design decision:</p>
+
+    <pre><code>validate request limit
+bound each semantic field before serialization
+estimate or encode the complete response
+enforce aggregate transport budget
+retain receiver-side schema and size validation</code></pre>
+
+    <p>Do not silently reuse a UTF-16 code-unit limit as a claim about code points, grapheme clusters, display width, or bytes. Name the units that each boundary actually enforces.</p>
+
+    <h2>When Not to Use Silent Truncation</h2>
+
+    <ul>
+        <li>Do not truncate opaque binary payloads, signatures, hashes, or tokens whose meaning depends on exact bytes.</li>
+        <li>This exact field is already defined as a bounded snippet. For fields whose completeness matters, do not truncate unless the receiver can distinguish complete from partial data—for example through an explicit marker or original length.</li>
+        <li>Do not hide an aggregate-budget failure by clipping arbitrary rows; preserve ranking and omission semantics explicitly.</li>
+        <li>Do not move every transport rule into business logic. Keep the independent protocol ceiling.</li>
+        <li>Do not generalize one file-backed regression into a universal IPC performance claim.</li>
+        <li>Do not use this narrow proof to imply that broader child lifecycle, cancellation, packaging, reindex, or platform behavior was established by the same test.</li>
+    </ul>
+
+    <div class="warning">
+        <strong>Falsifier:</strong> the bounded claim fails if parent-only post-receipt truncation survives the same unchanged stdout limit; producer-side truncation still loses the hit; the truncation splits the surrogate pair; invalid or oversized envelopes become accepted; or the cited landed commit lacks either the producer-side bound or the file-backed regression.
+    </div>
+
+    <h2>A Small Review Checklist</h2>
+
+    <ol>
+        <li>Identify the first hard transport boundary in the result path.</li>
+        <li>Separate the semantic result limit from the transport byte limit.</li>
+        <li>Carry the semantic limit to the producer before serialization.</li>
+        <li>Validate the limit and every result row on the producer side.</li>
+        <li>Use encoding-safe truncation for text.</li>
+        <li>Retain receiver-side schema validation and the independent transport cap.</li>
+        <li>Test a valid oversized result, not only malformed output.</li>
+        <li>State which broader lifecycle and platform claims the regression does not prove.</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>The surprising part of this bug was that the database query could be correct, the snippet policy could be correct, and the final observed recall could still be wrong.</p>
+
+    <p>The mistake was temporal: the policy ran after the boundary it needed to protect.</p>
+
+    <p>Bound expected results before serialization. Keep the transport cap after them. Then test the valid oversized case where those two responsibilities are easiest to confuse.</p>
+
+    <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+            <li><a href="/jingxiao-cai-blog/10-second-session-list-prefilter-row-build-agent-gateway.html">The 10-Second Session List</a></li>
+            <li><a href="/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html">Before Raising Reindex Concurrency, Prove the Memory Lane</a></li>
+            <li><a href="/jingxiao-cai-blog/long-running-agent-work-needs-bridge-back.html">Long-Running Agent Work Needs a Bridge Back</a></li>
+            <li><a href="/jingxiao-cai-blog/proof-without-touching-production-agent-pr-boundary.html">Proof Without Touching Production</a></li>
+        </ul>
+    </div>
+
+    <div class="author-box">
+        <h3>About the Author</h3>
+        <p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents, technical debugging, and evidence-driven engineering workflows.</p>
+        <p style="margin-top: 15px; font-style: italic; color: #555;">A correct result is not useful until it survives the boundary that carries it.</p>
+    </div>
+</main>
+
+<footer>
+    <h2>Comments</h2>
+    <p>Which limit in your system runs only after the payload has already crossed—or failed to cross—the boundary it was meant to protect?</p>
+    <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+<script src="https://utteranc.es/client.js"
+    repo="anyech/jingxiao-cai-blog"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async></script>
+</div>
+
+</article>
+
+    </main>
+  </body>
+</html>
