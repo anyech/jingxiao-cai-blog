@@ -68,12 +68,12 @@ sitemapLastmod: '2026-08-30'
       <tr>
         <td>Block worker-hosted <code>sessions_spawn</code></td>
         <td>No child session appeared</td>
-        <td>Isolated real Gateway/worker protocol boundary</td>
+        <td>Isolated Gateway/worker protocol boundary</td>
       </tr>
       <tr>
         <td>Block worker-hosted <code>sessions_send</code></td>
         <td>The target transcript length and marker stayed unchanged</td>
-        <td>Isolated real Gateway/worker protocol boundary</td>
+        <td>Isolated Gateway/worker protocol boundary</td>
       </tr>
       <tr>
         <td>Send concurrent retries with one operation identity</td>
@@ -131,7 +131,7 @@ sitemapLastmod: '2026-08-30'
 
   <h2>What the Published Proof Does Not Show</h2>
 
-  <p>PR #131669 is proposed, unreleased behavior. Its published proof used disposable state, a real Gateway/worker protocol boundary in an isolated test deployment, and a loopback mock provider. It did not use a production Gateway, external channel delivery, a real model provider, a remote VM, or a managed worker fleet.</p>
+  <p>PR #131669 is proposed, unreleased behavior. Its published proof used disposable state, an isolated Gateway/worker protocol boundary, and a loopback mock provider. It did not use a production Gateway, external channel delivery, a real model provider, a remote VM, or a managed worker fleet.</p>
 
   <p>The article's later-fence claim is intentionally limited to the focused regressions named above. Worker operations with separate authority/effect contracts do not automatically inherit this exact repair. Their policy owner, durable operation identity, and actual mutation boundary must be identified independently.</p>
 
