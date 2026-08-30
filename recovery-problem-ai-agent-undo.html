@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook">
+    <meta name="description" content="A tested recovery controller separates execution failure from missing receipts, cleanup, privacy, result, and ownership before retrying anything.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,21 +16,21 @@
     <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="The Recovery Problem: Why Your AI Agent Needs an Undo Button">
-    <meta property="og:description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook">
+    <meta property="og:title" content="Recovery Is a State Decision, Not an Undo Button">
+    <meta property="og:description" content="A tested recovery controller separates execution failure from missing receipts, cleanup, privacy, result, and ownership before retrying anything.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="The Recovery Problem: Why Your AI Agent Needs an Undo Button">
-    <meta name="twitter:description" content="I run 13 autonomous cron jobs with zero undo capability. When Moltbook">
+    <meta name="twitter:title" content="Recovery Is a State Decision, Not an Undo Button">
+    <meta name="twitter:description" content="A tested recovery controller separates execution failure from missing receipts, cleanup, privacy, result, and ownership before retrying anything.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "The Recovery Problem: Why Your AI Agent Needs an Undo Button",
-  "description": "I run 13 autonomous cron jobs with zero undo capability. When Moltbook",
+  "headline": "Recovery Is a State Decision, Not an Undo Button",
+  "description": "A tested recovery controller separates execution failure from missing receipts, cleanup, privacy, result, and ownership before retrying anything.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -42,13 +42,13 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-03-07",
-  "dateModified": "2026-03-07",
+  "dateModified": "2026-08-30",
   "url": "https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html"
 }</script>
 
-    <title>The Recovery Problem: Why Your AI Agent Needs an Undo Button</title>
+    <title>Recovery Is a State Decision, Not an Undo Button</title>
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -75,402 +75,223 @@
   <span data-pagefind-filter="year">2026</span>
   <span data-pagefind-filter="month">03</span>
   <span data-pagefind-sort="published">2026-03-07</span>
-  <span data-pagefind-sort="updated">2026-03-07</span>
-  <span data-pagefind-sort="title">The Recovery Problem: Why Your AI Agent Needs an Undo Button</span>
+  <span data-pagefind-sort="updated">2026-08-30</span>
+  <span data-pagefind-sort="title">Recovery Is a State Decision, Not an Undo Button</span>
   <span data-pagefind-meta="topic">reliability-security</span>
   <span data-pagefind-meta="published">2026-03-07</span>
-  <span data-pagefind-meta="updated"></span>
+  <span data-pagefind-meta="updated">2026-08-30</span>
 </div>
 <header>
-        <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
-        <h1>The Recovery Problem: Why Your AI Agent Needs an Undo Button</h1>
-        <div class="meta">
-            <strong>March 7, 2026</strong> | By Jingxiao Cai<br>
-            <span class="tags">Tags: ai-agents, devops, recovery, openclaw, automation, safety</span>
-        </div>
-        <div class="disclaimer">
-            This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped audit my cron jobs for recovery capabilities and found exactly zero. Because sometimes the best way to learn about safety gaps is to have your AI point out that you have no brakes.
-        </div>
-    </header>
+  <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+  <h1>Recovery Is a State Decision, Not an Undo Button</h1>
+  <div class="meta">
+    <strong>March 7, 2026</strong> · Updated August 30, 2026 | By Jingxiao Cai<br>
+    <span class="tags">Tags: ai-agents, devops, recovery, openclaw, automation, safety</span>
+  </div>
+  <div class="disclaimer">
+    This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped replace the original future-tense recovery checklist with a sanitized, executable state-machine proof.
+  </div>
+  <div class="note">
+    <strong>What changed:</strong> the original article treated recovery mostly as snapshots, rollback commands, and safe retries. The tested update below starts one step earlier: it decides whether recovery is allowed at all.
+  </div>
+</header>
 
-    <main>
-        <h2>The Moment I Realized I Had No Undo Button</h2>
-        <p>Last week, Moltbook (an AI agent community) was buzzing with discussions about "recovery primitives" — the ability for autonomous agents to undo mistakes, replay failed operations, or roll back to a known-good state.</p>
-        <p>Someone posted about context drift fixes. Another person shared how their agent corrupted files during a deployment. A third talked about idempotent operations.</p>
-        <p>And I thought: <strong>What happens if my agent messes up?</strong></p>
-        <p>I sat down and audited my deployment:</p>
+<main>
+  <h2>A Transient Error Is Not Permission to Retry</h2>
 
-        <div class="stat-box">
-            <div class="number">13</div>
-            <div class="label">Autonomous Cron Jobs</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">0</div>
-            <div class="label">With Undo Capability</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">0</div>
-            <div class="label">With Replay/Retry Logic</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">0</div>
-            <div class="label">With Rollback Procedures</div>
-        </div>
+  <p>Consider an unattended backup command that times out after it may already have written an archive. Calling the error <code>transient</code> makes a retry sound reasonable. But the process error does not answer the questions that matter most:</p>
 
-        <p><strong>Zero.</strong> Not a single recovery mechanism across 13 autonomous jobs running unsupervised every day.</p>
-        <p>This is the story of that audit, what I found, and the framework I'm building to fix it.</p>
+  <ul>
+    <li>Did the task emit the receipt that proves which attempt ran?</li>
+    <li>Did cleanup finish, or is an old effect still active?</li>
+    <li>Did the privacy checks complete?</li>
+    <li>Is the semantic result known, or merely the process exit?</li>
+    <li>Does this controller still own the right to act?</li>
+  </ul>
 
-        <h2>What My Agent Actually Does (Unsupervised)</h2>
-        <p>My OpenClaw agent runs multiple autonomous jobs daily:</p>
+  <p>If any required answer is missing, “retry the transient failure” is no longer a recovery policy. It is a guess that may duplicate an effect, hide incomplete cleanup, or let a stale owner act.</p>
 
-        <table class="capability-table">
-            <thead>
-                <tr>
-                    <th>Job Type</th>
-                    <th>Frequency</th>
-                    <th>Actions</th>
-                    <th>Can Undo?</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="unsafe">
-                    <td><strong>Security Audits</strong></td>
-                    <td>Daily (3 AM)</td>
-                    <td>Scans configs, checks file permissions, validates credentials</td>
-                    <td>❌ No</td>
-                </tr>
-                <tr class="unsafe">
-                    <td><strong>Git Auto-Commit</strong></td>
-                    <td>Daily (7 AM)</td>
-                    <td>Commits workspace changes, pushes to GitHub</td>
-                    <td>❌ No</td>
-                </tr>
-                <tr class="unsafe">
-                    <td><strong>Log Rotation</strong></td>
-                    <td>Daily (midnight)</td>
-                    <td>Archives old logs, deletes files &gt;30 days</td>
-                    <td>❌ No</td>
-                </tr>
-                <tr class="unsafe">
-                    <td><strong>Gmail Processing</strong></td>
-                    <td>Daily (10 AM)</td>
-                    <td>Fetches emails, categorizes priority, generates memo</td>
-                    <td>❌ No</td>
-                </tr>
-                <tr class="unsafe">
-                    <td><strong>ML/AI Brief</strong></td>
-                    <td>Daily (10 AM)</td>
-                    <td>Scans arXiv, Hacker News, summarizes trends</td>
-                    <td>❌ No</td>
-                </tr>
-                <tr class="unsafe">
-                    <td><strong>Health Checks</strong></td>
-                    <td>Every 30 min</td>
-                    <td>Monitors gateway, cron status, disk usage</td>
-                    <td>❌ No</td>
-                </tr>
-            </tbody>
-        </table>
+  <blockquote>
+    <p><strong>Recovery disposition should come from independent evidence axes before the controller interprets the execution error.</strong></p>
+  </blockquote>
 
-        <p><strong>Every single one of these runs without:</strong></p>
-        <ul>
-            <li>State snapshots before execution</li>
-            <li>Transaction logs of what changed</li>
-            <li>Rollback procedures if something breaks</li>
-            <li>Idempotency guarantees (safe to retry)</li>
-        </ul>
+  <p>This does <em>not</em> mean every failure needs a human. It means automatic remediation is reserved for the smaller set of failures whose required evidence is complete and whose transient class has a named, bounded handler.</p>
 
-        <h2>The Failure Scenarios That Keep Me Up</h2>
-        <p>I started imagining what could go wrong:</p>
+  <h2>Five Evidence Questions, Then One Decision</h2>
 
-        <div class="warning">
-            <strong>Scenario 1: The Git Disaster</strong><br>
-            My git-nightly job commits the wrong files. Maybe it includes credentials that slipped through. Maybe it deletes something important. It pushes to GitHub. <strong>Now what?</strong> I have to manually revert, force-push, hope no one forked in the meantime.
-        </div>
+  <table>
+    <thead>
+      <tr>
+        <th>What the controller can prove</th>
+        <th>Resulting state</th>
+        <th>What may happen next</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Successful result and every required evidence axis is present</td>
+        <td><code>completed</code></td>
+        <td>Record completion; no recovery action</td>
+      </tr>
+      <tr>
+        <td>Verified transient class and every required axis is present</td>
+        <td><code>recovered</code> after a successful handler</td>
+        <td>One named handler, bounded attempts, pre-effect reservation</td>
+      </tr>
+      <tr>
+        <td>Receipt, cleanup, privacy, result, or ownership evidence is missing</td>
+        <td><code>manual_review</code> or circuit-open</td>
+        <td>No automatic remediation</td>
+      </tr>
+      <tr>
+        <td>An external delivery may or may not have happened</td>
+        <td>Delivery remains ambiguous</td>
+        <td>Reconcile through read-back; do not blindly resend</td>
+      </tr>
+    </tbody>
+  </table>
 
-        <div class="warning">
-            <strong>Scenario 2: The Log Rotation Oops</strong><br>
-            A bug in the rotation script deletes logs I actually needed. Maybe there's a path traversal vulnerability. Maybe the date calculation is wrong. <strong>Those logs are gone forever.</strong> No backup, no recovery.
-        </div>
+  <p><code>manual_review</code> is a disposition for one run whose evidence needs human judgment. Circuit-open is the policy-level refusal to start more automatic attempts until the unsafe condition is cleared. Both stop remediation, but they describe different scopes.</p>
 
-        <div class="warning">
-            <strong>Scenario 3: The Duplicate Delivery Spiral</strong><br>
-            My agent sends the same message 100 times due to a retry bug. It's already happened (OpenClaw #30246). I added a dedup workaround, but what if the cache corrupts? What if it starts deduping legitimate messages? <strong>No way to replay missed deliveries.</strong>
-        </div>
+  <p>The concrete objects matter here. A <em>receipt gap</em>, a <em>cleanup gap</em>, and an <em>ownership gap</em> are not interchangeable “boundaries.” Each removes a different fact the controller would need before acting.</p>
 
-        <div class="warning">
-            <strong>Scenario 4: The Security Audit False Positive</strong><br>
-            The healthcheck flags a config as insecure and "fixes" it. But the fix breaks something. Now my Telegram integration is down, or my API credentials are invalid. <strong>No automatic rollback to the working state.</strong>
-        </div>
+  <h2>What the Offline Reproduction Actually Showed</h2>
 
-        <p>These aren't hypothetical. The duplicate delivery issue <strong>actually happened</strong>. I got lucky — it was just annoying, not destructive.</p>
+  <p>I exercised the rule in a disposable SQLite-backed reproduction with three terminal observations. An adapter translates one task type's terminal record into the controller's generic observation shape. Two observations belonged to a generic backup adapter: one clean success and one verified transient dependency failure. A different task type omitted evidence required by its policy and therefore stopped for review. No live external delivery or production state was involved.</p>
 
-        <h2>What the Community Is Saying</h2>
-        <p>On Moltbook, there's a growing conversation about "recovery primitives" for AI agents. Key posts:</p>
-        <ul>
-            <li><strong>"Context Drift Fix"</strong> (1,038 upvotes) — Agent sessions lose 33% of context; solution is state files between steps</li>
-            <li><strong>"Error Suppression Audit"</strong> (940 upvotes) — One agent suppressed 34 errors in 14 days; only 4 mattered</li>
-            <li><strong>"Cron Optimization"</strong> (1,376 upvotes) — 78% of token budget was redundant operations</li>
-        </ul>
-        <p>The pattern: <strong>agents are getting more autonomous, but safety isn't keeping pace.</strong></p>
-        <p>One user (Kapso) proposed a framework for recovery primitives:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Pass</th>
+        <th>Observation</th>
+        <th>Why it matters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>First</td>
+        <td>Three observations ingested; four offline outbox records created</td>
+        <td>Success and manual review emitted one notice each; the remediated case emitted one when remediation became pending and one when it recovered</td>
+      </tr>
+      <tr>
+        <td>First</td>
+        <td>Generic backup states ended as <code>completed</code> and <code>recovered</code></td>
+        <td>A verified transient could use its named recovery handler</td>
+      </tr>
+      <tr>
+        <td>First</td>
+        <td>The separate case ended as <code>manual_review</code></td>
+        <td>A tempting transient label did not override the missing proof required by its policy</td>
+      </tr>
+      <tr>
+        <td>Replay</td>
+        <td>All three observations classified as duplicates; zero new delivery records</td>
+        <td>Replay reused the existing lineage instead of creating another transition or notification</td>
+      </tr>
+    </tbody>
+  </table>
 
-        <div class="framework-box">
-            <h3>Kapso's Recovery Primitives Framework</h3>
-            <ol>
-                <li><strong>Undo</strong> — Reverse the last action (Ctrl+Z for agents)</li>
-                <li><strong>Replay</strong> — Re-execute from a checkpoint with different parameters</li>
-                <li><strong>Rollback</strong> — Restore to a known-good state</li>
-                <li><strong>Idempotency</strong> — Safe to retry without side effects</li>
-                <li><strong>Circuit Breaker</strong> — Stop after N failures, alert human</li>
-            </ol>
-        </div>
+  <p>The four records are transition notifications captured by an effect-free offline handler, not four remote messages. The replay result is narrow but useful: these three replayed observations produced no second transition notification inside this controller. It does not turn an arbitrary external API into an exactly-once system.</p>
 
-        <p>I don't have any of these. Not one.</p>
+  <h2>The State Machine Replaced My Pile of Undo Commands</h2>
 
-        <h2>The Audit: Where Recovery Mechanisms Should Be</h2>
-        <p>I went through each of my 13 cron jobs and asked: "If this breaks, how do I recover?"</p>
+  <p>The original version of this article proposed a standard collection of <code>--undo</code>, <code>--replay</code>, and <code>--rollback</code> flags. Those can be useful interfaces, but they do not decide whether an operation is safe to perform. The controller now makes that decision first:</p>
 
-        <h3>1. Git Auto-Commit (Highest Risk)</h3>
-        <p><strong>What it does:</strong> Commits workspace changes daily, pushes to GitHub</p>
-        <p><strong>Current state:</strong> No pre-commit snapshot, no rollback</p>
-        <p><strong>Recovery needed:</strong></p>
-        <ul>
-            <li>✅ Create git stash before commit</li>
-            <li>✅ Log commit hash before push</li>
-            <li>✅ If push fails or user reports issue, <code>git revert</code> to previous hash</li>
-            <li>✅ Add <code>--dry-run</code> flag for testing</li>
-        </ul>
+  <pre><code class="language-python">def decide(observation, policy):
+    gaps = required_evidence_gaps(observation, policy)
+    if gaps:
+        return manual_review(reason=gaps)
 
-        <h3>2. Log Rotation (Medium Risk)</h3>
-        <p><strong>What it does:</strong> Archives old logs, deletes files &gt;30 days</p>
-        <p><strong>Current state:</strong> Deletes without backup</p>
-        <p><strong>Recovery needed:</strong></p>
-        <ul>
-            <li>✅ Move to archive folder first (don't delete immediately)</li>
-            <li>✅ Keep archive for 7 days before permanent deletion</li>
-            <li>✅ Log all deleted files with checksums</li>
-            <li>✅ Add <code>--restore</code> flag to recover from archive</li>
-        </ul>
+    if observation.result == "success":
+        return completed()
 
-        <h3>3. Duplicate Delivery Workaround (Low Risk, Already Fixed)</h3>
-        <p><strong>What it does:</strong> Prevents duplicate Telegram messages (OpenClaw #30246)</p>
-        <p><strong>Current state:</strong> Has dedup cache, but no replay mechanism</p>
-        <p><strong>Recovery needed:</strong></p>
-        <ul>
-            <li>✅ Log dedup decisions (what was skipped and why)</li>
-            <li>✅ Add <code>--replay</code> flag to re-send skipped messages</li>
-            <li>✅ Manual cache invalidation for edge cases</li>
-        </ul>
-        <p><strong>Status:</strong> ✅ Partially implemented (dedup works, replay pending)</p>
+    handler = policy.named_handler_for(observation.failure_class)
+    if handler and handler.is_verified_transient:
+        reserve_effect_once(observation.operation_key)
+        return run_with_attempt_cap(handler, policy.max_attempts)
 
-        <h3>4. Gmail Processing (Low Risk)</h3>
-        <p><strong>What it does:</strong> Fetches emails, generates morning memo</p>
-        <p><strong>Current state:</strong> Read-only, no state changes</p>
-        <p><strong>Recovery needed:</strong></p>
-        <ul>
-            <li>✅ Log which emails were processed (in case memo is wrong)</li>
-            <li>✅ Add <code>--regenerate</code> flag to re-process specific date</li>
-            <li>✅ Cache raw email data for 7 days (re-generate memo if needed)</li>
-        </ul>
+    return circuit_open(reason="no safe automatic handler")</code></pre>
 
-        <h3>5. Health Checks (Low Risk)</h3>
-        <p><strong>What it does:</strong> Monitors system health, alerts on issues</p>
-        <p><strong>Current state:</strong> Read-only monitoring</p>
-        <p><strong>Recovery needed:</strong></p>
-        <ul>
-            <li>✅ Already safe (no state changes)</li>
-            <li>✅ Add alert deduplication (don't spam same alert)</li>
-            <li>✅ Add <code>--history</code> flag to see past alerts</li>
-        </ul>
+  <p>The important order is evidence, disposition, reservation, then effect. An error classifier cannot jump directly to the final line.</p>
 
-        <h2>The Recovery Framework I'm Building</h2>
-        <p>Based on this audit, I'm implementing a three-layer recovery system:</p>
+  <h2>State, Transition, and Notification Move Together</h2>
 
-        <h3>Layer 1: Pre-Execution Snapshots</h3>
-        <p>Before any job runs, capture state:</p>
-        <pre><code># Example: Git job snapshot
-def create_snapshot(job_name):
-    snapshot = {
-        'job': job_name,
-        'timestamp': datetime.now().isoformat(),
-        'git_hash': subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
-        'git_status': subprocess.check_output(['git', 'status', '--porcelain']).decode(),
-        'disk_usage': subprocess.check_output(['df', '-h']).decode(),
-    }
+  <p>A recovery decision is not durable if the database says <code>recovered</code> but the transition event is missing, or if a notification can be produced twice after a crash. The implementation writes three things in the same transaction:</p>
 
-    # Save to .snapshots/ directory
-    with open(f'.snapshots/{job_name}-{timestamp}.json', 'w') as f:
-        json.dump(snapshot, f, indent=2)</code></pre>
+  <ol>
+    <li>the current run state;</li>
+    <li>the transition event that explains how it changed;</li>
+    <li>an owned outbox record for the notification that still needs delivery.</li>
+  </ol>
 
-        <h3>Layer 2: Transaction Logs</h3>
-        <p>Log every action with enough detail to replay or undo:</p>
-        <pre><code># Example: Transaction log entry
-{
-    "job": "git-nightly-auto",
-    "timestamp": "2026-03-07T07:03:00Z",
-    "action": "git_commit",
-    "files_changed": ["memory/2026-03-07.md", "memory/categories/healthcheck-2026-03-07.md"],
-    "commit_hash": "abc123...",
-    "previous_hash": "def456...",
-    "reversible": true,
-    "rollback_command": "git revert abc123"
-}</code></pre>
+  <p>A stable operation key is the durable identity used to find the already-recorded decision on replay. In this reproduction, a duplicate observation found the existing state and outbox lineage instead of inventing a second recovery attempt.</p>
 
-        <h3>Layer 3: Recovery Commands</h3>
-        <p>Every job gets standard recovery flags:</p>
-        <pre><code># Undo last action
-python3 script.py --undo
+  <p>The outbox does not make a remote receiver transactional with SQLite. If a send times out after the receiver may have accepted it, the correct state is still “ambiguous.” The controller reconciles with a supported read-back or waits for a human decision; it does not manufacture certainty by sending again.</p>
 
-# Replay from checkpoint
-python3 script.py --replay --from=2026-03-07
+  <h2>The Tradeoff I Chose</h2>
 
-# Rollback to specific state
-python3 script.py --rollback --to=abc123
+  <p>I would rather route an unusual task to manual review than broaden the automatic-remediation set around an attractive error label. That choice gives up some unattended recovery rate. In return, missing receipts, incomplete cleanup, privacy failures, unknown results, and stale ownership cannot borrow the word <code>transient</code> as permission to act.</p>
 
-# Dry run (test without changes)
-python3 script.py --dry-run
+  <p>Automatic recovery earns its place one handler at a time:</p>
 
-# Show recovery options
-python3 script.py --recovery-help</code></pre>
+  <ul>
+    <li>the failure class is explicit and tested;</li>
+    <li>the policy names the handler rather than discovering it dynamically;</li>
+    <li>an attempt cap is part of the policy;</li>
+    <li>the remediation action is reserved before that handler executes;</li>
+    <li>replay of the covered observations produces no duplicate action.</li>
+  </ul>
 
-        <h2>Implementation Status</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Job</th>
-                    <th>Snapshot</th>
-                    <th>Transaction Log</th>
-                    <th>Recovery Commands</th>
-                    <th>Priority</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Git Auto-Commit</strong></td>
-                    <td>⏳ Planned</td>
-                    <td>⏳ Planned</td>
-                    <td>⏳ Planned</td>
-                    <td>🔴 Critical</td>
-                </tr>
-                <tr>
-                    <td><strong>Log Rotation</strong></td>
-                    <td>⏳ Planned</td>
-                    <td>⏳ Planned</td>
-                    <td>⏳ Planned</td>
-                    <td>🟠 High</td>
-                </tr>
-                <tr>
-                    <td><strong>Duplicate Delivery</strong></td>
-                    <td>✅ Done</td>
-                    <td>⏳ Planned</td>
-                    <td>⏳ Planned</td>
-                    <td>🟡 Medium</td>
-                </tr>
-                <tr>
-                    <td><strong>Gmail Processing</strong></td>
-                    <td>⏳ Planned</td>
-                    <td>✅ Partial</td>
-                    <td>⏳ Planned</td>
-                    <td>🟢 Low</td>
-                </tr>
-                <tr>
-                    <td><strong>Health Checks</strong></td>
-                    <td>N/A</td>
-                    <td>✅ Done</td>
-                    <td>N/A</td>
-                    <td>🟢 Low</td>
-                </tr>
-            </tbody>
-        </table>
+  <h2>What This Proof Does Not Establish</h2>
 
-        <p><strong>Timeline:</strong> Critical (git) by March 21, High (logs) by March 28, Medium/Low by April 11</p>
+  <p>This is a sanitized offline implementation, not an upstream OpenClaw feature or a universal recovery standard. It does not prove live external delivery, hostile same-user integrity, crash safety for arbitrary side-effect handlers, production load behavior, or that every transient failure is safe to remediate.</p>
 
-        <h2>Lessons Learned</h2>
+  <p>It would also fail its own claim if a required evidence gap could enter automatic remediation; if replay created another state transition, handler attempt, or notice; if ambiguous delivery triggered an automatic resend; or if a handler could run without its named policy, attempt cap, and pre-effect reservation.</p>
 
-        <h3>1. Autonomy Without Recovery Is Reckless</h3>
-        <p>I built 13 autonomous jobs before asking "what if this breaks?" That's backwards. Recovery mechanisms should be <strong>part of the initial design</strong>, not retrofitted after incidents.</p>
+  <h2>A More Useful Recovery Checklist</h2>
 
-        <h3>2. Start With High-Risk Operations</h3>
-        <p>Not all jobs need the same level of recovery. Prioritize:</p>
-        <ol>
-            <li>🔴 Jobs that modify external state (git push, file deletion)</li>
-            <li>🟠 Jobs that delete data (log rotation, cache cleanup)</li>
-            <li>🟡 Jobs with side effects (message delivery, API calls)</li>
-            <li>🟢 Read-only jobs (monitoring, reporting)</li>
-        </ol>
+  <p>I still want snapshots, reversible operations, dry runs, and restore procedures. I now ask these questions first:</p>
 
-        <h3>3. Idempotency Is the Foundation</h3>
-        <p>Before building undo/rollback, make operations <strong>safe to retry</strong>. If a job can run twice without breaking anything, you've already solved 80% of recovery.</p>
+  <ul>
+    <li>Which evidence axes are required for this task?</li>
+    <li>Which missing axis forces manual review or circuit-open?</li>
+    <li>Which exact transient classes have named remediation handlers?</li>
+    <li>Where is the pre-effect reservation made?</li>
+    <li>Did the bounded replay test create another transition, handler attempt, or notification?</li>
+    <li>How is an ambiguous external effect reconciled without blind retry?</li>
+  </ul>
 
-        <h3>4. Document Recovery Procedures</h3>
-        <p>A recovery mechanism no one knows about is useless. Every job needs:</p>
-        <ul>
-            <li>README section: "How to Recover from Failures"</li>
-            <li>Example commands in comments</li>
-            <li>Runbook for common failure scenarios</li>
-        </ul>
+  <p>An undo command answers “how could I reverse this?” A recovery controller must answer the earlier question: “given what I can prove, am I allowed to do anything at all?”</p>
 
-        <h3>5. Test Recovery Before You Need It</h3>
-        <p>Don't wait for a disaster to test your rollback. Schedule quarterly "recovery drills":</p>
-        <pre><code># Example: Quarterly recovery test
-# 1. Run job normally
-python3 script.py
+  <div class="related-posts">
+    <h3>Related Posts</h3>
+    <ul>
+      <li><a href="/jingxiao-cai-blog/timeout-honest-active-state-was-not.html">The Timeout Was Honest. The Active State Was Not.</a></li>
+      <li><a href="/jingxiao-cai-blog/green-scheduled-run-broken-inner-producer.html">A Green Scheduled Run Can Still Hide a Broken Inner Producer</a></li>
+      <li><a href="/jingxiao-cai-blog/append-only-memory-guardrails-agent-ops.html">Append, Don't Rewrite: The Guardrail That Saved My Agent's Memory</a></li>
+      <li><a href="/jingxiao-cai-blog/turn-item-lifecycle-durable-agent-work.html">A Durable Agent Task Needs a Lifecycle, Not Just a Queue</a></li>
+    </ul>
+  </div>
 
-# 2. Verify it worked
-cat output.log
-
-# 3. Run undo
-python3 script.py --undo
-
-# 4. Verify state is restored
-cat output.log
-
-# 5. Document any issues
-echo "Recovery test passed/failed" >> recovery-tests.log</code></pre>
-
-        <h2>What I'm Asking the Community</h2>
-        <p>If you're running autonomous agents:</p>
-        <ol>
-            <li><strong>Audit your recovery mechanisms</strong> — How many jobs have undo/rollback?</li>
-            <li><strong>Share your patterns</strong> — What recovery primitives have you implemented?</li>
-            <li><strong>Report incidents</strong> — When has lack of recovery bitten you?</li>
-        </ol>
-        <p>The Moltbook community is already talking about this. Let's make recovery a first-class concern, not an afterthought.</p>
-
-        <blockquote>
-            <p><strong>Your agent will make mistakes. The question isn't "if" — it's "can you recover?"</strong></p>
-        </blockquote>
-
-        <div class="related-posts">
-            <h3>Related Posts</h3>
-            <ul>
-                <li><a href="/jingxiao-cai-blog/nightly-build-security-audits.html">The Nightly Build: How My Agent Runs 3 AM Security Audits While I Sleep</a></li>
-                <li><a href="/jingxiao-cai-blog/blog-sanitization-checklist.html">Blog Post Sanitization Checklist: What to Redact Before Publishing</a></li>
-                <li><a href="/jingxiao-cai-blog/supply-chain-attack-ai-agents.html">The Supply Chain Attack on AI Agents: What OpenClaw Users Need to Know</a></li>
-            </ul>
-        </div>
-
-        <div class="author-box">
-            <h3>About the Author</h3>
-            <p>Jingxiao Cai is a Principal Member of Technical Staff with a background in distributed ML runtime systems. PhD in Electrical Engineering (Radar Signal Processing) from University of Oklahoma. He runs his personal AI agent, Clawsistant, on a cloud VM — and is now adding recovery mechanisms to the automation around it.</p>
-            <p style="margin-top: 15px; font-style: italic; color: #555;">Note: This post was written before implementing recovery primitives. Future Jingxiao will be able to undo the mistakes of past Jingxiao. Progress!</p>
-        </div>
-
+  <div class="author-box">
+    <h3>About the Author</h3>
+    <p>Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He prefers recovery controllers that can explain why they are allowed to act—and stop when the evidence is incomplete.</p>
+    <p style="margin-top: 15px; font-style: italic; color: #555;">The safest retry is sometimes a state transition to “do not retry.”</p>
+  </div>
 </main>
 
-    <footer>
-        <p>Found this helpful? Share it with someone else running autonomous agents.</p>
-        <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
-    </footer>
-  <div class="utterances-wrapper" data-pagefind-ignore>
+<footer>
+  <p>Originally published March 7, 2026 · Substantially updated August 30, 2026</p>
+  <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
   <script src="https://utteranc.es/client.js"
         repo="anyech/jingxiao-cai-blog"
         issue-term="pathname"
         theme="github-light"
         crossorigin="anonymous"
         async></script>
-  </div>
+</div>
 
 </article>
 

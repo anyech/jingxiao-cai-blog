@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Jingxiao Cai">
-    <meta name="description" content="Why AI-agent tool launches should fail closed when auth, route readiness, or capability gates are unhealthy instead of drifting into unsafe fallback behavior.">
+    <meta name="description" content="A public worker-RPC case shows why equivalent agent effects need the same pre-effect policy and fresh authority checks at every later mutation boundary.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
@@ -16,21 +16,21 @@
     <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts">
-    <meta property="og:description" content="Why AI-agent tool launches should fail closed when auth, route readiness, or capability gates are unhealthy instead of drifting into unsafe fallback behavior.">
+    <meta property="og:title" content="The Worker Path Skipped the Launch Gate">
+    <meta property="og:description" content="A public worker-RPC case shows why equivalent agent effects need the same pre-effect policy and fresh authority checks at every later mutation boundary.">
     <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html">
     <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
     <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts">
-    <meta name="twitter:description" content="Why AI-agent tool launches should fail closed when auth, route readiness, or capability gates are unhealthy instead of drifting into unsafe fallback behavior.">
+    <meta name="twitter:title" content="The Worker Path Skipped the Launch Gate">
+    <meta name="twitter:description" content="A public worker-RPC case shows why equivalent agent effects need the same pre-effect policy and fresh authority checks at every later mutation boundary.">
     <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
 
     <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts",
-  "description": "Why AI-agent tool launches should fail closed when auth, route readiness, or capability gates are unhealthy instead of drifting into unsafe fallback behavior.",
+  "headline": "The Worker Path Skipped the Launch Gate",
+  "description": "A public worker-RPC case shows why equivalent agent effects need the same pre-effect policy and fresh authority checks at every later mutation boundary.",
   "author": {
     "@type": "Person",
     "name": "Jingxiao Cai",
@@ -42,13 +42,13 @@
     "url": "https://anyech.github.io/jingxiao-cai/"
   },
   "datePublished": "2026-04-29",
-  "dateModified": "2026-06-16",
+  "dateModified": "2026-08-30",
   "url": "https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html",
   "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
   "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html"
 }</script>
 
-    <title>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</title>
+    <title>The Worker Path Skipped the Launch Gate</title>
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -75,292 +75,173 @@
   <span data-pagefind-filter="year">2026</span>
   <span data-pagefind-filter="month">04</span>
   <span data-pagefind-sort="published">2026-04-29</span>
-  <span data-pagefind-sort="updated">2026-06-16</span>
-  <span data-pagefind-sort="title">Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</span>
+  <span data-pagefind-sort="updated">2026-08-30</span>
+  <span data-pagefind-sort="title">The Worker Path Skipped the Launch Gate</span>
   <span data-pagefind-meta="topic">reliability-security</span>
   <span data-pagefind-meta="published">2026-04-29</span>
-  <span data-pagefind-meta="updated">2026-06-16</span>
+  <span data-pagefind-meta="updated">2026-08-30</span>
 </div>
 <header>
-      <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
-      <h1>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</h1>
-      <div class="meta">
-          <strong>April 29, 2026</strong> | By Jingxiao Cai<br>
-          <span class="tags">Tags: ai-agents, security, tooling, reliability, openclaw, auth</span>
-      </div>
-      <div class="disclaimer">
-          This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped turn a private auth-drift debugging thread into a generalized launch-gate pattern, then helped strip out the deployment-specific fingerprints that were not needed for the lesson.
-      </div>
-      <div class="warning">
-          <strong>Short version:</strong> if an agent cannot prove the intended auth path, route readiness, and tool capability before launch, the safe result is <em>blocked</em>—not “try a nearby credential,” not “fall back silently,” and not “start the tool and see what happens.”
-      </div>
-  </header>
-
-  <main>
-      <h2>The Bug Shape: Launch Looked Possible, So the System Tried</h2>
-      <p>The failure that finally made this obvious was not a dramatic outage. It was more annoying than that: a CLI-backed agent lane had more than one plausible way to authenticate.</p>
-
-      <p>One auth path was the intended operator-controlled path. Another auth path was available because a different workflow legitimately needed an API key in the surrounding environment. When the intended path became incomplete, the adapter did what many launch layers do when they are too permissive: it found another credential-shaped thing and tried to proceed.</p>
-
-      <p>That sounds helpful until you realize what just happened. The system did not prove readiness. It changed the meaning of the launch.</p>
-
-      <ul>
-          <li>The run no longer represented the intended account or quota class.</li>
-          <li>Health failures started looking like routing or model problems.</li>
-          <li>Local auth state could be rewritten toward the wrong path.</li>
-          <li>Future launches inherited a messier state than the one they started with.</li>
-      </ul>
-
-      <p>The fix was not “add one more fallback.” The fix was to move the decision earlier and make it sharper: before a tool adapter starts, it must prove the auth and readiness contract it claims to represent.</p>
-
-      <blockquote>
-          <p><strong>Fallback is for capability or capacity degradation after the contract is known. It is not a substitute for proving the contract.</strong></p>
-      </blockquote>
-
-      <h2>Why Agent Launches Need Quality Gates</h2>
-      <p>This is an old software lesson wearing agent clothes. CI/CD quality gates exist because a pipeline should not deploy merely because the next command exists. InfoQ's quality-gate writeup describes a gate as an enforced measure the software must meet before it proceeds to the next step, including environment-readiness checks before deployment.</p>
-
-      <p>Security has the same instinct. OWASP's authorization guidance emphasizes least privilege and safe handling when access-control checks fail; its testing guidance asks whether access is denied by default and whether the application terminates safely when an access-control check fails.</p>
-
-      <p>Agent tooling needs the same discipline because agent launches multiply ambiguity:</p>
-      <ul>
-          <li>the model may be allowed to call several tools</li>
-          <li>the tool may have several credential sources</li>
-          <li>the adapter may have several route aliases</li>
-          <li>the wrapper may have startup fallback and prompt-time fallback</li>
-          <li>the user may only see a final natural-language summary</li>
-      </ul>
-
-      <p>If the launch layer is optimistic, those ambiguities become silent behavior changes. If the launch layer is fail-closed, they become explicit blocked states that an operator can fix.</p>
-
-      <h2>Readiness Is Layered, Not One Boolean</h2>
-      <p>The useful pattern is not a giant “is everything fine?” check. It is a small ordered set of cheap checks that fail at the layer where the problem actually lives.</p>
-
-      <table>
-          <thead>
-              <tr>
-                  <th>Gate</th>
-                  <th>Question</th>
-                  <th>Safe failure</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td><strong>Auth intent</strong></td>
-                  <td>Which credential class is this route supposed to use?</td>
-                  <td>Block if the selected/enforced auth policy is missing or inconsistent.</td>
-              </tr>
-              <tr>
-                  <td><strong>Ambient credential isolation</strong></td>
-                  <td>Could unrelated environment credentials be discovered by this launch?</td>
-                  <td>Strip or scope unrelated credentials before the adapter starts.</td>
-              </tr>
-              <tr>
-                  <td><strong>Credential health</strong></td>
-                  <td>Does the intended credential/cache/account state exist and refresh?</td>
-                  <td>Report auth readiness failure; do not probe deeper as if this were model quality.</td>
-              </tr>
-              <tr>
-                  <td><strong>Route health</strong></td>
-                  <td>Can the intended lane answer a tiny, non-side-effect probe?</td>
-                  <td>Mark the lane unhealthy or degraded before launching real work.</td>
-              </tr>
-              <tr>
-                  <td><strong>Capability contract</strong></td>
-                  <td>Can this route preserve the input class and produce the requested artifact?</td>
-                  <td>Block or ask for an authorized alternate route; do not improvise.</td>
-              </tr>
-              <tr>
-                  <td><strong>Launch ledger</strong></td>
-                  <td>Was the launch accepted, degraded, blocked, or failed?</td>
-                  <td>Make the state visible so the final answer cannot pretend success.</td>
-              </tr>
-          </tbody>
-      </table>
-
-      <div class="note">
-          <strong>Conceptual example:</strong> this is the launch-gate shape I trust. It is not a dump of my current live configuration, helper filenames, or provider routing table.
-      </div>
-
-      <h2>The Pseudocode Is Boring on Purpose</h2>
-      <p>The best version of this is not clever. It is deliberately dull:</p>
-
-      <pre><code class="language-python">def launch_agent_tool(route, request):
-  checks = [
-      check_auth_intent(route),
-      check_ambient_credential_scope(route),
-      check_credential_health(route),
-      check_route_health(route),
-      check_capability_contract(route, request),
-  ]
-
-  failed = [check for check in checks if not check.ok]
-  if failed:
-      return BlockedLaunch(
-          route=route.name,
-          layer=failed[0].layer,
-          reason=failed[0].public_reason,
-          side_effects_started=False,
-      )
-
-  return start_tool_adapter(route, request)</code></pre>
-
-      <p>The important part is not the syntax. It is the ordering:</p>
-      <ol>
-          <li>auth before live lane probing</li>
-          <li>credential scope before tool startup</li>
-          <li>cheap readiness before expensive work</li>
-          <li>capability proof before artifact generation</li>
-          <li>visible blocked/degraded state before final synthesis</li>
-      </ol>
-
-      <p>That order prevents a common debugging lie: treating an infrastructure/auth failure as an agent reasoning failure. LangChain's recent agent-evaluation checklist makes a similar point in an evaluation context: rule out infrastructure and data-pipeline issues before blaming the agent. Launch gates are the operational version of that advice.</p>
-
-      <h2>Auth Fallback Is Different From Capacity Fallback</h2>
-      <p>This distinction matters enough to say plainly:</p>
-
-      <table>
-          <thead>
-              <tr>
-                  <th>Failure type</th>
-                  <th>What it means</th>
-                  <th>Preferred behavior</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td><strong>Auth mismatch</strong></td>
-                  <td>The run would use the wrong identity, account, tenant, or credential class.</td>
-                  <td><strong>Fail closed.</strong> Surface the auth problem before launch.</td>
-              </tr>
-              <tr>
-                  <td><strong>Credential missing/expired</strong></td>
-                  <td>The intended route cannot prove it is allowed to act.</td>
-                  <td><strong>Fail closed.</strong> Repair credentials before doing work.</td>
-              </tr>
-              <tr>
-                  <td><strong>Route unhealthy</strong></td>
-                  <td>The intended lane exists but cannot answer a cheap probe right now.</td>
-                  <td>Mark degraded; use an authorized alternate only if policy allows it.</td>
-              </tr>
-              <tr>
-                  <td><strong>Capacity exhausted</strong></td>
-                  <td>The route is real but temporarily unavailable or quota-limited.</td>
-                  <td>Fallback may be valid if the alternate preserves the contract and is labeled honestly.</td>
-              </tr>
-              <tr>
-                  <td><strong>Capability missing</strong></td>
-                  <td>The route cannot preserve required inputs or produce the required artifact.</td>
-                  <td>Block or require explicit degradation approval.</td>
-              </tr>
-          </tbody>
-      </table>
-
-      <p>Capacity fallback can be a reliability feature. Auth fallback is often a policy violation wearing a reliability costume.</p>
-
-      <h2>Do Not Let Startup Success Masquerade as Tool Readiness</h2>
-      <p>A surprisingly sticky bug class is “the wrapper started, therefore the tool is ready.” That is not true.</p>
-
-      <p>Startup can succeed while the real route is wrong. A health endpoint can answer while the required auth account is stale. A CLI can print a banner while the first real request will fall into a different credential path. A tool can accept a prompt while being unable to preserve the input artifact the workflow actually needs.</p>
-
-      <p>So I now separate the claims:</p>
-      <ul>
-          <li><strong>Process readiness:</strong> can the adapter start?</li>
-          <li><strong>Auth readiness:</strong> is it using the intended credential class?</li>
-          <li><strong>Route readiness:</strong> can the intended lane answer a cheap probe?</li>
-          <li><strong>Capability readiness:</strong> can it do this specific job without silent degradation?</li>
-          <li><strong>Delivery readiness:</strong> will the result return to the right surface with the blocked/degraded state intact?</li>
-      </ul>
-
-      <p>Only the combination means “ready to launch.” Anything less should stay a bounded diagnostic state.</p>
-
-      <div class="note">
-          <strong>Update, June 16, 2026:</strong> I now treat worker dispatch as another launch-gate layer, not a separate automation trick. A router may classify a request and a runner may prepare an exact-scope dispatch contract, but the parent workflow should still own launch authority, artifact verification, and user-visible closeout. I expanded that pattern in <a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a>.
-      </div>
-
-      <h2>Where This Fits With OAuth Automation</h2>
-      <p>This launch-gate pattern is the broader version of the fail-closed OAuth readiness gate I added to my <a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html#oauth-readiness-gate">VPS OAuth guide</a>.</p>
-
-      <p>The OAuth gate asks:</p>
-      <ul>
-          <li>Do credentials exist?</li>
-          <li>Do scopes match?</li>
-          <li>Can refresh work?</li>
-          <li>Can one cheap API probe succeed before the job sends a report?</li>
-      </ul>
-
-      <p>An agent launch gate asks the same kind of question one layer higher:</p>
-      <ul>
-          <li>Is this the intended auth policy?</li>
-          <li>Are unrelated ambient credentials isolated?</li>
-          <li>Is route health being checked after auth, not before?</li>
-          <li>Is fallback authorized for this failure class?</li>
-          <li>Will the final user-visible answer preserve “blocked” or “degraded” honestly?</li>
-      </ul>
-
-      <p>That is the bridge between “my API script should not send an empty report when OAuth is broken” and “my agent should not launch a tool through the wrong identity just because something credential-shaped was nearby.”</p>
-
-      <h2>The Checklist I Use Now</h2>
-      <p>Before I let an agent launch a non-trivial tool route, I want crisp answers to these questions:</p>
-
-      <ul>
-          <li><strong>Identity:</strong> what identity or credential class is this launch supposed to use?</li>
-          <li><strong>Enforcement:</strong> is that auth choice enforced, not merely preferred?</li>
-          <li><strong>Environment:</strong> can unrelated credentials leak into this process?</li>
-          <li><strong>Freshness:</strong> can the credential refresh or prove current health?</li>
-          <li><strong>Probe:</strong> is there a tiny readiness check that does not start the real job?</li>
-          <li><strong>Failure taxonomy:</strong> does the wrapper distinguish auth, route health, capacity, timeout, and capability failures?</li>
-          <li><strong>Fallback policy:</strong> which failure classes may use an alternate route, and which must block?</li>
-          <li><strong>Side effects:</strong> has the gate completed before file writes, external posts, notifications, or irreversible work?</li>
-          <li><strong>Operator visibility:</strong> will the final report say blocked/degraded instead of converting the failure into vague agent prose?</li>
-      </ul>
-
-      <p>If those answers are not available, the launch path is not ready. It may be convenient. It may even work most days. But it is not a trustworthy boundary.</p>
-
-      <h2>The Bigger Lesson</h2>
-      <p>Agent reliability work often starts with model behavior because the model is the visible actor. But a lot of real failures live one layer earlier: credential discovery, route selection, adapter startup, environment inheritance, readiness probes, and delivery contracts.</p>
-
-      <p>Those layers are less glamorous than prompts. They are also where boring safety pays off.</p>
-
-      <blockquote>
-          <p><strong>A launch path that cannot prove its preconditions should not be allowed to start. It should be allowed to explain why it did not start.</strong></p>
-      </blockquote>
-
-      <p>That is the fail-closed posture I trust now: auth intent first, ambient credentials scoped tightly, cheap readiness probes before real work, capability gates before artifact generation, and visible blocked/degraded states all the way back to the user.</p>
-
-      <div class="note">
-          <strong>Sanitization note:</strong> this post intentionally keeps the reusable launch-gate pattern while generalizing private paths, exact helper/config filenames, live provider/model routes, operational identifiers, exact schedules, and deployment topology details.
-      </div>
-
-      <div class="related-posts">
-          <h3>Related Posts</h3>
-          <ul>
-              <li><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide: Google APIs Without a Browser</a></li>
-              <li><a href="/jingxiao-cai-blog/gemini-capacity-exhaustion-fallback-lanes.html">Handling Gemini Capacity Exhaustion: Fallback Lanes for Reliable Agent Workflows</a></li>
-              <li><a href="/jingxiao-cai-blog/ai-cron-jobs-exact-exec-drivers.html">Why AI Cron Jobs Need Exact-Exec Drivers Instead of Freeform Agent Prompts</a></li>
-              <li><a href="/jingxiao-cai-blog/fail-closed-stage-environments-ai-agents-vps.html">Building Fail-Closed Stage Environments for AI Agents on a Small VPS</a></li>
-          </ul>
-      </div>
-
-      <div class="author-box">
-          <h3>About the Author</h3>
-          <p>Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes launch paths that can prove their preconditions, fail safely, and tell the operator exactly which layer refused to proceed.</p>
-          <p style="margin-top: 15px; font-style: italic; color: #555;">If the wrong credential can make progress, the launch gate is not strict enough.</p>
-      </div>
-  </main>
-
-  <footer>
-      <p>Published on April 29, 2026 • Part of my ongoing OpenClaw operations and AI-agent reliability series</p>
-      <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
-  </footer>
-  <div class="utterances-wrapper" data-pagefind-ignore>
-<script src="https://utteranc.es/client.js"
-      repo="anyech/jingxiao-cai-blog"
-      issue-term="pathname"
-      theme="github-light"
-      crossorigin="anonymous"
-      async></script>
+  <a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+  <h1>The Worker Path Skipped the Launch Gate</h1>
+  <div class="meta">
+    <strong>April 29, 2026</strong> · Updated August 30, 2026 | By Jingxiao Cai<br>
+    <span class="tags">Tags: ai-agents, security, tooling, reliability, openclaw, auth</span>
   </div>
+  <div class="disclaimer">
+    This post was co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent. It helped connect a general launch-gate rule to a public alternate-worker-path reproduction without importing private runtime fingerprints.
+  </div>
+  <div class="note">
+    <strong>What changed:</strong> the original article described auth and readiness gates in general. Public <a href="https://github.com/openclaw/openclaw/issues/131661">issue #131661</a> supplied a sharper case: two paths to the same session-tool effect did not consult the same policy. The companion <a href="https://github.com/openclaw/openclaw/pull/131669">PR #131669</a> is open and unmerged as of August 30, 2026.
+  </div>
+</header>
+
+<main>
+  <h2>One Effect, Two Request Paths</h2>
+
+  <p>The configured test policy was straightforward: block <code>sessions_spawn</code> before it creates a child session. The ordinary agent-tool path runs inside the Gateway, consults the Gateway's <code>before_tool_call</code> policy, and only then reaches the core session tool.</p>
+
+  <p>A cloud worker uses a different transport. It sends a session-tool request back to the Gateway over worker RPC. The worker-session executor still reaches the same core <code>sessions_spawn</code> or <code>sessions_send</code> implementation—but the public issue showed that this alternate path called the raw executor without first consulting the policy.</p>
+
+  <ol>
+    <li><strong>Ordinary path:</strong> request → <code>before_tool_call</code> → core tool → child or message effect.</li>
+    <li><strong>Worker path before the proposed fix:</strong> request → worker RPC executor → raw core tool → child or message effect.</li>
+  </ol>
+
+  <p>The same requested effect therefore had different admission behavior depending on how it arrived. The policy did not disagree with itself on the worker path; it never received the worker call.</p>
+
+  <blockquote>
+    <p><strong>An alternate transport is not an alternate policy contract.</strong></p>
+  </blockquote>
+
+  <h2>The Decisive Proof Was an Absent Effect</h2>
+
+  <p>The useful test was not “did the hook log something?” It was whether a blocked call left the downstream effect absent.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Test</th>
+        <th>Observed result</th>
+        <th>Evidence class</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Block worker-hosted <code>sessions_spawn</code></td>
+        <td>No child session appeared</td>
+        <td>Isolated Gateway/worker protocol boundary</td>
+      </tr>
+      <tr>
+        <td>Block worker-hosted <code>sessions_send</code></td>
+        <td>The target transcript length and marker stayed unchanged</td>
+        <td>Isolated Gateway/worker protocol boundary</td>
+      </tr>
+      <tr>
+        <td>Send concurrent retries with one operation identity</td>
+        <td>One terminal policy result was stored and replayed; no message effect appeared</td>
+        <td>Focused executor-boundary regression</td>
+      </tr>
+      <tr>
+        <td>Revoke delegated authority after policy admission</td>
+        <td>Send dispatch, child commit, provider allocation, and deferred enrollment stopped at their named fences</td>
+        <td>Focused authority-fence regressions</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The PR body binds its published isolated run to <a href="https://github.com/openclaw/openclaw/commit/251b15669a8e0645e979b93fb0f7bdb221786b2c">the exact tested snapshot</a>. The live PR head has advanced since that run. This article attributes the proof to the linked snapshot; it does not claim that every later revision has independently repeated the same boundary test.</p>
+
+  <h2>Decide Once, Then Fence Each Effect</h2>
+
+  <p>The proposed repair reuses the existing <code>before_tool_call</code> engine rather than inventing a worker-only policy system. The lifecycle is intentionally small:</p>
+
+  <ol>
+    <li><strong>Elect one durable operation owner.</strong> Concurrent retries first converge on one operation identity.</li>
+    <li><strong>Run the existing policy.</strong> The owner calls <code>before_tool_call</code> before target resolution can become child creation or message delivery.</li>
+    <li><strong>Store the terminal decision.</strong> A blocked or allowed result belongs to the operation. Replay reuses it instead of rerunning policy or creating another effect.</li>
+    <li><strong>Recheck authority at the effect.</strong> If delegated authority closes after admission, the send dispatch, child commit, provider allocation, or deferred enrollment must stop before its mutation begins.</li>
+  </ol>
+
+  <p>“Durable owner” does not mean the worker owns the right to act forever. It means one operation owns the decision record. The authority fence answers a different question: is that operation still authorized at the moment this particular effect would start?</p>
+
+  <h2>Why the Early Policy Check Is Not Enough</h2>
+
+  <p>A policy can allow a request at time A while the delegated run is still active. The operation may then wait for placement, provisioning, or dispatch. If the initiating authority closes during that wait, an unfenced implementation can begin the effect at time B using a decision whose authority has expired.</p>
+
+  <p>That is why the design uses both:</p>
+
+  <ul>
+    <li><strong>policy parity</strong> before either request path reaches the effect; and</li>
+    <li><strong>fresh authority</strong> immediately before each later mutation boundary.</li>
+  </ul>
+
+  <p>A single early check would close the original bypass but leave a time-of-check/time-of-use window. A separate worker-only hook would close the bypass by creating two policy languages that could drift again. I prefer one policy engine plus cheap, local effect fences.</p>
+
+  <h2>This Is a Launch-Gate Case, Not an Auth-Fallback Proof</h2>
+
+  <p>The original version of this article came from a different failure: a tool adapter could discover an unintended ambient credential when the intended auth path was incomplete. That incident and the worker bypass share one design invariant—preconditions must be proved before side effects—but they are not the same mechanism.</p>
+
+  <ul>
+    <li><strong>Auth-path failure:</strong> the launch may use the wrong identity or credential class.</li>
+    <li><strong>Worker-policy bypass:</strong> the launch reaches the right core tool without the policy decision that the ordinary path would receive.</li>
+  </ul>
+
+  <p>PR #131669 addresses the second case. It does not prove the broader auth-intent, credential-isolation, route-health, capability, or delivery-readiness framework. Those remain separate launch-gate checks.</p>
+
+  <p>The distinction also explains why silent fallback is dangerous. Capacity fallback may be valid when an authorized alternate preserves the contract. An auth mismatch or skipped policy is not capacity degradation; it changes who may act or which decision governs the effect.</p>
+
+  <h2>What the Published Proof Does Not Show</h2>
+
+  <p>PR #131669 is proposed, unreleased behavior. Its published proof used disposable state, an isolated Gateway/worker protocol boundary, and a loopback mock provider. It did not use a production Gateway, external channel delivery, a real model provider, a remote VM, or a managed worker fleet.</p>
+
+  <p>The article's later-fence claim is intentionally limited to the focused regressions named above. Worker operations with separate authority/effect contracts do not automatically inherit this exact repair. Their policy owner, durable operation identity, and actual mutation boundary must be identified independently.</p>
+
+  <p>The claim would fail if the base worker path already ran the same policy before effects; if a blocked spawn still created a child; if a blocked send changed the target transcript; if concurrent retries reran policy or duplicated an effect; or if authority revocation could still begin one of the fenced mutations.</p>
+
+  <h2>How I Audit an Alternate Execution Path Now</h2>
+
+  <ul>
+    <li>List every transport that can reach the same effect.</li>
+    <li>Locate the shared admission policy and prove that each path calls it.</li>
+    <li>Place the policy after durable owner election but before the first effect.</li>
+    <li>Persist one terminal decision for concurrent and replayed attempts.</li>
+    <li>Recheck delegated authority immediately before each later mutation.</li>
+    <li>Test blocked behavior by proving the child, message, allocation, or enrollment effect stayed absent.</li>
+    <li>Bind mutable proof to the exact tested snapshot.</li>
+  </ul>
+
+  <p>The authorial decision I want to preserve is simple: do not solve path asymmetry with another path-specific policy. Make equivalent effects converge on one decision owner, then make every delayed effect prove that authority is still alive.</p>
+
+  <div class="related-posts">
+    <h3>Related Posts</h3>
+    <ul>
+      <li><a href="/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html">Agent Dispatch Should Be Parent-Owned</a></li>
+      <li><a href="/jingxiao-cai-blog/prepared-is-not-authorized-agent-activation-packet.html">Prepared Is Not Authorized</a></li>
+      <li><a href="/jingxiao-cai-blog/approval-is-not-execution-deferred-side-effects.html">Approval Is Not Execution</a></li>
+      <li><a href="/jingxiao-cai-blog/vps-oauth-survival-guide.html">VPS OAuth Survival Guide</a></li>
+    </ul>
+  </div>
+
+  <div class="author-box">
+    <h3>About the Author</h3>
+    <p>Jingxiao Cai works on distributed ML runtime systems and self-hosted AI-agent operations. He likes alternate execution paths that converge on the same policy and recheck authority before delayed effects.</p>
+    <p style="margin-top: 15px; font-style: italic; color: #555;">If two paths can create the same effect, they should not disagree about who gets to say no.</p>
+  </div>
+</main>
+
+<footer>
+  <p>Originally published April 29, 2026 · Substantially updated August 30, 2026</p>
+  <p style="margin-top: 15px;"><a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a></p>
+</footer>
+<div class="utterances-wrapper" data-pagefind-ignore>
+  <script src="https://utteranc.es/client.js"
+        repo="anyech/jingxiao-cai-blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async></script>
+</div>
 
 </article>
 

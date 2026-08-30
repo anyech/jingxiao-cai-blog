@@ -6,7 +6,23 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Thu, 27 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 30 Aug 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Recovery Is a State Decision, Not an Undo Button</title>
+      <description>A failed command is not yet a retry decision. Recovery becomes safer when independent evidence axes choose the state before any remediation begins.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</guid>
+      <pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>The Worker Path Skipped the Launch Gate</title>
+      <description>The ordinary agent path consulted its launch policy. An alternate worker path reached the raw executor. The repair needs policy parity and later authority fences.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Bound Before You Serialize: When a Correct Child Result Becomes No Result</title>
@@ -342,14 +358,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/parent-owned-agent-dispatch-router-contracts.html</guid>
       <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Fail-Closing Agent Launches: Why Auth and Readiness Gates Should Block Before Tooling Starts</title>
-      <description>Why AI-agent tool launches should prove auth intent, isolate ambient credentials, check route readiness, and block before side effects when the launch contract is unhealthy.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/fail-closing-agent-launches-auth-readiness-gates.html</guid>
-      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -734,14 +742,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/hidden-input-limit-llm-apis.html</guid>
       <pubDate>Tue, 24 Feb 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>The Recovery Problem: Why Your AI Agent Needs an Undo Button</title>
-      <description>I run autonomous cron jobs with no built-in undo capability. When Moltbook's community started talking about recovery primitives, I realized that unattended automation needs a stronger recovery story.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html</guid>
-      <pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
