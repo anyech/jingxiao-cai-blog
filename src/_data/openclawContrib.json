@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 14,
+  "mergedPrCount": 15,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 128078,
-    "label": "sqlite-vec KNN isolation and reindex safety",
-    "url": "https://github.com/openclaw/openclaw/pull/128078",
-    "mergedAt": "2026-08-27T03:29:03Z"
+    "number": 131669,
+    "label": "cloud-worker session-tool policy enforcement",
+    "url": "https://github.com/openclaw/openclaw/pull/131669",
+    "mergedAt": "2026-08-31T05:14:50Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-08-27",
+  "verifiedDate": "2026-09-07",
   "source": "personal-site OpenClaw contribution updater"
 }
