@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Jingxiao Cai">
+    <meta name="description" content="A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="ldyJIS_0pM696yDpK1lNXgneHDhpHVJyXI4lBWb6ZP8">
+    <link rel="canonical" href="https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html">
+    <link rel="alternate" type="application/rss+xml" title="Jingxiao Cai&#39;s Blog RSS Feed" href="https://anyech.github.io/jingxiao-cai-blog/feed.xml">
+    <link rel="alternate" type="text/plain" title="LLMs text overview" href="https://anyech.github.io/jingxiao-cai-blog/llms.txt">
+    <link rel="alternate" type="text/markdown" title="Markdown mirror" href="https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html.md">
+    <link rel="sitemap" type="application/xml" href="https://anyech.github.io/jingxiao-cai-blog/sitemap.xml">
+    <link rel="icon" href="/jingxiao-cai-blog/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/jingxiao-cai-blog/assets/site.css">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="The Snapshot Moved. The SQLite Integrity Scan Did Not.">
+    <meta property="og:description" content="A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.">
+    <meta property="og:url" content="https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html">
+    <meta property="og:site_name" content="Jingxiao Cai&#39;s Blog">
+    <meta property="og:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Snapshot Moved. The SQLite Integrity Scan Did Not.">
+    <meta name="twitter:description" content="A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.">
+    <meta name="twitter:image" content="https://anyech.github.io/jingxiao-cai-blog/og-image.png">
+
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Snapshot Moved. The SQLite Integrity Scan Did Not.",
+  "description": "A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.",
+  "author": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jingxiao Cai",
+    "url": "https://anyech.github.io/jingxiao-cai/"
+  },
+  "datePublished": "2026-09-15",
+  "dateModified": "2026-09-15",
+  "url": "https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html",
+  "image": "https://anyech.github.io/jingxiao-cai-blog/og-image.png",
+  "mainEntityOfPage": "https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html"
+}</script>
+
+    <title>The Snapshot Moved. The SQLite Integrity Scan Did Not.</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header" data-pagefind-ignore>
+      <div class="site-header__inner">
+        <a class="brand" href="/jingxiao-cai-blog/" aria-label="Jingxiao Cai&#39;s Blog home">
+          <span class="brand__mark">JC</span>
+          <span class="brand__text">Jingxiao Cai</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="/jingxiao-cai-blog/">Home</a>
+          <a href="/jingxiao-cai-blog/search.html">Explore</a>
+          <a href="/jingxiao-cai-blog/topics.html">Topics</a>
+          <a href="https://anyech.github.io/jingxiao-cai/">About</a>
+          <a href="/jingxiao-cai-blog/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="content" class="site-main">
+      <article data-pagefind-body>
+<div class="pagefind-metadata" aria-hidden="true">
+  <span data-pagefind-filter="topic">agent-architecture-operations</span>
+  <span data-pagefind-filter="tag">sqlite</span><span data-pagefind-filter="tag">debugging</span><span data-pagefind-filter="tag">performance</span><span data-pagefind-filter="tag">agent-ops</span>
+  <span data-pagefind-filter="year">2026</span>
+  <span data-pagefind-filter="month">09</span>
+  <span data-pagefind-sort="published">2026-09-15</span>
+  <span data-pagefind-sort="updated">2026-09-15</span>
+  <span data-pagefind-sort="title">The Snapshot Moved. The SQLite Integrity Scan Did Not.</span>
+  <span data-pagefind-meta="topic">agent-architecture-operations</span>
+  <span data-pagefind-meta="published">2026-09-15</span>
+  <span data-pagefind-meta="updated"></span>
+</div>
+<header>
+<a href="/jingxiao-cai-blog/" class="back-link">← Back to Blog</a>
+<h1>The Snapshot Moved. The SQLite Integrity Scan Did Not.</h1>
+<div class="meta"><strong>September 15, 2026</strong> | By Jingxiao Cai</div>
+<div class="disclaimer">Co-created with <strong>Clawsistant</strong>, my OpenClaw AI agent, using a bounded synthetic experiment and a sanitized numerical extract.</div>
+</header>
+<main>
+<p>I moved a startup snapshot cache to memory-backed storage. Startup stayed slow, and the integrity check was still a suspect. The misleading assumption was that moving “the database cache” moved every database read.</p>
+<p>It did not. In the inspected startup path, snapshot creation and physical database admission were separate operations. The integrity worker opened the <em>source database</em>, not the snapshot cache.</p>
+<blockquote><p><strong>Before optimizing a slow read, identify the file the slow reader actually opens.</strong></p></blockquote>
+<h2>A small experiment separated two costs</h2>
+<p>The following measurements came from synthetic indexed databases, not private database contents. The tested OpenClaw 2026.9.3 admission path ran on Node 24.20.0 with SQLite 3.53.4. Source-page residency was measured before each run: zero for cold-source conditions and complete for warm-source conditions. This is not a cold-boot experiment: installed-code pages were not deliberately evicted. Only experiment-owned files were evicted from the page cache; no system-wide cache clearing was used.</p>
+<table><thead><tr><th>Allocated fixture</th><th>Cold full admission</th><th>Warm full admission</th></tr></thead><tbody>
+<tr><td>16.21 MiB</td><td>2.550–2.579 s</td><td>0.259–0.265 s</td></tr>
+<tr><td>32.38 MiB</td><td>4.674–4.775 s</td><td>0.271–0.275 s</td></tr>
+</tbody></table>
+<p>Each range contains only two repetitions. <a href="/jingxiao-cai-blog/assets/data/sqlite-integrity-synthetic-samples.json">Download the eight sanitized samples</a>, including the fixture size, initial residency and measured admission time. They are an extract of recorded observations, not a portable performance guarantee or a complete reproduction package.</p>
+<p>Disposable instrumented worker copies placed timestamps around the full integrity SQL. On the smaller fixture, that phase took roughly 2.34 seconds cold and 14 milliseconds warm; on the larger one, roughly 4.5 seconds cold and 28 milliseconds warm. A minimal native child running the same full checks retained the cold cost. Removing the larger import path did not make the source reads free.</p>
+<p>The full experiment comprised 35 serial child runs, including five expected rejections. Corruption, foreign-key failure, stale input identity, cancellation and post-result file replacement were exercised. All seven recorded control groups passed, including source preservation and child closure. Those controls matter: a faster path that omits a check is not an equivalent optimization.</p>
+<h2>Two paths, one misleading cache label</h2>
+<pre><code>source database → stable snapshot copy → snapshot cache
+source database → read-only integrity worker → admission decision</code></pre>
+<p>Changing the destination on the first line does not change the open pathname on the second. The integrity worker still performs a full <code>integrity_check</code> and <code>foreign_key_check</code>; the parent also waits for child closure and revalidates file identity.</p>
+<p>This explains a trap in startup profiling. A parent event loop can look idle while its child waits on file I/O. A warm cached handle can also avoid a physical open that a fresh process must perform. Neither observation tells you that a fresh database admission no longer scans the source.</p>
+<p>SQLite's <a href="https://www.sqlite.org/pragma.html#pragma_integrity_check">integrity-check documentation</a> also distinguishes integrity checking from foreign-key checking. Treating one successful check as proof that both ran would change the correctness contract.</p>
+<h2>The decision I changed</h2>
+<p>I stopped treating snapshot placement as the explanation for the remaining startup time. The next useful measurement was a phase trace tying the slow worker to its opened file, CPU time, physical reads and final admission—not another cache-placement change.</p>
+<p>That choice trades a quick-looking optimization for a more specific diagnosis. An import reduction might remove a small fixed cost. It cannot, by itself, eliminate a multi-second read of cold source pages. Conversely, a source-page effect in a small test is not evidence that adding a warmer is the right operational remedy.</p>
+<p>A compact diagnostic sequence is enough: identify each open pathname; time copy, integrity and settlement separately; compare wall time with child CPU and reads; then repeat on a disposable fixture while keeping the checks unchanged. Keep the production decision separate from the experimental result.</p>
+<h2>What this does not establish</h2>
+<p>The experiment shows source-page sensitivity in these small fixtures. It does <strong>not</strong> establish the cause of a particular production startup, predict large-database behavior, or validate a faster replacement admission path. Instrumentation perturbs execution, the schema is synthetic, and two repetitions do not establish tail latency. The result is a reason to follow the actual read path, not to weaken integrity checks.</p>
+<div class="related-posts"><h3>Related Posts</h3><ul>
+<li><a href="/jingxiao-cai-blog/before-raising-reindex-concurrency-prove-memory-lane.html">Before Raising Reindex Concurrency, Prove the Memory Lane</a></li>
+<li><a href="/jingxiao-cai-blog/bound-before-serialize-oversized-child-result.html">Bound Before You Serialize</a></li>
+</ul></div>
+<div class="author-box"><h3>About the Author</h3><p>Jingxiao Cai works on distributed ML runtime systems and backend execution reliability, and writes about self-hosted agents and technical debugging.</p></div>
+</main>
+<footer><h2>Comments</h2><p>Have you optimized one file path while the expensive reader was opening another?</p></footer>
+<div class="utterances-wrapper" data-pagefind-ignore><script src="https://utteranc.es/client.js" repo="anyech/jingxiao-cai-blog" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script></div>
+
+</article>
+
+    </main>
+  </body>
+</html>

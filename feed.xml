@@ -6,7 +6,39 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Sun, 30 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>The Snapshot Moved. The SQLite Integrity Scan Did Not.</title>
+      <description>A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html</guid>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>Archive Before You Retire: A Transaction Model for Git Worktree Backlogs</title>
+      <description>Retire stale Git worktrees with recovery anchors, checkout-before-ref ordering, dirty-state digests, compare-and-swap checks, and protected-tip closeout mismatch checks.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</guid>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports</title>
+      <description>A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</guid>
+      <pubDate>Fri, 08 May 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
+      <description>Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</guid>
+      <pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>Recovery Is a State Decision, Not an Undo Button</title>
@@ -94,14 +126,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/consult-panel-orchestration-openclaw.html</guid>
       <pubDate>Mon, 22 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>Archive Before You Retire: A Transaction Model for Git Worktree Backlogs</title>
-      <description>Retire stale Git worktrees with recovery anchors, checkout-before-ref ordering, dirty-state digests, compare-and-swap checks, and protected-tip closeout mismatch checks.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html</guid>
-      <pubDate>Sat, 15 Aug 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>
@@ -593,14 +617,6 @@
     </item>
 
     <item>
-      <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
-      <description>A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</guid>
-      <pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
       <title>When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson</title>
       <description>A technically true row-count alert became an alert-tuning lesson: record weak proxy crossings, but page only when they combine with byte pressure, latency pressure, cleanup pressure, or user-visible impact.</description>
       <link>https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html</link>
@@ -622,14 +638,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/when-report-exists-but-delivery-failed-agent-ops.html</guid>
       <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports</title>
-      <description>A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</guid>
-      <pubDate>Fri, 08 May 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

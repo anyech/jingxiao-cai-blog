@@ -1,0 +1,74 @@
+{
+  "description": "Sanitized synthetic observations; two repetitions per condition, not production performance.",
+  "runtime": {
+    "node": "24.20.0",
+    "sqlite": "3.53.4",
+    "openclaw": "2026.9.3"
+  },
+  "samples": [
+    {
+      "fixture": "indexed-16MiB",
+      "bytes": 16998400,
+      "state": "cold",
+      "repetition": 1,
+      "source_resident_percent": 0,
+      "admission_ms": 2549.655
+    },
+    {
+      "fixture": "indexed-16MiB",
+      "bytes": 16998400,
+      "state": "warm",
+      "repetition": 1,
+      "source_resident_percent": 100,
+      "admission_ms": 265.227
+    },
+    {
+      "fixture": "indexed-32MiB",
+      "bytes": 33951744,
+      "state": "cold",
+      "repetition": 1,
+      "source_resident_percent": 0,
+      "admission_ms": 4774.832
+    },
+    {
+      "fixture": "indexed-32MiB",
+      "bytes": 33951744,
+      "state": "warm",
+      "repetition": 1,
+      "source_resident_percent": 100,
+      "admission_ms": 275.493
+    },
+    {
+      "fixture": "indexed-16MiB",
+      "bytes": 16998400,
+      "state": "cold",
+      "repetition": 2,
+      "source_resident_percent": 0,
+      "admission_ms": 2579.342
+    },
+    {
+      "fixture": "indexed-16MiB",
+      "bytes": 16998400,
+      "state": "warm",
+      "repetition": 2,
+      "source_resident_percent": 100,
+      "admission_ms": 258.88
+    },
+    {
+      "fixture": "indexed-32MiB",
+      "bytes": 33951744,
+      "state": "cold",
+      "repetition": 2,
+      "source_resident_percent": 0,
+      "admission_ms": 4673.745
+    },
+    {
+      "fixture": "indexed-32MiB",
+      "bytes": 33951744,
+      "state": "warm",
+      "repetition": 2,
+      "source_resident_percent": 100,
+      "admission_ms": 270.686
+    }
+  ]
+}

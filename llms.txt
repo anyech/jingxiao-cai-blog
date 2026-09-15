@@ -17,6 +17,26 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [The Snapshot Moved. The SQLite Integrity Scan Did Not.](https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html.md
+  - Date: 2026-09-15
+  - Summary: A cache-placement change can leave a separate source-database scan untouched. Small cold/warm controls show why startup diagnosis must follow the opened file.
+  - Tags: sqlite, debugging, performance, agent-ops
+- [Archive Before You Retire: A Transaction Model for Git Worktree Backlogs](https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html.md
+  - Date: 2026-08-15; updated: 2026-09-15
+  - Summary: Stale worktrees are not safe to delete just because they look old. Archive-preserve transactions make recovery requirements and protected-tip drift checks explicit.
+  - Tags: git, devops, agent-ops, recovery, automation, reliability
+- [One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports](https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html.md
+  - Date: 2026-05-08; updated: 2026-09-15
+  - Summary: A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.
+  - Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
+- [When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson](https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
+  - Date: 2026-05-13; updated: 2026-09-15
+  - Summary: Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.
+  - Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 - [Recovery Is a State Decision, Not an Undo Button](https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html.md
   - Date: 2026-03-07; updated: 2026-08-30
@@ -72,11 +92,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-03; updated: 2026-08-23
   - Summary: A config-backed OpenClaw review workflow with blind-first evidence, authority-family quorum, source snapshots, artifact-backed completion, bridge-back delivery, and honest degradation.
   - Tags: openclaw, ai-agents, llm, orchestration, devops, multi-model-review
-- [Archive Before You Retire: A Transaction Model for Git Worktree Backlogs](https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html.md
-  - Date: 2026-08-15
-  - Summary: Stale worktrees are not safe to delete just because they look old. Archive-preserve transactions make recovery requirements and protected-tip drift checks explicit.
-  - Tags: git, devops, agent-ops, recovery, automation, reliability
 - [Thread Affinity Is a Safety Boundary for Agent Work](https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/thread-affinity-safety-boundary-agent-ops.html.md
   - Date: 2026-06-24; updated: 2026-08-15
@@ -382,11 +397,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-04-27; updated: 2026-05-14
   - Summary: AI cron reliability needs deterministic helpers, layered timeout budgets, silent-success monitor semantics, and follow-up checks that can actually observe their targets.
   - Tags: ai-agents, automation, reliability, cron, devops, openclaw
-- [When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson](https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
-  - Date: 2026-05-13
-  - Summary: A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.
-  - Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 - [When a True Alert Is Still the Wrong Page: An Agent-Ops Threshold Lesson](https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/true-alert-wrong-page-agent-ops.html.md
   - Date: 2026-05-11
@@ -402,11 +412,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-09
   - Summary: A daily scan job generated its report, but the final delivery side effect failed; the recovery pattern was to replay the saved artifact instead of rerunning the whole workflow.
   - Tags: ai-agents, automation, debugging, reliability, openclaw, agent-ops
-- [One Heading Level Broke the Nightly Build: Fixing Markdown Drift in Generated REM Reports](https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html.md
-  - Date: 2026-05-08
-  - Summary: A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.
-  - Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
 - [Why Custom Skills Did Not Load in OpenClaw - A Historical Bug and Follow-Up](https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/workspace-skills-bug.html.md
   - Date: 2026-02-23; updated: 2026-05-08

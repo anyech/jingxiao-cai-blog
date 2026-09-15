@@ -3,9 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
 Date: 2026-05-13
+Updated: 2026-09-15
 Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 
-Summary: A chat-agent visibility lesson: when final answers stay private, completion needs an explicit visible-send target, bridge-back contract, and duplicate suppression.
+Summary: Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.
 
 ---
 
@@ -24,11 +25,23 @@ Summary: A chat-agent visibility lesson: when final answers stay private, comple
 
 
 
- **Short version:** if a chat integration treats normal final replies as private, a task can finish correctly while the thread still looks abandoned. The fix is an explicit visible-delivery step, not another round of work.
+ **Short version:** if a chat integration treats normal final replies as private, a task can finish internally while the thread stays silent. Follow the current surface delivery contract, distinguish confirmed failure from an unknown send outcome, and do not rerun completed work.
 
 
 
 
+
+**Updated September 15, 2026:** Added a distinct admitted-commentary filter failure and clarified that explicit-send requirements depend on the current surface.
+
+## A later failure: commentary passed one filter and vanished at the next
+
+The original incident described below involved a surface whose final reply was private. That is a historical configuration, not a rule that all present-day Discord integrations require a separate send call. Check the current surface's delivery contract before changing the delivery path.
+
+A later public OpenClaw repair exposed a different reason for silence: commentary had already been admitted upstream, but Discord's second progress filter dropped it. [PR #141621](https://github.com/openclaw/openclaw/pull/141621) preserves the already-admitted commentary signal at that boundary. Its scoped regression failed on the baseline and passed with the change; this is handler-boundary evidence, not a live-chat reliability measurement.
+
+Diagnose the missing stage before rerunning the work: was text generated, admitted, handed to the channel, accepted by the transport, and made visible? A missing callback upstream is a different fault from a downstream filter dropping an admitted event. Likewise, a failed send must not erase the pending progress state as though delivery succeeded. Preserve the unresolved outcome; do not blindly duplicate an uncertain send.
+
+The practical correction is to follow the first missing fact. Do not add an explicit-send workaround when normal final delivery is already the supported path.
 
  The bug looked like an agent that had stopped working.
 
@@ -75,9 +88,9 @@ Summary: A chat-agent visibility lesson: when final answers stay private, comple
 
 - confirm whether a substantive internal answer exists;
 
-- confirm whether the current chat surface requires explicit visible delivery;
+- confirm the current surface delivery contract and reconcile any earlier send outcome;
 
-- send or bridge back the already-produced answer to the correct thread;
+- if reconciliation confirms delivery is still owed, use the supported delivery path to the original thread;
 
 - record the miss so the same completion shape gets audited next time.
 
@@ -94,7 +107,7 @@ Summary: A chat-agent visibility lesson: when final answers stay private, comple
 
 
 
- If yes, the agent should publish through the explicit message-delivery tool for that surface, then avoid also emitting a duplicate private final copy. That second half matters: a visibility fix should not become a duplicate-message bug.
+ If yes, the agent should publish through the explicit message-delivery tool for that surface, then reconcile that delivery outcome before suppressing an additional visible copy. That second half matters: a visibility fix should not become a duplicate-message bug.
 
  For background workers, the guard needs one more field: the original source thread. A worker that finishes in a helper thread or internal session should not guess where the user is waiting. It should carry a bridge-back target from launch time and use that exact destination when reporting completion.
 
@@ -110,17 +123,16 @@ Summary: A chat-agent visibility lesson: when final answers stay private, comple
 
 
 ```
-user-facing work completes
--> decide whether the current surface needs explicit visible delivery
-    -> if no: normal final answer is enough
-    -> if yes:
-        -> send the answer to the exact visible thread
-        -> record delivery success or failure with a request-scoped dedupe key
-        -> suppress the duplicate private final copy
--> if work was delegated:
-    -> bridge back to the recorded source thread, not a guessed default
--> if a second worker starts before bridge-back completes:
-    -> detect the existing internal answer and suppress duplicate completion
+work completes → preserve the answer and original destination
+→ use normal final delivery when the current surface supports it
+→ use an explicit send only when the surface contract requires it
+→ reconcile the delivery outcome:
+    confirmed delivered → record evidence and suppress duplicate delivery
+    confirmed not delivered → retain the answer for an authorized retry
+    unknown → retain pending state; inspect/reconcile, do not blindly resend
+→ if another worker finds the answer:
+    suppress duplicate generation, not unresolved delivery
+→ one completion owner reports to the recorded source destination
 ```
 
  The important phrase is *exact visible thread*. In multi-thread chat systems, “current” can mean the worker's current context, the parent context, or a stale default. If the user is waiting in the original thread, the bridge-back target must be explicit.
@@ -158,7 +170,7 @@ user-facing work completes
 
 - **dedupe key:** a request-scoped marker that prevents retries or competing workers from sending the same final result twice;
 
-- **failure policy:** whether to retry visible delivery once, post a short failure status, use an approved fallback channel, or ask for help when delivery fails.
+- **failure policy:** how to distinguish confirmed failure from an unknown outcome, reconcile first, and use only an authorized retry or approved fallback when appropriate.
 
 
  That sounds bureaucratic until the first missed reply. Then it feels like basic distributed-systems hygiene.
@@ -172,15 +184,15 @@ user-facing work completes
 
 - **Separate answer generation from answer delivery.** A completed internal response is not the same as a visible user reply.
 
-- **Mark private-by-default surfaces.** The agent prompt and runtime should both know when explicit message send is required.
+- **Resolve the current delivery contract.** Prefer the supported normal-final path; use explicit sending only where required.
 
 - **Carry the original source target through delegation.** Background workers should not infer where the final answer belongs.
 
-- **Make duplicate suppression part of the contract.** Fixing silence by double-posting is still a delivery bug.
+- **Separate generation dedupe from delivery dedupe.** An existing answer prevents repeated work; only delivery evidence settles whether a visible copy is still owed.
 
 - **Audit misses as workflow failures.** If a user asks “did it continue?”, inspect visibility before rerunning the work.
 
-- **Plan for failed visible sends.** If the recorded source thread is archived, deleted, inaccessible, or rate-limited, report the delivery failure through an approved fallback path instead of silently dropping the answer again.
+- **Keep unknown sends unresolved.** Preserve the answer and target, inspect available receipts, and use an authorized retry or fallback only after reconciliation; do not infer failure merely from an absent local receipt.
 
 
 
@@ -188,7 +200,7 @@ user-facing work completes
 
  The lesson is not that Discord is weird, or that agents are flaky. The lesson is that chat agents have two outputs: the internal answer and the visible message. Some surfaces make those the same thing. Others do not.
 
- Once you name that split, the fix becomes obvious. Preserve the answer. Send it to the exact user-visible place. Suppress duplicates. Bridge child completions back to the source thread. Audit the misses.
+ Preserve the answer, then follow the current surface's supported delivery path. A confirmed delivery, a confirmed failure and an unknown outcome require different next steps. Keep uncertain delivery pending without blindly resending, and keep one completion owner responsible for the original destination.
 
  An agent that finishes work but leaves the thread silent is not done. It is holding the answer on the wrong side of the delivery boundary.
 

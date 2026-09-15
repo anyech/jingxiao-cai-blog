@@ -3,6 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html.md
 Date: 2026-05-08
+Updated: 2026-09-15
 Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
 
 Summary: A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.
@@ -26,6 +27,24 @@ Summary: A generated Markdown report failed over one heading-level jump; the dur
 
  **Short version:** a generated report failed because one heading jumped to the wrong level. The durable fix was not “tell the agent to format better”; it was to test each rendered output surface as its own artifact contract.
 
+
+**Updated September 15, 2026:** Added the inverse failure: a reader silently skipped valid deeper headings.
+
+## The inverse failure: valid headings, an incomplete reader
+
+A later topic-discovery reader failed in the opposite direction. It searched only for second-level Markdown headings. Valid third-level sections stayed readable to a person but disappeared from the machine's input. Nothing crashed; an empty candidate list looked like an editorial decision.
+
+```
+## Daily notes
+### Measured result
+- Evidence: synthetic-result.json
+```
+
+The reader must preserve the third-level section rather than treating its existence as a formatting error. The repaired local reader recognizes deeper headings, ignores heading-shaped text in fenced code, carries ancestor context for disclosure screening, and follows explicitly linked archive parts before parsing. Missing archive parts fail visibly.
+
+A document contract has two sides: the writer must emit a valid shape, and the reader must accept each supported valid shape. Finding a lead still does not make it publishable. It must pass evidence and disclosure review—but an empty list can no longer stand in for that decision.
+
+Regression fixtures now exercise nested headings, split archived evidence cards, missing parts, unresolved work aging out of the window, and new evidence after an earlier disposition. These tests establish reader and queue behavior; they do not measure editorial quality.
 
  The bug was almost comically small: a generated Markdown report emitted a heading at the wrong depth. The content was fine. The summary was useful. The automation around it was doing exactly what I wanted.
 

@@ -3,6 +3,7 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/archive-before-retire-git-worktree-backlogs.html.md
 Date: 2026-08-15
+Updated: 2026-09-15
 Tags: git, devops, agent-ops, recovery, automation, reliability
 
 Summary: Stale worktrees are not safe to delete just because they look old. Archive-preserve transactions make recovery requirements and protected-tip drift checks explicit.
@@ -26,6 +27,25 @@ Summary: Stale worktrees are not safe to delete just because they look old. Arch
 
  **Short version:** a stale worktree is not safe to remove merely because its branch looks old. Preserve and read back the exact tip, preserve dirty and untracked state through the right mechanism, retire the checkout before its ref, and treat an observed protected-tip mismatch as a stop rather than a change this transaction can prevent.
 
+
+**Updated September 15, 2026:** Added a bounded single-source-pass restore-verification case and terminal-reconciliation limits.
+
+## Read-back should prove restoration, not repeat the source pass
+
+A later archive-verification implementation separated one application-level source pass from several local checks. It read the stored ciphertext once, checked its expected ciphertext digest while streaming it through authenticated decryption, and staged the resulting tar locally. Only after the stream and decryptor succeeded did it validate the complete member set and extract into a new destination.
+
+```
+one source-file pass → ciphertext digest + authenticated decryption
+private local tar → member validation → new restore directory
+```
+
+A [downloadable single-file example](/jingxiao-cai-blog/assets/examples/archive-readback/README.txt) includes [the verifier](/jingxiao-cai-blog/assets/examples/archive-readback/archive_readback.py) and [ten self-contained synthetic tests](/jingxiao-cai-blog/assets/examples/archive-readback/test_archive_readback.py); the eleventh local check exercised the private executor and is not included. The example accepts exactly one expected regular file, not arbitrary archives. Size admission and subprocess deadlines remain caller responsibilities; the helper needs external supervision to enforce them. Before retirement, compare the restored bytes and required metadata with the approved source manifest. Obtain the expected ciphertext digest from a trusted prior record. The public test counts one file opening and one traversal, not network requests or remote-filesystem retries.
+
+The local staging cost is deliberate: it avoids repeated application-level source reads without treating a digest match as proof that restoration works. The implementation's eleven synthetic checks covered corruption, truncation, wrong identity, unsafe members, an existing destination, interrupted reads, extraction failure and terminal reconciliation. Test archives exercised content and filesystem metadata preservation; this is bounded implementation evidence, not a new verification of every stored archive.
+
+For a reusable implementation, validate paths, types and link targets before extraction, and never reuse an existing restore destination silently. Handle abrupt termination separately: a process crash can leave staging behind even when normal errors clean it up. The excluded private-executor test checks terminal reconciliation without re-entering upload or deletion. The public terminal test covers reserved fields and atomic status replacement only; it does not prove the private executor's control flow.
+
+This extends the existing read-back step; it does not authorize another cleanup or make a generic tar command a safe restore procedure.
 
  Git worktrees make parallel work cheap. They also make stale state easy to accumulate.
 
@@ -155,7 +175,7 @@ for candidate in inventory:
 
  Record the protected tip before the batch. Check it before each risky transition if the environment is highly concurrent, and always check it again at closeout. Also verify any protected config or policy files whose bytes must remain unchanged.
 
- This check detects a net mismatch at an observation point; it does not prevent movement, attribute causality, or reveal every transient out-and-back change. Git provides no cross-ref transaction that binds one branch's retirement to another branch staying still. If the closeout observation differs, stop the batch and reconcile rather than silently re-baselining. Recovery anchors make that partial state diagnosable.
+ This check detects a net mismatch at an observation point; it does not prevent movement, attribute causality, or reveal every transient out-and-back change. Git [ref transactions](https://git-scm.com/docs/git-update-ref) can verify a protected ref and conditionally delete a candidate ref in one transaction. They do not make checkout removal atomic with ref updates or prove that another branch stayed unchanged throughout the batch. If the closeout observation differs, stop the batch and reconcile rather than silently re-baselining. Recovery anchors make that partial state diagnosable.
 
 
  **Completion claim:** the backlog is retired only when recovery anchors read back, original state is absent by design, and the protected-tip observation still matches. A smaller worktree count by itself is not proof.
@@ -168,7 +188,7 @@ for candidate in inventory:
 
  Deleting the original branch ref also removes that branch's reflog. Recovery cannot depend on the deleted name's prior-tip history; every required tip or pre-rewrite state must be carried by an anchor that survives independently.
 
- The important behavior is not “retry until it works.” It is “the reviewed precondition no longer holds, so leave this candidate untouched and return it to review.” A large batch may therefore complete partially: safe items retire, drifted items remain, and the report names both outcomes honestly.
+ The important behavior is not “retry until it works.” It is “the reviewed precondition no longer holds, so stop this candidate and return its actual remaining state to review. If checkout removal already succeeded, retain the recoverable ref and report that partial result.” A large batch may therefore complete partially: safe items retire, drifted items remain, and the report names both outcomes honestly.
 
 
 ## Session and Process Ownership Come Before Filesystem Cleanup
