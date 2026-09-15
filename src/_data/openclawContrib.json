@@ -1,11 +1,11 @@
 {
-  "mergedPrCount": 19,
+  "mergedPrCount": 20,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 143341,
-    "label": "installed official Discord and Slack plugin context reads",
-    "url": "https://github.com/openclaw/openclaw/pull/143341",
-    "mergedAt": "2026-09-14T08:22:23Z"
+    "number": 141626,
+    "label": "Skill Workshop review pause and recovery for unsupported rooted runtimes",
+    "url": "https://github.com/openclaw/openclaw/pull/141626",
+    "mergedAt": "2026-09-15T17:47:58Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
