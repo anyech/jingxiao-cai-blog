@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 18,
+  "mergedPrCount": 19,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 141592,
-    "label": "Responses streaming encoding defaults and header preservation",
-    "url": "https://github.com/openclaw/openclaw/pull/141592",
-    "mergedAt": "2026-09-11T00:29:31Z"
+    "number": 143341,
+    "label": "installed official Discord and Slack plugin context reads",
+    "url": "https://github.com/openclaw/openclaw/pull/143341",
+    "mergedAt": "2026-09-14T08:22:23Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-09-11",
+  "verifiedDate": "2026-09-15",
   "source": "personal-site OpenClaw contribution updater"
 }
