@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 20,
+  "mergedPrCount": 21,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 141626,
-    "label": "Skill Workshop review pause and recovery for unsupported rooted runtimes",
-    "url": "https://github.com/openclaw/openclaw/pull/141626",
-    "mergedAt": "2026-09-15T17:47:58Z"
+    "number": 148146,
+    "label": "deferred handoffs from verified official channel installations",
+    "url": "https://github.com/openclaw/openclaw/pull/148146",
+    "mergedAt": "2026-09-17T12:41:16Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-09-15",
+  "verifiedDate": "2026-09-17",
   "source": "personal-site OpenClaw contribution updater"
 }
