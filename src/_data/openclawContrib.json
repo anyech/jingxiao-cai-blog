@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 23,
+  "mergedPrCount": 25,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 151133,
-    "label": "isolated completion quota retries on prepared backup profiles",
-    "url": "https://github.com/openclaw/openclaw/pull/151133",
-    "mergedAt": "2026-09-19T07:52:02Z"
+    "number": 158473,
+    "label": "plugin cleanup preserves retained deleted-agent stores",
+    "url": "https://github.com/openclaw/openclaw/pull/158473",
+    "mergedAt": "2026-09-29T07:15:32Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-09-19",
+  "verifiedDate": "2026-09-30",
   "source": "personal-site OpenClaw contribution updater"
 }
