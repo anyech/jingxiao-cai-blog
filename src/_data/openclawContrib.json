@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 25,
+  "mergedPrCount": 26,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 158473,
-    "label": "plugin cleanup preserves retained deleted-agent stores",
-    "url": "https://github.com/openclaw/openclaw/pull/158473",
-    "mergedAt": "2026-09-29T07:15:32Z"
+    "number": 160949,
+    "label": "Codex live-thread ownership across same-build module copies",
+    "url": "https://github.com/openclaw/openclaw/pull/160949",
+    "mergedAt": "2026-10-01T22:35:57Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-09-30",
+  "verifiedDate": "2026-10-02",
   "source": "personal-site OpenClaw contribution updater"
 }
