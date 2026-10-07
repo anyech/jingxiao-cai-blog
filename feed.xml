@@ -6,7 +6,31 @@
     <link>https://anyech.github.io/jingxiao-cai-blog/</link>
     <atom:link href="https://anyech.github.io/jingxiao-cai-blog/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Sep 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>A Bounded Cost Report Should Not Wake an Old Transcript</title>
+      <description>An old transcript can contain recent usage. OpenClaw’s bounded-cost proposal uses event time and verified archive exclusions; its synthetic proof is not a production-performance claim.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/bounded-cost-report-should-not-wake-an-old-transcript.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/bounded-cost-report-should-not-wake-an-old-transcript.html</guid>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>One Client, Two Module Copies: Who Owns the State?</title>
+      <description>Two module evaluations can see one in-memory client but separate owner state. A merged OpenClaw change shares that owner within one build; reported regressions are not deployment reliability.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/one-client-two-module-copies-runtime-ownership.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/one-client-two-module-copies-runtime-ownership.html</guid>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
+
+    <item>
+      <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
+      <description>A historical chat case showed an answer without visible delivery. Check the current surface contract and reconcile unknown sends; the anecdote does not establish a general cause.</description>
+      <link>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</link>
+      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</guid>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
 
     <item>
       <title>The Snapshot Moved. The SQLite Integrity Scan Did Not.</title>
@@ -30,14 +54,6 @@
       <link>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</link>
       <guid>https://anyech.github.io/jingxiao-cai-blog/one-heading-level-broke-nightly-build-generated-rem-reports.html</guid>
       <pubDate>Fri, 08 May 2026 00:00:00 +0000</pubDate>
-    </item>
-
-    <item>
-      <title>When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson</title>
-      <description>Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.</description>
-      <link>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</link>
-      <guid>https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html</guid>
-      <pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate>
     </item>
 
     <item>

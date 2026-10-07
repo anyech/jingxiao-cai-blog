@@ -3,10 +3,10 @@
 URL: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html
 Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
 Date: 2026-05-13
-Updated: 2026-09-15
+Updated: 2026-10-07
 Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 
-Summary: Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.
+Summary: A historical chat case showed an answer without visible delivery. Check the current surface contract and reconcile unknown sends; the anecdote does not establish a general cause.
 
 ---
 
@@ -17,6 +17,8 @@ Summary: Separate completed work from visible delivery: preserve the answer and 
 
  **May 13, 2026** | By Jingxiao Cai
 
+ **Updated October 7, 2026:** narrowed the causal wording to the observed historical case, made explicit-send advice surface-conditional, and separated later delivery mechanisms.
+
  Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 
 
@@ -25,23 +27,13 @@ Summary: Separate completed work from visible delivery: preserve the answer and 
 
 
 
- **Short version:** if a chat integration treats normal final replies as private, a task can finish internally while the thread stays silent. Follow the current surface delivery contract, distinguish confirmed failure from an unknown send outcome, and do not rerun completed work.
+ **Author-reported historical case, current rule:** the original case involved a historical configuration that treated normal final replies as private. If the current integration still has that contract, a task can finish internally while the thread stays silent. Follow the current surface delivery contract, distinguish confirmed failure from an unknown send outcome, and do not rerun completed work.
 
 
 
 
 
-**Updated September 15, 2026:** Added a distinct admitted-commentary filter failure and clarified that explicit-send requirements depend on the current surface.
-
-## A later failure: commentary passed one filter and vanished at the next
-
-The original incident described below involved a surface whose final reply was private. That is a historical configuration, not a rule that all present-day Discord integrations require a separate send call. Check the current surface's delivery contract before changing the delivery path.
-
-A later public OpenClaw repair exposed a different reason for silence: commentary had already been admitted upstream, but Discord's second progress filter dropped it. [PR #141621](https://github.com/openclaw/openclaw/pull/141621) preserves the already-admitted commentary signal at that boundary. Its scoped regression failed on the baseline and passed with the change; this is handler-boundary evidence, not a live-chat reliability measurement.
-
-Diagnose the missing stage before rerunning the work: was text generated, admitted, handed to the channel, accepted by the transport, and made visible? A missing callback upstream is a different fault from a downstream filter dropping an admitted event. Likewise, a failed send must not erase the pending progress state as though delivery succeeded. Preserve the unresolved outcome; do not blindly duplicate an uncertain send.
-
-The practical correction is to follow the first missing fact. Do not add an explicit-send workaround when normal final delivery is already the supported path.
+**Later public changes:** admitted commentary and a mid-task side answer have distinct paths. They do not establish the cause or fix of the historical story below. [See the bounded mechanisms and source notes.](#later-delivery-boundaries)
 
  The bug looked like an agent that had stopped working.
 
@@ -73,7 +65,7 @@ The practical correction is to follow the first missing fact. Do not add an expl
 | **Internal reply produced** | The assistant generated a final answer inside the orchestration session. | This proves the language step happened, not that the chat saw it. |
 | **Visible message delivered** | The answer actually appeared in the user-facing Discord thread. | This is the state the human experiences as completion. |
 
- The failure lived in the gap between the second and third states. A normal final answer was generated, but that runtime/surface configuration required an explicit visible-send action for user-visible output. The result was not a transport outage and not a model failure. It was a visibility-layer gap.
+ The failure lived in the gap between the second and third states. A normal final answer was generated, but that runtime/surface configuration required an explicit visible-send action for user-visible output. The answer already existed in the author’s observed case, pointing to a visibility-layer gap. That observation does not categorically rule out transport or model failures in other incidents.
 
 
 ## Why This Is Not Just “Delivery Failed”
@@ -107,7 +99,7 @@ The practical correction is to follow the first missing fact. Do not add an expl
 
 
 
- If yes, the agent should publish through the explicit message-delivery tool for that surface, then reconcile that delivery outcome before suppressing an additional visible copy. That second half matters: a visibility fix should not become a duplicate-message bug.
+ If yes, the agent should use normal final delivery when the surface supports it, and use an explicit message-delivery tool only when that surface contract requires one, then reconcile that delivery outcome before suppressing an additional visible copy. That second half matters: a visibility fix should not become a duplicate-message bug.
 
  For background workers, the guard needs one more field: the original source thread. A worker that finishes in a helper thread or internal session should not guess where the user is waiting. It should carry a bridge-back target from launch time and use that exact destination when reporting completion.
 
@@ -147,7 +139,7 @@ work completes → preserve the answer and original destination
 | Audit question | Bad answer | Better action |
 | --- | --- | --- |
 | Was the request directly addressed or status-like? | “Probably.” | Classify it explicitly before finalizing. |
-| Is the source surface private-by-default, requiring an explicit visible-send action rather than automatic reply visibility? | “The final answer exists in session history.” | Check visible delivery, not only internal history. |
+| Is the source surface private-by-default, requiring an explicit visible-send action rather than automatic reply visibility? | “The final answer exists in session history.” | Check the current surface contract and visible delivery, not only internal history; do not add a second send when normal final delivery already works. |
 | Did a child worker finish somewhere else? | “It posted in its own context.” | Bridge the concise result back to the source thread. |
 | Was the explicit target preserved? | “The tool default should pick the right channel.” | Use the recorded source destination for bridge-back sends. |
 
@@ -178,7 +170,7 @@ work completes → preserve the answer and original destination
 
 ## A Practical Checklist
 
- For a self-hosted agent on Discord or another chat surface where internal replies and visible messages can diverge, I would use this checklist. The pattern here is validated from a Discord-backed workflow; Slack, Matrix, Teams, and other platforms have their own visibility models and may need different guardrails.
+ For a self-hosted agent on Discord or another chat surface where internal replies and visible messages can diverge, I would use this checklist. The pattern here is drawn from a Discord-backed workflow; Slack, Matrix, Teams, and other platforms have their own visibility models and may need different guardrails.
 
 
 
@@ -194,6 +186,36 @@ work completes → preserve the answer and original destination
 
 - **Keep unknown sends unresolved.** Preserve the answer and target, inspect available receipts, and use an authorized retry or fallback only after reconciliation; do not infer failure merely from an absent local receipt.
 
+
+**Relationship disclosure:** `anyech`, this site’s GitHub identity, authored PR #141621 with AI assistance; PR #159416 was authored by `steipete`. The public changes do not establish the cause of the historical incident.
+
+## Later changes concern different delivery boundaries
+
+| Case | Missing boundary | Scope of evidence |
+| --- | --- | --- |
+| Historical story | Produced final answer versus the original surface’s visible delivery | Author’s sanitized observation, not a general causal exclusion |
+| PR #141621 | Already-admitted commentary versus a second channel filter | Public source-reported paired controls; no rerun or production rate |
+| PR #159416 | Intentional side answer while the longer task remains active | Public native-harness path; still-pending answers retained for final delivery |
+
+**Updated September 15, 2026:** Added a distinct admitted-commentary filter failure and clarified that explicit-send requirements depend on the current surface.
+
+## A later failure: commentary passed one filter and vanished at the next
+
+The original incident described above involved a surface whose final reply was private. That is a historical configuration, not a rule that all present-day Discord integrations require a separate send call. Check the current surface's delivery contract before changing the delivery path.
+
+A later public OpenClaw repair exposed a different reason for silence: commentary had already been admitted upstream, but Discord's second progress filter dropped it. [PR #141621](https://github.com/openclaw/openclaw/pull/141621) preserves the already-admitted commentary signal at that boundary. The public description reports baseline-fail/repaired-pass controls and an isolated bot-driven Discord testbed; these are source-reported results, not tests rerun here or a production reliability rate.
+
+Diagnose the missing stage before rerunning the work: was text generated, admitted, handed to the channel, accepted by the transport, and made visible? A missing callback upstream is a different fault from a downstream filter dropping an admitted event. Likewise, a failed send must not erase the pending progress state as though delivery succeeded. Preserve the unresolved outcome; do not blindly duplicate an uncertain send.
+
+The practical correction is to follow the first missing fact. Do not add an explicit-send workaround when normal final delivery is already the supported path.
+
+**Updated October 7, 2026:** Added a distinct mid-task side-answer case from a merged upstream harness change.
+
+## A side answer is not progress commentary
+
+A question can arrive while a longer task is still running. Merged [OpenClaw PR #159416](https://github.com/openclaw/openclaw/pull/159416) adds an independent non-final delivery path for that side answer in the native harness, while preserving still-pending side answers for the task’s final response. The PR states that commentary visibility settings remain unchanged.
+
+This is different from the September 15 filter fix: that preserved commentary already admitted upstream; this path delivers an intentional side answer during active work. The public PR description reports deterministic regressions for independently delivered, retained for recovery, and failed-before-send outcomes. That is scoped path evidence, not a platform-wide reliability estimate or proof that any earlier one-off incident was resolved.
 
 
 ## Conclusion

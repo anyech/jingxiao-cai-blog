@@ -17,6 +17,21 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
 
 ## Posts
 
+- [A Bounded Cost Report Should Not Wake an Old Transcript](https://anyech.github.io/jingxiao-cai-blog/bounded-cost-report-should-not-wake-an-old-transcript.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/bounded-cost-report-should-not-wake-an-old-transcript.html.md
+  - Date: 2026-10-07
+  - Summary: An old transcript can contain recent usage. OpenClaw’s bounded-cost proposal uses event time and verified archive exclusions; its synthetic proof is not a production-performance claim.
+  - Tags: openclaw, sqlite, usage-cost, reliability, agent-ops
+- [One Client, Two Module Copies: Who Owns the State?](https://anyech.github.io/jingxiao-cai-blog/one-client-two-module-copies-runtime-ownership.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/one-client-two-module-copies-runtime-ownership.html.md
+  - Date: 2026-10-07
+  - Summary: Two module evaluations can see one in-memory client but separate owner state. A merged OpenClaw change shares that owner within one build; reported regressions are not deployment reliability.
+  - Tags: openclaw, codex, typescript, reliability, agent-ops
+- [When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson](https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
+  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
+  - Date: 2026-05-13; updated: 2026-10-07
+  - Summary: A historical chat case showed an answer without visible delivery. Check the current surface contract and reconcile unknown sends; the anecdote does not establish a general cause.
+  - Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 - [The Snapshot Moved. The SQLite Integrity Scan Did Not.](https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/sqlite-snapshot-cache-not-integrity-scan.html.md
   - Date: 2026-09-15
@@ -32,11 +47,6 @@ Search page: https://anyech.github.io/jingxiao-cai-blog/search.html
   - Date: 2026-05-08; updated: 2026-09-15
   - Summary: A generated Markdown report failed over one heading-level jump; the durable fix was testing each rendered output surface as its own artifact contract.
   - Tags: openclaw, automation, markdown, regression-testing, ai-agents, writing
-- [When the Reply Exists but the Thread Stayed Silent: An Agent-Ops Visibility Lesson](https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html)
-  - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/when-reply-exists-thread-stayed-silent-agent-ops.html.md
-  - Date: 2026-05-13; updated: 2026-09-15
-  - Summary: Separate completed work from visible delivery: preserve the answer and target, locate dropped commentary, and reconcile delivery uncertainty before retrying.
-  - Tags: ai-agents, discord, automation, reliability, openclaw, agent-ops
 - [Recovery Is a State Decision, Not an Undo Button](https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html)
   - Markdown mirror: https://anyech.github.io/jingxiao-cai-blog/recovery-problem-ai-agent-undo.html.md
   - Date: 2026-03-07; updated: 2026-08-30
