@@ -1,14 +1,14 @@
 {
-  "mergedPrCount": 26,
+  "mergedPrCount": 27,
   "scope": "Runtime reliability · delivery · document tooling",
   "latest": {
-    "number": 160949,
-    "label": "Codex live-thread ownership across same-build module copies",
-    "url": "https://github.com/openclaw/openclaw/pull/160949",
-    "mergedAt": "2026-10-01T22:35:57Z"
+    "number": 164808,
+    "label": "start-relative recovery allowances for model retries and fallbacks",
+    "url": "https://github.com/openclaw/openclaw/pull/164808",
+    "mergedAt": "2026-10-14T10:45:32Z"
   },
   "contributionsUrl": "https://github.com/openclaw/openclaw/pulls?q=is%3Apr+author%3Aanyech+is%3Amerged",
   "writingUrl": "/jingxiao-cai-blog/topics/openclaw-self-hosting.html",
-  "verifiedDate": "2026-10-02",
+  "verifiedDate": "2026-10-16",
   "source": "personal-site OpenClaw contribution updater"
 }
